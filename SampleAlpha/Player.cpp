@@ -87,6 +87,7 @@ void draw_player(int playersize) {
 	AEMtx33Concat(&finalform, &scale2, &translate2);
 	AEGfxSetTransform(finalform.m);
 	
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxMeshDraw(trianglemesh, AE_GFX_MDM_TRIANGLES);
 
 	
