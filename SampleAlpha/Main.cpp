@@ -2,7 +2,7 @@
 // includes
 
 #include "AEEngine.h"
-
+#include "Player.hpp"
 
 
 // ---------------------------------------------------------------------------
@@ -12,8 +12,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
-{
-	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+{	
+
+	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2); //ensures that the application window does not 
+																			   //exceed the size of the user's monitor resolution
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -24,30 +26,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
-	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	
 
-	// Pointer to Mesh
-	AEGfxVertexList* pMesh = 0;
-	// Informing the library that we're about to start adding triangles
-	AEGfxMeshStart();
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
-	// Saving the mesh (list of triangles) in pMesh
-	pMesh = AEGfxMeshEnd();
+	initialize_player(200);
+	
 
 
 	// Changing the window title
-	AESysSetWindowTitle("My New Demo!");
-
+	AESysSetWindowTitle("CSD 1451 Portals");
+	
+	
 	// reset the system modules
 	AESysReset();
 
@@ -77,7 +65,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// 
 		// Your own rendering logic goes here
 		// Set the background to black.
-		AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+		AEGfxSetBackgroundColor(0.0f, 75.3f, 79.6f);
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		// Set the tint to white, so that the sprite can 
@@ -87,27 +75,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// This will allow transparency.
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(1.0f);
-		// Set the texture to pTex
-		AEGfxTextureSet(pTex, 0, 0);
-		// Create a scale matrix that scales by 100 x and y
-		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, 100.f, 100.f);
-		// Create a rotation matrix that rotates by 45 degrees
-		AEMtx33 rotate = { 0 };
-		AEMtx33Rot(&rotate, PI / 4);
-		// Create a translation matrix that translates by
-		// 100 in the x-axis and 100 in the y-axis
-		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, 100.f, 100.f);
-		// Concat the matrices (TRS)
-		AEMtx33 transform = { 0 };
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		// Choose the transform to use
-		AEGfxSetTransform(transform.m);
-		// Actually drawing the mesh 
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
+		
+		draw_player(200);
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 
@@ -116,8 +85,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			gGameRunning = 0;
 	}
 
-	AEGfxMeshFree(pMesh);
-	AEGfxTextureUnload(pTex);
+	//AEGfxMeshFree(pMesh);
+	//AEGfxTextureUnload(pTex);
 
 	// free the system
 	AESysExit();
