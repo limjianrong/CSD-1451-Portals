@@ -2,7 +2,7 @@
 
 int playersize{ 200 };
 float rotation{ 0 };
-float x{ 100 }, y{ 100 };
+float x{  }, y{  };
 AEGfxVertexList* pMesh;
 
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
