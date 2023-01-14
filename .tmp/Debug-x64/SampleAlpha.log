@@ -1,8 +1,10 @@
-﻿  Player.cpp
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(59,18): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(65,18): warning C4305: '-=': truncation from 'double' to 'float'
+﻿  Main.cpp
+  Player.cpp
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(69,18): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(75,18): warning C4305: '-=': truncation from 'double' to 'float'
+  Generating Code...
   SampleAlpha.vcxproj -> C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\bin\Debug-x64\SampleAlpha.exe
-  3 File(s) copied
+  4 File(s) copied
   1 File(s) copied
   1 File(s) copied
   1 File(s) copied

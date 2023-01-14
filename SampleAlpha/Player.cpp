@@ -4,10 +4,13 @@ int playersize{ 200 };
 float rotation{ 0 };
 float x{  }, y{  };
 AEGfxVertexList* pMesh;
+AEGfxVertexList* trianglemesh;
+
 
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
 	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	AEGfxTexture* yellowball = AEGfxTextureLoad("Assets/ball9.png");
 	// Pointer to Mesh
 	//pMesh = 0;
 	// Informing the library that we're about to start adding triangles
@@ -16,19 +19,26 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	// Color parameters represent colours as ARGB
 	// UV coordinates to read from loaded textures
 	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFF00FFFF, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 1.0f);
+		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
 	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 1.0f);
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
 	// Set the texture to pTex
 	AEGfxTextureSet(pTex, 0, 0);
-	
+
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+	trianglemesh = AEGfxMeshEnd();
+
 }
 
 void draw_player(int playersize) {
@@ -64,10 +74,21 @@ void draw_player(int playersize) {
 		x += 1;
 		rotation -= 0.1;
 	}
-
 	
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	AEMtx33 scale2 {};
+	AEMtx33Scale(&scale2, 20.0f, 20.0f);
+	AEMtx33 translate2{};
+	AEMtx33Trans(&translate2, 150.0f, 150.0f);
+	AEMtx33 finalform{};
+	AEMtx33Concat(&finalform, &scale2, &translate2);
+	AEGfxSetTransform(finalform.m);
+	
+	AEGfxMeshDraw(trianglemesh, AE_GFX_MDM_TRIANGLES);
+
 	
 }
 
