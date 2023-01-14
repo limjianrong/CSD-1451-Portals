@@ -397,3 +397,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+bin/Debug-x64/SampleAlpha.pdb
+bin/Debug-x64/SampleAlpha.exe
+.vs/Portals/v17/Browse.VC.db-wal
+.vs/Portals/v17/Browse.VC.db
+.vs/Portals/v17/.suo
+.tmp/Debug-x64/vc143.pdb
+.tmp/Debug-x64/vc143.idb
+.tmp/Debug-x64/SampleAlpha.tlog/CL.write.1.tlog
+.tmp/Debug-x64/SampleAlpha.tlog/CL.read.1.tlog
+.tmp/Debug-x64/SampleAlpha.log
+.tmp/Debug-x64/SampleAlpha.ilk
+.tmp/Debug-x64/Player.obj
+.tmp/Debug-x64/Main.obj

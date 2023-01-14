@@ -9,8 +9,7 @@ AEGfxVertexList* trianglemesh;
 
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
-	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
-	AEGfxTexture* yellowball = AEGfxTextureLoad("Assets/ball9.png");
+	
 	// Pointer to Mesh
 	//pMesh = 0;
 	// Informing the library that we're about to start adding triangles
@@ -29,20 +28,25 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
-	// Set the texture to pTex
-	AEGfxTextureSet(pTex, 0, 0);
+	
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
 		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
 		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+	// Saving the mesh (list of triangles) in pMesh
 	trianglemesh = AEGfxMeshEnd();
 
 }
 
 void draw_player(int playersize) {
-	
+	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	AEGfxTexture* yellowball = AEGfxTextureLoad("Assets/ball9.png");
 
 	// Create a scale matrix that scales by 100 x and y
 	AEMtx33 scale = { 0 };
@@ -74,20 +78,22 @@ void draw_player(int playersize) {
 		x += 1;
 		rotation -= 0.1;
 	}
+	// Set the texture to pTex
+	AEGfxTextureSet(pTex, 0, 0);
 	
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	AEMtx33 scale2 {};
-	AEMtx33Scale(&scale2, 20.0f, 20.0f);
+	AEMtx33Scale(&scale2, 100.0f, 100.0f);
 	AEMtx33 translate2{};
-	AEMtx33Trans(&translate2, 150.0f, 150.0f);
+	AEMtx33Trans(&translate2, 100.0f, 100.0f);
 	AEMtx33 finalform{};
 	AEMtx33Concat(&finalform, &scale2, &translate2);
 	AEGfxSetTransform(finalform.m);
 	
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxTextureSet(yellowball, 0, 0);
 	AEGfxMeshDraw(trianglemesh, AE_GFX_MDM_TRIANGLES);
 
 	
