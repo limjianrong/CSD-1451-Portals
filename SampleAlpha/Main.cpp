@@ -25,12 +25,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Initialization of your own variables go here
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
 	
 
 	initialize_player(200);
 	
-
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
@@ -50,20 +49,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// Handling Input
 		AEInputUpdate();
 
-		// Your own update logic goes here
-		//----------------------------------------------------NOT USED FOR NOW-----------------------------------------------//
-		// get mouse's x and y positions relative to the window screen space
-		s32 x, y;
-		AEInputGetCursorPosition(&x, &y);
-
-		// AEInputCheckTriggered: This checks if a key is just pressed
-		// AEInputCheckReleased: This checks if a key is just released
-
-		// Checks if escape key is recently pressed
-		// if AEInputCheckTriggered(AEVK_ESCAPE) { ... }
-		//--------------------------------------------------------------------------------------------------------------------//
-		// 
-		// Your own rendering logic goes here
 		// Set the background to black.
 		AEGfxSetBackgroundColor(0.0f, 75.3f, 79.6f);
 		// Tell the engine to get ready to draw something with texture.

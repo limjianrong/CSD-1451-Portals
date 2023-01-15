@@ -1,8 +1,10 @@
 #include "AEEngine.h"
 
+#include "Player.hpp"
+
 int playersize{ 200 };
-float rotation{ 0 };
-float x{  }, y{  };
+f32 rotation{ 0 };
+f32 x{  }, y{  };
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 
@@ -52,10 +54,10 @@ void draw_player(int playersize) {
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, 50.f, 50.f);
 
-	// Create a rotation matrix that rotates by 45 degrees
+	// Create a rotation matrix that rotates by rotation degrees
 	AEMtx33 rotate = { 0 };
-
 	AEMtx33Rot(&rotate, rotation);
+
 	// Create a translation matrix that translates by
 	// 100 in the x-axis and 100 in the y-axis
 	AEMtx33 translate = { 0 };
@@ -67,22 +69,14 @@ void draw_player(int playersize) {
 	// Choose the transform to use
 	AEGfxSetTransform(transform.m);
 
-	//if user presses 'A'
-	if (AEInputCheckCurr(0x41)) {
-		x -= 1;
-		rotation += 0.1;
-	}
-
-	//if user presses 'D'
-	if (AEInputCheckCurr(0x44)) {
-		x += 1;
-		rotation -= 0.1;
-	}
 	// Set the texture to pTex
 	AEGfxTextureSet(pTex, 0, 0);
 	
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	// Call player movement function so x & y values can be translated (to be able to move)
+	player_movement();
 
 	AEMtx33 scale2 {};
 	AEMtx33Scale(&scale2, 100.0f, 100.0f);
@@ -96,9 +90,38 @@ void draw_player(int playersize) {
 	AEGfxTextureSet(yellowball, 0, 0);
 	AEGfxMeshDraw(trianglemesh, AE_GFX_MDM_TRIANGLES);
 
-	
+	// Get mouse's x and y positions relative to the window screen space
+	s32 x_cursor, y_cursor;
+	AEInputGetCursorPosition(&x_cursor, &y_cursor);
+
+//------------------------------- CAN IGNORE -------------------------------------------------------------------------
+	// All x and y coordinates starts from top left corner of window
+	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON
+	AEVec2 point;
+	AEVec2 center;
+	AEVec2Set(&point, x_cursor, y_cursor);
+	AEVec2Set(&center, AEGfxGetWinMaxX() + x, AEGfxGetWinMaxY() - y);
+	if (AEInputCheckPrev(AEVK_LBUTTON) && AEInputCheckCurr(AEVK_LBUTTON)) {
+		if (AETestPointToRect(&point, &center, 50.0f, 50.0f)) AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	}
+//------------------------------- CAN IGNORE -------------------------------------------------------------------------
+
 }
 
 void player_movement(void) {
-	
+	// A key pressed
+	if (AEInputCheckCurr(AEVK_A)) {
+		x -= 1;
+		rotation += 0.1;
+	}
+	// D key pressed
+	else if (AEInputCheckCurr(AEVK_D)) {
+		x += 1;
+		rotation -= 0.1;
+	}
+	// W key pressed (No rotation)
+	if (AEInputCheckPrev(AEVK_W) && AEInputCheckCurr(AEVK_W)) y += 5;
+	// S key pressed (No rotation)
+	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) y -= 5;
+
 }
