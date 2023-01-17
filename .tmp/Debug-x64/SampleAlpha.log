@@ -1,8 +1,9 @@
 ﻿  Player.cpp
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(102,30): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(102,20): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(115,18): warning C4305: '+=': truncation from 'double' to 'f32'
-C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(120,18): warning C4305: '-=': truncation from 'double' to 'f32'
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(104,30): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(104,20): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(117,18): warning C4305: '+=': truncation from 'double' to 'f32'
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(122,18): warning C4305: '-=': truncation from 'double' to 'f32'
+C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\SampleAlpha\Player.cpp(168,26): warning C4305: '+=': truncation from 'double' to 'float'
   SampleAlpha.vcxproj -> C:\Users\limji\OneDrive\Desktop\CSD1451 Portals\bin\Debug-x64\SampleAlpha.exe
   4 File(s) copied
   1 File(s) copied

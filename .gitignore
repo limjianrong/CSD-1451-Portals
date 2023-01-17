@@ -432,3 +432,8 @@ bin/Debug-x64/SampleAlpha.exe
 bin/Debug-x64/SampleAlpha.exe
 bin/Debug-x64/SampleAlpha.pdb
 .tmp/Debug-x64/SampleAlpha.tlog/link.command.1.tlog
+*.log
+*.obj
+*.ilk
+*.pdb
+*.idb

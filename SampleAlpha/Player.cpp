@@ -3,17 +3,21 @@
 #include "Player.hpp"
 
 int playersize{ 200 };
+float rotationofportal{};
+AEMtx33 rotateportal{};
 f32 rotation{ 0 };
 f32 x{  }, y{  };
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 AEGfxVertexList* portalmesh;
-
+AEGfxVertexList* hexagonmesh;
+AEGfxTexture* yellowball;
+AEGfxTexture* pTex;
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
-	
-	// Pointer to Mesh
-	//pMesh = 0;
+	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	yellowball = AEGfxTextureLoad("Assets/ball9.png");
+
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
 	// This shape has 2 triangles that makes up a square
@@ -47,8 +51,7 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 }
 
 void draw_player(int playersize) {
-	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
-	AEGfxTexture* yellowball = AEGfxTextureLoad("Assets/ball9.png");
+	
 
 	// Create a scale matrix that scales by 100 x and y
 	AEMtx33 scale = { 0 };
@@ -58,8 +61,7 @@ void draw_player(int playersize) {
 	AEMtx33 rotate = { 0 };
 	AEMtx33Rot(&rotate, rotation);
 
-	// Create a translation matrix that translates by
-	// 100 in the x-axis and 100 in the y-axis
+	
 	AEMtx33 translate = { 0 };
 	AEMtx33Trans(&translate, x, y);
 	// Concat the matrices (TRS)
@@ -87,8 +89,8 @@ void draw_player(int playersize) {
 	AEGfxSetTransform(finalform.m);
 	
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxTextureSet(yellowball, 0, 0);
-	AEGfxMeshDraw(trianglemesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(pTex, 0, 0);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// Get mouse's x and y positions relative to the window screen space
 	s32 x_cursor, y_cursor;
@@ -129,31 +131,45 @@ void player_movement(void) {
 void initialize_player_portal(void) {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFA020F0, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFA020F0, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFA020F0, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFA020F0, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFA020F0, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFA020F0, 0.0f, 1.0f);
-	// Saving the mesh (list of triangles) in pMesh
+		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
+		30.0f,30.0f, 0xFFFF0000, 0.0f, 0.0f,
+		-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	/*AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
+		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
+		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);*/
+	AEGfxVertexAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
 	portalmesh = AEGfxMeshEnd();
+	
+	
+
+	AEGfxMeshStart();
+	AEGfxVertexAdd(10.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(30.0f, 10.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(30.0f, -10.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(10.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(-10.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(-30.0f, -10.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(-30.0f, 10.0f, 0xFFFF0000, 0.0f, 0.0f);
+	AEGfxVertexAdd(-10.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
+	
+	hexagonmesh = AEGfxMeshEnd();
+
 	
 }
 void player_portal(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	
-	
+	AEMtx33Rot(&rotateportal, rotationofportal);
+	AEGfxSetTransform(rotateportal.m);
+	AEGfxSetPosition(100.0f, 150.0f);
+	AEGfxMeshDraw(portalmesh, AE_GFX_MDM_TRIANGLES);
+	while (rotationofportal <= 360) {
+		rotationofportal += 0.1;
+	}
+	AEGfxSetPosition(-100.0f, 150.0f);
+	AEGfxMeshDraw(hexagonmesh, AE_GFX_MDM_LINES_STRIP);
 	if (AEInputCheckCurr(AEVK_M)) {
-		AEMtx33 scaleportal{};
-		AEMtx33Scale(&scaleportal, 100.0f, 100.0f);
-		AEMtx33 translateportal{};
-		AEMtx33Trans(&translateportal, 100.0f, 100.0f);
-		AEMtx33 finalportal{};
-		AEMtx33Concat(&finalportal, &scaleportal, &translateportal);
-		AEGfxSetTransform(finalportal.m);
 		rotation += 10;
-		AEGfxMeshDraw(portalmesh, AE_GFX_MDM_TRIANGLES);
-		
 	}
 }
