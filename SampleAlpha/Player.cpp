@@ -7,7 +7,7 @@ f32 rotation{ 0 };
 f32 x{  }, y{  };
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
-
+AEGfxVertexList* portalmesh;
 
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
@@ -124,4 +124,36 @@ void player_movement(void) {
 	// S key pressed (No rotation)
 	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) y -= 5;
 
+}
+
+void initialize_player_portal(void) {
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0xFFA020F0, 0.0f, 0.0f,
+		0.5f, -0.5f, 0xFFA020F0, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFA020F0, 0.0f, 1.0f);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0xFFA020F0, 1.0f, 0.0f,
+		0.5f, 0.5f, 0xFFA020F0, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFA020F0, 0.0f, 1.0f);
+	// Saving the mesh (list of triangles) in pMesh
+	portalmesh = AEGfxMeshEnd();
+	
+}
+void player_portal(void) {
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	
+	
+	if (AEInputCheckCurr(AEVK_M)) {
+		AEMtx33 scaleportal{};
+		AEMtx33Scale(&scaleportal, 100.0f, 100.0f);
+		AEMtx33 translateportal{};
+		AEMtx33Trans(&translateportal, 100.0f, 100.0f);
+		AEMtx33 finalportal{};
+		AEMtx33Concat(&finalportal, &scaleportal, &translateportal);
+		AEGfxSetTransform(finalportal.m);
+		rotation += 10;
+		AEGfxMeshDraw(portalmesh, AE_GFX_MDM_TRIANGLES);
+		
+	}
 }

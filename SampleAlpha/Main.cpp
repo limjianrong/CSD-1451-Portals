@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 
 	initialize_player(200);
-	
+	initialize_player_portal();
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
@@ -62,6 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		AEGfxSetTransparency(1.0f);
 		
 		draw_player(200);
+		player_portal();
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 
@@ -72,7 +73,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	//AEGfxMeshFree(pMesh);
 	//AEGfxTextureUnload(pTex);
-
+	
 	// free the system
 	AESysExit();
 }
