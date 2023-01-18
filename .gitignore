@@ -437,3 +437,12 @@ bin/Debug-x64/SampleAlpha.pdb
 *.ilk
 *.pdb
 *.idb
+.vs/Portals/v17/Browse.VC.db
+.vs/Portals/v17/.suo
+*.ilk
+*.obj
+*.log
+*.idb
+*.pdb
+*.db
+*.pdb
