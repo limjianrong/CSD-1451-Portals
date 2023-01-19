@@ -446,3 +446,17 @@ bin/Debug-x64/SampleAlpha.pdb
 *.pdb
 *.db
 *.pdb
+*.obj
+*.recipe
+*.ilk
+*.log
+*.tlog
+*.lastbuildstate
+*.idb
+*.pdb
+*.iobj
+*.ipdb
+*.vsidx
+*.vsidx
+.vs/Portals/v17/.suo
+.vs/Portals/v17/Browse.VC.db

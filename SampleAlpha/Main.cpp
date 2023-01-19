@@ -3,6 +3,7 @@
 
 #include "AEEngine.h"
 #include "Player.hpp"
+#include "portal_feature.hpp"
 
 
 // ---------------------------------------------------------------------------
