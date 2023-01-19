@@ -23,8 +23,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	int gGameRunning = 1;
 
-	// Initialization of your own variables go here
-
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1000, 600, 1, 60, true, NULL);
 	
@@ -54,8 +52,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		AEGfxSetBackgroundColor(0.0f, 75.3f, 79.6f);
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		// Set the tint to white, so that the sprite can 
-		// display the full range of colors (default is black).
+		// Set the tint to white, so that the sprite can display the full range of colors (default is black).
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		// Set blend mode to AE_GFX_BM_BLEND
 		// This will allow transparency.

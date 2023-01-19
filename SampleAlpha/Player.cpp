@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 
 #include "Player.hpp"
+#include "weapon_fire.hpp"
 
 int playersize{ 200 };
 
@@ -24,7 +25,7 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	AEGfxMeshStart();
 	// This shape has 2 triangles that makes up a square
 	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures
+	// UV coordinates to read from loaded textures 0.0 - 1.0
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
 		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
@@ -36,20 +37,7 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
-	
-
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	// Saving the mesh (list of triangles) in pMesh
-	trianglemesh = AEGfxMeshEnd();
-
+	//weapon_fire_initialise();
 }
 
 void draw_player(int playersize) {
@@ -94,21 +82,7 @@ void draw_player(int playersize) {
 	AEGfxTextureSet(pTex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	// Get mouse's x and y positions relative to the window screen space
-	s32 x_cursor, y_cursor;
-	AEInputGetCursorPosition(&x_cursor, &y_cursor);
-
-//------------------------------- CAN IGNORE -------------------------------------------------------------------------
-	// All x and y coordinates starts from top left corner of window
-	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON
-	AEVec2 point;
-	AEVec2 center;
-	AEVec2Set(&point, x_cursor, y_cursor);
-	AEVec2Set(&center, AEGfxGetWinMaxX() + x, AEGfxGetWinMaxY() - y);
-	if (AEInputCheckPrev(AEVK_LBUTTON) && AEInputCheckCurr(AEVK_LBUTTON)) {
-		if (AETestPointToRect(&point, &center, 50.0f, 50.0f)) AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	}
-//------------------------------- CAN IGNORE -------------------------------------------------------------------------
+	//weapon_fire(x, y);
 
 }
 
