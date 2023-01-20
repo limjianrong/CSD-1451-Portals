@@ -3,6 +3,7 @@
 
 #include "AEEngine.h"
 #include "Player.hpp"
+#include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 
 
@@ -29,6 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	initialize_player(200);
 	initialize_player_portal();
+	bullet_initialise();
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
@@ -36,8 +38,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 	// reset the system modules
 	AESysReset();
-
-
 
 	// Game Loop
 	while (gGameRunning)
@@ -48,7 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// Handling Input
 		AEInputUpdate();
 
-		// Set the background to black.
+		// Set the background to blue
 		AEGfxSetBackgroundColor(0.0f, 75.3f, 79.6f);
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -58,9 +58,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// This will allow transparency.
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(1.0f);
-		
+
+
 		draw_player(200);
-		player_portal();
+		//player_portal();
+		bullet_mesh();
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 

@@ -1,5 +1,9 @@
 ﻿  weapon_fire.cpp
-  SampleAlpha.vcxproj -> C:\Users\Stephen\Docs\Documents\CSD-1451-Portals\bin\Debug-x64\SampleAlpha.exe
+C:\Users\admin\OneDrive\Documents\GitHub\CSD-1451-Portals\SampleAlpha\weapon_fire.cpp(64,30): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
+C:\Users\admin\OneDrive\Documents\GitHub\CSD-1451-Portals\SampleAlpha\weapon_fire.cpp(64,20): warning C4244: 'argument': conversion from 's32' to 'f32', possible loss of data
+C:\Users\admin\OneDrive\Documents\GitHub\CSD-1451-Portals\SampleAlpha\weapon_fire.cpp(75,32): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+C:\Users\admin\OneDrive\Documents\GitHub\CSD-1451-Portals\SampleAlpha\weapon_fire.cpp(75,49): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+  SampleAlpha.vcxproj -> C:\Users\admin\OneDrive\Documents\GitHub\CSD-1451-Portals\bin\Debug-x64\SampleAlpha.exe
   4 File(s) copied
   1 File(s) copied
   1 File(s) copied

@@ -1,4 +1,6 @@
 #pragma once
 
-void weapon_fire(int player_x, int player_y);
-void weapon_fire_initialise(void);
+
+void bullet_initialise(void);
+void bullet_mesh(void);
+void weapon_fire(f32 player_x, f32 player_y);
