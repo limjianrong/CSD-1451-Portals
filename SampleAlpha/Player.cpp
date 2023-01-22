@@ -2,7 +2,7 @@
 
 #include "Player.hpp"
 #include "weapon_fire.hpp"
-
+#include "portal_feature.hpp"
 int playersize{ 200 };
 
 
@@ -41,7 +41,7 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 }
 
 void draw_player(int playersize) {
-	
+	AEVec2 PlayerCenter{};
 
 	// Create a scale matrix that scales by 100 x and y
 	AEMtx33 scale = { 0 };
@@ -66,10 +66,10 @@ void draw_player(int playersize) {
 	
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
+	AEVec2Set(&PlayerCenter, x, y);
 	// Call player movement function so x & y values can be translated (to be able to move)
-	player_movement();
-
+	player_movement(PlayerCenter);
+	portal_feature(&PlayerCenter);
 	/*AEMtx33 scale2 {};
 	AEMtx33Scale(&scale2, 100.0f, 100.0f);
 	AEMtx33 translate2{};
@@ -87,7 +87,7 @@ void draw_player(int playersize) {
 
 }
 
-void player_movement(void) {
+void player_movement(AEVec2 PlayerCenter) {
 	// A key pressed
 	if (AEInputCheckCurr(AEVK_A)) {
 		x -= 5;
@@ -103,6 +103,7 @@ void player_movement(void) {
 	// S key pressed (No rotation)
 	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) y -= 5;
 
+	
 }
 
 
