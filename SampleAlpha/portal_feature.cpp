@@ -12,8 +12,8 @@ namespace portal {
 	AEMtx33 finalportal2{};
 	f32 x{ -100.0 };
 	f32 y{ 150.0 };
-	f32 x2{ -80.0 };
-	f32 y2{ 150.0 };
+	f32 x2{ 200.0 };
+	f32 y2{ -150.0 };
 	AEVec2 center{ portal::x, portal::y };
 	AEVec2 center2{ portal::x2, portal::y2 };
 	//AEVec2* pointertoportalcenter{ &center };
@@ -68,7 +68,8 @@ void initialize_player_portal(void) {
 
 
 }
-void portal_feature(AEVec2* PlayerCenter) {
+void portal_feature(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
+	int teleporttoken{};
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEMtx33Rot(&portal::rotation, portal::rotateby);
 	AEMtx33Trans(&portal::translate, -100.0f, 150.0f);
@@ -89,8 +90,16 @@ void portal_feature(AEVec2* PlayerCenter) {
 	AEGfxMeshDraw(portalmesh2, AE_GFX_MDM_TRIANGLES);
 	
 	if (AETestRectToRect(&portal::center, 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
-		std::cout << "collision";
+		std::cout << "Collisionportal1" << std::endl;
+		
+			playerx = portal::x2;
+			playery = portal::y2;
 	}
+	/*if (AETestRectToRect(&portal::center2, 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
+		std::cout << "Collisionportal2" << std::endl;
+		playerx = portal::x;
+		playery = portal::y;
+	}*/
 	
 }
 

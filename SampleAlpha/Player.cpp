@@ -8,7 +8,7 @@ int playersize{ 200 };
 
 
 f32 rotation{ 0 };
-f32 x{  }, y{};
+f32 playerx{  }, playery{};
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 
@@ -53,7 +53,7 @@ void draw_player(int playersize) {
 
 	
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, x, y);
+	AEMtx33Trans(&translate, playerx, playery);
 	// Concat the matrices (TRS)
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);
@@ -66,10 +66,10 @@ void draw_player(int playersize) {
 	
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	AEVec2Set(&PlayerCenter, x, y);
+	AEVec2Set(&PlayerCenter, playerx, playery);
 	// Call player movement function so x & y values can be translated (to be able to move)
 	player_movement(PlayerCenter);
-	portal_feature(&PlayerCenter);
+	portal_feature(&PlayerCenter, playerx,playery);
 	/*AEMtx33 scale2 {};
 	AEMtx33Scale(&scale2, 100.0f, 100.0f);
 	AEMtx33 translate2{};
@@ -81,7 +81,7 @@ void draw_player(int playersize) {
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
-	weapon_fire(x, y);
+	weapon_fire(playerx, playery);
 
 
 
@@ -90,18 +90,18 @@ void draw_player(int playersize) {
 void player_movement(AEVec2 PlayerCenter) {
 	// A key pressed
 	if (AEInputCheckCurr(AEVK_A)) {
-		x -= 5;
+		playerx -= 5;
 		rotation += 0.1f;
 	}
 	// D key pressed
 	else if (AEInputCheckCurr(AEVK_D)) {
-		x += 5;
+		playerx += 5;
 		rotation -= 0.1f;
 	}
 	// W key pressed (No rotation)
-	if (AEInputCheckPrev(AEVK_W) && AEInputCheckCurr(AEVK_W)) y += 5;
+	if (AEInputCheckPrev(AEVK_W) && AEInputCheckCurr(AEVK_W)) playery += 5;
 	// S key pressed (No rotation)
-	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) y -= 5;
+	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) playery -= 5;
 
 	
 }
