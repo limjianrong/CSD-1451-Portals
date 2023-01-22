@@ -27,6 +27,9 @@
     <ClCompile Include="weapon_fire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="create_level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.hpp">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="weapon_fire.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="create_level.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

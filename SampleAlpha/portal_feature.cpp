@@ -16,7 +16,7 @@ namespace portal {
 	f32 y2{ -150.0 };
 	AEVec2 center{ portal::x, portal::y };
 	AEVec2 center2{ portal::x2, portal::y2 };
-	//AEVec2* pointertoportalcenter{ &center };
+
 	f32 rotateby{ 0 };
 
 }
@@ -24,7 +24,7 @@ namespace portal {
 AEGfxVertexList* portalmesh;
 AEGfxVertexList* portalmesh2;
 AEGfxVertexList* hexagonmesh;
-//AEVec2 player_center{ playerx{}, playery{} };
+
 AEVec2* pointertoplayercenter{ };
 
 void initialize_player_portal(void) {
