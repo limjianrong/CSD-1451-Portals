@@ -5,7 +5,7 @@
 #include "Player.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
-#include "create_level.hpp"
+#include "draw_level.hpp"
 
 #define WINDOWXLENGTH 1000
 #define WINDOWYLENGTH 600
@@ -33,7 +33,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	initialize_player(200);
 	initialize_player_portal();
 	bullet_initialise();
-	initialize_platform();
+	draw_level_init();
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
@@ -65,7 +65,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		draw_player(200);
 		bullet_mesh();
-		draw_platform();
+		draw_level();
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 

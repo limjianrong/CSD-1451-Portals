@@ -27,7 +27,7 @@
     <ClCompile Include="weapon_fire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="create_level.cpp">
+    <ClCompile Include="draw_level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="weapon_fire.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="create_level.hpp">
+    <ClInclude Include="draw_level.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
