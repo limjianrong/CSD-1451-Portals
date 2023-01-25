@@ -24,9 +24,12 @@ namespace portal {
 AEGfxVertexList* portalmesh;
 AEGfxVertexList* portalmesh2;
 AEGfxVertexList* hexagonmesh;
-
+AEGfxVertexList* drawamesh1;
+AEGfxVertexList* drawamesh2;
+int drawtoken{};
 AEVec2* pointertoplayercenter{ };
 int drawportal{ 0 };
+int keyreleased{ 0 };
 void initialize_player_portal(void) {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -39,7 +42,8 @@ void initialize_player_portal(void) {
 	AEGfxVertexAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
 	AEGfxVertexAdd(-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
 	AEGfxVertexAdd(30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	portalmesh = AEGfxMeshEnd();
+	drawamesh2 = drawamesh1 = portalmesh = AEGfxMeshEnd();
+	
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -107,17 +111,35 @@ void portal_feature(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 
 void draw_a_portal(f32 playerx, f32 playery) {
 	
-	if (AEInputCheckReleased(VK_RBUTTON)) {
+	s32 drawportal1x{};
+	s32 drawportal1y{};
+	s32 drawportal2x{};
+	s32 drawportal2y{};
+	AEMtx33 drawportal1{};
+	AEMtx33 translatedrawportal1{};
+	AEMtx33 drawportal2{};
+	AEMtx33 translateddrawportal2{};
+
+	if (AEInputCheckTriggered(VK_RBUTTON)) {
 		if (drawportal == 0) {
 			drawportal = 1;
+			AEInputGetCursorPosition(&drawportal1x, &drawportal1y);
+			AEMtx33Trans(&drawportal1, drawportal1x, drawportal1y);
+			std::cout << "1\n";
 		}
-		else {
-			drawportal = 0;
+		else if (drawportal == 1) {
+			AEInputGetCursorPosition(&drawportal2x, &drawportal2y);
+			AEMtx33Trans(&drawportal2, drawportal2x, drawportal2y);
+			drawtoken = 1;
+			std::cout << "2\n";
 		}
 	}
 
-	if (drawportal == 1) {
-		AEGfxSetPosition(playerx+100.0f, playery+200.0f);
-		AEGfxMeshDraw(portalmesh2, AE_GFX_MDM_TRIANGLES);
+	if (drawtoken == 1) {
+		AEGfxSetPosition(200, 200);
+		AEGfxMeshDraw(drawamesh1, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetPosition(100, 100);
+		AEGfxMeshDraw(drawamesh1, AE_GFX_MDM_TRIANGLES);
+		std::cout << "3\n";
 	}
 }
