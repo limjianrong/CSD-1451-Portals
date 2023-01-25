@@ -26,7 +26,7 @@ AEGfxVertexList* portalmesh2;
 AEGfxVertexList* hexagonmesh;
 
 AEVec2* pointertoplayercenter{ };
-
+int drawportal{ 0 };
 void initialize_player_portal(void) {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -103,7 +103,21 @@ void portal_feature(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 	
 }
 
-void check_player_and_portal_collide(void) {
-	
 
+
+void draw_a_portal(f32 playerx, f32 playery) {
+	
+	if (AEInputCheckReleased(VK_RBUTTON)) {
+		if (drawportal == 0) {
+			drawportal = 1;
+		}
+		else {
+			drawportal = 0;
+		}
+	}
+
+	if (drawportal == 1) {
+		AEGfxSetPosition(playerx+100.0f, playery+200.0f);
+		AEGfxMeshDraw(portalmesh2, AE_GFX_MDM_TRIANGLES);
+	}
 }

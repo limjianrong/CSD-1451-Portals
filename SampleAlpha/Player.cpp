@@ -70,6 +70,7 @@ void draw_player(int playersize) {
 	// Call player movement function so x & y values can be translated (to be able to move)
 	player_movement(PlayerCenter);
 	portal_feature(&PlayerCenter, playerx,playery);
+	draw_a_portal(playerx,playery);
 	/*AEMtx33 scale2 {};
 	AEMtx33Scale(&scale2, 100.0f, 100.0f);
 	AEMtx33 translate2{};
