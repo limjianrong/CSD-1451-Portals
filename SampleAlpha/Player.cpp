@@ -82,7 +82,12 @@ void draw_player(int playersize) {
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
-	weapon_fire(playerx, playery);
+	//bullet_mesh();
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	//if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		weapon_fire(playerx, playery, 1);
+	}
+
 
 
 

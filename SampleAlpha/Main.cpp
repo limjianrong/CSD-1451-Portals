@@ -65,7 +65,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		draw_player(200);
 		
-		bullet_mesh();
 		draw_level();
 		// Informing the system about the loop's end
 		AESysFrameEnd();
