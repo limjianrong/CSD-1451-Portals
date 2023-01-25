@@ -119,27 +119,42 @@ void draw_a_portal(f32 playerx, f32 playery) {
 	AEMtx33 translatedrawportal1{};
 	AEMtx33 drawportal2{};
 	AEMtx33 translateddrawportal2{};
-
 	if (AEInputCheckTriggered(VK_RBUTTON)) {
 		if (drawportal == 0) {
 			drawportal = 1;
 			AEInputGetCursorPosition(&drawportal1x, &drawportal1y);
 			AEMtx33Trans(&drawportal1, drawportal1x, drawportal1y);
-			std::cout << "1\n";
+			std::cout << "x1 is" << drawportal1x << "y2 is" << drawportal1y;
 		}
 		else if (drawportal == 1) {
 			AEInputGetCursorPosition(&drawportal2x, &drawportal2y);
 			AEMtx33Trans(&drawportal2, drawportal2x, drawportal2y);
+			//drawportal = 0;
 			drawtoken = 1;
 			std::cout << "2\n";
+			std::cout << "x2 value is" << drawportal2x << "\n y2 value is" << drawportal2y;
 		}
 	}
 
+	if (drawportal1y <= AEGetWindowHeight() / 2) {
+		drawportal1y = AEGetWindowHeight() / 2 - drawportal1y;
+	}
+	else {
+		drawportal1y = -(drawportal1y - AEGetWindowHeight() / 2);
+	}
+
+	if (drawportal2y <= AEGetWindowHeight() / 2) {
+		drawportal2y = AEGetWindowHeight() / 2 - drawportal2y;
+	}
+	else {
+		drawportal2y = -(drawportal2y - AEGetWindowHeight() / 2);
+	}
+
 	if (drawtoken == 1) {
-		AEGfxSetPosition(200, 200);
+		AEGfxSetPosition(200,300);
 		AEGfxMeshDraw(drawamesh1, AE_GFX_MDM_TRIANGLES);
-		AEGfxSetPosition(100, 100);
-		AEGfxMeshDraw(drawamesh1, AE_GFX_MDM_TRIANGLES);
-		std::cout << "3\n";
+		AEGfxSetPosition(drawportal2x - AEGetWindowWidth() / 2, drawportal2y);
+		AEGfxMeshDraw(drawamesh2, AE_GFX_MDM_TRIANGLES);
+		//std::cout << "3\n";
 	}
 }
