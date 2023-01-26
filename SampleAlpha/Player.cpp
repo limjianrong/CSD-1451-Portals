@@ -3,6 +3,10 @@
 #include "Player.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
+
+#define WINDOWXLENGTH 1000
+#define WINDOWYLENGTH 600
+
 int playersize{ 200 };
 
 
@@ -105,6 +109,18 @@ void player_movement(AEVec2 PlayerCenter) {
 	if (AEInputCheckPrev(AEVK_W) && AEInputCheckCurr(AEVK_W)) playery += 5;
 	// S key pressed (No rotation)
 	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) playery -= 5;
+
+	if (playerx < ( - WINDOWXLENGTH / 2) + 25)
+		playerx = (- WINDOWXLENGTH / 2) + 25;
+
+	if (playerx > WINDOWXLENGTH/2 - 25)
+		playerx = WINDOWXLENGTH/2 - 25;
+
+	if (playery < ( - WINDOWYLENGTH / 2) + 25)
+		playery = ( - WINDOWYLENGTH / 2) + 25;
+
+	if (playery > WINDOWYLENGTH/2 - 25)
+		playery = WINDOWYLENGTH/2 - 25;
 
 	
 }
