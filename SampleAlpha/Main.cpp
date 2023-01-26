@@ -31,7 +31,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	
 
 	initialize_player(200);
-	initialize_player_portal();
+	initialize_portal();
 	bullet_initialise();
 	draw_level_init();
 
