@@ -110,6 +110,9 @@ void player_movement(AEVec2 PlayerCenter) {
 	// S key pressed (No rotation)
 	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) playery -= 5;
 
+
+	// player to never go out of frame -zy
+
 	if (playerx < ( - WINDOWXLENGTH / 2) + 25)
 		playerx = (- WINDOWXLENGTH / 2) + 25;
 
@@ -122,7 +125,24 @@ void player_movement(AEVec2 PlayerCenter) {
 	if (playery > WINDOWYLENGTH/2 - 25)
 		playery = WINDOWYLENGTH/2 - 25;
 
-	
+
+	// rect 300 by 75, (-500,-200) (-150,-100) (175, 50)
+	// playery = y coordinate of rectangle + height of rectangle mesh +
+	// 1/2 height of player mesh (since player x,y is located in player center) -zy
+
+	// playerx along lowest platform
+	if (playerx >= -500 && playerx <= -200)
+		playery = -200 + 75 + 25;
+
+	// playerx along middle platform
+	if (playerx >= -150 && playerx <= 150)
+		playery = -100 + 75 + 25;
+
+	// playerx along top platform
+	if (playerx >= 175 && playerx <= 475)
+		playery = 50 + 75 + 25;
+
+ 	
 }
 
 
