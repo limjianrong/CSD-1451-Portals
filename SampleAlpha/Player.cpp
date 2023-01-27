@@ -3,9 +3,7 @@
 #include "Player.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
-
-#define WINDOWXLENGTH 1000
-#define WINDOWYLENGTH 600
+#include "Utilities.hpp"
 
 int playersize{ 200 };
 
@@ -85,8 +83,10 @@ void draw_player(int playersize) {
 
 	//bullet_mesh();
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
-	//if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		weapon_fire(playerx, playery, 1);
+	}
+	else {
+		weapon_fire(playerx, playery, 0);
 	}
 
 

@@ -1,14 +1,13 @@
 // ---------------------------------------------------------------------------
 // includes
 
+#include "Utilities.hpp"
 #include "AEEngine.h"
 #include "Player.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 
-#define WINDOWXLENGTH 1000
-#define WINDOWYLENGTH 600
 // ---------------------------------------------------------------------------
 // main
 
