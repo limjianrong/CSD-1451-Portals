@@ -7,6 +7,7 @@
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
+#include "Enemy.hpp"
 
 // ---------------------------------------------------------------------------
 // main
@@ -33,6 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	initialize_portal();
 	bullet_initialise();
 	draw_level_init();
+	enemy_init();
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
@@ -63,8 +65,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 		draw_player(200);
+
+		draw_enemy();
 		
 		draw_level();
+		
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 
