@@ -1,4 +1,5 @@
 #include "AEEngine.h"
+#include "Utilities.hpp"
 
 
 AEGfxTexture* rect;
@@ -32,20 +33,20 @@ void draw_level() {
 	AEMtx33 rotate = { 0 };
 	AEMtx33Rot(&rotate, 0);
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, -500.f, -200.f);
+	AEMtx33Trans(&translate, bottom_rectx, bottom_recty);
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
-	AEMtx33Trans(&translate, -150.f, -100.f);
+	AEMtx33Trans(&translate, middle_rectx, middle_recty);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
-	AEMtx33Trans(&translate, 175.f, 50.f);
+	AEMtx33Trans(&translate, top_rectx, top_recty);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
