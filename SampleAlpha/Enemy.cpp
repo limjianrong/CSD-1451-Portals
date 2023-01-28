@@ -5,9 +5,6 @@
 #include "Enemy.hpp"
 #include "Utilities.hpp"
 
-#define WINDOWXLENGTH 1000
-#define WINDOWYLENGTH 600
-
 AEGfxTexture* enemy;
 AEGfxVertexList* enemy_mesh;
 f32 enemy_x{-250}, enemy_y{-85};
