@@ -181,7 +181,5 @@ void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangl
 	AEGfxMeshDraw(endpoint_rectangle, AE_GFX_MDM_TRIANGLES);
 	if (AETestRectToRect(PlayerCenter, PLAYER_WIDTH, PLAYER_HEIGHT, &endpoint_center, 10.0f,100.0f)) {
 		std::cout << "collided with endpoint";
-		playerx = 0;
-		playery = 0;
 	}
 }
