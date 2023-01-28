@@ -100,7 +100,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   <ItemGroup>
     <ClCompile Include="draw_level.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Main_menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="portal_feature.cpp" />
     <ClCompile Include="weapon_fire.cpp" />
@@ -109,6 +111,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="..\..\Github Ballhead2\Ballhead\Ballhead\Inc\utilities.h" />
     <ClInclude Include="draw_level.hpp" />
     <ClInclude Include="Enemy.hpp" />
+    <ClInclude Include="GameStateManager.hpp" />
+    <ClInclude Include="Main_menu.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="portal_feature.hpp" />
     <ClInclude Include="weapon_fire.hpp" />

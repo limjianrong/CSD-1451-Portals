@@ -22,7 +22,7 @@ AEVec2 endpoint_center;
 AEGfxTexture* pTex;
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
-	pTex = AEGfxTextureLoad("Assets/PlanetTexture.png");
+	pTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
 
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
@@ -40,7 +40,7 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
-	
+	bullet_initialise();
 }
 
 void draw_player(int playersize) {
@@ -75,25 +75,14 @@ void draw_player(int playersize) {
 	portal_feature(&PlayerCenter, playerx,playery);
 	draw_a_portal(&PlayerCenter,playerx,playery);
 	check_endpoint(playerx, playery, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
-	/*AEMtx33 scale2 {};
-	AEMtx33Scale(&scale2, 100.0f, 100.0f);
-	AEMtx33 translate2{};
-	AEMtx33 finalform{};
-	AEMtx33Trans(&translate2, 100.0f, 100.0f);
-	AEMtx33Concat(&finalform, &scale2, &translate2);
-	AEGfxSetTransform(finalform.m);
-	
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 
-	//bullet_mesh();
+
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(playerx, playery, 1);
 	}
 	else {
 		weapon_fire(playerx, playery, 0);
 	}
-
 
 
 

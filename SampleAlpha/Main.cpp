@@ -1,13 +1,15 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "Utilities.hpp"
+
 #include "AEEngine.h"
 #include "Player.hpp"
+#include "Utilities.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"
+#include "Main_menu.hpp"
 
 // ---------------------------------------------------------------------------
 // main
@@ -33,14 +35,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	initialize_player(200);
 	initialize_portal();
 	initialize_endpoint();
-	bullet_initialise();
 	draw_level_init();
 	enemy_init();
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
-	
-	
 	// reset the system modules
 	AESysReset();
 
