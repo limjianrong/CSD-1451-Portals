@@ -5,6 +5,7 @@
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
 #include <iostream>
+
 int playersize{ 200 };
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
@@ -23,22 +24,7 @@ AEGfxTexture* pTex;
 void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 
 	pTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
-
-	// Informing the library that we're about to start adding triangles
-	AEGfxMeshStart();
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures 0.0 - 1.0
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	// Saving the mesh (list of triangles) in pMesh
-	pMesh = AEGfxMeshEnd();
+	pMesh = create_Square_Mesh();
 
 	bullet_initialise();
 }

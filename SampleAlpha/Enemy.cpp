@@ -3,6 +3,7 @@
 #include <ctime>
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "Utilities.hpp"
 
 #define WINDOWXLENGTH 1000
 #define WINDOWYLENGTH 600
@@ -15,18 +16,8 @@ bool going_right = true ;
 void enemy_init() {
 
 	enemy = AEGfxTextureLoad("Assets/enemy.png");
-
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
 	// Saving the mesh (list of triangles) in enemy_mesh
-	enemy_mesh = AEGfxMeshEnd();
+	enemy_mesh = create_Square_Mesh();
 
 }
 

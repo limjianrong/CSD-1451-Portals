@@ -27,16 +27,7 @@ void bullet_initialise(void) {
 	// load texture
 	bulletA = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile011.png");
 	// create mesh
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	shootMesh = AEGfxMeshEnd();
+	shootMesh = create_Square_Mesh();
 
 }
 // parameters are x & y values that are being translated
