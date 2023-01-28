@@ -4,15 +4,19 @@
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
-
+#include <iostream>
 int playersize{ 200 };
-
+#define PLAYER_WIDTH 50
+#define PLAYER_HEIGHT 50
 
 
 f32 rotation{ 0 };
 f32 playerx{  }, playery{};
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
+AEGfxVertexList* endpoint_triangle;
+AEGfxVertexList* endpoint_rectangle;
+AEVec2 endpoint_center;
 
 
 AEGfxTexture* pTex;
@@ -70,6 +74,7 @@ void draw_player(int playersize) {
 	player_movement(PlayerCenter);
 	portal_feature(&PlayerCenter, playerx,playery);
 	draw_a_portal(&PlayerCenter,playerx,playery);
+	check_endpoint(playerx, playery, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
 	/*AEMtx33 scale2 {};
 	AEMtx33Scale(&scale2, 100.0f, 100.0f);
 	AEMtx33 translate2{};
@@ -142,7 +147,41 @@ void player_movement(AEVec2 PlayerCenter) {
 	if (playerx >= 175 && playerx <= 475)
 		playery = 50 + 75 + 25;
 
- 	
 }
 
+void initialize_endpoint() {
+	//draw a triangle to represent the flag(endpoint)
+	AEGfxMeshStart();
+	AEGfxTriAdd(-50.0f, 0.0f, 0xFFFFFF00, 0.0, 0.0,
+		0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f,
+		0.0f, -25.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	
+	endpoint_triangle = AEGfxMeshEnd();
 
+	//draw a rectangle to represent the flagpole
+	AEGfxMeshStart();
+	AEGfxVertexAdd(0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	AEGfxVertexAdd(10.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	AEGfxVertexAdd(10.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	AEGfxVertexAdd(0.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	AEGfxVertexAdd(0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	AEGfxVertexAdd(10.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
+	endpoint_rectangle = AEGfxMeshEnd();
+
+	AEVec2Set(&endpoint_center, 400.0f+(0.0f + 10.0f) / 2, 200+(25.0f-75.0f/2));
+	std::cout << "endpoint center x is" << endpoint_center.x;
+	std::cout << "\nendpointer center y is" << endpoint_center.y;
+}
+
+void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle, 
+	AEGfxVertexList*endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center) {
+
+	AEGfxSetPosition(endpoint_center.x, endpoint_center.y);
+	AEGfxMeshDraw(endpoint_triangle, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(endpoint_rectangle, AE_GFX_MDM_TRIANGLES);
+	if (AETestRectToRect(PlayerCenter, PLAYER_WIDTH, PLAYER_HEIGHT, &endpoint_center, 10.0f,100.0f)) {
+		std::cout << "collided with endpoint";
+		playerx = 0;
+		playery = 0;
+	}
+}

@@ -106,6 +106,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="weapon_fire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Github Ballhead2\Ballhead\Ballhead\Inc\utilities.h" />
     <ClInclude Include="draw_level.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="Player.hpp" />

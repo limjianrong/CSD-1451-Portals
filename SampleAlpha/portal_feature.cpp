@@ -153,7 +153,7 @@ void draw_a_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 				portal_1.y = -(portal_1.y - AEGetWindowHeight() / 2);
 			}
 			AEVec2Set(&portal_1.center, static_cast<f32>(portal_1.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_1.y));
-			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_1.center))<100 || sqrt(AEVec2SquareDistance(PlayerCenter, &portal_1.center)) > 200) {
+			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_1.center)) > 300) {
 				std::cout << "portal 1 selection is out of range";
 				drawportal = 0;
 				drawtoken = 0;
@@ -170,9 +170,10 @@ void draw_a_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 			}
 			AEVec2Set(&portal_2.center, static_cast<f32>(portal_2.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_2.y));
 			drawtoken = 1;
-			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_2.center)) < 100 || sqrt(AEVec2SquareDistance(PlayerCenter, &portal_2.center)) > 400) {
+			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_2.center)) > 500) {
 				std::cout<<"portal 2 selection is out of range";
 				drawtoken = 0;
+				drawportal = 0;
 			}
 			//drawportal = 0;
 			
