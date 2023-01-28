@@ -42,7 +42,7 @@ void draw_level() {
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
-	AEMtx33Trans(&translate, (- WINDOWXLENGTH / 10) * 1.5, -WINDOWXLENGTH / 10);
+	AEMtx33Trans(&translate, (-WINDOWXLENGTH / 10) * 1.5, -WINDOWXLENGTH / 10);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);

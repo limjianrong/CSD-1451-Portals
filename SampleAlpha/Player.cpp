@@ -12,7 +12,7 @@ int playersize{ 200 };
 
 
 f32 rotation{ 0 };
-f32 playerx{  }, playery{};
+f32 playerx{ -450 }, playery{ -100 };
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 AEGfxVertexList* endpoint_triangle;
@@ -99,8 +99,8 @@ void player_movement(AEVec2 PlayerCenter) {
 	if (playerx > WINDOWXLENGTH/2 - 25)
 		playerx = WINDOWXLENGTH/2 - 25;
 
-	if (playery < ( - WINDOWYLENGTH / 2) + 25)
-		playery = ( - WINDOWYLENGTH / 2) + 25;
+	if (playery < ( - WINDOWYLENGTH / 2) + 35)
+		playery = ( - WINDOWYLENGTH / 2) + 35;
 
 	if (playery > WINDOWYLENGTH/2 - 25)
 		playery = WINDOWYLENGTH/2 - 25;
@@ -110,18 +110,28 @@ void player_movement(AEVec2 PlayerCenter) {
 	// playery = y coordinate of rectangle + height of rectangle mesh +
 	// 1/2 height of player mesh (since player x,y is located in player center) -zy
 
+	if (((playery - bottom_recty) == (75 + 25)) && playerx >= -500 && playerx <= -200)
+		playery == -200 + 75 + 35;
+
+	else if (((playery - middle_recty) == (75 + 25)) && playerx >= -150 && playerx <= 150)
+		playery == -100 + 75 + 35;
+
+	else if (((playery - top_recty) == 110) && playerx >= 175 && playerx <= 475)
+		playery == 50 + 75 + 35;
+
+	/*
 	// playerx along lowest platform
-	if (playerx >= -500 && playerx <= -200)
+	if (playerx >= -500 && playerx <= -200 && playery > ( - WINDOWYLENGTH / 2 + 25) )
 		playery = -200 + 75 + 25;
 
 	// playerx along middle platform
-	else if (playerx >= -150 && playerx <= 150)
+	else if (playerx >= -150 && playerx <= (150-25) && playery > (-WINDOWYLENGTH / 2 + 25))
 		playery = -100 + 75 + 25;
 
 	// playerx along top platform
-	else if (playerx >= 175 && playerx <= 475)
+	else if (playerx >= (175+25) && playerx <= 475 && playery > ( - WINDOWYLENGTH / 2 + 25) )
 		playery = 50 + 75 + 25;
-
+		*/
 	else playery -= 10;
 
 }
