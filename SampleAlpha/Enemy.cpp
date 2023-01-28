@@ -7,21 +7,24 @@
 
 AEGfxTexture* enemy;
 AEGfxVertexList* enemy_mesh;
-f32 enemy_x{-250}, enemy_y{-85};
-bool going_right = true ;
+extern AEVec2 EnemyCenter;
+
+//extern f32 enemy_x{-250}, enemy_y{-85};
+bool going_right;
 
 void enemy_init() {
 
 	enemy = AEGfxTextureLoad("Assets/enemy.png");
 	// Saving the mesh (list of triangles) in enemy_mesh
 	enemy_mesh = create_Square_Mesh();
-
+	
+	// Starting x & y value of enemy
+	AEVec2Set(&EnemyCenter, -250.0f, -85.0f);
 }
 
 void draw_enemy() {
-	AEVec2 EnemyCenter{};
-	// Set the background to black.
-	//AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
+
 	// Tell the engine to get ready to draw something with texture.
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	// Set the tint to white, so that the sprite can 
@@ -31,18 +34,18 @@ void draw_enemy() {
 	// This will allow transparency.
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
-	// Set the texture to pTex
+	// Set the texture
 	AEGfxTextureSet(enemy, 0, 0);
-	// Create a scale matrix that scales by 100 x and y
+	// Create a scale matrix
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, 60.f, 80.f);
-	// Create a rotation matrix that rotates by 45 degrees
+	// Create a rotation matrix that rotates by 90 degrees
 	AEMtx33 rotate = { 0 };
 	AEMtx33Rot(&rotate, PI);
 	// Create a translation matrix that translates by
 	// 100 in the x-axis and 100 in the y-axis
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, enemy_x, enemy_y);
+	AEMtx33Trans(&translate, EnemyCenter.x, EnemyCenter.y);
 	// Concatenate the matrices (TRS)
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);
@@ -54,41 +57,26 @@ void draw_enemy() {
 	// With the above settings, draw the mesh.
 	AEGfxMeshDraw(enemy_mesh, AE_GFX_MDM_TRIANGLES);
 
-	AEVec2Set(&EnemyCenter, enemy_x, enemy_y);
-	enemy_update(EnemyCenter);
+	// updates enemy position
+	EnemyCenter = enemy_update(EnemyCenter);
 
 	//enemy_x = rand() % WINDOWXLENGTH + WINDOWXLENGTH;
 	//enemy_y = rand() % WINDOWYLENGTH;
 
-
-
-	
 	
 }
 
-void enemy_update (AEVec2 EnemyCenter) {
+AEVec2 enemy_update (AEVec2 EnemyCenter) {
 	
+	// get 0-200
+	s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
-	if (enemy_x < -WINDOWXLENGTH / 2 + 25) {
-		going_right = true;
-		enemy_x = -WINDOWXLENGTH / 2 + 25;
-	}
-	else if (enemy_x > -200 - 25 ) {
-		going_right = false;
-		enemy_x = -200 - 25;
-	}
+	if (value <= 100)
+		EnemyCenter.x -= 1.0f;
+	else
+		EnemyCenter.x += 1.0f;	
 
-	if (going_right) {
-		enemy_x += 0.5f;
-	}
-	else {
-		enemy_x -= 0.5f;
-	}
-	
-	
-	
-	//enemy_x -= (enemy_x - playerx) * 0.1;
-	//enemy_y -= (enemy_y - playery) * 0.1;
+	return EnemyCenter;
 
 
 
