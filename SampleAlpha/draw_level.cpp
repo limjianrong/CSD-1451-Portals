@@ -34,7 +34,6 @@ void draw_level() {
 	AEMtx33Rot(&rotate, 0);
 
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, bottom_rectx, bottom_recty);
 	AEMtx33Trans(&translate, -WINDOWXLENGTH / 2, -WINDOWXLENGTH / 5);
 
 	AEMtx33 transform = { 0 };
@@ -43,13 +42,13 @@ void draw_level() {
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
-	AEMtx33Trans(&translate, -150.f, -100.f);
+	AEMtx33Trans(&translate, (-WINDOWXLENGTH / 10) * 1.5, -WINDOWXLENGTH / 10);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
-	AEMtx33Trans(&translate, 175.f, 50.f);
+	AEMtx33Trans(&translate, (WINDOWXLENGTH / 10) * 1.75, WINDOWXLENGTH / 20);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
