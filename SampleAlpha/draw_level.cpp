@@ -10,25 +10,25 @@ void draw_level_init() {
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		0.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f,
-		1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f,
-		0.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+		0.0f, 75.0f, 0xFFFFFFFF, 0.0f, 0.0f,
+		300.0f, 75.0f, 0xFFFFFFFF, 1.0f, 0.0f,
+		0.0f, 0.0f, 0xFFFFFFFF, 0.0f, 1.0f);
 	AEGfxTriAdd(
-		0.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f,
-		1.0f, 0.0f, 0xFFFFFFFF, 0.0f, 0.0f,
-		1.0f, 1.0f, 0xFFFFFFFF, 0.0f, 0.0f);
+		0.0f, 0.0f, 0xFFFFFFFF, 1.0f, 0.0f,
+		300.0f, 0.0f, 0xFFFFFFFF, 1.0f, 1.0f,
+		300.0f, 75.0f, 0xFFFFFFFF, 0.0f, 1.0f);
 	// Saving the mesh (list of triangles) in pMesh
 	rectmesh = AEGfxMeshEnd();
 
 }
 
 void draw_level() {
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	//AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	//AEGfxSetTransparency(1.0f);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
 	AEGfxTextureSet(rect, 0, 0);
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 300.0f, 75.0f);
+	AEMtx33Scale(&scale, 1, 1);
 
 	AEMtx33 rotate = { 0 };
 	AEMtx33Rot(&rotate, 0);
