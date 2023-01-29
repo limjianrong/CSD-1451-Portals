@@ -1,77 +1,60 @@
+/*!**************************************************************************************************
+\file     portal_feature.cpp
+\author   Lim Jian Rong
+\par      DP email: jianrong.lim@digipen.edu
+\par      Course: CSD 1451
+\par      Software Engineering Project 2
+\date     29-01-2023
+
+\brief
+  This source file implements the functions used to initialize and draw the portal.
+
+  The function includes:
+  - initialize_portal
+	  creates a square mesh to draw the portal with
+
+  - draw_portal
+	  draws a portal and checks if the player has collided with the portal
+*****************************************************************************************************/
 #include "AEEngine.h"
 #include <cmath> //for square root function
 #include "portal_feature.hpp"
 #include <iostream> //for std::cout
+#include "utilities.hpp"
 #define PORTAL_WIDTH 60.0f
 #define PORTAL_HEIGHT 60.0f
 #define TRUE 1
 #define FALSE 0
 
-namespace portal {
-	AEMtx33 rotation{};
-	AEMtx33 translate{};
-	AEMtx33 finalportal{};
-	AEMtx33 rotation2{};
-	AEMtx33 translate2{};
-	AEMtx33 finalportal2{};
-	f32 x{ -100.0 };
-	f32 y{ 150.0 };
-	f32 x2{ 200.0 };
-	f32 y2{ -150.0 };
-	AEVec2 center{ portal::x, portal::y };
-	AEVec2 center2{ portal::x2, portal::y2 };
-
-	f32 rotateby{ 0 };
-}
-
 struct {
 	s32 x{}, y{};
-	int alive{};
 	AEGfxVertexList* mesh{};
-	AEVec2 center{2000, 2000 };
+	AEVec2 center{2000, 2000 }; //portal center is initialized to be outside of the console, player cannot reach it
+								//without calling function draw_portal
 
-}portal_1,portal_2;
+}portal_1,portal_2; //portal_1 is the portal that player teleports from, portal_2 is the portal that player teleports to
 
-AEGfxVertexList* portalmesh;
-AEGfxVertexList* portalmesh2;
-AEGfxVertexList* hexagonmesh;
-AEGfxTexture* greencircle;
-AEVec2* pointertoplayercenter{ };
-AEGfxVertexList* greencirclemesh;
-
-int drawportal{ 0 };
-int drawtoken{};
+int drawportal{}, token{}; //drawportal and token are used in draw_portal
 
 
+/*!**************************************************************************************************
+\brief
+  draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
+  portal_1's mesh is green in color and portal_2's mesh is red in color.
+*******************************************************************************************************/
 void initialize_portal(void) {
-	greencircle = AEGfxTextureLoad("Assets/greencircle1.png");
-	
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		50.0f, -50.0f, 0xFF00FF00, 0.0f, 0.0f,
-		50.0f, 50.0f, 0xFF00FF00, 0.0f, 0.0f,
-		-50.0f, 50.0f, 0xFF00FF00, 0.0f, 0.0f);
-	/*AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);*/
-	AEGfxVertexAdd(-50.0f, 50.0f, 0xFF00FF00, 0.0f, 0.0f);
-	AEGfxVertexAdd(-50.0f, -50.0f, 0xFF00FF00, 0.0f, 0.0f);
-	AEGfxVertexAdd(50.0f, -50.0f, 0xFF00FF00, 0.0f, 0.0f);
-	greencirclemesh = AEGfxMeshEnd();
-
+	//draw mesh for portal_1 (green color)
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f,
 		30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f,
 		-30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	/*AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);*/
-	AEGfxVertexAdd(-30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	AEGfxVertexAdd(-30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	AEGfxVertexAdd(30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	portal_1.mesh = portalmesh = AEGfxMeshEnd();
-	
+	AEGfxTriAdd(-30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f,
+		-30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f,
+		30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f);
+	portal_1.mesh = AEGfxMeshEnd();
+
+	//draw mesh for portal_2 (red color)
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
@@ -80,130 +63,91 @@ void initialize_portal(void) {
 	AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
 		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
 		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	
-	portal_2.mesh = AEGfxMeshEnd();
-
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	/*AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);*/
-	AEGfxVertexAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	AEGfxVertexAdd(-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	AEGfxVertexAdd(30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	portalmesh2 = AEGfxMeshEnd();
-
-
-}
-void portal_feature(AEVec2* PlayerCenter, f32 &playerx, f32 &playery) {
-	
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	//AEMtx33Rot(&portal::rotation, portal::rotateby);
-	//AEMtx33Trans(&portal::translate, -100.0f, 150.0f);
-	//AEMtx33Concat(&portal::finalportal, &portal::translate, &portal::rotation); //order is impt! translate -> rotation =/= rotation -> translate
-	//AEGfxSetTransform(portal::finalportal.m);
-	//AEGfxSetPosition(portal::x, portal::y); //careful! setposition affects the rotation of the object that is drawn to output
-	//AEGfxMeshDraw(portalmesh, AE_GFX_MDM_TRIANGLES);
-	//if (portal::rotateby <= 360.0) {
-	//	portal::rotateby += 0.01f;
-	//}
-
-	////portal2
-	//AEMtx33Rot(&portal::rotation2, portal::rotateby);
-	//AEMtx33Trans(&portal::translate2, -100.0f, 150.0f);
-	//AEMtx33Concat(&portal::finalportal2, &portal::translate2, &portal::rotation2); //order is impt! translate -> rotation =/= rotation -> translate
-	//AEGfxSetTransform(portal::finalportal2.m);
-	//AEGfxSetPosition(portal::x2, portal::y2); //careful! setposition affects the rotation of the object that is drawn to output
-	//AEGfxMeshDraw(portalmesh2, AE_GFX_MDM_TRIANGLES);
-	//
-	/*if (AETestRectToRect(&portal::center, 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
-		std::cout << "Collisionportal1" << std::endl;
-		
-			playerx = portal::x2;
-			playery = portal::y2;
-	}*/
-	/*if (AETestRectToRect(&portal::center2, 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
-		std::cout << "Collisionportal2" << std::endl;
-		playerx = portal::x;
-		playery = portal::y;
-	}*/
-	
+	portal_2.mesh  = AEGfxMeshEnd();
 }
 
+/*!**************************************************************************************************
+\brief
+  draws 2 portals once the positions of both portals are valid. location of both portals are determined by right
+  click. If the location of a portal is too far from the player, the cursor'x and y will not be assigned to the
+  portal's x and y. The player will have to right click again, the first right click determines the coordinate
+  of the first portal, and the second right click determines the coordinate of the second portal.
 
 
-void draw_a_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
+\param[in] PlayerCenter
+  Takes in a pointer to the player's center, if cursor is too far from player's center, player has to right click
+  a valid location.
+
+\param[in] playerx
+  x coordinate of the player's position
+
+\param[in] playery
+  y coordinate of the player's position
+*******************************************************************************************************/
+void draw_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 	
+	AEMtx33 portal1_matrix{};
+	AEMtx33 portal2_matrix{};
 	
-	AEMtx33 drawportal1{0};
-	AEMtx33 drawportal2{};
-	
-	if (AEInputCheckTriggered(VK_RBUTTON)) {
+	if (AEInputCheckTriggered(VK_RBUTTON)) { // first right click, assign cursor x and y to portal_1 x and y.
 		if (drawportal == 0) {
 			drawportal = 1;
 			AEInputGetCursorPosition(&portal_1.x, &portal_1.y);
-			
-			if (portal_1.y <= AEGetWindowHeight() / 2) {
-				portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			}
-			else {
-				portal_1.y = -(portal_1.y - AEGetWindowHeight() / 2);
-			}
+
+			//offset portal_1's y by half of the window height
+			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
+			//set vector to portal_1's center
 			AEVec2Set(&portal_1.center, static_cast<f32>(portal_1.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_1.y));
+
+			//if right click is too far from the player, input is invalid, player must select again
 			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_1.center)) > 300) {
-				std::cout << "portal 1 selection is out of range";
+				std::cout << "portal 1 selection is out of range, select again";
 				drawportal = 0;
-				drawtoken = 0;
+				token = 0;
 			}
 			
 		}
+
+		//if first right click is valid, and there is a second right click, assign the cursor's x and y to portal_2's x and y
 		else if (drawportal == 1) {
 			AEInputGetCursorPosition(&portal_2.x, &portal_2.y);
-			if (portal_2.y <= AEGetWindowHeight() / 2) {
-				portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			}
-			else {
-				portal_2.y = -(portal_2.y - AEGetWindowHeight() / 2);
-			}
+			//offset portal_2.y by windowheight()/2
+			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
+			
+			//set vector to portal_2's center
 			AEVec2Set(&portal_2.center, static_cast<f32>(portal_2.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_2.y));
-			drawtoken = 1;
+			
+			
+			token = 1;
+			//if there is right click but cursor is too far from player, input for portal_2's x and y is invalid, player will START OVER and select portal_1's x and y again
+			//if there is right click and cursor is within range, and portal_2 is already being drawn, player can change the position of portal_2 without 
+			//resetting portal_1's location
 			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_2.center)) > 500) {
 				std::cout<<"portal 2 selection is out of range";
-				drawtoken = 0;
 				drawportal = 0;
-			}
-			//drawportal = 0;
-			
+				token = 0;
+			}		
 		}
 	}
 
-	if (drawtoken == 1) {
+	//if token==1, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
+	if (token == 1) {
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEMtx33Trans(&drawportal1, static_cast<f32>(portal_1.x) -AEGetWindowWidth()/2 , static_cast<f32>(portal_1.y));
-		AEGfxSetTransform(drawportal1.m);
+		AEMtx33Trans(&portal1_matrix, static_cast<f32>(portal_1.x) -AEGetWindowWidth()/2 , static_cast<f32>(portal_1.y));
+		AEGfxSetTransform(portal1_matrix.m);
 		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
 
-		AEMtx33Trans(&drawportal2, static_cast<f32>(portal_2.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_2.y));
-		AEGfxSetTransform(drawportal2.m);
+		AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x) - AEGetWindowWidth() / 2, static_cast<f32>(portal_2.y));
+		AEGfxSetTransform(portal2_matrix.m);
 		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
 
-		
-
+		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player
+		//select where to draw the portals again
 		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
-			std::cout << "Collided with portal_1" << std::endl;
 			playerx = portal_2.center.x;
 			playery = portal_2.center.y;
 			drawportal = 0;
-			drawtoken = 0;
+			token = 0;
 		}
 	}
-	/*AEGfxSetTransparency(1.0f);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetPosition(PlayerCenter->x, PlayerCenter->y);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(greencircle, 0, 0);
-	AEGfxMeshDraw(greencirclemesh, AE_GFX_MDM_TRIANGLES);*/
 }

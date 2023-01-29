@@ -58,8 +58,7 @@ void draw_player(int playersize) {
 	AEVec2Set(&PlayerCenter, playerx, playery);
 	// Call player movement function so x & y values can be translated (to be able to move)
 	player_movement(PlayerCenter);
-	portal_feature(&PlayerCenter, playerx,playery);
-	draw_a_portal(&PlayerCenter,playerx,playery);
+	draw_portal(&PlayerCenter,playerx,playery);
 	check_endpoint(playerx, playery, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
 
 
@@ -156,17 +155,15 @@ void initialize_endpoint() {
 	endpoint_rectangle = AEGfxMeshEnd();
 
 	AEVec2Set(&endpoint_center, 400.0f+(0.0f + 10.0f) / 2, 200+(25.0f-75.0f/2));
-	std::cout << "endpoint center x is" << endpoint_center.x;
-	std::cout << "\nendpointer center y is" << endpoint_center.y;
+
 }
 
 void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle, 
 	AEGfxVertexList*endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center) {
-
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetPosition(endpoint_center.x, endpoint_center.y);
 	AEGfxMeshDraw(endpoint_triangle, AE_GFX_MDM_TRIANGLES);
 	AEGfxMeshDraw(endpoint_rectangle, AE_GFX_MDM_TRIANGLES);
 	if (AETestRectToRect(PlayerCenter, PLAYER_WIDTH, PLAYER_HEIGHT, &endpoint_center, 10.0f,100.0f)) {
-		std::cout << "collided with endpoint";
 	}
 }
