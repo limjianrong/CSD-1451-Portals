@@ -110,14 +110,14 @@ void player_movement(AEVec2 PlayerCenter) {
 	// playery = y coordinate of rectangle + height of rectangle mesh +
 	// 1/2 height of player mesh (since player x,y is located in player center) -zy
 
-	if (((playery - bottom_recty) == (75 + 25)) && playerx >= -500 && playerx <= -200)
-		playery == -200 + 75 + 35;
+	if (((playery - bottom_recty) >= 75 && playerx >= -500 && playerx <= -200))
+		playery = -200 + 75 + 25;
 
-	else if (((playery - middle_recty) == (75 + 25)) && playerx >= -150 && playerx <= 150)
-		playery == -100 + 75 + 35;
+	else if (((playery - middle_recty) >= 75 && playerx >= -150 && playerx <= 150))
+		playery = -100 + 75 + 25;
 
-	else if (((playery - top_recty) == 110) && playerx >= 175 && playerx <= 475)
-		playery == 50 + 75 + 35;
+	else if (((playery - top_recty) >= 75 && playerx >= 175 && playerx <= 475))
+		playery = 50 + 75 + 25;
 
 	/*
 	// playerx along lowest platform
