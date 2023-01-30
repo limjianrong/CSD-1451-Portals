@@ -27,7 +27,6 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <math.h>
-#include <iostream>
 
 AEGfxVertexList* shootMesh;
 AEGfxTexture* bulletA;
