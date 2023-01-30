@@ -1,3 +1,25 @@
+/*!**************************************************************************************************
+\file     weapon_fire.cpp
+\author   Lin ZhaoZhi
+\par      DP email: z.lin@digipen.edu
+\par      Course: CSD 1451
+\par      Software Engineering Project 2
+\date     29-01-2023
+
+\brief
+  This source file implements the functions used to initialize and bullet mechanics.
+
+  The function includes:
+  - bullet_initialise
+	Load texture, initialise mesh
+
+  - weapon_fire
+	Shoots bullet from player to cursor position
+	Deals damage to enemy if bullet collides with enemy position
+
+  - isbullet_enemy_colliding
+	Returns true if bullet is colliding with enemy, else returns false
+*****************************************************************************************************/
 #include "AEEngine.h"
 
 #include "weapon_fire.hpp"
@@ -25,6 +47,12 @@ f32 adj, opp;
 
 enum Bullet_Direction { LEFT, RIGHT, UP, DOWN };
 
+
+/*!**************************************************************************************************
+\brief
+	Loads texture being used for bullet
+	Save created mesh into AEGfxVertexList
+*******************************************************************************************************/
 void bullet_initialise(void) {
 
 	// load texture
@@ -33,6 +61,23 @@ void bullet_initialise(void) {
 	shootMesh = create_Square_Mesh();
 
 }
+/*!**************************************************************************************************
+\brief
+	Gets player and cursor position and draws a bullet from player to cursor for every frame.
+	When left clicked is pressed, bullet will shoot continuously.
+	When left clicked is not pressed, last bullet shot from player will continue to travel towards cursor and disappear once it reaches cursor.
+
+\param[in] player_x
+	x coordinates of player
+
+\param[in] player_y
+	y coordinates of player
+
+\param[in] state
+	state of mouse button
+	1 if left mouse button is pressed
+	0 if left mouse button is not pressed
+*******************************************************************************************************/
 // parameters are x & y values that are being translated
 void weapon_fire (f32 player_x, f32 player_y, int state) {
 
@@ -172,7 +217,21 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 
 	}
 }
+/*!**************************************************************************************************
+\brief
+	Gets player and cursor position and draws a bullet from player to cursor for every frame.
+	When left clicked is pressed, bullet will shoot continuously.
+	When left clicked is not pressed, last bullet shot from player will continue to travel towards cursor and disappear once it reaches cursor.
 
+\param[in] bullet_x
+	x coordinates of bullet
+
+\param[in] bullet_y
+	y coordinates of bullet
+
+\return
+	TRUE if bullet is colliding with enemy, else FALSE
+*******************************************************************************************************/
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y) {
 	f32 dist_bullet2enemy = sqrt((bullet_x - EnemyCenter.x) * (bullet_x - EnemyCenter.x) + (bullet_y - EnemyCenter.y) * (bullet_y - EnemyCenter.y));
 	if (dist_bullet2enemy <= 25) return TRUE;
