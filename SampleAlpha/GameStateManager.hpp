@@ -22,7 +22,10 @@
 
 typedef void(*FP)(void);
 
-extern s32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
+extern s32 gGameStateInit;
+extern s32 gGameStateCurr;
+extern s32 gGameStatePrev;
+extern s32 gGameStateNext;
 
 extern FP GameStateLoad, GameStateInit, GameStateUpdate, GameStateDraw, GameStateFree, GameStateUnload;
 

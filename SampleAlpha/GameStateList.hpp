@@ -21,7 +21,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 enum
 {
 	// list of all game states 
-	GS_Platformer = 0,
+	GS_MainMenu = 0,
+	GS_Platformer,
 	// special game state. Do not change
 	GS_RESTART,
 	GS_QUIT,
