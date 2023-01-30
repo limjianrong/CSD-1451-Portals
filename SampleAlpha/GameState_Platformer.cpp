@@ -19,7 +19,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"
-#include "GameState_Mainmenu.hpp"
 
 /*!**************************************************************************************************
 \brief

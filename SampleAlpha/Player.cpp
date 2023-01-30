@@ -4,7 +4,6 @@
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
-#include <iostream>
 
 int playersize{ 200 };
 #define PLAYER_WIDTH 50

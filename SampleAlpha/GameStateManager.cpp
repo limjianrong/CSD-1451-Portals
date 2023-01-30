@@ -19,7 +19,6 @@
 
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
-#include "GameState_Mainmenu.hpp"
 
 s32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
@@ -67,24 +66,24 @@ void GameStateMgrUpdate()
 	// Switch based on what the current state should be
 	switch (gGameStateCurr)
 	{
-		case GS_Mainmenu:
+		/*case GS_Mainmenu:
 			GameStateLoad = GameStateMainmenuLoad;
 			GameStateInit = GameStateMainmenuInit;
 			GameStateUpdate = GameStateMainmenuUpdate;
 			GameStateDraw = GameStateMainmenuDraw;
 			GameStateFree = GameStateMainmenuFree;
 			GameStateUnload = GameStateMainmenuUnload;
+			break;*/
+		case GS_Platformer:	// Game itself
+			// Assign the respective function pointers
+			GameStateLoad = GameStatePlatformerLoad;
+			GameStateInit = GameStatePlatformerInit;
+			GameStateUpdate = GameStatePlatformerUpdate;
+			GameStateDraw = GameStatePlatformerDraw;
+			GameStateFree = GameStatePlatformerFree;
+			GameStateUnload = GameStatePlatformerUnload;
 			break;
-	case GS_Platformer:	// Game itself
-		// Assign the respective function pointers
-		GameStateLoad = GameStatePlatformerLoad;
-		GameStateInit = GameStatePlatformerInit;
-		GameStateUpdate = GameStatePlatformerUpdate;
-		GameStateDraw = GameStatePlatformerDraw;
-		GameStateFree = GameStatePlatformerFree;
-		GameStateUnload = GameStatePlatformerUnload;
-		break;
-	default:	// Error handling
-		AE_FATAL_ERROR("invalid state!!");
+		default:	// Error handling
+			AE_FATAL_ERROR("invalid state!!");
 	}
 }

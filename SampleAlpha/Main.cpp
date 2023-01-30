@@ -23,7 +23,6 @@
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"
-#include "GameState_Mainmenu.hpp"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
@@ -51,13 +50,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
 	// reset the system modules
-	AESysReset();
+	//AESysReset();
 
 	//set background color
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	AEGfxSetBackgroundColor(0.0f, 100.0f, 255.0f);
 
 	// Initialize GameStateManager to initialize the starting state
-	GameStateMgrInit(GS_Mainmenu);
+	GameStateMgrInit(GS_Platformer);
 
 	// Loop while the program should not quit
 	while (gGameStateCurr != GS_QUIT)
@@ -106,52 +105,3 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// free the system
 	AESysExit();
 }
-
-
-/*initialize_player(200);
-initialize_portal();
-initialize_endpoint();
-draw_level_init();
-enemy_init();*/
-
-//	// Game Loop
-//	while (gGameRunning)
-//	{
-//		// Informing the system about the loop's start
-//		AESysFrameStart();
-//
-//		// Handling Input
-//		AEInputUpdate();
-//
-//		// Set the background to blue
-//		AEGfxSetBackgroundColor(0.0f, 75.3f, 79.6f);
-//		// Tell the engine to get ready to draw something with texture.
-//		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-//		// Set the tint to white, so that the sprite can display the full range of colors (default is black).
-//		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-//		// Set blend mode to AE_GFX_BM_BLEND
-//		// This will allow transparency.
-//		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-//		AEGfxSetTransparency(1.0f);
-//
-//
-//		draw_player(200);
-//
-//		draw_enemy();
-//		
-//		draw_level();
-//		
-//		// Informing the system about the loop's end
-//		AESysFrameEnd();
-//
-//		// check if forcing the application to quit
-//		if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-//			gGameRunning = 0;
-//	}
-//
-//	//AEGfxMeshFree(pMesh);
-//	//AEGfxTextureUnload(pTex);
-//	
-//	// free the system
-//	AESysExit();
-//}
