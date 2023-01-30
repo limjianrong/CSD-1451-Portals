@@ -118,19 +118,6 @@ void player_movement(AEVec2 PlayerCenter) {
 	else if (((playery - top_recty) >= 75 && playerx >= 175 && playerx <= 475))
 		playery = 50 + 75 + 25;
 
-	/*
-	// playerx along lowest platform
-	if (playerx >= -500 && playerx <= -200 && playery > ( - WINDOWYLENGTH / 2 + 25) )
-		playery = -200 + 75 + 25;
-
-	// playerx along middle platform
-	else if (playerx >= -150 && playerx <= (150-25) && playery > (-WINDOWYLENGTH / 2 + 25))
-		playery = -100 + 75 + 25;
-
-	// playerx along top platform
-	else if (playerx >= (175+25) && playerx <= 475 && playery > ( - WINDOWYLENGTH / 2 + 25) )
-		playery = 50 + 75 + 25;
-		*/
 	else playery -= 10;
 
 }

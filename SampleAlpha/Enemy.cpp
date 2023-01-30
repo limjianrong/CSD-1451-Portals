@@ -1,3 +1,24 @@
+/*!**************************************************************************************************
+\file     Enemy.cpp
+\author   Lee Zhi Yee
+\par      DP email: zhiyee.l@digipen.edu
+\par      Course: CSD 1451
+\par      Software Engineering Project 2
+\date     29-01-2023
+
+\brief
+  This source file implements the functions used to initialize and update enemy.
+
+  The functions include:
+  - enemy_init
+	Load texture, initialise mesh
+
+  - draw_enemy
+	Draws enemy if its HP is more than 0
+
+  - update_enemy
+	Returns the updated position of enemy
+*****************************************************************************************************/
 #include "AEEngine.h"
 #include <AEGraphics.h>
 #include <ctime>
@@ -10,7 +31,10 @@ AEGfxVertexList* enemy_mesh;
 AEVec2 EnemyCenter;
 extern s32 enemy_HP = 5; // 1 bullet decrement by 1
 
-
+/*!**************************************************************************************************
+\brief
+	Loads texture and initializes mesh for enemy
+*******************************************************************************************************/
 void enemy_init() {
 
 	enemy = AEGfxTextureLoad("Assets/enemy.png");
@@ -21,6 +45,10 @@ void enemy_init() {
 	AEVec2Set(&EnemyCenter, -250.0f, -85.0f);
 }
 
+/*!**************************************************************************************************
+\brief
+	Draws enemy if enemy HP is more than 0 to its updated position from function enemy_update
+*******************************************************************************************************/
 void draw_enemy() {
 
 	if (enemy_HP > 0) {
@@ -61,12 +89,20 @@ void draw_enemy() {
 		EnemyCenter = enemy_update(EnemyCenter);
 	}
 
-	//enemy_x = rand() % WINDOWXLENGTH + WINDOWXLENGTH;
-	//enemy_y = rand() % WINDOWYLENGTH;
 
 	
 }
 
+/*!**************************************************************************************************
+\brief
+	Calculates current enemy position based on total number of frames elapsed.
+
+\param[in] EnemyCenter
+	x and y coordinate of ememy
+
+\return
+	new EnemyCenter
+*******************************************************************************************************/
 AEVec2 enemy_update (AEVec2 EnemyCenter) {
 	
 	// get 0-200
