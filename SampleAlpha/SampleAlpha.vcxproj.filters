@@ -48,6 +48,9 @@
     <ClCompile Include="GameState_Platformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameState_Mainmenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.hpp">
@@ -68,7 +71,7 @@
     <ClInclude Include="GameStateManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Main_menu.hpp">
+    <ClInclude Include="GameState_Mainmenu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.hpp">

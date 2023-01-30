@@ -19,7 +19,7 @@
 
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
-
+#include "GameState_Mainmenu.hpp"
 
 s32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
@@ -67,14 +67,14 @@ void GameStateMgrUpdate()
 	// Switch based on what the current state should be
 	switch (gGameStateCurr)
 	{
-		/*case GS_MENU:
-			GameStateLoad = GameStateMenuLoad;
-			GameStateInit = GameStateMenuInit;
-			GameStateUpdate = GameStateMenuUpdate;
-			GameStateDraw = GameStateMenuDraw;
-			GameStateFree = GameStateMenuFree;
-			GameStateUnload = GameStateMenuUnload;
-			break;*/
+		case GS_Mainmenu:
+			GameStateLoad = GameStateMainmenuLoad;
+			GameStateInit = GameStateMainmenuInit;
+			GameStateUpdate = GameStateMainmenuUpdate;
+			GameStateDraw = GameStateMainmenuDraw;
+			GameStateFree = GameStateMainmenuFree;
+			GameStateUnload = GameStateMainmenuUnload;
+			break;
 	case GS_Platformer:	// Game itself
 		// Assign the respective function pointers
 		GameStateLoad = GameStatePlatformerLoad;

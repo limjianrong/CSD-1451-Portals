@@ -1,21 +1,21 @@
-/*!**************************************************************************************************
-\file     portal_feature.hpp
-\author   Lim Jian Rong
-\par      DP email: jianrong.lim@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File: portal_feature.hpp
+* Course: CSD1451
+* Group Name: Apparate
+* Primary Author: Lim Jian Rong (jianrong.lim@digipen.edu)
+* Secondary Authors: -
+*
+* Brief:
+  This source file implements the functions used for the game's portal feature
 
-\brief
-  This source file implements the functions used for the game's portal feature.
-
-  The function includes:
+  The functions include:
   - initialize_portal
-	  creates a square mesh to draw the portal with
+	  creates a square mesh for the portal
 
   - draw_portal
 	  draws a portal and checks if the player has collided with the portal
-*****************************************************************************************************/
+==================================================================================*/
 #pragma once
 
 /*!**************************************************************************************************
@@ -44,3 +44,17 @@ void initialize_portal(void);
   y coordinate of the player's position
 *******************************************************************************************************/
 void draw_portal(AEVec2* PlayerCenter, f32 &playerx, f32 &playery);
+
+
+/*!**************************************************************************************************
+\brief
+  draws a circle around the player to show the player the furthest point that he can place a portal at.
+  Not fully implemented yet.
+
+\param[in] playerx
+  x coordinate of the player's position
+
+\param[in] playery
+  y coordinate of the player's position
+*******************************************************************************************************/
+void draw_portal_range(f32 playerx, f32 playery);

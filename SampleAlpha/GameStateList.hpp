@@ -22,7 +22,7 @@ enum
 {
 	// list of all game states 
 	GS_Platformer = 0,
-
+	GS_Mainmenu=1,
 	// special game state. Do not change
 	GS_RESTART,
 	GS_QUIT,

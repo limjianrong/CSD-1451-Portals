@@ -23,7 +23,7 @@
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"
-#include "Main_menu.hpp"
+#include "GameState_Mainmenu.hpp"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
@@ -57,7 +57,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	// Initialize GameStateManager to initialize the starting state
-	GameStateMgrInit(GS_Platformer);
+	GameStateMgrInit(GS_Mainmenu);
 
 	// Loop while the program should not quit
 	while (gGameStateCurr != GS_QUIT)
@@ -68,8 +68,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// If not restarting, update and load the gamestate
 		if (gGameStateCurr != GS_RESTART)
 		{
-			GameStateMgrUpdate();
 			GameStateLoad();
+			GameStateMgrUpdate();
+			
 		}
 		else // Otherwise
 			gGameStateNext = gGameStateCurr = gGameStatePrev;	// Set next and current state to the previous state
