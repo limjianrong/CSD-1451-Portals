@@ -1,5 +1,4 @@
-/******************************************************************************/
-/*!
+/******************************************************************************//*!
 \file		GameState_Platformer.cpp
 \author 	Digipen, Lin ZhaoZhi
 \par    	email: z.lin@digipen.edu
@@ -9,8 +8,7 @@
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
+ *//******************************************************************************/
 
 #include "AEEngine.h"
 #include "Player.hpp"
@@ -25,9 +23,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
   In charge of loading platformer game
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
-	initialize_player(200);
+	initialize_player();
 	initialize_portal();
-	initialize_endpoint();
+	//endpoint_init();
 	draw_level_init();
 	enemy_init();
 }
@@ -43,7 +41,8 @@ void GameStatePlatformerInit(void) {
   Updates all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerUpdate(void) {
-
+	update_player();
+	update_level();
 }
 /*!**************************************************************************************************
 \brief
@@ -59,7 +58,7 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetTransparency(1.0f);
 
 
-	draw_player(200);
+	draw_player();
 
 	draw_enemy();
 

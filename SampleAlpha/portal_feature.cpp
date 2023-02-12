@@ -91,11 +91,13 @@ void initialize_portal(void) {
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
+void draw_portal(f32& playerx, f32& playery) {
 
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEMtx33 portal1_matrix{};
 	AEMtx33 portal2_matrix{};
+	AEVec2 PlayerCenter{};
+	AEVec2Set(&PlayerCenter, playerx, playery);
 	
 	if (AEInputCheckTriggered(VK_RBUTTON)) { // first right click, assign cursor x and y to portal_1 x and y.
 		if (drawportal == 0) {
@@ -108,7 +110,7 @@ void draw_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 			AEVec2Set(&portal_1.center, static_cast<f32>(portal_1.x) - static_cast<f32>(AEGetWindowWidth() / 2), static_cast<f32>(portal_1.y));
 
 			//if right click is too far from the player, input is invalid, player must select again
-			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_1.center)) > 300) {
+			if (sqrt(AEVec2SquareDistance(&PlayerCenter, &portal_1.center)) > 300) {
 				std::cout << "\nportal 1 selection is out of range, select again";
 				drawportal = 0;
 				token = 0;
@@ -130,7 +132,7 @@ void draw_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 			//if there is right click but cursor is too far from player, input for portal_2's x and y is invalid, player will START OVER and select portal_1's x and y again
 			//if there is right click and cursor is within range, and portal_2 is already being drawn, player can change the position of portal_2 without 
 			//resetting portal_1's location
-			if (sqrt(AEVec2SquareDistance(PlayerCenter, &portal_2.center)) > 500) {
+			if (sqrt(AEVec2SquareDistance(&PlayerCenter, &portal_2.center)) > 500) {
 				std::cout<<"\nportal 2 selection is out of range";
 				drawportal = 0;
 				token = 0;
@@ -152,7 +154,7 @@ void draw_portal(AEVec2* PlayerCenter, f32& playerx, f32& playery) {
 
 		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player
 		//select where to draw the portals again
-		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, PlayerCenter, 50.0f, 50.0f)) {
+		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &PlayerCenter, 50.0f, 50.0f)) {
 			playerx = portal_2.center.x;
 			playery = portal_2.center.y;
 			drawportal = 0;

@@ -1,3 +1,14 @@
+/******************************************************************************//*!
+\file		Player.cpp
+\author 	Digipen, Lin ZhaoZhi
+\par    	email: z.lin@digipen.edu
+\date   	1 February, 2023
+\brief		Source file for the platformer game state
+
+Copyright (C) 2023 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+ *//******************************************************************************/
 #include "AEEngine.h"
 
 #include "Player.hpp"
@@ -5,13 +16,6 @@
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
 
-int playersize{ 200 };
-#define PLAYER_WIDTH 50
-#define PLAYER_HEIGHT 50
-
-
-f32 rotation{ 0 };
-f32 playerx{ -450 }, playery{ -100 };
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 AEGfxVertexList* endpoint_triangle;
@@ -19,8 +23,10 @@ AEGfxVertexList* endpoint_rectangle;
 AEVec2 endpoint_center;
 
 
+Player_stats player;
+
 AEGfxTexture* pTex;
-void initialize_player(int playersize) { //PLAYERSIZE is not used for now
+void initialize_player() { 
 
 	pTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
 	pMesh = create_Square_Mesh();
@@ -28,20 +34,16 @@ void initialize_player(int playersize) { //PLAYERSIZE is not used for now
 	bullet_initialise();
 }
 
-void draw_player(int playersize) {
-	AEVec2 PlayerCenter{};
-
+void draw_player() {
 	// Create a scale matrix that scales by 100 x and y
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 50.f, 50.f);
-
+	AEMtx33Scale(&scale, PLAYER_WIDTH, PLAYER_HEIGHT);
 	// Create a rotation matrix that rotates by rotation degrees
 	AEMtx33 rotate = { 0 };
-	AEMtx33Rot(&rotate, rotation);
-
-	
+	AEMtx33Rot(&rotate, player.rotation);
+	// Translate
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, playerx, playery);
+	AEMtx33Trans(&translate, player.x, player.y);
 	// Concat the matrices (TRS)
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);
@@ -51,77 +53,64 @@ void draw_player(int playersize) {
 
 	// Set the texture to pTex
 	AEGfxTextureSet(pTex, 0, 0);
-	
 	// Actually drawing the mesh 
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	AEVec2Set(&PlayerCenter, playerx, playery);
-	// Call player movement function so x & y values can be translated (to be able to move)
-	player_movement(PlayerCenter);
-	draw_portal(&PlayerCenter,playerx,playery);
-	check_endpoint(playerx, playery, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
-
-
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
-		weapon_fire(playerx, playery, 1);
-	}
-	else {
-		weapon_fire(playerx, playery, 0);
-	}
-
-
+	
+	//check_endpoint(player.x, player.y, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
 
 }
 
-void player_movement(AEVec2 PlayerCenter) {
+void update_player() {
+
+	// ---------  Player's movement   -----------
 	// A key pressed
 	if (AEInputCheckCurr(AEVK_A)) {
-		playerx -= 5;
-		rotation += 0.1f;
+		player.x -= 5;
+		player.rotation += 0.1f;
 	}
 	// D key pressed
 	else if (AEInputCheckCurr(AEVK_D)) {
-		playerx += 5;
-		rotation -= 0.1f;
+		player.x += 5;
+		player.rotation -= 0.1f;
 	}
-	// W key pressed (No rotation)
-	if (AEInputCheckPrev(AEVK_W) && AEInputCheckCurr(AEVK_W)) playery += 5;
-	// S key pressed (No rotation)
-	else if (AEInputCheckPrev(AEVK_S) && AEInputCheckCurr(AEVK_S)) playery -= 5;
+
+	// ---------  Firing of bullets   -----------
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+		weapon_fire(player.x, player.y, 1);
+	}
+	else {
+		weapon_fire(player.x, player.y, 0);
+	}
+
+	// ---------  Portal creation   -----------
+	draw_portal(player.x, player.y);
+
+	// ------------  Collision   --------------
+	player_collision();
+}
+
+
+
+void player_collision() {
 
 
 	// player to never go out of frame -zy
+	if (player.x < (-WINDOWXLENGTH / 2) + PLAYER_WIDTH / 2)
+		player.x = (-WINDOWXLENGTH / 2) + PLAYER_WIDTH / 2;
 
-	if (playerx < ( - WINDOWXLENGTH / 2) + 25)
-		playerx = (- WINDOWXLENGTH / 2) + 25;
+	if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
+		player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
-	if (playerx > WINDOWXLENGTH/2 - 25)
-		playerx = WINDOWXLENGTH/2 - 25;
+	// bottom of screen
+	if (player.y < (-WINDOWYLENGTH / 2) + PLAYER_HEIGHT / 2)
+		player.y = (-WINDOWYLENGTH / 2) + PLAYER_HEIGHT / 2;
 
-	if (playery < ( - WINDOWYLENGTH / 2) + 35)
-		playery = ( - WINDOWYLENGTH / 2) + 35;
-
-	if (playery > WINDOWYLENGTH/2 - 25)
-		playery = WINDOWYLENGTH/2 - 25;
-
-
-	// rect 300 by 75, (-500,-200) (-150,-100) (175, 50)
-	// playery = y coordinate of rectangle + height of rectangle mesh +
-	// 1/2 height of player mesh (since player x,y is located in player center) -zy
-
-	if (((playery - bottom_recty) >= 75 && playerx >= -500 && playerx <= -200))
-		playery = -200 + 75 + 25;
-
-	else if (((playery - middle_recty) >= 75 && playerx >= -150 && playerx <= 150))
-		playery = -100 + 75 + 25;
-
-	else if (((playery - top_recty) >= 75 && playerx >= 175 && playerx <= 475))
-		playery = 50 + 75 + 25;
-
-	else playery -= 10;
-
+	//if (player.y > WINDOWYLENGTH / 2 - 25)
+	//	player.y = WINDOWYLENGTH/2 - 25;
+	
 }
 
-void initialize_endpoint() {
+void endpoint_init() {
 	//draw a triangle to represent the flag(endpoint)
 	AEGfxMeshStart();
 	AEGfxTriAdd(-50.0f, 0.0f, 0xFFFFFF00, 0.0, 0.0,

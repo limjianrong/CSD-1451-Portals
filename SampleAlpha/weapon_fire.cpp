@@ -26,7 +26,6 @@
 #include "Utilities.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
-#include <math.h>
 
 AEGfxVertexList* shootMesh;
 AEGfxTexture* bulletA;
@@ -38,8 +37,7 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 int direction_x, direction_y;
 int prevState;
 bool isRunning;
-extern AEVec2 EnemyCenter;
-extern s32 enemy_HP;
+extern Enemy_stats enemy1;
 
 f32 bullet_x, bullet_y;
 f32 adj, opp;
@@ -171,7 +169,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 		if (isbullet_enemy_colliding(bullet_x, bullet_y) == TRUE) {
 			bullet_x = player_center.x;
 			bullet_y = player_center.y;
-			--enemy_HP;
+			--enemy1.Hp;
 		}
 	}
 
@@ -203,7 +201,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 				bullet_x = player_center.x;
 				bullet_y = player_center.y;
 				isRunning = FALSE;
-				--enemy_HP;
+				--enemy1.Hp;
 			}
 		}
 		else // if bullet reached cursor
@@ -232,7 +230,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 	TRUE if bullet is colliding with enemy, else FALSE
 *******************************************************************************************************/
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y) {
-	f32 dist_bullet2enemy = sqrt((bullet_x - EnemyCenter.x) * (bullet_x - EnemyCenter.x) + (bullet_y - EnemyCenter.y) * (bullet_y - EnemyCenter.y));
+	f32 dist_bullet2enemy = sqrt((bullet_x - enemy1.x) * (bullet_x - enemy1.x) + (bullet_y - enemy1.y) * (bullet_y - enemy1.y));
 	if (dist_bullet2enemy <= 25) return TRUE;
 	else return FALSE;
 }

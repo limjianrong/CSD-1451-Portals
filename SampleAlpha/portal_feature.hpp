@@ -32,18 +32,13 @@ void initialize_portal(void);
   portal's x and y. The player will have to right click again, the first right click determines the coordinate
   of the first portal, and the second right click determines the coordinate of the second portal.
 
-
-\param[in] PlayerCenter
-  Takes in a pointer to the player's center, if cursor is too far from player's center, player has to right click
-  a valid location.
-
 \param[in] playerx
   x coordinate of the player's position
 
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal(AEVec2* PlayerCenter, f32 &playerx, f32 &playery);
+void draw_portal(f32& playerx, f32& playery);
 
 
 /*!**************************************************************************************************

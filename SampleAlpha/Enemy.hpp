@@ -23,8 +23,13 @@
 
 #include "AEEngine.h"
 
-extern AEVec2 EnemyCenter;
+//extern AEVec2 EnemyCenter;
 
 void enemy_init();
 void draw_enemy();
-AEVec2 enemy_update(AEVec2 EnemyCenter);
+f32 enemy_update(f32 enemy1_x);
+
+struct Enemy_stats {
+	f32 x{ -300.0f }, y{ -110.0f }, rotation{ 0.0f };
+	s32 Hp{ 5 }, Lives;
+};
