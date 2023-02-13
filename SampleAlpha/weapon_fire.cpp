@@ -112,7 +112,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 		direction_x = LEFT;
 	}
 
-	f32 speed = 20.0f;
+	f32 speed = 5.0f;
 	f64 angle = AEATan(opp / adj); // get angle between cursor & player (in rad)
 	AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
 	AEVec2Scale(&normalized_vector, &normalized_vector, speed);

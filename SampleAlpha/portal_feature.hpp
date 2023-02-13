@@ -18,12 +18,28 @@
 ==================================================================================*/
 #pragma once
 
+
+struct portal {
+	
+	s32 x{}, y{};
+	AEGfxVertexList* mesh{};
+	AEVec2 center{ 2000, 2000 };
+	//portal center is initialized to be outside of the console, player cannot reach it
+	//without calling function draw_portal
+
+}; //portal_1 is the portal that player teleports from, portal_2 is the portal that player teleports to
+
+
+
+
 /*!**************************************************************************************************
 \brief
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
-void initialize_portal(void);
+void initialize_portal();
+
+
 
 /*!**************************************************************************************************
 \brief
@@ -53,3 +69,6 @@ void draw_portal(f32& playerx, f32& playery);
   y coordinate of the player's position
 *******************************************************************************************************/
 void draw_portal_range(f32 playerx, f32 playery);
+
+
+int check_bullet_collide_with_portal(f32 bullet_x, f32 bullet_y);
