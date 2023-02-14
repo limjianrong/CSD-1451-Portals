@@ -95,7 +95,7 @@ void blocks(s32 length, f32 x, f32 y) {
 
 int check_player_in_gravity_zone(Player_stats player) {
 	//std::cout << "player x is" << player.x;
-	if (player.x > AEGetWindowWidth()/2 && player.x < AEGetWindowWidth()) {
+	if (player.x > static_cast<f32>(AEGetWindowWidth()/2) && player.x < AEGetWindowWidth()) {
 		return 1;
 	}
 	return 0;

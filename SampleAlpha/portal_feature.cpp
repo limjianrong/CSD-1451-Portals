@@ -23,6 +23,7 @@
 #define FALSE 0
 
 int drawportal{}, token{}; //drawportal and token are used in draw_portal
+int draw_portal_outline{};
 portal portal_1, portal_2;
 extern f32 bullet_x;
 extern f32 bullet_y;
@@ -101,8 +102,8 @@ void initialize_portal() {
 void draw_portal(f32& playerx, f32& playery) {
 
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEMtx33 portal1_matrix{};
-	AEMtx33 portal2_matrix{};
+
+
 	AEVec2 PlayerCenter{};
 	AEVec2Set(&PlayerCenter, playerx, playery);
 	
@@ -133,8 +134,11 @@ void draw_portal(f32& playerx, f32& playery) {
 				std::cout << "\nportal 1 selection is out of range, select again";
 				drawportal = 0;
 				token = 0;
+				draw_portal_outline = FALSE;
 			}
-			
+			else {
+				draw_portal_outline = TRUE;
+			}
 		}
 
 		//if first right click is valid, and there is a second right click, assign the cursor's x and y to portal_2's x and y
@@ -163,25 +167,33 @@ void draw_portal(f32& playerx, f32& playery) {
 				std::cout<<"\nportal 2 selection is out of range";
 				drawportal = 0;
 				token = 0;
+				draw_portal_outline = FALSE;
 			}		
 		}
 	}
-	
+	if (draw_portal_outline == TRUE) {
+		AEGfxSetTransparency(0.5f);
+		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(1.0f);
+	}
 	//if token==1, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
 	if (token == 1) {
+		draw_portal_outline = FALSE;
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		//if player has passed the center of the screen
 
-			AEMtx33Trans(&portal1_matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-			AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		//AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		
-		AEGfxSetTransform(portal1_matrix.m);
+		AEGfxSetTransform(portal_1.matrix.m);
 
 		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
 
 		
-		//AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
-		AEGfxSetTransform(portal2_matrix.m);
+		//AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		AEGfxSetTransform(portal_2.matrix.m);
 		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
 
 		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player

@@ -24,6 +24,7 @@ struct portal {
 	s32 x{}, y{};
 	AEGfxVertexList* mesh{};
 	AEVec2 center{ 2000, 2000 };
+	AEMtx33 matrix{};
 	//portal center is initialized to be outside of the console, player cannot reach it
 	//without calling function draw_portal
 
