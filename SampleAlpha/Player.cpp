@@ -15,7 +15,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
-
+#include <iostream> //for std::cout
 AEGfxVertexList* pMesh;
 AEGfxVertexList* trianglemesh;
 AEGfxVertexList* endpoint_triangle;
@@ -26,6 +26,7 @@ AEVec2 endpoint_center;
 Player_stats player;
 
 AEGfxTexture* pTex;
+f32 cameraX{}, cameraY{};
 void initialize_player() { 
 
 	pTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
@@ -67,11 +68,17 @@ void update_player() {
 	if (AEInputCheckCurr(AEVK_A)) {
 		player.x -= 5;
 		player.rotation += 0.1f;
+		//AEGfxGetCamPosition(&cameraX, &cameraY);
+		
 	}
 	// D key pressed
 	else if (AEInputCheckCurr(AEVK_D)) {
 		player.x += 5;
 		player.rotation -= 0.1f;
+
+	}
+	if (player.x > 0) {
+		AEGfxSetCamPosition(player.x, 0);
 	}
 
 	// ---------  Firing of bullets   -----------
@@ -98,8 +105,7 @@ void player_collision() {
 	if (player.x < (-WINDOWXLENGTH / 2) + PLAYER_WIDTH / 2)
 		player.x = (-WINDOWXLENGTH / 2) + PLAYER_WIDTH / 2;
 
-	if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
-		player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
+
 
 	// bottom of screen
 	if (player.y < (-WINDOWYLENGTH / 2) + PLAYER_HEIGHT / 2)

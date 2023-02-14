@@ -111,12 +111,20 @@ void draw_portal(f32& playerx, f32& playery) {
 			drawportal = 1;
 			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
 
-
+			std::cout << "\nportal 1 before minus" << portal_1.x;
 			//offset portal_1's x by half of window width
+
 			portal_1.x -= AEGetWindowWidth() / 2;
+			
+			//std::cout << "\nportal 1 after minus" << portal_1.x;
+			//std::cout << "\nplayercenter x is" << PlayerCenter.x;
 			//offset portal_1's y by half of the window height
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			
+			if (playerx > 0) {
+				portal_1.x += playerx;
+				//std::cout << "\nportal 1 x after += portal_width" << portal_1.x;
+			}
+
 			//set vector to portal_1's center
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 
@@ -135,6 +143,11 @@ void draw_portal(f32& playerx, f32& playery) {
 
 			//offset portal_2's x by half of window width
 			portal_2.x -= AEGetWindowWidth() / 2;
+			if (playerx > 0) {
+				portal_2.x += playerx;
+				//std::cout << "\nportal 2 x after += portal_width" << portal_2.x;
+			}
+
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
 			
@@ -157,13 +170,17 @@ void draw_portal(f32& playerx, f32& playery) {
 	//if token==1, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
 	if (token == 1) {
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		//if player has passed the center of the screen
+
+			AEMtx33Trans(&portal1_matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+			AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		
-		AEMtx33Trans(&portal1_matrix, static_cast<f32>(portal_1.x) , static_cast<f32>(portal_1.y));
 		AEGfxSetTransform(portal1_matrix.m);
 
 		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
 
-		AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		
+		//AEMtx33Trans(&portal2_matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		AEGfxSetTransform(portal2_matrix.m);
 		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
 
