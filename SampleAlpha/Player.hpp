@@ -13,8 +13,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 void initialize_player();
 void draw_player();
 void update_player();
-void player_collision();
 void unload_player();
+
+
+void player_collision();
+void checkpoint_create(f32 x, f32 y);
+
 
 // -----  Player's width & height (Adjustable)  -------
 #define PLAYER_WIDTH 50.0f
@@ -26,8 +30,10 @@ struct Player_stats {
 	s32 Hp{ 5 }, Lives{ 3 };
 };
 
-//void endpoint_init(void);
-//void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle,
-//	AEGfxVertexList* endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center);
+struct Checkpoint {
+	bool check;
+	f32 x1, x2, y1, y2;
+};
+
 
 

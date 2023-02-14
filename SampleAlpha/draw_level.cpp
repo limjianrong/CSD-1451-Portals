@@ -14,7 +14,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Utilities.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
-#include <iostream> //for std::cout
 
 AEGfxTexture* rect;
 AEGfxVertexList* rectmesh;
@@ -23,10 +22,7 @@ extern Player_stats player;
 Player_stats* pointer_to_player{ &player };
 extern Enemy_stats enemy1;
 
-#define BLOCK_WIDTH 50.0f
-#define BLOCK_HEIGHT 50.0f
-#define GRAVITY 5.0f
-
+// NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
 void draw_level_init() {
 
@@ -42,6 +38,8 @@ void draw_level() {
 	blocks(5, -500, -200);
 	blocks(4, -100, -50);
 	blocks(6, 200, 100);
+	blocks(4, 650, 0);
+	blocks(4, 1100, -100);
 
 	//AEGfxMeshFree(rectmesh);
 	//AEGfxTextureUnload(rect);
@@ -56,6 +54,7 @@ void update_level() {
 	else {
 		pointer_to_player->y -= GRAVITY;
 	}
+
 
 }
 
