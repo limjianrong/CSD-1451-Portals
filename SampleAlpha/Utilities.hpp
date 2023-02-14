@@ -20,3 +20,4 @@
 #define WINDOWYLENGTH 600
 
 AEGfxVertexList* create_Square_Mesh();
+s8 create_font();
