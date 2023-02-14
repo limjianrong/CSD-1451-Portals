@@ -15,31 +15,33 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
+#include "draw_level.hpp"
 
 // for fontID
 #include "GameState_Mainmenu.hpp"
-#include <string>
 
-//#include <iostream>
+#include <iostream>
 
-AEGfxVertexList* pMesh;
-//AEGfxVertexList* trianglemesh;
-//AEGfxVertexList* endpoint_triangle;
-//AEGfxVertexList* endpoint_rectangle;
-//AEVec2 endpoint_center;
+
 Player_stats player;
+Checkpoint checkpoint[] = { {0, 250, 350, 150, 250}, {0, 700, 800, 50, 150} };
 
 // ------  Text  ------
 extern s8 fontID;
 s8* lives_counter;
 
+// ----- Mesh & Texture -----
+AEMtx33 scale, rotate, translate, transform;
+AEGfxVertexList* pMesh;
+AEGfxTexture *playerTex, *checkpointTex;
 
-AEGfxTexture* pTex;
+// ----- Camera -----
 f32 cameraX{}, cameraY{};
 
 void initialize_player() { 
 
-	pTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
+	playerTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
+	checkpointTex = AEGfxTextureLoad("Assets/fullpack/PNG/Items/flagBlue2.png");
 	pMesh = create_Square_Mesh();
 
 	bullet_initialise();
@@ -51,27 +53,24 @@ void draw_player() {
 	//AEGfxSetTransparency(1.0f);
 	//AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	
-	// Create a scale matrix that scales by 100 x and y
-	AEMtx33 scale = { 0 };
+	// ---------------- Player ----------------
+	// Creates a player size 50x50
 	AEMtx33Scale(&scale, PLAYER_WIDTH, PLAYER_HEIGHT);
-	// Create a rotation matrix that rotates by rotation degrees
-	AEMtx33 rotate = { 0 };
+	// Rotate player
 	AEMtx33Rot(&rotate, player.rotation);
-	// Translate
-	AEMtx33 translate = { 0 };
+	// Move player when A / D keys pressed
 	AEMtx33Trans(&translate, player.x, player.y);
 	// Concat the matrices (TRS)
-	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	// Choose the transform to use
 	AEGfxSetTransform(transform.m);
-
-	// Set the texture
-	AEGfxTextureSet(pTex, 0, 0);
-	// Drawing the mesh 
+	AEGfxTextureSet(playerTex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	
+
+	// -------------- Checkpoint --------------
+	checkpoint_create(300, 200);
+	checkpoint_create(750, 100);
 
 	// -------- Printing out no. of lives --------
 	if (player.Lives == 3) lives_counter = (s8*)"Lives: 3";
@@ -82,7 +81,6 @@ void draw_player() {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 
-	//check_endpoint(player.x, player.y, endpoint_rectangle,endpoint_triangle, &PlayerCenter, endpoint_center);
 
 }
 
@@ -111,10 +109,11 @@ void update_player() {
 	// ---------  Portal creation   -----------
 	draw_portal(player.x, player.y);
 
+
 	// ------------  Collision   --------------
 	player_collision();
 
-	// ------------  Camera   --------------
+	// -------------  Camera   ---------------
 	AEGfxSetCamPosition(cameraX, cameraY);
 	if (player.x > 0) {
 		cameraX = player.x;
@@ -124,6 +123,17 @@ void update_player() {
 	}
 	if (AEInputCheckCurr(AEVK_S)) {
 		cameraY -= 2.0f;
+	}
+
+	// -------------  Latest checkpoint for player  -------------
+	if (player.x >= checkpoint[0].x1 && player.x <= checkpoint[0].x2 &&
+		player.y >= checkpoint[0].y1 && player.y <= checkpoint[0].y2) {
+		checkpoint[0].check = 1;
+	}
+	if (player.x >= checkpoint[1].x1 && player.x <= checkpoint[1].x2 &&
+		player.y >= checkpoint[1].y1 && player.y <= checkpoint[1].y2) {
+		checkpoint[0].check = 0;
+		checkpoint[1].check = 1;
 	}
 
 }
@@ -139,9 +149,9 @@ void player_collision() {
 	if (player.x < -WINDOWXLENGTH / 2 + PLAYER_WIDTH / 2)
 		player.x = -WINDOWXLENGTH / 2 + PLAYER_WIDTH / 2;
 
-	// right of screen
-	if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
-		player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
+	// right of screen ---- CURRENTLY NO LIMIT ----
+	//if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
+	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
 	if (player.y > WINDOWYLENGTH / 2 - PLAYER_HEIGHT / 2)
@@ -150,44 +160,31 @@ void player_collision() {
 	// bottom of screen
 	if (player.y < -WINDOWYLENGTH / 2 + PLAYER_HEIGHT / 2) {
 		--player.Lives;
-		player.y = 0;
 
-		// This is to spawn player at the bottom of screen
-		//player.y = -WINDOWYLENGTH / 2 + PLAYER_HEIGHT / 2;
+		if (checkpoint[0].check) {
+			player.x = checkpoint[0].x1 + 50;
+			player.y = checkpoint[0].y1;
+		}
+		else if (checkpoint[1].check) {
+			player.x = checkpoint[1].x1 + 50;
+			player.y = checkpoint[1].y1;
+		}
+		else {
+			player.x = -450;
+			player.y = -100;
+		}
+
 	}
-
-
 }
 
-//void endpoint_init() {
-//	//draw a triangle to represent the flag(endpoint)
-//	AEGfxMeshStart();
-//	AEGfxTriAdd(-50.0f, 0.0f, 0xFFFFFF00, 0.0, 0.0,
-//		0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f,
-//		0.0f, -25.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	
-//	endpoint_triangle = AEGfxMeshEnd();
-//
-//	//draw a rectangle to represent the flagpole
-//	AEGfxMeshStart();
-//	AEGfxVertexAdd(0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	AEGfxVertexAdd(10.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	AEGfxVertexAdd(10.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	AEGfxVertexAdd(0.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	AEGfxVertexAdd(0.0f, 25.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	AEGfxVertexAdd(10.0f, -75.0f, 0xFFFFFF00, 0.0f, 0.0f);
-//	endpoint_rectangle = AEGfxMeshEnd();
-//
-//	AEVec2Set(&endpoint_center, 400.0f+(0.0f + 10.0f) / 2, 200+(25.0f-75.0f/2));
-//
-//}
-//
-//void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle, 
-//	AEGfxVertexList*endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center) {
-//	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-//	AEGfxSetPosition(endpoint_center.x, endpoint_center.y);
-//	AEGfxMeshDraw(endpoint_triangle, AE_GFX_MDM_TRIANGLES);
-//	AEGfxMeshDraw(endpoint_rectangle, AE_GFX_MDM_TRIANGLES);
-//	if (AETestRectToRect(PlayerCenter, PLAYER_WIDTH, PLAYER_HEIGHT, &endpoint_center, 10.0f,100.0f)) {
-//	}
-//}
+void checkpoint_create(f32 x, f32 y) {
+
+	AEMtx33Scale(&scale, PLAYER_WIDTH * 2, PLAYER_HEIGHT * 2);
+	AEMtx33Rot(&rotate, PI);
+	AEMtx33Trans(&translate, x, y);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxTextureSet(checkpointTex, 0, 0);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+}
