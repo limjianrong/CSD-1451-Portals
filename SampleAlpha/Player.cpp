@@ -77,9 +77,20 @@ void update_player() {
 		player.rotation -= 0.1f;
 
 	}
+
+	//camera movement
+	
+	AEGfxSetCamPosition(cameraX, cameraY);
 	if (player.x > 0) {
-		AEGfxSetCamPosition(player.x, 0);
+		cameraX = player.x;
 	}
+	if (AEInputCheckCurr(AEVK_W)) {
+		cameraY += 2.0f;
+	}
+	if (AEInputCheckCurr(AEVK_S)) {
+		cameraY -= 2.0f;
+	}
+
 
 	// ---------  Firing of bullets   -----------
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
