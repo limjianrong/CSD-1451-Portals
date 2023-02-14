@@ -40,3 +40,7 @@ AEGfxVertexList* create_Square_Mesh() {
 	create_mesh = AEGfxMeshEnd();
 	return create_mesh;
 }
+
+s8 create_font() {
+	return AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+}

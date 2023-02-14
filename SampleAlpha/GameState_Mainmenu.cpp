@@ -15,8 +15,9 @@ s8* mainmenu_quitgame;
 AEGfxVertexList* play_button;
 
 void GameStateMainmenuLoad(void) {
-	fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf",50);
 	play_button = create_Square_Mesh();
+	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	fontID = create_font();
 }
 
 void GameStateMainmenuInit(void) {
@@ -62,5 +63,5 @@ void GameStateMainmenuFree() {
 }
 
 void GameStateMainmenuUnload(void) {
-	AEGfxDestroyFont(fontID);
+	//AEGfxDestroyFont(fontID);
 }

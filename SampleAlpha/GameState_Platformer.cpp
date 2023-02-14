@@ -77,6 +77,9 @@ void GameStatePlatformerFree(void) {
   Unloads
 *******************************************************************************************************/
 void GameStatePlatformerUnload(void) {
+
+	//unload_player();
+	// 
 	// Informing the system about the loop's end
 	AESysFrameEnd();
 }

@@ -14,6 +14,7 @@ void initialize_player();
 void draw_player();
 void update_player();
 void player_collision();
+void unload_player();
 
 // -----  Player's width & height (Adjustable)  -------
 #define PLAYER_WIDTH 50.0f
@@ -22,11 +23,11 @@ void player_collision();
 // --------------  Initialise player  ----------------
 struct Player_stats {
 	f32 x{ -450.0f }, y{ -100.0f }, rotation{ 0.0f };
-	s32 Hp, Lives;
+	s32 Hp{ 5 }, Lives{ 3 };
 };
 
-void endpoint_init(void);
-void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle,
-	AEGfxVertexList* endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center);
+//void endpoint_init(void);
+//void check_endpoint(f32 playerx, f32 playery, AEGfxVertexList* endpoint_rectangle,
+//	AEGfxVertexList* endpoint_triangle, AEVec2* PlayerCenter, AEVec2& endpoint_center);
 
 
