@@ -14,11 +14,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Utilities.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include <iostream> //for std::cout
 
 AEGfxTexture* rect;
 AEGfxVertexList* rectmesh;
 
 extern Player_stats player;
+Player_stats* pointer_to_player{ &player };
 extern Enemy_stats enemy1;
 
 #define BLOCK_WIDTH 50.0f
@@ -48,8 +50,12 @@ void draw_level() {
 
 void update_level() {
 	//std::cout << player.x << " " << player.y << std::endl;
-	player.y -= GRAVITY;
-
+	if (check_player_in_gravity_zone(player)) {
+		player.y += GRAVITY;
+	}
+	else {
+		pointer_to_player->y -= GRAVITY;
+	}
 
 }
 
@@ -85,4 +91,12 @@ void blocks(s32 length, f32 x, f32 y) {
 			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
 			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
 	}
+}
+
+int check_player_in_gravity_zone(Player_stats player) {
+	//std::cout << "player x is" << player.x;
+	if (player.x > AEGetWindowWidth()/2 && player.x < AEGetWindowWidth()) {
+		return 1;
+	}
+	return 0;
 }
