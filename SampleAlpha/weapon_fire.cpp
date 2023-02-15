@@ -29,7 +29,6 @@
 
 AEGfxVertexList* shootMesh;
 AEGfxTexture* bulletA;
-AEVec2 cursor; // cursor coords, origin is top left corner of screen
 AEVec2 center_cursor; // cursor coords, origin is middle of screen
 AEVec2 player_center; // player coords, origin is middle of screen
 AEVec2 normalized_vector; // direction vector from player to cursor
@@ -78,15 +77,8 @@ void bullet_initialise(void) {
 // parameters are x & y values that are being translated
 void weapon_fire (f32 player_x, f32 player_y, int state) {
 
-	// Get mouse's x and y positions from TOP LEFT corner of display screen
-	s32 x_cursor, y_cursor;
-	AEInputGetCursorPosition(&x_cursor, &y_cursor);
-	AEVec2Set(&cursor, x_cursor, y_cursor);
-	
-	// X: right +ve, left -ve		Y: up +ve, down -ve
-	s32 x_middle_cursor = x_cursor - WINDOWXLENGTH / 2;
-	s32 y_middle_cursor = WINDOWYLENGTH / 2 - y_cursor;
-	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
+	// Get mouse's x and y positions from middle of display screen
+	center_cursor = get_cursor_center_position();
 	AEVec2Set(&player_center, player_x, player_y);
 
 	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON

@@ -17,23 +17,28 @@ void unload_player();
 
 
 void player_collision();
-void checkpoint_create(f32 x, f32 y);
 
 
 // -----  Player's width & height (Adjustable)  -------
 #define PLAYER_WIDTH 50.0f
 #define PLAYER_HEIGHT 50.0f
+// -----  Player's initial spawn position (Adjustable)  -------
+#define PLAYER_INITIAL_POS_X -450
+#define PLAYER_INITIAL_POS_Y -100
 
 // --------------  Initialise player  ----------------
 struct Player_stats {
-	f32 x{ -450.0f }, y{ -100.0f }, rotation{ 0.0f };
+	f32 x{ PLAYER_INITIAL_POS_X }, y{ PLAYER_INITIAL_POS_Y }, rotation{ 0.0f };
 	s32 Hp{ 5 }, Lives{ 3 };
 };
 
+// --------------  Checkpoints  ----------------
 struct Checkpoint {
 	bool check;
 	f32 x1, x2, y1, y2;
 };
+#define NUM_OF_CHECKPOINT 2
+void checkpoint_create(f32 x, f32 y);
 
 
 

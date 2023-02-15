@@ -21,7 +21,7 @@
 #include "GameState_Platformer.hpp"
 #include "GameState_Mainmenu.hpp"
 
-s32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
+u32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
 FP GameStateLoad = nullptr, GameStateInit = nullptr, GameStateUpdate = nullptr, GameStateDraw = nullptr, GameStateFree = nullptr, GameStateUnload = nullptr;
 
@@ -36,7 +36,7 @@ An enum to the first state to set the program to
 \return void
 */
 /******************************************************************************/
-void GameStateMgrInit(s32 gameStateInit)
+void GameStateMgrInit(u32 gameStateInit)
 {
 	// set the initial game state
 	gGameStateInit = gameStateInit;
@@ -63,6 +63,7 @@ void GameStateMgrUpdate()
 	// Check if the program is qutting or restarting
 	if ((gGameStateCurr == GS_RESTART) || (gGameStateCurr == GS_QUIT))
 		return;
+
 
 	// Switch based on what the current state should be
 	switch (gGameStateCurr)

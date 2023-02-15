@@ -3,60 +3,65 @@
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
-#include <string>
+//#include <iostream>
 
 s8 fontID;
-s8 string_title[] = "Portals";
-s8 string_startgame[] = "Start Game";
-s8 string_quitgame[] = "Quit Game";
-s8* mainmenu_title;
-s8* mainmenu_startgame;
-s8* mainmenu_quitgame;
-AEGfxVertexList* play_button;
+AEGfxVertexList* button;
+extern AEMtx33 scale, rotate, translate, transform;
+
 
 void GameStateMainmenuLoad(void) {
-	play_button = create_Square_Mesh();
+	button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 	fontID = create_font();
 }
 
 void GameStateMainmenuInit(void) {
-
-	mainmenu_title = string_title;
-	mainmenu_startgame = string_startgame;
-	mainmenu_quitgame = string_quitgame;
+	
+	
 }
 
 void GameStateMainmenuUpdate(void) {
 
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	// ------ Start game button ------
+	if (AEInputCheckCurr(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+		&& get_cursor_center_position().y >= -40 && get_cursor_center_position().y <= 60) {
 		gGameStateNext = GS_Platformer;
 	}
+	// ------ Quit game button ------
+	if (AEInputCheckCurr(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+		&& get_cursor_center_position().y >= -150 && get_cursor_center_position().y <= -50) {
+		gGameStateNext = GS_QUIT;
+	}
+
 }
 
 void GameStateMainmenuDraw(void) {
 
+	// ------ Start game button ------
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetTransparency(1.0f);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	// draw rectangle box
-	AEMtx33 weapon_scale = { 0 };
-	AEMtx33Scale(&weapon_scale, 270.0f, 80.0f); // scaling it up
-	AEMtx33 weapon_translate = { 0 };
-	AEMtx33Trans(&weapon_translate, -10.0f, 10.0f); // shifts along x & y axis
-	AEMtx33 weapon_rotate = { 0 };
-	AEMtx33Rot(&weapon_rotate, 0); // rotation
-	AEMtx33 weapon_transform = { 0 };
-	AEMtx33Concat(&weapon_transform, &weapon_rotate, &weapon_scale);
-	AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
-	AEGfxSetTransform(weapon_transform.m);
-	AEGfxMeshDraw(play_button, AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTintColor(0, 0, 0, 1.0f);
+	AEMtx33Scale(&scale, 300, 100); // scaling it up
+	AEMtx33Trans(&translate, 0, 10); // shifts along x & y axis
+	AEMtx33Rot(&rotate, 0); // rotation
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+	// ------ Quit game button ------
+	AEMtx33Scale(&scale, 300, 100);
+	AEMtx33Rot(&rotate, 0);
+	AEMtx33Trans(&translate, 0, -100);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
 
-
+	// ------ Texts ------
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxPrint(fontID, mainmenu_title, -0.20, 0.4, 1.0F, 1, 1, 1);
-	AEGfxPrint(fontID, mainmenu_startgame, -0.28, 0, 1.0F, 1, 1, 1);
-	AEGfxPrint(fontID, mainmenu_quitgame, -0.26, -0.3, 1.0F, 1, 1, 1);
+	AEGfxPrint(fontID, (s8*)"PORTALS", -0.3, 0.4, 1.5F, 1, 1, 1);
+	AEGfxPrint(fontID, (s8*)"Start Game", -0.25, 0, 1.0F, 1, 1, 1);
+	AEGfxPrint(fontID, (s8*)"Quit Game", -0.26, -0.4, 1.0F, 1, 1, 1);
 }
 void GameStateMainmenuFree() {
 	
@@ -64,4 +69,5 @@ void GameStateMainmenuFree() {
 
 void GameStateMainmenuUnload(void) {
 	//AEGfxDestroyFont(fontID);
+	AESysFrameEnd();
 }

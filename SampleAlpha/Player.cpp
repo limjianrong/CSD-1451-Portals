@@ -20,11 +20,10 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
-#include <iostream>
-
+//#include <iostream>
 
 Player_stats player;
-Checkpoint checkpoint[] = { {0, 250, 350, 150, 250}, {0, 700, 800, 50, 150} };
+Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 250, 350, 150, 250}, {0, 700, 800, 50, 150} };
 
 // ------  Text  ------
 extern s8 fontID;
@@ -81,7 +80,6 @@ void draw_player() {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 
-
 }
 
 void update_player() {
@@ -125,17 +123,14 @@ void update_player() {
 		cameraY -= 2.0f;
 	}
 
-	// -------------  Latest checkpoint for player  -------------
-	if (player.x >= checkpoint[0].x1 && player.x <= checkpoint[0].x2 &&
-		player.y >= checkpoint[0].y1 && player.y <= checkpoint[0].y2) {
-		checkpoint[0].check = 1;
+	// -------------  Update latest checkpoint for player  -------------
+	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
+		if (player.x >= checkpoint[i].x1 && player.x <= checkpoint[i].x2 &&
+			player.y >= checkpoint[i].y1 && player.y <= checkpoint[i].y2) {
+			checkpoint[i].check = TRUE;
+			//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
+		}
 	}
-	if (player.x >= checkpoint[1].x1 && player.x <= checkpoint[1].x2 &&
-		player.y >= checkpoint[1].y1 && player.y <= checkpoint[1].y2) {
-		checkpoint[0].check = 0;
-		checkpoint[1].check = 1;
-	}
-
 }
 
 void unload_player() {
@@ -161,19 +156,18 @@ void player_collision() {
 	if (player.y < -WINDOWYLENGTH / 2 + PLAYER_HEIGHT / 2) {
 		--player.Lives;
 
-		if (checkpoint[0].check) {
-			player.x = checkpoint[0].x1 + 50;
-			player.y = checkpoint[0].y1;
+		// ---------  Set player's position to latest checkpoint  ---------
+		for (s32 i = NUM_OF_CHECKPOINT-1; i >= 0; i--) {
+			if (checkpoint[i].check) {
+				player.x = checkpoint[i].x1 + 50;
+				player.y = checkpoint[i].y1;
+				break;
+			}
+			else {
+				player.x = PLAYER_INITIAL_POS_X;
+				player.y = PLAYER_INITIAL_POS_Y;
+			}
 		}
-		else if (checkpoint[1].check) {
-			player.x = checkpoint[1].x1 + 50;
-			player.y = checkpoint[1].y1;
-		}
-		else {
-			player.x = -450;
-			player.y = -100;
-		}
-
 	}
 }
 

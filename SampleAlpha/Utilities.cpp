@@ -14,6 +14,7 @@
 	Creates a square mesh of width 1 and height 1
 *****************************************************************************************************/
 #include "AEEngine.h"
+#include "Utilities.hpp"
 
 /*!**************************************************************************************************
 \brief
@@ -43,4 +44,19 @@ AEGfxVertexList* create_Square_Mesh() {
 
 s8 create_font() {
 	return AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+}
+
+AEVec2 get_cursor_center_position() {
+	// Get mouse's x and y positions from TOP LEFT corner of display screen
+	AEVec2 cursor; // cursor coords, origin is top left corner of screen
+	s32 x_cursor, y_cursor;
+	AEInputGetCursorPosition(&x_cursor, &y_cursor);
+	AEVec2Set(&cursor, x_cursor, y_cursor);
+
+	// X: right +ve, left -ve		Y: up +ve, down -ve
+	AEVec2 center_cursor; // cursor coords, origin is middle of screen
+	s32 x_middle_cursor = x_cursor - WINDOWXLENGTH / 2;
+	s32 y_middle_cursor = WINDOWYLENGTH / 2 - y_cursor;
+	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
+	return center_cursor;
 }

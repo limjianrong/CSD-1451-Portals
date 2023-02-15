@@ -22,10 +22,10 @@
 
 typedef void(*FP)(void);
 
-extern s32 gGameStateInit;
-extern s32 gGameStateCurr;
-extern s32 gGameStatePrev;
-extern s32 gGameStateNext;
+extern u32 gGameStateInit;
+extern u32 gGameStateCurr;
+extern u32 gGameStatePrev;
+extern u32 gGameStateNext;
 
 extern FP GameStateLoad, GameStateInit, GameStateUpdate, GameStateDraw, GameStateFree, GameStateUnload;
 
@@ -33,7 +33,7 @@ extern FP GameStateLoad, GameStateInit, GameStateUpdate, GameStateDraw, GameStat
 // Function prototypes
 
 // call this at the beginning and AFTER all game states are added to the manager
-void GameStateMgrInit(s32 gameStateInit);
+void GameStateMgrInit(u32 gameStateInit);
 
 // update is used to set the function pointers
 void GameStateMgrUpdate();

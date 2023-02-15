@@ -21,3 +21,4 @@
 
 AEGfxVertexList* create_Square_Mesh();
 s8 create_font();
+AEVec2 get_cursor_center_position();

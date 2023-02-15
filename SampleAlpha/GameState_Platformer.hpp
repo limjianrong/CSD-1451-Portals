@@ -18,3 +18,4 @@ void GameStatePlatformerUpdate(void);
 void GameStatePlatformerDraw(void);
 void GameStatePlatformerFree(void);
 void GameStatePlatformerUnload(void);
+
