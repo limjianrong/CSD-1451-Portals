@@ -28,8 +28,8 @@
 
 AEGfxTexture* enemy;
 AEGfxVertexList* enemy_mesh;
-AEVec2 EnemyCenter;
-extern s32 enemy_HP = 5; // 1 bullet decrement by 1
+
+Enemy_stats enemy1;
 
 /*!**************************************************************************************************
 \brief
@@ -40,9 +40,7 @@ void enemy_init() {
 	enemy = AEGfxTextureLoad("Assets/enemy.png");
 	// Saving the mesh (list of triangles) in enemy_mesh
 	enemy_mesh = create_Square_Mesh();
-	
-	// Starting x & y value of enemy
-	AEVec2Set(&EnemyCenter, -250.0f, -85.0f);
+
 }
 
 /*!**************************************************************************************************
@@ -51,7 +49,7 @@ void enemy_init() {
 *******************************************************************************************************/
 void draw_enemy() {
 
-	if (enemy_HP > 0) {
+	if (enemy1.Hp > 0) {
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		// Set the tint to white, so that the sprite can 
@@ -72,7 +70,7 @@ void draw_enemy() {
 		// Create a translation matrix that translates by
 		// 100 in the x-axis and 100 in the y-axis
 		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, EnemyCenter.x, EnemyCenter.y);
+		AEMtx33Trans(&translate, enemy1.x, enemy1.y);
 		// Concatenate the matrices (TRS)
 		AEMtx33 transform = { 0 };
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -86,7 +84,7 @@ void draw_enemy() {
 
 
 		// updates enemy position
-		EnemyCenter = enemy_update(EnemyCenter);
+		enemy1.x = enemy_update(enemy1.x);
 	}
 
 
@@ -103,17 +101,17 @@ void draw_enemy() {
 \return
 	new EnemyCenter
 *******************************************************************************************************/
-AEVec2 enemy_update (AEVec2 EnemyCenter) {
+f32 enemy_update (f32 enemy1_x) {
 	
 	// get 0-200
 	s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
 	if (value <= 100)
-		EnemyCenter.x -= 1.0f;
+		enemy1_x -= 1.0f;
 	else
-		EnemyCenter.x += 1.0f;	
+		enemy1_x += 1.0f;
 
-	return EnemyCenter;
+	return enemy1_x;
 
 	//AEGfxMeshFree(enemy_mesh);
 	//AEGfxTextureUnload(enemy);

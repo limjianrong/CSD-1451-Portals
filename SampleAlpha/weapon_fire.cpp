@@ -26,11 +26,9 @@
 #include "Utilities.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
-#include <math.h>
 
 AEGfxVertexList* shootMesh;
 AEGfxTexture* bulletA;
-AEVec2 cursor; // cursor coords, origin is top left corner of screen
 AEVec2 center_cursor; // cursor coords, origin is middle of screen
 AEVec2 player_center; // player coords, origin is middle of screen
 AEVec2 normalized_vector; // direction vector from player to cursor
@@ -38,8 +36,7 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 int direction_x, direction_y;
 int prevState;
 bool isRunning;
-extern AEVec2 EnemyCenter;
-extern s32 enemy_HP;
+extern Enemy_stats enemy1;
 
 f32 bullet_x, bullet_y;
 f32 adj, opp;
@@ -80,15 +77,8 @@ void bullet_initialise(void) {
 // parameters are x & y values that are being translated
 void weapon_fire (f32 player_x, f32 player_y, int state) {
 
-	// Get mouse's x and y positions from TOP LEFT corner of display screen
-	s32 x_cursor, y_cursor;
-	AEInputGetCursorPosition(&x_cursor, &y_cursor);
-	AEVec2Set(&cursor, x_cursor, y_cursor);
-	
-	// X: right +ve, left -ve		Y: up +ve, down -ve
-	s32 x_middle_cursor = x_cursor - WINDOWXLENGTH / 2;
-	s32 y_middle_cursor = WINDOWYLENGTH / 2 - y_cursor;
-	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
+	// Get mouse's x and y positions from middle of display screen
+	center_cursor = get_cursor_center_position();
 	AEVec2Set(&player_center, player_x, player_y);
 
 	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON
@@ -114,7 +104,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 		direction_x = LEFT;
 	}
 
-	f32 speed = 20.0f;
+	f32 speed = 5.0f;
 	f64 angle = AEATan(opp / adj); // get angle between cursor & player (in rad)
 	AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
 	AEVec2Scale(&normalized_vector, &normalized_vector, speed);
@@ -171,7 +161,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 		if (isbullet_enemy_colliding(bullet_x, bullet_y) == TRUE) {
 			bullet_x = player_center.x;
 			bullet_y = player_center.y;
-			--enemy_HP;
+			--enemy1.Hp;
 		}
 	}
 
@@ -203,7 +193,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 				bullet_x = player_center.x;
 				bullet_y = player_center.y;
 				isRunning = FALSE;
-				--enemy_HP;
+				--enemy1.Hp;
 			}
 		}
 		else // if bullet reached cursor
@@ -232,7 +222,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 	TRUE if bullet is colliding with enemy, else FALSE
 *******************************************************************************************************/
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y) {
-	f32 dist_bullet2enemy = sqrt((bullet_x - EnemyCenter.x) * (bullet_x - EnemyCenter.x) + (bullet_y - EnemyCenter.y) * (bullet_y - EnemyCenter.y));
+	f32 dist_bullet2enemy = sqrt((bullet_x - enemy1.x) * (bullet_x - enemy1.x) + (bullet_y - enemy1.y) * (bullet_y - enemy1.y));
 	if (dist_bullet2enemy <= 25) return TRUE;
 	else return FALSE;
 }

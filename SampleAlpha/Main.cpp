@@ -41,22 +41,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-	int gGameRunning = 1;
-
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, WINDOWXLENGTH, WINDOWYLENGTH, 1, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
-	// reset the system modules
-	//AESysReset();
 
 	//set background color
 	AEGfxSetBackgroundColor(0.0f, 100.0f, 255.0f);
 
 	// Initialize GameStateManager to initialize the starting state
-	GameStateMgrInit(GS_Platformer);
+	GameStateMgrInit(GS_MainMenu);
 
 	// Loop while the program should not quit
 	while (gGameStateCurr != GS_QUIT)
@@ -67,9 +62,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// If not restarting, update and load the gamestate
 		if (gGameStateCurr != GS_RESTART)
 		{
-			GameStateLoad();
 			GameStateMgrUpdate();
-			
+			GameStateLoad();
 		}
 		else // Otherwise
 			gGameStateNext = gGameStateCurr = gGameStatePrev;	// Set next and current state to the previous state
