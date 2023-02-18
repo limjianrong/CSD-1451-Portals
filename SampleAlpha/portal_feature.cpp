@@ -11,6 +11,7 @@
   portal's valid selection area.
 ==================================================================================*/
 #include "AEEngine.h"
+#include "Utilities.hpp"
 #include <cmath> //for square root function
 #include "portal_feature.hpp"
 #include "weapon_fire.hpp"
@@ -41,43 +42,8 @@ AEGfxVertexList* greencirclemesh{}; //mesh to draw the portal's valid range
 *******************************************************************************************************/
 void initialize_portal() {
 	greencircle = AEGfxTextureLoad("Assets/greencircle1.png");
-	//draw mesh for portal_1 (green color)
-	//std::cout << "initialized portal center is" << portal_1->center.x;
-	//if (!portal_1->mesh) {
-	//	std::cout << "mesh is  nullptr";
-	//}
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f,
-		30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f,
-		-30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	AEGfxTriAdd(-30.0f, 30.0f, 0xFF00FF00, 0.0f, 0.0f,
-		-30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f,
-		30.0f, -30.0f, 0xFF00FF00, 0.0f, 0.0f);
-	(portal_1.mesh) = { AEGfxMeshEnd() };
 
-
-	//draw mesh for portal_2 (red color)
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	AEGfxTriAdd(-30.0f, 30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f,
-		30.0f, -30.0f, 0xFFFF0000, 0.0f, 0.0f);
-	(portal_2.mesh)  = { AEGfxMeshEnd() };
-
-	//draw mesh to show the player the furthest point he can place a portal at. 
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		150.0f, -150.0f, 0xFFFF0000, 0.0f, 0.0f,
-		150.0f, 150.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-150.0f, 150.0f, 0xFFFF0000, 0.0f, 0.0f);
-	AEGfxTriAdd(-150.0f, 150.0f, 0xFFFF0000, 0.0f, 0.0f,
-		-150.0f, -150.0f, 0xFFFF0000, 0.0f, 0.0f,
-		150.0f, -150.0f, 0xFFFF0000, 0.0f, 0.0f);
-	greencirclemesh = AEGfxMeshEnd();
+	greencirclemesh  = portal_1.mesh = portal_2.mesh = create_Square_Mesh();
 
 }
 
@@ -112,7 +78,6 @@ void draw_portal(f32& playerx, f32& playery) {
 			drawportal = 1;
 			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
 
-			std::cout << "\nportal 1 before minus" << portal_1.x;
 			//offset portal_1's x by half of window width
 
 			portal_1.x -= AEGetWindowWidth() / 2;
@@ -124,6 +89,9 @@ void draw_portal(f32& playerx, f32& playery) {
 			if (playerx > 0) {
 				portal_1.x += playerx;
 				//std::cout << "\nportal 1 x after += portal_width" << portal_1.x;
+			}
+			if (playery > 0) {
+				portal_1.y += playery;
 			}
 
 			//set vector to portal_1's center
@@ -152,8 +120,13 @@ void draw_portal(f32& playerx, f32& playery) {
 				//std::cout << "\nportal 2 x after += portal_width" << portal_2.x;
 			}
 
-			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
+			if (playery > 0) {
+				portal_2.y += playery;
+			}
+
+			//offset portal_2.y by windowheight()/2
+
 			
 			//set vector to portal_2's center
 			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
@@ -173,7 +146,9 @@ void draw_portal(f32& playerx, f32& playery) {
 	}
 	if (draw_portal_outline == TRUE) {
 		AEGfxSetTransparency(0.5f);
+		AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
 		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+		AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
 		AEGfxSetTransform(portal_1.matrix.m);
 		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
@@ -182,17 +157,15 @@ void draw_portal(f32& playerx, f32& playery) {
 	if (token == 1) {
 		draw_portal_outline = FALSE;
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		//if player has passed the center of the screen
 
-		//AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
-		
 		AEGfxSetTransform(portal_1.matrix.m);
-
 		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
 
 		
 		//AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		AEMtx33Scale(&portal_2.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
+		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		AEMtx33Concat(&portal_2.matrix, &portal_2.matrix, &portal_2.scale_matrix);
 		AEGfxSetTransform(portal_2.matrix.m);
 		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
 

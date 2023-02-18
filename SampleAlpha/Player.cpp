@@ -116,6 +116,19 @@ void update_player() {
 	if (player.x > 0) {
 		cameraX = player.x;
 	}
+
+	if (player.x <= 0) {
+		cameraX = 0;
+	}
+
+	if (player.y > 0) {
+		cameraY = player.y;
+	}
+
+	if (player.y <= 0) {
+		cameraY = 0;
+	}
+	
 	if (AEInputCheckCurr(AEVK_W)) {
 		cameraY += 2.0f;
 	}

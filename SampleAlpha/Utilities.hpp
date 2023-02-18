@@ -13,6 +13,7 @@
   - create_Square_Mesh
 	Creates a square mesh of width 1 and height 1
 *****************************************************************************************************/
+#pragma once
 #include "AEEngine.h"
 
 // Custom window size

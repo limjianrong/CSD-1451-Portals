@@ -48,7 +48,8 @@ void draw_level() {
 
 void update_level() {
 	//std::cout << player.x << " " << player.y << std::endl;
-	if (check_player_in_gravity_zone(player)) {
+	if (
+		check_player_in_gravity_zone(player)) {
 		player.y += GRAVITY;
 	}
 	else {
