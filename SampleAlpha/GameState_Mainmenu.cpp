@@ -3,7 +3,7 @@
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
-//#include <iostream>
+#include <iostream>
 
 extern s8 Albam_fontID;
 AEGfxVertexList* button;
@@ -23,17 +23,17 @@ void GameStateMainmenuInit(void) {
 void GameStateMainmenuUpdate(void) {
 
 	// ------ Start game button ------
-	if (AEInputCheckCurr(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
 		&& get_cursor_center_position().y >= -40 && get_cursor_center_position().y <= 60) {
 		gGameStateNext = GS_Platformer;
 	}
 	// ------ Quit game button ------
-	if (AEInputCheckCurr(AEVK_LBUTTON) &&
-		(!AEInputCheckReleased(AEVK_LBUTTON)) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
 		&& get_cursor_center_position().y >= -150 && get_cursor_center_position().y <= -50) {
 		//gGameStateNext = GS_QUIT;
-		//AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+		std::cout << "Pressed once in MainMenu" << std::endl;
 	}
+
 
 }
 

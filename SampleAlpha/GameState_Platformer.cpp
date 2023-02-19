@@ -57,21 +57,23 @@ void GameStatePlatformerUpdate(void) {
 		// --------- Collision ---------
 		// Restart button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= 25 && center_cursor_paused.y <= 125 && (AEInputCheckCurr(AEVK_LBUTTON))) {
+			center_cursor_paused.y >= 25 && center_cursor_paused.y <= 125 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
 			//AEGfxSetBackgroundColor(255, 255, 255);
 			gGameStateNext = GS_RESTART;
+			isPaused = FALSE;
 		}
 		// Settings button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -50 && center_cursor_paused.y <= 50 && (AEInputCheckCurr(AEVK_LBUTTON))) {
-			AEGfxSetBackgroundColor(0, 125, 255);
-			//gGameStateNext = GS_Settings;
+			center_cursor_paused.y >= -50 && center_cursor_paused.y <= 50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
+			gGameStateNext = GS_Settings;
+			isPaused = FALSE;
 		}
 		// Main menu button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -115 && center_cursor_paused.y <= -50 && (AEInputCheckCurr(AEVK_LBUTTON))) {
+			center_cursor_paused.y >= -115 && center_cursor_paused.y <= -50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
 			gGameStateNext = GS_MainMenu;
 			isPaused = FALSE;
+			std::cout << "Pressed once in platformer "<< std::endl;
 		}
 	}
 	
