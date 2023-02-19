@@ -89,7 +89,7 @@ void blocks(s32 length, f32 x, f32 y) {
 			(player.y >= y + PLAYER_HEIGHT / 2) &&
 			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x - PLAYER_WIDTH/2) &&
 			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
-			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2 + 5;
 	}
 }
 

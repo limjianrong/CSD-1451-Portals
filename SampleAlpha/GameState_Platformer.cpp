@@ -24,7 +24,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 extern AEGfxVertexList* pMesh;
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 fontID;
+extern s8 Albam_fontID;
 bool isPaused;
 AEVec2 center_cursor_paused; // cursor coords, origin is middle of screen
 /*!**************************************************************************************************
@@ -57,26 +57,28 @@ void GameStatePlatformerUpdate(void) {
 		// --------- Collision ---------
 		// Restart button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= 25 && center_cursor_paused.y <= 125 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
-			AEGfxSetBackgroundColor(255, 255, 255);
-			//gGameStateNext = GS_RESTART;
+			center_cursor_paused.y >= 25 && center_cursor_paused.y <= 125 && (AEInputCheckCurr(AEVK_LBUTTON))) {
+			//AEGfxSetBackgroundColor(255, 255, 255);
+			gGameStateNext = GS_RESTART;
 		}
 		// Settings button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -50 && center_cursor_paused.y <= 50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
+			center_cursor_paused.y >= -50 && center_cursor_paused.y <= 50 && (AEInputCheckCurr(AEVK_LBUTTON))) {
 			AEGfxSetBackgroundColor(0, 125, 255);
 			//gGameStateNext = GS_Settings;
 		}
 		// Main menu button
 		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -115 && center_cursor_paused.y <= -50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
-			AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-			//gGameStateNext = GS_MainMenu;
-		}
-		/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
+			center_cursor_paused.y >= -115 && center_cursor_paused.y <= -50 && (AEInputCheckCurr(AEVK_LBUTTON))) {
 			gGameStateNext = GS_MainMenu;
-		}*/
+			isPaused = FALSE;
+		}
 	}
+	
+	//if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+	//	//AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	//	gGameStateNext = GS_MainMenu;
+	//}
 	else {
 		update_player();
 		update_level();
@@ -154,11 +156,11 @@ void GameStatePlatformerDraw(void) {
 
 		// --------- Texts ---------
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxPrint(fontID, (s8*)"PAUSED", -0.35f, 0.55f, 2.0f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(fontID, (s8*)"RESTART", -0.15f, 0.2f, 0.7f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(fontID, (s8*)"SETTINGS", -0.17f, -0.05f, 0.7f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(fontID, (s8*)"BACK TO", -0.12f, -0.26f, 0.55f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(fontID, (s8*)"MAIN MENU", -0.15f, -0.36f, 0.55f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.35f, 0.55f, 2.0f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.15f, 0.2f, 0.7f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.17f, -0.05f, 0.7f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"BACK TO", -0.12f, -0.26f, 0.55f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.15f, -0.36f, 0.55f, 0.0f, 0.0f, 0.0f);
 	}
 
 }

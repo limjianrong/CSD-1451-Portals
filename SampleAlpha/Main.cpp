@@ -29,6 +29,7 @@
 
 // ---------------------------------------------------------------------------
 // main
+s8 Albam_fontID;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -47,8 +48,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
 
-	//set background color
+	// Set background color
 	AEGfxSetBackgroundColor(0.0f, 100.0f, 255.0f);
+
+	// Loads font ID into memory
+	Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
+
 
 	// Initialize GameStateManager to initialize the starting state
 	GameStateMgrInit(GS_MainMenu);
