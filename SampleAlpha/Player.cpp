@@ -26,21 +26,26 @@ Player_stats player;
 Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 250, 350, 150, 250}, {0, 700, 800, 50, 150} };
 
 // ------  Text  ------
-extern s8 fontID;
+extern s8 Albam_fontID;
 s8* lives_counter;
 
 // ----- Mesh & Texture -----
 AEMtx33 scale, rotate, translate, transform;
 AEGfxVertexList* pMesh;
-AEGfxTexture *playerTex, *checkpointTex;
+AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex, * checkpointTex;
+int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
 // ----- Camera -----
 f32 cameraX{}, cameraY{};
 
-void initialize_player() { 
+void initialize_player() {
 
-	playerTex = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile024.png");
-	checkpointTex = AEGfxTextureLoad("Assets/fullpack/PNG/Items/flagBlue2.png");
+	player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
+	player_left1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_left.png");
+	player_left2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_left.png");
+	player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
+	player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
+	checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
 	pMesh = create_Square_Mesh();
 
 	bullet_initialise();
@@ -56,7 +61,7 @@ void draw_player() {
 	// Creates a player size 50x50
 	AEMtx33Scale(&scale, PLAYER_WIDTH, PLAYER_HEIGHT);
 	// Rotate player
-	AEMtx33Rot(&rotate, player.rotation);
+	AEMtx33Rot(&rotate, PI);
 	// Move player when A / D keys pressed
 	AEMtx33Trans(&translate, player.x, player.y);
 	// Concat the matrices (TRS)
@@ -64,7 +69,15 @@ void draw_player() {
 	AEMtx33Concat(&transform, &translate, &transform);
 	// Choose the transform to use
 	AEGfxSetTransform(transform.m);
-	AEGfxTextureSet(playerTex, 0, 0);
+	if (AEInputCheckCurr(AEVK_D)) {
+		if ((num_of_Dpressed % 9) <= 4) AEGfxTextureSet(player_left1Tex, 0, 0);
+		else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player_left2Tex, 0, 0);
+	}
+	else if (AEInputCheckCurr(AEVK_A)) {
+		if ((num_of_Apressed % 9) <= 4) AEGfxTextureSet(player_right1Tex, 0, 0);
+		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player_right2Tex, 0, 0);
+	} 
+	else AEGfxTextureSet(player_standTex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------------- Checkpoint --------------
@@ -78,31 +91,33 @@ void draw_player() {
 	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
 
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxPrint(fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 
 }
 
 void update_player() {
 
 	// ---------  Player's movement   -----------
-	// A key pressed
-	if (AEInputCheckCurr(AEVK_A)) {
-		player.x -= 5;
-		player.rotation += 0.1f;
-	}
 	// D key pressed
-	else if (AEInputCheckCurr(AEVK_D)) {
+	if (AEInputCheckCurr(AEVK_D)) {
 		player.x += 5;
-		player.rotation -= 0.1f;
+		num_of_Dpressed++;
+		//player.rotation -= 0.1f;
+	}
+	// A key pressed
+	else if (AEInputCheckCurr(AEVK_A)) {
+		player.x -= 5;
+		num_of_Apressed++;
+		//player.rotation += 0.1f;
 	}
 
 	// ---------  Firing of bullets   -----------
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(player.x, player.y, 1);
 	}
 	else {
 		weapon_fire(player.x, player.y, 0);
-	}
+	}*/
 
 	// ---------  Portal creation   -----------
 	draw_portal(player.x, player.y);
@@ -116,6 +131,19 @@ void update_player() {
 	if (player.x > 0) {
 		cameraX = player.x;
 	}
+
+	if (player.x <= 0) {
+		cameraX = 0;
+	}
+
+	if (player.y > 0) {
+		cameraY = player.y;
+	}
+
+	if (player.y <= 0) {
+		cameraY = 0;
+	}
+	
 	if (AEInputCheckCurr(AEVK_W)) {
 		cameraY += 2.0f;
 	}
@@ -134,7 +162,7 @@ void update_player() {
 }
 
 void unload_player() {
-	//AEGfxDestroyFont(livesID);
+	
 }
 
 void player_collision() {

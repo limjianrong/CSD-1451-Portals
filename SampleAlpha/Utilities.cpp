@@ -42,10 +42,6 @@ AEGfxVertexList* create_Square_Mesh() {
 	return create_mesh;
 }
 
-s8 create_font() {
-	return AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
-}
-
 AEVec2 get_cursor_center_position() {
 	// Get mouse's x and y positions from TOP LEFT corner of display screen
 	AEVec2 cursor; // cursor coords, origin is top left corner of screen

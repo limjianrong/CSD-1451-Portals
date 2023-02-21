@@ -25,10 +25,10 @@ struct portal {
 	AEGfxVertexList* mesh{};
 	AEVec2 center{ 2000, 2000 };
 	AEMtx33 matrix{};
-	//portal center is initialized to be outside of the console, player cannot reach it
-	//without calling function draw_portal
+	AEMtx33 scale_matrix{};
 
-}; //portal_1 is the portal that player teleports from, portal_2 is the portal that player teleports to
+
+}; 
 
 
 

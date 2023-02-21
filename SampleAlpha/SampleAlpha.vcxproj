@@ -104,6 +104,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="GameState_Mainmenu.cpp" />
     <ClCompile Include="GameState_Platformer.cpp" />
+    <ClCompile Include="GameState_Settings.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Main_menu.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -117,6 +118,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="GameStateManager.hpp" />
     <ClInclude Include="GameState_Mainmenu.hpp" />
     <ClInclude Include="GameState_Platformer.hpp" />
+    <ClInclude Include="GameState_Settings.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="portal_feature.hpp" />
     <ClInclude Include="Utilities.hpp" />

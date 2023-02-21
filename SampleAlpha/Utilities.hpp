@@ -13,6 +13,7 @@
   - create_Square_Mesh
 	Creates a square mesh of width 1 and height 1
 *****************************************************************************************************/
+#pragma once
 #include "AEEngine.h"
 
 // Custom window size
@@ -20,5 +21,4 @@
 #define WINDOWYLENGTH 600
 
 AEGfxVertexList* create_Square_Mesh();
-s8 create_font();
 AEVec2 get_cursor_center_position();

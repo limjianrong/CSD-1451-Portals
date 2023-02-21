@@ -3,9 +3,9 @@
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
-//#include <iostream>
+#include <iostream>
 
-s8 fontID;
+extern s8 Albam_fontID;
 AEGfxVertexList* button;
 extern AEMtx33 scale, rotate, translate, transform;
 
@@ -13,26 +13,27 @@ extern AEMtx33 scale, rotate, translate, transform;
 void GameStateMainmenuLoad(void) {
 	button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
-	fontID = create_font();
 }
 
 void GameStateMainmenuInit(void) {
 	
-	
+
 }
 
 void GameStateMainmenuUpdate(void) {
 
 	// ------ Start game button ------
-	if (AEInputCheckCurr(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
 		&& get_cursor_center_position().y >= -40 && get_cursor_center_position().y <= 60) {
 		gGameStateNext = GS_Platformer;
 	}
 	// ------ Quit game button ------
-	if (AEInputCheckCurr(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && get_cursor_center_position().x >= -150 && get_cursor_center_position().x <= 150
 		&& get_cursor_center_position().y >= -150 && get_cursor_center_position().y <= -50) {
-		gGameStateNext = GS_QUIT;
+		//gGameStateNext = GS_QUIT;
+		std::cout << "Pressed once in MainMenu" << std::endl;
 	}
+
 
 }
 
@@ -59,9 +60,9 @@ void GameStateMainmenuDraw(void) {
 
 	// ------ Texts ------
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxPrint(fontID, (s8*)"PORTALS", -0.3, 0.4, 1.5F, 1, 1, 1);
-	AEGfxPrint(fontID, (s8*)"Start Game", -0.25, 0, 1.0F, 1, 1, 1);
-	AEGfxPrint(fontID, (s8*)"Quit Game", -0.26, -0.4, 1.0F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.3, 0.4, 1.5F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.25, 0, 1.0F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.26, -0.4, 1.0F, 1, 1, 1);
 }
 void GameStateMainmenuFree() {
 	
