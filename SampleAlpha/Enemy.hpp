@@ -30,6 +30,6 @@ void draw_enemy();
 f32 enemy_update(f32 enemy1_x);
 
 struct Enemy_stats {
-	f32 x{ -300.0f }, y{ -110.0f }, rotation{ 0.0f };
-	s32 Hp{ 5 }, Lives;
+	f32 x, y, rotation{ 0.0f };
+	s32 Hp{ 5 };
 };

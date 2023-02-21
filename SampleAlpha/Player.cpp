@@ -27,8 +27,8 @@ Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 250, 350, 150, 250}, {0, 700, 8
 
 // ------  Text  ------
 extern s8 Albam_fontID;
-s8* lives_counter;
-
+s8* lives_counter; // temp counter (Replacing with hearts?)
+s8* level, * XP;
 // ----- Mesh & Texture -----
 AEMtx33 scale, rotate, translate, transform;
 AEGfxVertexList* pMesh;
@@ -90,9 +90,18 @@ void draw_player() {
 	else if (player.Lives == 1) lives_counter = (s8*)"Lives: 1";
 	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
 
+
+	if (player.Level == 0) level = (s8*)"Level: 0";
+	else if (player.Level == 1) level = (s8*)"Level: 1";
+
+	if (player.XP == 0) XP = (s8*)"XP: 0";
+	else if (player.XP == 10) XP = (s8*)"XP: 10";
+
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
-
+	AEGfxPrint(Albam_fontID, level, -1.0f, 0.7f, 1.0f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, XP, -1.0f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
+	
 }
 
 void update_player() {
@@ -111,13 +120,20 @@ void update_player() {
 		//player.rotation += 0.1f;
 	}
 
+	// --------  Player's level & XP   ----------
+	// FOR NOW ONLY: 20xp to level up (1 enemy = 10xp)
+	if (player.XP == 20) {
+		player.Level++;
+		player.XP -= 20;
+	}
+
 	// ---------  Firing of bullets   -----------
-	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(player.x, player.y, 1);
 	}
 	else {
 		weapon_fire(player.x, player.y, 0);
-	}*/
+	}
 
 	// ---------  Portal creation   -----------
 	draw_portal(player.x, player.y);
@@ -128,28 +144,23 @@ void update_player() {
 
 	// -------------  Camera   ---------------
 	AEGfxSetCamPosition(cameraX, cameraY);
-	if (player.x > 0) {
+	if (player.x > 0)
 		cameraX = player.x;
-	}
 
-	if (player.x <= 0) {
+	if (player.x <= 0)
 		cameraX = 0;
-	}
 
-	if (player.y > 0) {
+	if (player.y > 0)
 		cameraY = player.y;
-	}
 
-	if (player.y <= 0) {
+	if (player.y <= 0)
 		cameraY = 0;
-	}
 	
-	if (AEInputCheckCurr(AEVK_W)) {
+	if (AEInputCheckCurr(AEVK_W))
 		cameraY += 2.0f;
-	}
-	if (AEInputCheckCurr(AEVK_S)) {
+
+	if (AEInputCheckCurr(AEVK_S))
 		cameraY -= 2.0f;
-	}
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -169,19 +180,19 @@ void player_collision() {
 
 
 	// left of screen
-	if (player.x < -WINDOWXLENGTH / 2 + PLAYER_WIDTH / 2)
-		player.x = -WINDOWXLENGTH / 2 + PLAYER_WIDTH / 2;
+	if (player.x < -WINDOWLENGTH_X / 2 + PLAYER_WIDTH / 2)
+		player.x = -WINDOWLENGTH_X / 2 + PLAYER_WIDTH / 2;
 
 	// right of screen ---- CURRENTLY NO LIMIT ----
 	//if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
 	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
-	if (player.y > WINDOWYLENGTH / 2 - PLAYER_HEIGHT / 2)
-		player.y = WINDOWYLENGTH / 2 - PLAYER_HEIGHT / 2;
+	if (player.y > WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2)
+		player.y = WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2;
 
 	// bottom of screen
-	if (player.y < -WINDOWYLENGTH / 2 + PLAYER_HEIGHT / 2) {
+	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {
 		--player.Lives;
 
 		// ---------  Set player's position to latest checkpoint  ---------

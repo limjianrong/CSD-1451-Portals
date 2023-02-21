@@ -24,4 +24,4 @@
 
 void bullet_initialise(void);
 void weapon_fire(f32 player_x, f32 player_y, int state);
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y);
+bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
