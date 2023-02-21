@@ -12,6 +12,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #include "AEEngine.h"
 #include "GameStateManager.hpp"
+#include "GameState_Mainmenu.hpp"
 #include "GameStateList.hpp"
 
 #include "Player.hpp"
@@ -21,12 +22,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "draw_level.hpp"
 #include "Enemy.hpp"
 
-#include <iostream>
-extern AEGfxVertexList* pMesh;
-extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;
+//#include <iostream>
+extern AEGfxVertexList* pMesh; // Mesh
+extern AEMtx33 scale, rotate, translate, transform; // TRS
+extern s8 Albam_fontID; // FontID
+extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
+f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 bool isPaused;
-AEVec2 center_cursor_paused; // cursor coords, origin is middle of screen
 /*!**************************************************************************************************
 \brief
   In charge of loading platformer game
@@ -51,36 +53,46 @@ void GameStatePlatformerInit(void) {
 *******************************************************************************************************/
 void GameStatePlatformerUpdate(void) {
 	
+	// --------- Gets origin (0,0) of constantly moving screen ---------
+	originX = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
+	originY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
+
 	if (isPaused) {
-		
-		center_cursor_paused = get_cursor_center_position();
+
 		// --------- Collision ---------
-		// Restart button
-		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= 25 && center_cursor_paused.y <= 125 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
-			//AEGfxSetBackgroundColor(255, 255, 255);
-			gGameStateNext = GS_RESTART;
+		// Resume button
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
+			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
+			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
 			isPaused = FALSE;
 		}
+		// Restart button
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
+			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
+			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
+			gGameStateNext = GS_RESTART;
+			//isPaused = FALSE;
+		}
 		// Settings button
-		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -50 && center_cursor_paused.y <= 50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
+			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
+			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
 			gGameStateNext = GS_Settings;
 			isPaused = FALSE;
 		}
 		// Main menu button
-		if (center_cursor_paused.x >= -100 && center_cursor_paused.x <= 100 &&
-			center_cursor_paused.y >= -115 && center_cursor_paused.y <= -50 && (AEInputCheckTriggered(AEVK_LBUTTON))) {
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
+			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
+			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
 			gGameStateNext = GS_MainMenu;
 			isPaused = FALSE;
-			std::cout << "Pressed once in platformer "<< std::endl;
 		}
 	}
-	
-	//if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-	//	//AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	//	gGameStateNext = GS_MainMenu;
-	//}
+
 	else {
 		update_player();
 		update_level();
@@ -94,75 +106,104 @@ void GameStatePlatformerUpdate(void) {
 *******************************************************************************************************/
 void GameStatePlatformerDraw(void) {
 
+	// Pre requisite setting
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
+	AEGfxSetTintColor(1, 1, 1, 1.0f);
 
 	draw_player();
 	draw_enemy();
 	draw_level();
 
 	// -------------- Pause menu --------------
-	if (AEInputCheckTriggered(AEVK_P)) {
+	if (AEInputCheckReleased(AEVK_P)) {
 		if (isPaused == FALSE) isPaused = TRUE;
 		else if (isPaused == TRUE) isPaused = FALSE;
 	}
 	if (isPaused) {
 		// --------- Make whole screen translucent ---------
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		//AEGfxSetTransparency(0.55f);
-		AEGfxSetTintColor(0.f, 0.f, 0.f, 0.55f);
-		AEMtx33Scale(&scale, WINDOWXLENGTH, WINDOWYLENGTH);
+		AEGfxSetTransparency(0.55f);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + WINDOWXLENGTH / 2, AEGfxGetWinMinY() + WINDOWYLENGTH / 2);
+		AEMtx33Trans(&translate, originX, originY);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// --------- Window in middle of screen ---------
-		AEGfxSetTintColor(255, 255, 255, 0.90f);
-		AEMtx33Scale(&scale, 300, 250);
+		AEGfxSetTransparency(1.0f);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X/3, WINDOWLENGTH_Y/2);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + WINDOWXLENGTH / 2, AEGfxGetWinMinY() + WINDOWYLENGTH / 2);
+		AEMtx33Trans(&translate, originX, originY -WINDOWLENGTH_Y/10);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
+		
 		// --------- Buttons ---------
-		// Restart button
-		AEGfxSetTintColor(0, 255, 255, 1.0f);
-		AEMtx33Scale(&scale, 200, 50);
+		for (int i = 9; i <= 15; i+=2) {
+			AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
+			AEMtx33Rot(&rotate, PI);
+			AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i);
+			AEMtx33Concat(&transform, &rotate, &scale);
+			AEMtx33Concat(&transform, &translate, &transform);
+			AEGfxSetTransform(transform.m);
+			if (get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
+				get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
+				get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24)
+				AEGfxTextureSet(buttonPressed, 0, 0);
+			else AEGfxTextureSet(buttonNotPressed, 0, 0);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+
+
+		/*
+		// Resume button
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + WINDOWXLENGTH / 2, AEGfxGetWinMinY() + WINDOWYLENGTH / 2 + 75);
+		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(buttonNotPressed, 0, 0);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		// Restart button
+		AEMtx33Scale(&scale, WINDOWLENGTH_X/4, WINDOWLENGTH_Y/12);
+		AEMtx33Rot(&rotate, PI);
+		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		// Settings button
-		AEMtx33Scale(&scale, 200, 50);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + WINDOWXLENGTH / 2, AEGfxGetWinMinY() + WINDOWYLENGTH / 2);
+		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		// Main menu button
-		AEMtx33Scale(&scale, 200, 65);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + WINDOWXLENGTH / 2, AEGfxGetWinMinY() + WINDOWYLENGTH / 2 - 85);
+		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		*/
 
 		// --------- Texts ---------
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.35f, 0.55f, 2.0f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.15f, 0.2f, 0.7f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.17f, -0.05f, 0.7f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(Albam_fontID, (s8*)"BACK TO", -0.12f, -0.26f, 0.55f, 0.0f, 0.0f, 0.0f);
-		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.15f, -0.36f, 0.55f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.35f, 0.55f, 2.0f, 1, 1, 0);
+		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.17f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.17f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.18f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.21f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 	}
 
 }

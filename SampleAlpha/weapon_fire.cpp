@@ -133,8 +133,8 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 			(bullet_x <= center_cursor.x && bullet_y >= center_cursor.y && direction_y == DOWN && direction_x == RIGHT) ||
 			(bullet_x >= center_cursor.x && bullet_y <= center_cursor.y && direction_y == UP && direction_x == LEFT) ||
 			(bullet_x >= center_cursor.x && bullet_y >= center_cursor.y && direction_y == DOWN && direction_x == LEFT)) &&
-			(bullet_x <= WINDOWXLENGTH / 2) && (bullet_x >= -(WINDOWXLENGTH / 2)) &&	//bullet within play screen
-			(bullet_y <= WINDOWYLENGTH / 2) && (bullet_y >= -(WINDOWYLENGTH / 2)))
+			(bullet_x <= WINDOWLENGTH_X / 2) && (bullet_x >= -(WINDOWLENGTH_X / 2)) &&	//bullet within play screen
+			(bullet_y <= WINDOWLENGTH_Y / 2) && (bullet_y >= -(WINDOWLENGTH_Y / 2)))
 		{
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			AEMtx33 weapon_scale = { 0 };

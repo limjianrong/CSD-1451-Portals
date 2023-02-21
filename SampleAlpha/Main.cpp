@@ -43,7 +43,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, WINDOWXLENGTH, WINDOWYLENGTH, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, WINDOWLENGTH_X, WINDOWLENGTH_Y, 1, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("CSD 1451 Portals");
