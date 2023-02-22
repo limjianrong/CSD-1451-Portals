@@ -98,6 +98,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="boss.cpp" />
     <ClCompile Include="draw_level.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameStateList.hpp" />
@@ -113,6 +114,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="weapon_fire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="boss.hpp" />
     <ClInclude Include="draw_level.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="GameStateManager.hpp" />

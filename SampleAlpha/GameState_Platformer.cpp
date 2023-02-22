@@ -16,6 +16,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "GameStateList.hpp"
 
 #include "Player.hpp"
+#include "boss.hpp"
 #include "Utilities.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
@@ -36,6 +37,7 @@ bool isPaused;
 void GameStatePlatformerLoad(void) {
 	initialize_player();
 	initialize_portal();
+	initialize_boss();
 	draw_level_init();
 	enemy_init();
 
@@ -96,6 +98,7 @@ void GameStatePlatformerUpdate(void) {
 	else {
 		update_player();
 		update_level();
+		update_boss();
 	}
 
 
@@ -114,6 +117,7 @@ void GameStatePlatformerDraw(void) {
 	draw_player();
 	draw_enemy();
 	draw_level();
+	draw_boss();
 
 	// -------------- Pause menu --------------
 	if (AEInputCheckReleased(AEVK_P)) {
