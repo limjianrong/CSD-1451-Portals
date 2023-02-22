@@ -137,7 +137,7 @@ void update_player() {
 
 	// ---------  Portal creation   -----------
 	draw_portal(player.x, player.y);
-
+	AEVec2Set(&player.center, player.x, player.y);
 
 	// ------------  Collision   --------------
 	player_collision();
