@@ -4,11 +4,8 @@
 
 enum { UP, DOWN };
 struct boss {
-	f32 x{};
-	f32 y{};
-	AEMtx33 scale{};
-	AEMtx33 translate{};
-	AEMtx33 matrix{};
+	f32 x_pos{ }, y_pos{ };
+	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* picture{};
 	const int width{ 200 };
@@ -24,12 +21,10 @@ struct laser_beam {
 	f32 y{};
 	f32 width{300};
 	f32 height{50};
-	AEMtx33 scale{};
-	AEMtx33 translate{};
-	AEMtx33 rotate{};
-	AEMtx33 matrix{};
+	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
 	AEVec2 center{};
 	AEGfxVertexList* mesh{};
+	AEGfxTexture* picture{};
 };
 
 

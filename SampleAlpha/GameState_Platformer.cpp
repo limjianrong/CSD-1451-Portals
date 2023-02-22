@@ -9,25 +9,33 @@ Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
-
 #include "AEEngine.h"
+
+// ----- Game States -----
 #include "GameStateManager.hpp"
 #include "GameState_Mainmenu.hpp"
 #include "GameStateList.hpp"
 
+// ----- Player related -----
 #include "Player.hpp"
-#include "boss.hpp"
-#include "Utilities.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
-#include "draw_level.hpp"
+
+// ----- Enemies related -----
 #include "Enemy.hpp"
+#include "boss.hpp"
+
+// ----- Others -----
+#include "Utilities.hpp"
+#include "draw_level.hpp"
+
 
 //#include <iostream>
 extern AEGfxVertexList* pMesh; // Mesh
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 extern s8 Albam_fontID; // FontID
 extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
+AEGfxTexture* background2Tex; // Background texture
 f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 bool isPaused;
 /*!**************************************************************************************************
@@ -35,12 +43,13 @@ bool isPaused;
   In charge of loading platformer game
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
+	background2Tex = AEGfxTextureLoad("Assets/background/Backgrounds/backgroundColorFall.png");
+
 	initialize_player();
 	initialize_portal();
-	initialize_boss();
 	draw_level_init();
 	enemy_init();
-
+	initialize_boss();
 }
 /*!**************************************************************************************************
 \brief
@@ -113,11 +122,24 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
+
+	// ------- Background -------
+	AEMtx33Scale(&scale, WINDOWLENGTH_X + 20, WINDOWLENGTH_Y + 20);
+	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Rot(&rotate, PI);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxTextureSet(background2Tex, 0, 0);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	draw_boss();
 	draw_player();
 	draw_enemy();
 	draw_level();
-	draw_boss();
+
 
 	// -------------- Pause menu --------------
 	if (AEInputCheckReleased(AEVK_P)) {
@@ -160,46 +182,6 @@ void GameStatePlatformerDraw(void) {
 			else AEGfxTextureSet(buttonNotPressed, 0, 0);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
-
-
-		/*
-		// Resume button
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		// Restart button
-		AEMtx33Scale(&scale, WINDOWLENGTH_X/4, WINDOWLENGTH_Y/12);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		// Settings button
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		// Main menu button
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, 0, WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		*/
 
 		// --------- Texts ---------
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);

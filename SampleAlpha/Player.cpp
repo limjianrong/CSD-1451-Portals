@@ -102,6 +102,19 @@ void draw_player() {
 	AEGfxPrint(Albam_fontID, level, -1.0f, 0.7f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, XP, -1.0f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
 	
+
+
+	// --------- Portal draw & update ---------
+	draw_portal(player.x, player.y);
+	AEVec2Set(&player.center, player.x, player.y);
+
+	// ---------  Firing of bullets   -----------
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+		weapon_fire(player.x, player.y, 1);
+	}
+	else {
+		weapon_fire(player.x, player.y, 0);
+	}
 }
 
 void update_player() {
@@ -128,16 +141,17 @@ void update_player() {
 	}
 
 	// ---------  Firing of bullets   -----------
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(player.x, player.y, 1);
 	}
 	else {
 		weapon_fire(player.x, player.y, 0);
-	}
+	}*/
 
 	// ---------  Portal creation   -----------
-	draw_portal(player.x, player.y);
-	AEVec2Set(&player.center, player.x, player.y);
+	//draw_portal(player.x, player.y);
+	//AEVec2Set(&player.center, player.x, player.y);
+
 
 	// ------------  Collision   --------------
 	player_collision();

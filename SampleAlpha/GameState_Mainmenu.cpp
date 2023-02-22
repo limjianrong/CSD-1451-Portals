@@ -10,12 +10,16 @@ AEGfxVertexList* button;
 extern AEMtx33 scale, rotate, translate, transform;
 AEGfxTexture* buttonNotPressed, * buttonPressed;
 
+// ----- Background -----
+AEGfxTexture* backgroundTex;
+
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
 extern f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 
 void GameStateMainmenuLoad(void) {
 	buttonNotPressed = AEGfxTextureLoad("Assets/uipack/PNG/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/uipack/PNG/blue_button05.png");
+	backgroundTex = AEGfxTextureLoad("Assets/background/Backgrounds/backgroundForest.png");
 	button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
@@ -77,6 +81,16 @@ void GameStateMainmenuDraw(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
+
+	// ------- Background -------
+	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
+	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Rot(&rotate, PI);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxTextureSet(backgroundTex, 0, 0);
+	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 27 ; i+=4) {
