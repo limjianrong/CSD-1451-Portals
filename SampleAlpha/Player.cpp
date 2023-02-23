@@ -109,12 +109,12 @@ void draw_player() {
 	AEVec2Set(&player.center, player.x, player.y);
 
 	// ---------  Firing of bullets   -----------
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(player.x, player.y, 1);
 	}
 	else {
 		weapon_fire(player.x, player.y, 0);
-	}
+	}*/
 }
 
 void update_player() {

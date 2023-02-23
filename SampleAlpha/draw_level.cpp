@@ -19,7 +19,7 @@ AEGfxTexture* rect;
 AEGfxVertexList* rectmesh;
 
 extern Player_stats player;
-Player_stats* pointer_to_player{ &player };
+//Player_stats* pointer_to_player{ &player };
 extern Enemy_stats enemy1;
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
@@ -39,7 +39,7 @@ void draw_level() {
 	blocks(4, -100, -50);
 	blocks(6, 200, 100);
 	blocks(4, 650, 0);
-	blocks(4, 1100, -100);
+	blocks(14, 1100, -200);
 
 	//AEGfxMeshFree(rectmesh);
 	//AEGfxTextureUnload(rect);
@@ -47,14 +47,15 @@ void draw_level() {
 }
 
 void update_level() {
-	//std::cout << player.x << " " << player.y << std::endl;
-	if (
-		check_player_in_gravity_zone(player)) {
-		player.y += GRAVITY;
-	}
-	else {
-		pointer_to_player->y -= GRAVITY;
-	}
+	player.y -= GRAVITY;
+	//if (
+	//	check_player_in_gravity_zone(player)) {
+	//	player.y += GRAVITY;
+	//}
+	//else {
+	//	player.y -= GRAVITY;
+	//	//pointer_to_player->y -= GRAVITY;
+	//}
 
 
 }

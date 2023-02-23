@@ -1,21 +1,22 @@
 #include "AEEngine.h"
-#include <iostream>
+
+#include "GameState_Platformer.hpp"
 #include "Utilities.hpp"
 #include "boss.hpp"
 #include "Player.hpp"
+#include "weapon_fire.hpp"
+
+#include <iostream>
 
 extern Player_stats player;
-struct boss boss;
-struct laser_beam laser_beam;
+Boss boss;
+Laser_beam laser_beam;
 int taken_damage{};
 
 void initialize_boss() {
 	laser_beam.mesh = boss.mesh = create_Square_Mesh();
 	boss.picture= AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/uipack/PNG/red_button02.png");
-	if (!boss.picture) {
-		std::cout << "Failed to load boss picture}";
-	}
 	boss.x_pos = static_cast<f32>(AEGetWindowWidth()+350.0f);
 	boss.y_pos = static_cast<f32>(-AEGetWindowHeight() / 2 + boss.height/2);
 
@@ -42,6 +43,8 @@ void draw_boss() {
 		AEGfxSetTransform(laser_beam.matrix.m);
 		AEGfxMeshDraw(laser_beam.mesh, AE_GFX_MDM_TRIANGLES);
 	}
+
+	bullet_draw();
 }
 
 void update_boss() {
@@ -59,6 +62,9 @@ void update_boss() {
 			boss.direction = UP;
 		}
 	}
+
+	bullet_update();
+
 	//laser_beam is firing left, use boss.x - xxx to get the center of laser beam
 	AEVec2Set(&laser_beam.center, boss.x_pos-laser_beam.width/2, boss.y_pos);
 	boss_laser_beam();

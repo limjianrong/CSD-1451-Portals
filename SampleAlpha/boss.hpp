@@ -3,26 +3,29 @@
 
 
 enum { UP, DOWN };
-struct boss {
+
+struct Boss{
 	f32 x_pos{ }, y_pos{ };
+	f32 width{ 200 };
+	f32 height{ 200 };
+	f32 velocity{ 100 };
+	int direction{ UP };
+	AEVec2 center{ 0,0 };
+
+	// ---- Mesh & Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* picture{};
-	const int width{ 200 };
-	const int height{ 200 };
-	const int velocity{ 100 };
-	int direction{ UP };
-	AEVec2 center{0,0};
 };
 
-struct laser_beam {
+struct Laser_beam{
 	int status{};
-	f32 x{};
-	f32 y{};
-	f32 width{300};
-	f32 height{50};
-	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
+	f32 x{}, y{};
+	f32 width{300}, height{50};
 	AEVec2 center{};
+
+	// ---- Mesh & Texture ----
+	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* picture{};
 };
