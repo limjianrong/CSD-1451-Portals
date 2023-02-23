@@ -19,3 +19,5 @@ void GameStatePlatformerDraw(void);
 void GameStatePlatformerFree(void);
 void GameStatePlatformerUnload(void);
 
+extern bool isPaused;
+

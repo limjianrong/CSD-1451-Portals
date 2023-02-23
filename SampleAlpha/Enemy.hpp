@@ -33,3 +33,4 @@ struct Enemy_stats {
 	f32 x, y, rotation{ 0.0f };
 	s32 Hp{ 5 };
 };
+
