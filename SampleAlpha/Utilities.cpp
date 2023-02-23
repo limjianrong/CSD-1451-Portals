@@ -51,8 +51,8 @@ AEVec2 get_cursor_center_position() {
 
 	// X: right +ve, left -ve		Y: up +ve, down -ve
 	AEVec2 center_cursor; // cursor coords, origin is middle of screen
-	s32 x_middle_cursor = x_cursor - WINDOWXLENGTH / 2;
-	s32 y_middle_cursor = WINDOWYLENGTH / 2 - y_cursor;
+	s32 x_middle_cursor = x_cursor - WINDOWLENGTH_X / 2;
+	s32 y_middle_cursor = WINDOWLENGTH_Y / 2 - y_cursor;
 	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
 	return center_cursor;
 }

@@ -36,7 +36,7 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 int direction_x, direction_y;
 int prevState;
 bool isRunning;
-extern Enemy_stats enemy1;
+extern Enemy_stats enemy1, enemy2;
 
 f32 bullet_x, bullet_y;
 f32 adj, opp;
@@ -52,7 +52,7 @@ enum Bullet_Direction { LEFT, RIGHT, UP, DOWN };
 void bullet_initialise(void) {
 
 	// load texture
-	bulletA = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile011.png");
+	bulletA = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
 	// create mesh
 	shootMesh = create_Square_Mesh();
 
@@ -82,9 +82,9 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 	AEVec2Set(&player_center, player_x, player_y);
 
 	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON
-	if (AEInputCheckPrev(AEVK_LBUTTON) && AEInputCheckCurr(AEVK_LBUTTON)) {
+	/*if (AEInputCheckPrev(AEVK_LBUTTON) && AEInputCheckCurr(AEVK_LBUTTON)) {
 		if (AETestPointToRect(&center_cursor, &player_center, 50.0f, 50.0f)) AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	}
+	}*/
 
 	if (center_cursor.y <= player_center.y) {		// cursor below player
 		opp = center_cursor.y - player_center.y;
@@ -104,7 +104,7 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 		direction_x = LEFT;
 	}
 
-	f32 speed = 5.0f;
+	f32 speed = 15.0f;
 	f64 angle = AEATan(opp / adj); // get angle between cursor & player (in rad)
 	AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
 	AEVec2Scale(&normalized_vector, &normalized_vector, speed);
@@ -133,8 +133,8 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 			(bullet_x <= center_cursor.x && bullet_y >= center_cursor.y && direction_y == DOWN && direction_x == RIGHT) ||
 			(bullet_x >= center_cursor.x && bullet_y <= center_cursor.y && direction_y == UP && direction_x == LEFT) ||
 			(bullet_x >= center_cursor.x && bullet_y >= center_cursor.y && direction_y == DOWN && direction_x == LEFT)) &&
-			(bullet_x <= WINDOWXLENGTH / 2) && (bullet_x >= -(WINDOWXLENGTH / 2)) &&	//bullet within play screen
-			(bullet_y <= WINDOWYLENGTH / 2) && (bullet_y >= -(WINDOWYLENGTH / 2)))
+			(bullet_x <= WINDOWLENGTH_X / 2) && (bullet_x >= -(WINDOWLENGTH_X / 2)) &&	//bullet within play screen
+			(bullet_y <= WINDOWLENGTH_Y / 2) && (bullet_y >= -(WINDOWLENGTH_Y / 2)))
 		{
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			AEMtx33 weapon_scale = { 0 };
@@ -158,10 +158,15 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 			bullet_y = player_center.y;
 		}
 
-		if (isbullet_enemy_colliding(bullet_x, bullet_y) == TRUE) {
+		if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1.x, enemy1.y) == TRUE) {
 			bullet_x = player_center.x;
 			bullet_y = player_center.y;
 			--enemy1.Hp;
+		}
+		if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy2.x, enemy2.y) == TRUE) {
+			bullet_x = player_center.x;
+			bullet_y = player_center.y;
+			--enemy2.Hp;
 		}
 	}
 
@@ -189,11 +194,17 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 			AEGfxTextureSet(bulletA, 0, 0);
 			AEGfxMeshDraw(shootMesh, AE_GFX_MDM_TRIANGLES);
 
-			if (isbullet_enemy_colliding(bullet_x, bullet_y) == TRUE) {
+			if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1.x, enemy1.y) == TRUE) {
 				bullet_x = player_center.x;
 				bullet_y = player_center.y;
 				isRunning = FALSE;
 				--enemy1.Hp;
+			}
+			if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy2.x, enemy2.y) == TRUE) {
+				bullet_x = player_center.x;
+				bullet_y = player_center.y;
+				isRunning = FALSE;
+				--enemy2.Hp;
 			}
 		}
 		else // if bullet reached cursor
@@ -221,8 +232,8 @@ void weapon_fire (f32 player_x, f32 player_y, int state) {
 \return
 	TRUE if bullet is colliding with enemy, else FALSE
 *******************************************************************************************************/
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y) {
-	f32 dist_bullet2enemy = sqrt((bullet_x - enemy1.x) * (bullet_x - enemy1.x) + (bullet_y - enemy1.y) * (bullet_y - enemy1.y));
+bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y) {
+	f32 dist_bullet2enemy = sqrt((bullet_x - enemy_x) * (bullet_x - enemy_x) + (bullet_y - enemy_y) * (bullet_y - enemy_y));
 	if (dist_bullet2enemy <= 25) return TRUE;
 	else return FALSE;
 }

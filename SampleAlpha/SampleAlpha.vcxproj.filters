@@ -48,10 +48,10 @@
     <ClCompile Include="GameState_Mainmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main_menu.cpp">
+    <ClCompile Include="GameState_Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameState_Settings.cpp">
+    <ClCompile Include="boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameState_Settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="boss.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
