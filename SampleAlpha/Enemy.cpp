@@ -188,3 +188,7 @@ f32 enemy_update (f32 enemy_x) {
 	//AEGfxMeshFree(enemy_mesh);
 	//AEGfxTextureUnload(enemy);
 }
+
+void enemy_collision(Player_stats player){
+
+}

@@ -108,6 +108,7 @@ void GameStatePlatformerUpdate(void) {
 		update_player();
 		update_level();
 		update_boss();
+		move_update();
 	}
 
 
