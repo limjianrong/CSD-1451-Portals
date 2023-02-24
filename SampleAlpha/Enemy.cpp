@@ -28,12 +28,12 @@
 #include "GameState_Platformer.hpp"
 
 // ----- Mesh & Texture -----
-AEGfxTexture* enemy;
-AEGfxVertexList* enemy_mesh;
+AEGfxTexture* enemy1;
+AEGfxVertexList* enemy1_mesh;
 
 // ----- Enemy -----
-Enemy_stats enemy1, enemy2;
-bool enemy1_Dead, enemy2_Dead;
+Enemy1_stats enemy1_a, enemy1_b;
+bool enemy1_a_Dead, enemy1_b_Dead;
 
 // ----- Player -----
 extern Player_stats player;
@@ -47,17 +47,17 @@ extern bool isPaused;
 *******************************************************************************************************/
 void enemy_init() {
 
-	enemy = AEGfxTextureLoad("Assets/enemy.png");
+	enemy1 = AEGfxTextureLoad("Assets/enemy.png");
 	// Saving the mesh (list of triangles) in enemy_mesh
-	enemy_mesh = create_Square_Mesh();
+	enemy1_mesh = create_Square_Mesh();
 
 
 	// FOR NOW ONLY
-	enemy1.x = -300.0f;
-	enemy1.y = -110.0f;
+	enemy1_a.x = -300.0f;
+	enemy1_a.y = -110.0f;
 
-	enemy2.x = 100.0f;
-	enemy2.y = 40.0f;
+	enemy1_b.x = 100.0f;
+	enemy1_b.y = 40.0f;
 }
 
 /*!**************************************************************************************************
@@ -66,7 +66,7 @@ void enemy_init() {
 *******************************************************************************************************/
 void draw_enemy() {
 
-	if (enemy1.Hp > 0 && enemy1_Dead == FALSE) {
+	if (enemy1_a.Hp > 0 && enemy1_a_Dead == FALSE) {
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		// Set the tint to white, so that the sprite can 
@@ -77,7 +77,7 @@ void draw_enemy() {
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		//AEGfxSetTransparency(1.0f);
 		// Set the texture
-		AEGfxTextureSet(enemy, 0, 0);
+		AEGfxTextureSet(enemy1, 0, 0);
 		// Create a scale matrix
 		AEMtx33 scale = { 0 };
 		AEMtx33Scale(&scale, 60.f, 80.f);
@@ -87,7 +87,7 @@ void draw_enemy() {
 		// Create a translation matrix that translates by
 		// 100 in the x-axis and 100 in the y-axis
 		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, enemy1.x, enemy1.y);
+		AEMtx33Trans(&translate, enemy1_a.x, enemy1_a.y);
 		// Concatenate the matrices (TRS)
 		AEMtx33 transform = { 0 };
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -95,18 +95,18 @@ void draw_enemy() {
 		// Choose the transform to apply onto the vertices 
 		// of the mesh that we are choose to draw in the next line.
 		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(enemy, 0, 0);
+		AEGfxTextureSet(enemy1, 0, 0);
 		// With the above settings, draw the mesh.
-		AEGfxMeshDraw(enemy_mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 
 
 		// updates enemy position
-		enemy1.x = enemy_update(enemy1.x);
+		enemy1_a.x = enemy_update(enemy1_a.x);
 	}
 	// ------- XP for player -------
-	else if (enemy1.Hp <= 0 && enemy1_Dead == FALSE) {
+	else if (enemy1_a.Hp <= 0 && enemy1_a_Dead == FALSE) {
 		player.XP += 10;
-		enemy1_Dead = TRUE;
+		enemy1_a_Dead = TRUE;
 	}
 
 
@@ -115,7 +115,7 @@ void draw_enemy() {
 	// ----------------  FOR NOW ONLY  ----------------
 	// -------------- (TESTING PURPOSES) --------------
 
-	if (enemy2.Hp > 0 && enemy2_Dead == FALSE) {
+	if (enemy1_b.Hp > 0 && enemy1_b_Dead == FALSE) {
 		// Tell the engine to get ready to draw something with texture.
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		// Set the tint to white, so that the sprite can 
@@ -126,7 +126,7 @@ void draw_enemy() {
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		//AEGfxSetTransparency(1.0f);
 		// Set the texture
-		AEGfxTextureSet(enemy, 0, 0);
+		AEGfxTextureSet(enemy1, 0, 0);
 		// Create a scale matrix
 		AEMtx33 scale = { 0 };
 		AEMtx33Scale(&scale, 60.f, 80.f);
@@ -136,7 +136,7 @@ void draw_enemy() {
 		// Create a translation matrix that translates by
 		// 100 in the x-axis and 100 in the y-axis
 		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, enemy2.x, enemy2.y);
+		AEMtx33Trans(&translate, enemy1_b.x, enemy1_b.y);
 		// Concatenate the matrices (TRS)
 		AEMtx33 transform = { 0 };
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -144,18 +144,18 @@ void draw_enemy() {
 		// Choose the transform to apply onto the vertices 
 		// of the mesh that we are choose to draw in the next line.
 		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(enemy, 0, 0);
+		AEGfxTextureSet(enemy1, 0, 0);
 		// With the above settings, draw the mesh.
-		AEGfxMeshDraw(enemy_mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 
 
 		// updates enemy position
-		enemy2.x = enemy_update(enemy2.x);
+		enemy1_b.x = enemy_update(enemy1_b.x);
 	}
 	// ------- XP for player -------
-	else if (enemy2.Hp <= 0 && enemy2_Dead == FALSE) {
+	else if (enemy1_b.Hp <= 0 && enemy1_b_Dead == FALSE) {
 		player.XP += 10;
-		enemy2_Dead = TRUE;
+		enemy1_b_Dead = TRUE;
 	}
 
 	
@@ -166,10 +166,10 @@ void draw_enemy() {
 	Calculates current enemy position based on total number of frames elapsed.
 
 \param[in] EnemyCenter
-	x and y coordinate of ememy
+	x coordinate of ememy
 
 \return
-	new EnemyCenter
+	new enemy x position
 *******************************************************************************************************/
 f32 enemy_update (f32 enemy_x) {
 	
@@ -190,5 +190,11 @@ f32 enemy_update (f32 enemy_x) {
 }
 
 void enemy_collision(Player_stats player){
+	AEVec2 enemy1_vec{ enemy_update(enemy1_a.x), enemy1_a.y};
+	AEVec2 player_vec{ player.x , player.y };
 
+	if (AETestRectToRect(&enemy1_vec, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		// to be edited to player.Hp
+		player.Lives -= 1;
+	}
 }

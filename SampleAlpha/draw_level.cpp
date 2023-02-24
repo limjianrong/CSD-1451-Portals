@@ -22,7 +22,7 @@ AEGfxVertexList* rectmesh, *trapmesh;
 
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
-extern Enemy_stats enemy1;
+extern Enemy1_stats enemy1_a;
 
 move_block move1;
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp

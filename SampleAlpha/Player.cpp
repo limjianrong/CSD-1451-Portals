@@ -16,6 +16,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
 #include "draw_level.hpp"
+#include "Enemy.hpp"
 
 // for fontID
 #include "GameState_Mainmenu.hpp"
@@ -91,8 +92,37 @@ void draw_player() {
 	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
 
 
-	if (player.Level == 0) level = (s8*)"Level: 0";
-	else if (player.Level == 1) level = (s8*)"Level: 1";
+	//if (player.Level == 0) level = (s8*)"Level: 0";
+	//else if (player.Level == 1) level = (s8*)"Level: 1";
+
+	s8* notif = nullptr;
+
+	if (player.Level == 0) {
+		level = (s8*)"Level: 0";
+		f64 timer = 2.0;
+		notif = new s8[20];
+		strcpy_s(notif, 20, "Normal portal range");
+		//notif = (s8*)"Normal portal range";
+		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
+		timer -= AEFrameRateControllerGetFrameCount();
+		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
+			delete[] notif; // use delete[] to free array memory
+			notif = nullptr; // set to nullptr to avoid potential memory issues
+		}
+	}
+	else if (player.Level == 1) {
+		level = (s8*)"Level: 1";
+		f64 timer = 2.0;
+		notif = new s8[40];
+		strcpy_s(notif, 40, "LEVEL UP: Increased portal range");
+		//notif = (s8*)"LEVEL UP: Increased portal range";
+		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
+		timer -= AEFrameRateControllerGetFrameCount();
+		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
+			delete[] notif; // use delete[] to free array memory
+			notif = nullptr; // set to nullptr to avoid potential memory issues
+		}
+	}
 
 	if (player.XP == 0) XP = (s8*)"XP: 0";
 	else if (player.XP == 10) XP = (s8*)"XP: 10";
@@ -155,6 +185,7 @@ void update_player() {
 
 	// ------------  Collision   --------------
 	player_collision();
+	enemy_collision(player);
 
 	// -------------  Camera   ---------------
 	AEGfxSetCamPosition(cameraX, cameraY);

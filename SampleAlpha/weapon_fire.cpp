@@ -43,7 +43,7 @@ int prevState;
 bool isRunning;
 
 // ----- Objects -----
-extern Enemy_stats enemy1, enemy2;
+extern Enemy1_stats enemy1_a, enemy1_b;
 extern Player_stats player;
 extern Boss boss;
 
@@ -165,15 +165,15 @@ void bullet_update() {
 
 
 	// ----- Bullet collision with enemy1 -----
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1.x, enemy1.y) == TRUE) {
+	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_a.x, enemy1_a.y) == TRUE) {
 		bullet_x = boss.x_pos;
 		bullet_y = boss.y_pos;
-		--enemy1.Hp;
+		--enemy1_a.Hp;
 	}
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy2.x, enemy2.y) == TRUE) {
+	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_b.x, enemy1_b.y) == TRUE) {
 		bullet_x = boss.x_pos;
 		bullet_y = boss.y_pos;
-		--enemy2.Hp;
+		--enemy1_b.Hp;
 	}
 }
 

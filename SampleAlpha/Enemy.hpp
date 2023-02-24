@@ -23,14 +23,16 @@
 
 #include "AEEngine.h"
 
-//extern AEVec2 EnemyCenter;
+#define ENEMY1_HEIGHT 80.f
+#define ENEMY1_WIDTH 50.f
 
 void enemy_init();
 void draw_enemy();
-f32 enemy_update(f32 enemy1_x);
+f32 enemy_update(f32 enemy_x);
+void enemy_collision(Player_stats player);
 
-struct Enemy_stats {
-	f32 x, y, rotation{ 0.0f };
+struct Enemy1_stats {
+	f32 x{}, y{}, rotation{0.0f};
 	s32 Hp{ 5 };
 };
 
