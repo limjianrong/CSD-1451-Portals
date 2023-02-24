@@ -15,10 +15,9 @@ int taken_damage{};
 
 void initialize_boss() {
 	laser_beam.mesh = boss.mesh = create_Square_Mesh();
-	boss.picture= AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/uipack/PNG/red_button02.png");
-	boss.x_pos = static_cast<f32>(AEGetWindowWidth()+350.0f);
-	boss.y_pos = static_cast<f32>(-AEGetWindowHeight() / 2 + boss.height/2);
 
 }
 
@@ -29,8 +28,18 @@ void draw_boss() {
 	AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
 	AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
 	AEGfxSetTransform(boss.matrix.m);
-	AEGfxTextureSet(boss.picture, 0.0f, 0.0f);
+	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 	AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+
+	// --- Boss dead ---
+	if (boss.Hp <= 0) {
+		AEMtx33Scale(&boss.scale, boss.width, boss.height);
+		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
+		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
+		AEGfxSetTransform(boss.matrix.m);
+		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
+		AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+	}
 
 	// -------------  Attack 1 (Laser)   ---------------
 	if (laser_beam.status == TRUE) {
@@ -44,12 +53,13 @@ void draw_boss() {
 		AEGfxMeshDraw(laser_beam.mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
+	// -------------  Attack 2 (Bullet)   ---------------
 	bullet_draw();
 }
 
 void update_boss() {
 	//boss movement UP and DOWN
-	if (boss.direction == UP) {
+	/*if (boss.direction == UP) {
 		boss.y_pos += AEFrameRateControllerGetFrameTime() * boss.velocity;
 		if (boss.y_pos+ static_cast<f32>(boss.height/2) > static_cast<f32>(AEGetWindowHeight() / 2)){
 		boss.direction = DOWN;
@@ -61,7 +71,7 @@ void update_boss() {
 		if (boss.y_pos- static_cast<f32>(boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
 			boss.direction = UP;
 		}
-	}
+	}*/
 
 	bullet_update();
 
@@ -96,7 +106,7 @@ void boss_laser_beam() {
 
 		if (AETestRectToRect(&laser_beam.center, laser_beam.width, laser_beam.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 			//std::cout << "\ncollided";
-			std::cout << "\n health is" << player.Lives;
+			//std::cout << "\n health is" << player.Lives;
 			if (taken_damage == 0) {
 				--player.Lives;
 				taken_damage = 1;

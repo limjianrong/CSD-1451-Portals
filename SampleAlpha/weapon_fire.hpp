@@ -22,7 +22,7 @@
 	Returns true if bullet is colliding with enemy, else returns false
 *****************************************************************************************************/
 
-void bullet_initialise(void);
+void bullet_initialise();
 void weapon_fire(f32 player_x, f32 player_y, int state);
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
 

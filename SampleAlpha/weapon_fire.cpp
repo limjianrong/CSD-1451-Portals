@@ -28,9 +28,10 @@
 #include "Enemy.hpp"
 #include "boss.hpp"
 
+#include <iostream>
 // ----- Mesh & Texture -----
 AEGfxVertexList* shootMesh;
-AEGfxTexture* bulletA;
+AEGfxTexture* bulletTex;
 
 // ----- Cursor -----
 AEVec2 center_cursor; // cursor coords, origin is middle of screen
@@ -48,8 +49,9 @@ extern Boss boss;
 
 f32 bullet_x, bullet_y;
 f32 adj, opp;
-f64 angle;
-#define speed 15.0f
+f32 angle;
+f32 dist_boss2bullet, dist_boss2player;
+#define speed 5.0f
 
 //enum Bullet_Direction { LEFT, RIGHT, UP, DOWN };
 
@@ -59,10 +61,10 @@ f64 angle;
 	Loads texture being used for bullet
 	Save created mesh into AEGfxVertexList
 *******************************************************************************************************/
-void bullet_initialise(void) {
+void bullet_initialise() {
 
 	// load texture
-	bulletA = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
 	// create mesh
 	shootMesh = create_Square_Mesh();
 
@@ -72,50 +74,105 @@ void bullet_update() {
 
 
 	// ----------  Boss  ----------
-	if (player.y <= boss.y_pos)			// Player below boss
-		opp = player.y - boss.y_pos;
 
-	else if (player.y >= boss.y_pos)	// Player above boss
-		opp = player.y - boss.y_pos;
+	//if (player.y <= boss.y_pos) {			// Player below boss
+	//	opp = player.y - boss.y_pos;
+	//	//direction_y = DOWN;
+	//}
+	//else if (player.y >= boss.y_pos) {		// Player above boss
+	//	opp = boss.y_pos - player.y;
+	//	//direction_y = UP;
+	//}
 
-	if (player.x >= boss.x_pos)			// Player right of boss
+	//if (player.x >= boss.x_pos) {			// Player right of boss
+	//	adj = player.x - boss.x_pos;
+	//	//direction_x = RIGHT;
+	//}
+	//else if (player.x <= boss.x_pos) {		// Player left of boss
+	//	adj = boss.x_pos - player.x;
+	//	//direction_x = LEFT;
+	//}
+	if (player.y <= boss.y_pos) {			// Player below boss
+		opp = player.y - boss.y_pos;
+		//direction_y = DOWN;
+	}
+	else if (player.y >= boss.y_pos) {		// Player above boss
+		opp = boss.y_pos - player.y;
+		//direction_y = UP;
+	}
+
+	if (player.x >= boss.x_pos) {			// Player right of boss
 		adj = player.x - boss.x_pos;
-
-	else if (player.x <= boss.x_pos)	// Player left of boss
+		//direction_x = RIGHT;
+	}
+	else if (player.x <= boss.x_pos) {		// Player left of boss
 		adj = boss.x_pos - player.x;
+		//direction_x = LEFT;
+	}
 
-
+	// ---- Normalization ----
 	angle = AEATan(opp / adj); // get angle between cursor & player (in rad)
 	AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
 	AEVec2Scale(&normalized_vector, &normalized_vector, speed);
 
-	// distance between player -> bullet, player -> cursor
-	//f32 dist_player2bullet = sqrt((bullet_x - player_center.x) * (bullet_x - player_center.x) + (bullet_y - player_center.y) * (bullet_y - player_center.y));
-	//f32 dist_player2cursor = sqrt((player_center.x - center_cursor.x) * (player_center.x - center_cursor.x) + (player_center.y - center_cursor.y) * (player_center.y - center_cursor.y));
+	// distance between boss -> bullet, boss -> player
+	dist_boss2bullet = sqrt((bullet_x - boss.x_pos) * (bullet_x - boss.x_pos) + (bullet_y - boss.y_pos) * (bullet_y - boss.y_pos));
+	dist_boss2player = sqrt((boss.x_pos - player.x) * (boss.x_pos - player.x) + (boss.y_pos - player.y) * (boss.y_pos - player.y));
 
-	
 
-	// ----- Movement of bullet from boss to player -----
-	if (player.y <= boss.y_pos) bullet_y += normalized_vector.y;
-	else if (player.y >= boss.y_pos) bullet_y -= normalized_vector.y;
-	if (player.x >= boss.x_pos) bullet_x += normalized_vector.x;
-	else if (player.x <= boss.x_pos) bullet_x -= normalized_vector.x;
+	// If player is within boss range (300x300 FOR NOW)
+	if (player.x >= (boss.x_pos - boss.range_x) && player.x <= (boss.x_pos + boss.range_x) &&
+		player.y >= (boss.y_pos - boss.range_y) && player.y <= (boss.y_pos + boss.range_y)) {
 
-	if (bullet_x == player.x && bullet_y == player.y) // loops bullet
-	{
+		// ---- Loops bullet ----
+		if (dist_boss2bullet < dist_boss2player) {
+
+			// ----- Movement of bullet from boss to player -----
+			if (player.y <= boss.y_pos) bullet_y += normalized_vector.y;
+			else if (player.y >= boss.y_pos) bullet_y -= normalized_vector.y;
+			if (player.x >= boss.x_pos) bullet_x += normalized_vector.x;
+			else if (player.x <= boss.x_pos) bullet_x -= normalized_vector.x;
+			
+		}
+		else{
+			// --- Resets bullet ---
+			bullet_x = boss.x_pos;
+			bullet_y = boss.y_pos;
+		}
+	}
+	else { // No longer in range of boss
+
+			// --- Resets bullet ---
+			bullet_x = boss.x_pos;
+			bullet_y = boss.y_pos;
+	}
+
+	// ----- Bullet collision with player -----
+	if (isbullet_enemy_colliding(bullet_x, bullet_y, player.x, player.y) == TRUE) {
 		bullet_x = boss.x_pos;
 		bullet_y = boss.y_pos;
+		--player.Hp;
 	}
+
+	// ----- Bullet collision with boss -----
+	if (isbullet_enemy_colliding(bullet_x, bullet_y, boss.x_pos, boss.y_pos) == TRUE) {
+		bullet_x = boss.x_pos;
+		bullet_y = boss.y_pos;
+		--boss.Hp;
+	}
+
+
+
 
 	// ----- Bullet collision with enemy1 -----
 	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1.x, enemy1.y) == TRUE) {
-		bullet_x = player_center.x;
-		bullet_y = player_center.y;
+		bullet_x = boss.x_pos;
+		bullet_y = boss.y_pos;
 		--enemy1.Hp;
 	}
 	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy2.x, enemy2.y) == TRUE) {
-		bullet_x = player_center.x;
-		bullet_y = player_center.y;
+		bullet_x = boss.x_pos;
+		bullet_y = boss.y_pos;
 		--enemy2.Hp;
 	}
 }
@@ -123,23 +180,26 @@ void bullet_update() {
 
 void bullet_draw() {
 
-	if (!(bullet_x == player.x && bullet_y == player.y))
-	{
-		AEMtx33 weapon_scale = { 0 };
-		AEMtx33Scale(&weapon_scale, 20.f, 20.f); // scaling it up
-		AEMtx33 weapon_translate = { 0 };
-		AEMtx33Trans(&weapon_translate, bullet_x, bullet_y); // shifts along x & y axis
-		AEMtx33 weapon_rotate = { 0 };
-		AEMtx33Rot(&weapon_rotate, angle); // rotation
-		AEMtx33 weapon_transform = { 0 };
-		AEMtx33Concat(&weapon_transform, &weapon_rotate, &weapon_scale);
-		AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
-		AEGfxSetTransform(weapon_transform.m);
-		// Set the texture
-		AEGfxTextureSet(bulletA, 0, 0);
-		AEGfxMeshDraw(shootMesh, AE_GFX_MDM_TRIANGLES);
+	if (player.x >= (boss.x_pos - boss.range_x) && player.x <= (boss.x_pos + boss.range_x) &&
+		player.y >= (boss.y_pos - boss.range_y) && player.y <= (boss.y_pos + boss.range_y)) {
 
+		// ---- Loops bullet ----
+		if (dist_boss2bullet < dist_boss2player) {
+			AEMtx33 weapon_scale = { 0 };
+			AEMtx33Scale(&weapon_scale, 20.f, 20.f); // scaling it up
+			AEMtx33 weapon_translate = { 0 };
+			AEMtx33Trans(&weapon_translate, bullet_x, bullet_y); // shifts along x & y axis
+			AEMtx33 weapon_rotate = { 0 };
+			AEMtx33Rot(&weapon_rotate, angle); // rotation
+			AEMtx33 weapon_transform = { 0 };
+			AEMtx33Concat(&weapon_transform, &weapon_rotate, &weapon_scale);
+			AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
+			AEGfxSetTransform(weapon_transform.m);
+			AEGfxTextureSet(bulletTex, 0, 0);
+			AEGfxMeshDraw(shootMesh, AE_GFX_MDM_TRIANGLES);
+		}
 	}
+
 }
 
 /*!**************************************************************************************************
@@ -318,6 +378,7 @@ void bullet_draw() {
 	TRUE if bullet is colliding with enemy, else FALSE
 *******************************************************************************************************/
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y) {
+	// Pythagoras theorem
 	f32 dist_bullet2enemy = sqrt((bullet_x - enemy_x) * (bullet_x - enemy_x) + (bullet_y - enemy_y) * (bullet_y - enemy_y));
 	if (dist_bullet2enemy <= 25) return TRUE;
 	else return FALSE;
