@@ -3,7 +3,7 @@
 \author 	Digipen, Tay Zhun Hang
 \par    	email: zhunhang.tay@digipen.edu
 \date   	12 February, 2023
-\brief		
+\brief
 
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -15,27 +15,40 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <iostream>
-using namespace std;
 
-AEGfxTexture* rect, *trap;
-AEGfxVertexList* rectmesh, *trapmesh;
-
+AEGfxTexture* rect, * trap;
+AEGfxVertexList* rectmesh, * trapmesh;
+Block move1, trapping;
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
-extern Enemy1_stats enemy1_a;
+extern Enemy1_stats enemy1;
+bool damage_ok{ TRUE };
 
-move_block move1;
+float moveSpeed = 50.f;
+
+
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
 void draw_level_init() {
-
+	
 	rect = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile001.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	rectmesh = move1.mesh = trapmesh = create_Square_Mesh();
+	move1.x = -200.f;
+	move1.y = -250.f;
+	move1.max_x = -200.f + 450.f;
+	move1.min_x = -200.f;
 
-	for (int i = 0; i < NUM_OF_MOVING_PLAT; i++) {
+	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
+	//blocklist[0].name = "move1";
+	//blocklist[0].x = -200.f;
+	//blocklist[0].y = -250.f;
+	//blocklist[0].max_x = -200.f + 450.f;
+	//blocklist[0].min_x = -200.f;
 
-	}
+	//for (int i = 0; i < NUM_OF_MOVING_PLAT; i++) {
+
+	//}
 }
 
 void draw_level() {
@@ -46,9 +59,9 @@ void draw_level() {
 	blocks(6, 200, 100);
 	blocks(4, 650, 0);
 	blocks(14, 1100, -200);
-	moving_blocks(5, -200, -250);
-	//AEGfxMeshFree(rectmesh);
-	//AEGfxTextureUnload(rect);
+	moving_blocks(5, move1.x, move1.y);
+	damanging_traps(2, -200, -200);
+
 
 }
 
@@ -62,8 +75,6 @@ void update_level() {
 	//	player.y -= GRAVITY;
 	//	//pointer_to_player->y -= GRAVITY;
 	//}
-
-
 }
 
 //-------------------- Parameters --------------------
@@ -80,7 +91,7 @@ void blocks(s32 length, f32 x, f32 y) {
 		AEMtx33Rot(&rotate, PI);
 		AEMtx33 translate = { 0 };
 		AEMtx33Trans(&translate, BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x
-							   , BLOCK_HEIGHT / 2 + y);
+			, BLOCK_HEIGHT / 2 + y);
 		// Concat the matrices
 		AEMtx33 transform = { 0 };
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -92,25 +103,28 @@ void blocks(s32 length, f32 x, f32 y) {
 		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
-		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-			(player.y >= y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x - PLAYER_WIDTH/2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
-			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2 + 5;
+		platform_collision(length, x, y);
 	}
 }
 
 int check_player_in_gravity_zone(Player_stats player) {
 	//std::cout << "player x is" << player.x;
-	if (player.x > static_cast<f32>(AEGetWindowWidth()/2) && player.x < AEGetWindowWidth()) {
+	if (player.x > static_cast<f32>(AEGetWindowWidth() / 2) && player.x < AEGetWindowWidth()) {
 		return 1;
 	}
 	return 0;
 }
 
-void traps(s32 length, f32 x, f32 y) {
+void damanging_traps(s32 length, f32 x, f32 y) {
+	trapping.length = length;
+	trapping.x = x;
+	trapping.y = y;
+
 
 	for (s32 i = 0; i < length; i++) {
+		trapping.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		trapping.height = BLOCK_HEIGHT / 2 + y;
+
 		AEMtx33 scale = { 0 };
 		AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT);
 		AEMtx33 rotate = { 0 };
@@ -129,21 +143,18 @@ void traps(s32 length, f32 x, f32 y) {
 		AEGfxMeshDraw(trapmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
-		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-			(player.y >= y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x - PLAYER_WIDTH / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
-			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2 + 5;
+		AEVec2Set(&trapping.center, x + trapping.width / 2, y);
+		trap_collision(length, x, y);
+
 	}
 }
-
 
 void moving_blocks(s32 length, f32 x, f32 y) {
 
 	move1.length = length;
 	move1.x = x;
 	move1.y = y;
-	
+
 
 	for (s32 i = 0; i < length; i++) {
 		move1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
@@ -162,69 +173,72 @@ void moving_blocks(s32 length, f32 x, f32 y) {
 		AEGfxMeshDraw(move1.mesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
-		if ((player.y <= BLOCK_HEIGHT + move1.y + PLAYER_HEIGHT / 2) &&
-			(player.y >= move1.y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + move1.x - PLAYER_WIDTH / 2) &&
-			(player.x >= move1.x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
-			player.y = BLOCK_HEIGHT + move1.y + PLAYER_HEIGHT / 2;
+		platform_collision(length, x, y);
 
 
-		
 	}
-	//move1.x = move_update(move1.x);
-	//move_update();
-	
+
 }
 
 void move_update() {
-	f32 og_pos = move1.width;
-	f32 dist = og_pos + 100;
-	cout << "OG position:      " << og_pos << endl;
-	cout << "MOVED position:      " << dist << endl;
+	//in case of using sine
+	//f64* time = nullptr;
+	//move1.x = 200 * sinf(static_cast<float>(AEGetTime(time)/0.5f));
+	//if the x value is now == original position 
 
 	if (move1.pos == OG) {
-		while (move1.pos == OG) {
-			move1.width += 10.f;
-			if (move1.width >= dist) {
-				move1.pos = MOVED;
-				break;
-			}
+		move1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		//if (platform_collision()) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (move1.x >= move1.max_x) {
+			move1.pos = MOVED;
 		}
 	}
-
-	cout << "AFTER MOVING:      " << move1.width << endl << endl;
 
 	if (move1.pos == MOVED) {
-		while (move1.pos == MOVED){
-			move1.width -= 10.f;
-			if (move1.width <= og_pos) {
-				move1.pos = OG;
-				break;
-			}
+		move1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (move1.x <= move1.min_x) {
+			move1.pos = OG;
 		}
-		
 	}
 
-	cout << "AFTER RETURNING:      " << move1.width << endl << endl;
 }
 
-//f32 move_update(f32 x) {
-//
-//	f32 og_pos = x;
-//	f32 dist = og_pos + 100;
-//
-//	if (move1.pos == OG) {
-//		x += 10.f;
-//		if (x >= dist) move1.pos = MOVED;
-//	}
-//
-//	if (move1.pos == MOVED) {
-//		x -= 10.f;
-//		if (x <= og_pos) move1.pos = OG;
-//	}
-//
-//	return x;
-//
-//	cout << "testing:      " << move1.x << endl << endl;
-//
-//}
+void platform_collision(s32 cnt, f32 x, f32 y) {
+	for (f32 i = 0; i < cnt; i++) {
+		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
+			(player.y >= y + PLAYER_HEIGHT / 2) &&
+			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
+			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
+			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+	}
+}
+
+void trap_collision(s32 cnt, f32 x, f32 y) {
+	
+	if (AETestRectToRect(&trapping.center, trapping.width, trapping.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		--player.Lives;
+	}
+		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
+			(player.y >= y + PLAYER_HEIGHT / 2) &&
+			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
+			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) {
+
+			if (damage_ok == TRUE) {
+				if (AETestRectToRect(&trapping.center, trapping.width, trapping.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+					--player.Lives;
+					damage_ok = FALSE;
+					//call transparancy function(?) to show invincibility
+				}
+			}
+			else if (damage_ok == FALSE) {
+				if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
+					damage_ok = TRUE;
+					//set transparacny function(?) to false
+				}
+
+			}
+		}
+	
+
+	
+}

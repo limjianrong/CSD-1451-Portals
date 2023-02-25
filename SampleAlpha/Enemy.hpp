@@ -29,10 +29,11 @@
 void enemy_init();
 void draw_enemy();
 f32 enemy_update(f32 enemy_x);
-void enemy_collision(Player_stats player);
+void enemy_collision();
 
 struct Enemy1_stats {
 	f32 x{}, y{}, rotation{0.0f};
 	s32 Hp{ 5 };
+	AEVec2 center{ 0,0 };
 };
 

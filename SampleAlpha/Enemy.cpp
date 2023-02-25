@@ -33,7 +33,7 @@ AEGfxVertexList* enemy1_mesh;
 
 // ----- Enemy -----
 Enemy1_stats enemy1_a, enemy1_b;
-bool enemy1_a_Dead, enemy1_b_Dead;
+bool enemy1_a_Dead, enemy1_b_Dead, damage_allowed{ TRUE };
 
 // ----- Player -----
 extern Player_stats player;
@@ -100,6 +100,7 @@ void draw_enemy() {
 		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 
 
+		AEVec2Set(&enemy1_a.center, enemy1_a.x, enemy1_a.y);
 		// updates enemy position
 		enemy1_a.x = enemy_update(enemy1_a.x);
 	}
@@ -158,7 +159,7 @@ void draw_enemy() {
 		enemy1_b_Dead = TRUE;
 	}
 
-	
+	enemy_collision();
 }
 
 /*!**************************************************************************************************
@@ -189,12 +190,19 @@ f32 enemy_update (f32 enemy_x) {
 	//AEGfxTextureUnload(enemy);
 }
 
-void enemy_collision(Player_stats player){
-	AEVec2 enemy1_vec{ enemy_update(enemy1_a.x), enemy1_a.y};
-	AEVec2 player_vec{ player.x , player.y };
+void enemy_collision(){
+	if (damage_allowed == TRUE) {
+		if (AETestRectToRect(&enemy1_a.center, ENEMY1_HEIGHT, ENEMY1_WIDTH, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			--player.Lives;
+			damage_allowed = FALSE;
+			//call transparancy function(?) to show invincibility
+		}
+	}
+	else if(damage_allowed == FALSE) {
+		if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
+			damage_allowed = TRUE;
+			//set transparacny function(?) to false
+		}
 
-	if (AETestRectToRect(&enemy1_vec, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-		// to be edited to player.Hp
-		player.Lives -= 1;
 	}
 }
