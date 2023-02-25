@@ -33,8 +33,7 @@ AEGfxVertexList* enemy1_mesh;
 
 // ----- Enemy -----
 Enemy1_stats enemy1_a, enemy1_b;
-//bool enemy1_a_Dead, enemy1_b_Dead, damage_allowed{ TRUE }; zh
-bool enemy1_a_Dead, enemy1_b_Dead;
+bool enemy1_a_Dead, enemy1_b_Dead, damage_allowed{ TRUE };
 
 // ----- Player -----
 extern Player_stats player;
@@ -101,7 +100,7 @@ void draw_enemy() {
 		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 
 
-		//AEVec2Set(&enemy1_a.center, enemy1_a.x, enemy1_a.y); zh
+		AEVec2Set(&enemy1_a.center, enemy1_a.x, enemy1_a.y); 
 		// updates enemy position
 		enemy1_a.x = enemy_update(enemy1_a.x);
 	}
@@ -150,6 +149,7 @@ void draw_enemy() {
 		// With the above settings, draw the mesh.
 		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 
+		AEVec2Set(&enemy1_b.center, enemy1_b.x, enemy1_b.y);
 
 		// updates enemy position
 		enemy1_b.x = enemy_update(enemy1_b.x);
@@ -205,11 +205,23 @@ void enemy_collision(){
 			//set transparacny function(?) to false
 		}
 		*/
-void enemy_collision(Player_stats* player, Enemy1_stats enemy){
-	AEVec2 enemy1_vec{ enemy.x, enemy.y};
+void enemy_collision(Player_stats* player) {
 	AEVec2 player_vec{ player->x , player->y };
 
-	if (AETestRectToRect(&enemy1_vec, ENEMY1_WIDTH/20, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH/20, PLAYER_HEIGHT)) {
-		player->Hp -= 1;
+	if (damage_allowed) {
+		if (AETestRectToRect(&enemy1_a.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			--player->Hp;
+			damage_allowed = FALSE;
+		} 
+		if (AETestRectToRect(&enemy1_b.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			--player->Hp;
+			damage_allowed = FALSE;
+		}
 	}
+
+	else {
+		if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
+			damage_allowed = TRUE;
+		}
+	} 
 }

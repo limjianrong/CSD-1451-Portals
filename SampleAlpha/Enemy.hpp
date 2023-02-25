@@ -29,13 +29,14 @@
 struct Enemy1_stats {
 	f32 x{}, y{}, rotation{ 0.0f };
 	s32 Hp{ 5 };
+	AEVec2 center{ 0,0 };
 };
 
 void enemy_init();
 void draw_enemy();
 f32 enemy_update(f32 enemy_x);
 //void enemy_collision(); zh
-void enemy_collision(Player_stats* player, Enemy1_stats enemy);
+void enemy_collision(Player_stats* player);
 
 /* zh
 struct Enemy1_stats {

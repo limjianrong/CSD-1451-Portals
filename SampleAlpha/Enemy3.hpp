@@ -2,9 +2,12 @@
 
 #include "AEEngine.h"
 #include "Player.hpp"
-/*
-#define ENEMY3_HEIGHT 80.f
-#define ENEMY3_WIDTH 50.f
+
+#define ENEMY3_HEIGHT 60.f
+#define ENEMY3_WIDTH 100.f
+
+#define WARNING_HEIGHT 80.f
+#define WARNING_WIDTH 80.f
 
 struct Enemy3_stats {
 	f32 x{}, y{}, rotation{ 0.0f };
@@ -13,9 +16,8 @@ struct Enemy3_stats {
 
 void enemy3_init();
 void draw_enemy3();
-void enemy3_update();
-//void enemy3_collision(Player_stats* player);
+void enemy3_update(Player_stats* player);
+void enemy3_collision(Player_stats* player);
 
 
 
-*/

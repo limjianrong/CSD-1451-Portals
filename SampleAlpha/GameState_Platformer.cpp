@@ -36,6 +36,7 @@ extern AEGfxVertexList* pMesh; // Mesh
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 extern s8 Albam_fontID; // FontID
 extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
+extern Player_stats player; // player stats
 AEGfxTexture* background2Tex; // Background texture
 f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 bool isPaused;
@@ -50,6 +51,7 @@ void GameStatePlatformerLoad(void) {
 	initialize_portal();
 	draw_level_init();
 	enemy_init();
+	enemy3_init();
 	initialize_boss();
 }
 /*!**************************************************************************************************
@@ -108,7 +110,7 @@ void GameStatePlatformerUpdate(void) {
 	else {
 		update_player();
 		update_level();
-		//enemy3_update();
+		enemy3_update(&player);
 		update_boss();
 		move_update();
 	}
@@ -141,8 +143,8 @@ void GameStatePlatformerDraw(void) {
 	draw_boss();
 	draw_player();
 	draw_enemy();
-	//draw_enemy3();
 	draw_level();
+	draw_enemy3();
 
 
 	// -------------- Pause menu --------------
