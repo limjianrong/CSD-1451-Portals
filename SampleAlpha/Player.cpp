@@ -103,24 +103,9 @@ void draw_player() {
 	else if (player.Lives == 0 || player.Hp == 0) Hp = (s8*)"HP: 0";
 
 
-	//if (player.Level == 0) level = (s8*)"Level: 0";
-	//else if (player.Level == 1) level = (s8*)"Level: 1";
-
 	s8* notif = nullptr;
 
-	if (player.Level == 0) {
-		level = (s8*)"Level: 0";
-		f64 timer = 2.0;
-		notif = new s8[20];
-		strcpy_s(notif, 20, "Normal portal range");
-		//notif = (s8*)"Normal portal range";
-		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
-		timer -= AEFrameRateControllerGetFrameCount();
-		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
-			delete[] notif; // use delete[] to free array memory
-			notif = nullptr; // set to nullptr to avoid potential memory issues
-		}
-	}
+	if (player.Level == 0) level = (s8*)"Level: 0";
 	else if (player.Level == 1) {
 		level = (s8*)"Level: 1";
 		f64 timer = 2.0;
@@ -134,6 +119,9 @@ void draw_player() {
 			notif = nullptr; // set to nullptr to avoid potential memory issues
 		}
 	}
+	//else if (player.Level == 1) level = (s8*)"Level: 1";
+
+	
 
 	if (player.XP == 0) XP = (s8*)"XP: 0";
 	else if (player.XP == 10) XP = (s8*)"XP: 10";

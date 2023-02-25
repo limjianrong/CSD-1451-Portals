@@ -42,7 +42,7 @@ void enemy3_init() {
 	enemy3_warning_mesh = create_Square_Mesh();
 
 	// spawn outside screen
-	enemy3_a.x = WINDOWLENGTH_X/2 + 500.f;
+	enemy3_a.x = -WINDOWLENGTH_X/2 - 1000.f;
 	enemy3_a.y = 0;
 	
 }
@@ -82,7 +82,7 @@ void draw_enemy3() {
 		// With the above settings, draw the mesh.
 		AEGfxMeshDraw(enemy3_mesh, AE_GFX_MDM_TRIANGLES);
 
-		if (enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)) {
+		if ((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)) && player.x > 0) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -103,7 +103,7 @@ void draw_enemy3() {
 			// Create a translation matrix that translates by
 			// 100 in the x-axis and 100 in the y-axis
 			AEMtx33 translate = { 0 };
-			AEMtx33Trans(&translate, WINDOWLENGTH_X/2 - WARNING_WIDTH/2, enemy3_a.y);
+			AEMtx33Trans(&translate, (player.x + WINDOWLENGTH_X/2) - WARNING_WIDTH/2, enemy3_a.y);
 			// Concatenate the matrices (TRS)
 			AEMtx33 transform = { 0 };
 			AEMtx33Concat(&transform, &rotate, &scale);
@@ -115,7 +115,7 @@ void draw_enemy3() {
 			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-		else if (enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) {
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && player.x > 0) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -136,7 +136,73 @@ void draw_enemy3() {
 			// Create a translation matrix that translates by
 			// 100 in the x-axis and 100 in the y-axis
 			AEMtx33 translate = { 0 };
-			AEMtx33Trans(&translate, ( - WINDOWLENGTH_X / 2) + WARNING_WIDTH/2, enemy3_a.y);
+			AEMtx33Trans(&translate, (player.x+( - WINDOWLENGTH_X / 2)) + WARNING_WIDTH/2, enemy3_a.y);
+			// Concatenate the matrices (TRS)
+			AEMtx33 transform = { 0 };
+			AEMtx33Concat(&transform, &rotate, &scale);
+			AEMtx33Concat(&transform, &translate, &transform);
+			// Choose the transform to apply onto the vertices 
+			// of the mesh that we are choose to draw in the next line.
+			AEGfxSetTransform(transform.m);
+			AEGfxTextureSet(enemy3_warning, 0, 0);
+			// With the above settings, draw the mesh.
+			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+		}
+		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) && player.x <= 0) {
+			// Tell the engine to get ready to draw something with texture.
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			// Set the tint to white, so that the sprite can 
+			// display the full range of colors (default is black).
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			// Set blend mode to AE_GFX_BM_BLEND
+			// This will allow transparency.
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			//AEGfxSetTransparency(1.0f);
+			// Set the texture
+			AEGfxTextureSet(enemy3_warning, 0, 0);
+			// Create a scale matrix
+			AEMtx33 scale = { 0 };
+			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
+			// Create a rotation matrix that rotates by 90 degrees
+			AEMtx33 rotate = { 0 };
+			AEMtx33Rot(&rotate, PI);
+			// Create a translation matrix that translates by
+			// 100 in the x-axis and 100 in the y-axis
+			AEMtx33 translate = { 0 };
+			AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2) - WARNING_WIDTH / 2, enemy3_a.y);
+			// Concatenate the matrices (TRS)
+			AEMtx33 transform = { 0 };
+			AEMtx33Concat(&transform, &rotate, &scale);
+			AEMtx33Concat(&transform, &translate, &transform);
+			// Choose the transform to apply onto the vertices 
+			// of the mesh that we are choose to draw in the next line.
+			AEGfxSetTransform(transform.m);
+			AEGfxTextureSet(enemy3_warning, 0, 0);
+			// With the above settings, draw the mesh.
+			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+		}
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && player.x <= 0) {
+			// Tell the engine to get ready to draw something with texture.
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			// Set the tint to white, so that the sprite can 
+			// display the full range of colors (default is black).
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			// Set blend mode to AE_GFX_BM_BLEND
+			// This will allow transparency.
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			//AEGfxSetTransparency(1.0f);
+			// Set the texture
+			AEGfxTextureSet(enemy3_warning, 0, 0);
+			// Create a scale matrix
+			AEMtx33 scale = { 0 };
+			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
+			// Create a rotation matrix that rotates by 90 degrees
+			AEMtx33 rotate = { 0 };
+			AEMtx33Rot(&rotate, PI);
+			// Create a translation matrix that translates by
+			// 100 in the x-axis and 100 in the y-axis
+			AEMtx33 translate = { 0 };
+			AEMtx33Trans(&translate, (-WINDOWLENGTH_X / 2) + WARNING_WIDTH / 2, enemy3_a.y);
 			// Concatenate the matrices (TRS)
 			AEMtx33 transform = { 0 };
 			AEMtx33Concat(&transform, &rotate, &scale);
@@ -166,15 +232,28 @@ void enemy3_update(Player_stats* player) {
 	if (!isPaused) {
 		// get 0-200
 		s32 value = AEFrameRateControllerGetFrameCount() % 201;
+		
+		Enemy3_a->y = player->y;
 
 		if (value <= 100) {
-			Enemy3_a->y = player->y;
-			Enemy3_a->x -= 10.f;
+
+			if (Enemy3_a->x > player->x) {
+				Enemy3_a->x += 10.f;
+			}
+			else {
+				Enemy3_a->x += 10.f;
+			}
 
 		}
 		else {
 			Enemy3_a->y = player->y;
-			Enemy3_a->x -= 1.f;
+
+				if (Enemy3_a->x > player->x) {
+					Enemy3_a->x -= 1.f;
+				}
+				else {
+					Enemy3_a->x += 1.f;
+				}
 		}
 	}
 }
