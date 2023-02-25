@@ -57,6 +57,7 @@ void draw_boss() {
 	bullet_draw();
 }
 
+int token1{};
 void update_boss() {
 	//boss movement UP and DOWN
 	/*if (boss.direction == UP) {
@@ -87,20 +88,34 @@ void update_boss() {
 	//}
 
 	//boss attack #1
+	if (AEInputCheckReleased(AEVK_1)) {
+		token1 = 1;
+	
+	}
+	if (token1 == 1) {
+		boss_charge();
+	}
 
 }
+
+int counter{};
+int numberofhundreds{};
 
 void boss_laser_beam() {
 
 	if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
+		std::cout << "\nframe is " << (numberofhundreds += 100 );
 		laser_beam.status = TRUE;
 		//std::cout << "\nframe count 1 is" << AEFrameRateControllerGetFrameCount();
+		//std::cout << "\nlaser status true";
 	}
 	if (laser_beam.status == TRUE) {
-
+		
 		if (AEFrameRateControllerGetFrameCount() % 300 == 0) {
 			laser_beam.status = FALSE;
+			//std::cout << "\nlaser status false";
 			taken_damage = 0;
+			return;
 			//std::cout << "\nframe count 2 is" << AEFrameRateControllerGetFrameCount();
 		}
 
@@ -109,9 +124,23 @@ void boss_laser_beam() {
 			//std::cout << "\n health is" << player.Lives;
 			if (taken_damage == 0) {
 				--player.Lives;
+				//std::cout << "\nacutally minused";
 				taken_damage = 1;
 			}
 		}
 	}
+	
+}
+
+void boss_charge() {
+	AEVec2 charge_direction{};
+	AEVec2Sub(&charge_direction, &boss.center, &player.center);
+	if (charge_direction.x < 0) {
+		boss.x_pos -= boss.charge_velocity * AEFrameRateControllerGetFrameTime();
+	}
+	else {
+		boss.x_pos += boss.charge_velocity * AEFrameRateControllerGetFrameTime();
+	}
+
 
 }

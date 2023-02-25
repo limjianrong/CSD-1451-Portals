@@ -10,12 +10,15 @@ struct Boss{
 	f32 range_x{ 100 + 200 }, range_y{ 100 + 500 };
 	s32 Hp{ 5 };
 	s32 direction{ UP };
-	AEVec2 center{ 0,0 };
+	f32 charge_velocity{ 500 };
 
 	// ---- Mesh & Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* standTex, * deadTex;
+
+
+	AEVec2 center{0,0};
 };
 
 struct Laser_beam{
@@ -36,3 +39,4 @@ void initialize_boss();
 void draw_boss();
 void update_boss();
 void boss_laser_beam();
+void boss_charge();
