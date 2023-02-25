@@ -29,7 +29,7 @@ Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 250, 350, 150, 250}, {0, 700, 8
 // ------  Text  ------
 extern s8 Albam_fontID;
 s8* lives_counter; // temp counter (Replacing with hearts?)
-s8* level, * XP;
+s8* level, * XP, * Hp;
 // ----- Mesh & Texture -----
 AEMtx33 scale, rotate, translate, transform;
 AEGfxVertexList* pMesh;
@@ -38,6 +38,9 @@ int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
 // ----- Camera -----
 f32 cameraX{}, cameraY{};
+
+// ----- Enemy -----
+extern Enemy1_stats enemy1_a, enemy1_b;
 
 void initialize_player() {
 
@@ -91,6 +94,14 @@ void draw_player() {
 	else if (player.Lives == 1) lives_counter = (s8*)"Lives: 1";
 	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
 
+	// -------- Printing out Hp ----------
+	if (player.Hp == 5 && player.Lives > 0) Hp = (s8*)"HP: 5";
+	else if (player.Hp == 4 && player.Lives > 0) Hp = (s8*)"HP: 4";
+	else if (player.Hp == 3 && player.Lives > 0) Hp = (s8*)"HP: 3";
+	else if (player.Hp == 2 && player.Lives > 0) Hp = (s8*)"HP: 2";
+	else if (player.Hp == 1 && player.Lives > 0) Hp = (s8*)"HP: 1";
+	else if (player.Lives == 0 || player.Hp == 0) Hp = (s8*)"HP: 0";
+
 
 	//if (player.Level == 0) level = (s8*)"Level: 0";
 	//else if (player.Level == 1) level = (s8*)"Level: 1";
@@ -131,6 +142,7 @@ void draw_player() {
 	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, level, -1.0f, 0.7f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, XP, -1.0f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, Hp, -0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 	
 
 
@@ -170,6 +182,12 @@ void update_player() {
 		player.XP -= 20;
 	}
 
+	// --------    Player Hp & Lives   -----------
+	if (player.Hp == 0) {
+		player.Lives--;
+		player.Hp += 5;
+	}
+
 	// ---------  Firing of bullets   -----------
 	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		weapon_fire(player.x, player.y, 1);
@@ -185,7 +203,9 @@ void update_player() {
 
 	// ------------  Collision   --------------
 	player_collision();
-	enemy_collision();
+	//enemy_collision(); zh
+	enemy_collision(&player, enemy1_a);
+	enemy_collision(&player, enemy1_b);
 
 	// -------------  Camera   ---------------
 	AEGfxSetCamPosition(cameraX, cameraY);

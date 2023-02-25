@@ -23,6 +23,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 // ----- Enemies related -----
 #include "Enemy.hpp"
+#include "Enemy3.hpp"
 #include "boss.hpp"
 
 // ----- Others -----
@@ -107,6 +108,7 @@ void GameStatePlatformerUpdate(void) {
 	else {
 		update_player();
 		update_level();
+		//enemy3_update();
 		update_boss();
 		move_update();
 	}
@@ -139,6 +141,7 @@ void GameStatePlatformerDraw(void) {
 	draw_boss();
 	draw_player();
 	draw_enemy();
+	//draw_enemy3();
 	draw_level();
 
 

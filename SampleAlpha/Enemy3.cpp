@@ -3,9 +3,10 @@
 #include "Player.hpp"
 #include "Utilities.hpp"
 #include "Enemy3.hpp"
+#include "iostream"
+
 
 /*
-
 
 
 // ----- Mesh & Texture -----
@@ -29,9 +30,10 @@ extern bool isPaused;
 
 /*
 void enemy3_init() {
-	enemy3 = AEGfxTextureLoad("\Assets\jumperpack\PNG\Enemies\spikeMan_stand.png");
+	enemy3 = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeMan_stand.png");
 	// Saving the mesh (list of triangles) in enemy_mesh
 	enemy3_mesh = create_Square_Mesh();
+	//if (enemy3_mesh == NULL) std::cout << "enemy 3 null";
 
 	// random
 	enemy3_a.x = -100.f;
@@ -74,8 +76,10 @@ void draw_enemy3() {
 		AEGfxMeshDraw(enemy3_mesh, AE_GFX_MDM_TRIANGLES);
 
 
+
 		// updates enemy position
-		// enemy3_a.x = enemy3_update(enemy3_a.x);
+		//enemy3_update(&enemy3_a, &player);
+		////////////////////////////////////////////
 	}
 	// ------- XP for player -------
 	else if (enemy3_a.Hp <= 0 && enemy3_a_Dead == FALSE) {
@@ -84,7 +88,25 @@ void draw_enemy3() {
 	}
 }
 
-//f32 enemy3_update(f32 enemy_x) {}
+void enemy3_update() {
+	Enemy3_stats* Enemy3_a = &enemy3_a;
+	Player_stats* Player = &player;
+
+	if (!isPaused) {
+		// get 0-1000
+		s32 value = AEFrameRateControllerGetFrameCount() % 1001;
+
+		if (value <= 500) {
+			Enemy3_a->y = Player->y;
+			Enemy3_a->x -= 50.f;
+
+		}
+		else {
+			Enemy3_a->y = Player->y;
+			Enemy3_a->x -= 10.f;
+		}
+	}
+}
 
 //void enemy3_collision(Player_stats player) {}
 
