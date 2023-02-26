@@ -2,23 +2,27 @@
 #include "AEEngine.h"
 
 
-enum { UP, DOWN };
+enum { UP, DOWN,STOP, BTM_RIGHT, BTM_LEFT, TOP_RIGHT, TOP_LEFT };
 
 struct Boss{
-	f32 x_pos{ 1500.0f }, y_pos{ 0.0f };
+	f32 x_pos{ 500.0f }, y_pos{ 100.0f };
 	f32 width{ 200 }, height{ 200 }, velocity{ 100 };
 	f32 range_x{ 100 + 200 }, range_y{ 100 + 500 };
 	s32 Hp{ 5 };
+	s32 previous_direction{};
 	s32 direction{ UP };
-	f32 charge_velocity{ 500 };
-
+	f32 charge_velocity{ 5 };
+	f32 charge_angle{};
+	s32 charge_towards{};
+	s32 return_to_position{};
 	// ---- Mesh & Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* standTex, * deadTex;
 
-
+	AEVec2 original_position{ 0,0 };
 	AEVec2 center{0,0};
+	AEVec2 charge_direction{ 0,0 };
 };
 
 struct Laser_beam{
