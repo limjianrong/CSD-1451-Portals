@@ -143,7 +143,7 @@ void damanging_traps(s32 length, f32 x, f32 y) {
 		AEGfxMeshDraw(trapmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
-		AEVec2Set(&trapping.center, x + trapping.width / 2, y);
+		AEVec2Set(&trapping.center, BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x , trapping.height);
 		trap_collision(length, x, y);
 
 	}
@@ -215,29 +215,25 @@ void platform_collision(s32 cnt, f32 x, f32 y) {
 
 void trap_collision(s32 cnt, f32 x, f32 y) {
 	
-	if (AETestRectToRect(&trapping.center, trapping.width, trapping.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-		--player.Lives;
-	}
-		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-			(player.y >= y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) {
+	if (((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
+		(player.y >= y + PLAYER_HEIGHT / 2) &&
+		(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
+		(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) == TRUE ) {
 
-			if (damage_ok == TRUE) {
-				if (AETestRectToRect(&trapping.center, trapping.width, trapping.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-					--player.Lives;
-					damage_ok = FALSE;
-					//call transparancy function(?) to show invincibility
-				}
-			}
-			else if (damage_ok == FALSE) {
-				if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
-					damage_ok = TRUE;
-					//set transparacny function(?) to false
-				}
-
-			}
+		player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+		if (damage_ok == TRUE) {
+				--player.Hp;
+				damage_ok = FALSE;
+				//call transparancy function(?) to show invincibility
 		}
+		else if (damage_ok == FALSE) {
+			if (AEFrameRateControllerGetFrameCount() % 75 == 0) {
+				damage_ok = TRUE;
+				//set transparacny function(?) to false
+			}
+
+		}
+	}
 	
 
 	
