@@ -24,7 +24,14 @@
 
 void bullet_initialise();
 void weapon_fire(f32 player_x, f32 player_y, int state);
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
+bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 enemy_height);
 
 void bullet_update();
 void bullet_draw();
+
+struct Bullet {
+	f32 x{}, y{};
+	f32 speed{ 5.0f };
+	bool vulnerable{ FALSE };
+
+};
