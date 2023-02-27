@@ -17,10 +17,11 @@ AEGfxVertexList* enemy3_warning_mesh;
 
 // ----- Enemy -----
 Enemy3_stats enemy3_a;
-bool enemy3_a_Dead;
+bool enemy3_a_Dead, damage_allowed3{ TRUE }, going_left{ FALSE };
 
 // ----- Player -----
 extern Player_stats player;
+
 
 // ----- Pause Menu -----
 extern bool isPaused;
@@ -81,8 +82,10 @@ void draw_enemy3() {
 		AEGfxTextureSet(enemy3, 0, 0);
 		// With the above settings, draw the mesh.
 		AEGfxMeshDraw(enemy3_mesh, AE_GFX_MDM_TRIANGLES);
+		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
-		if ((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)) && player.x > 0) {
+
+		if (((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)+player.x )&& (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2))+150.f+player.x) && player.x > 0 && going_left) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -115,7 +118,7 @@ void draw_enemy3() {
 			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && player.x > 0) {
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-150.f+player.x) && player.x > 0 && !going_left ) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -148,7 +151,7 @@ void draw_enemy3() {
 			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) && player.x <= 0) {
+		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) + 150.f) && player.x <= 0 && going_left) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -181,7 +184,7 @@ void draw_enemy3() {
 			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && player.x <= 0) {
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 150.f) && player.x <= 0 && !going_left) {
 			// Tell the engine to get ready to draw something with texture.
 			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 			// Set the tint to white, so that the sprite can 
@@ -225,7 +228,7 @@ void draw_enemy3() {
 		enemy3_a_Dead = TRUE;
 	}
 }
-
+/*
 void enemy3_update(Player_stats* player) {
 	Enemy3_stats* Enemy3_a = &enemy3_a;
 
@@ -257,6 +260,50 @@ void enemy3_update(Player_stats* player) {
 		}
 	}
 }
+*/
+void enemy3_update(Player_stats* player) {
+	Enemy3_stats* Enemy3_a = &enemy3_a;
+	if (!isPaused) {
+		s32 value = AEFrameRateControllerGetFrameCount() % 1000;
+		
+		if (value <= 500) {
+			//f32 const x = enemy3_a.x;
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 +150.f && player->x <= 0) || (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2-150.f && player->x <= 0) || (enemy3_a.x > WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2 +150.f +player->x && player->x > 0) || (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 -150.f +player->x && player->x > 0)) {
+				Enemy3_a->y = player->y;
+			}
+			Enemy3_a->x += 10.f;
+			going_left = false;
+			}
 
-void enemy3_collision(Player_stats* player) {}
+			else {
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2+ 150.f && player->x <= 0) || (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2-150.f && player->x <= 0) || (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH/2 +150.f + player->x && player->x > 0) || (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 -150.f+ player->x && player->x > 0)) {
+				Enemy3_a->y = player->y;
+			}
+			Enemy3_a->x -= 10.f;
+				going_left = true;
+			}
+		
+
+	}
+
+}
+
+void enemy3_collision(Player_stats* player) {
+	AEVec2 player_vec{ player->x , player->y };
+
+	s32 value = AEFrameRateControllerGetFrameCount() % 1000;
+
+	if (damage_allowed3) {
+		if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/100, ENEMY3_HEIGHT, &player_vec, PLAYER_WIDTH/100, PLAYER_HEIGHT)) {
+			player->Hp -= 3;
+		damage_allowed3 = FALSE;
+		}
+	}
+
+	else{
+		if (value < 500) {
+			damage_allowed3 = TRUE;
+		}
+	} 
+}
 

@@ -12,6 +12,7 @@
 struct Enemy3_stats {
 	f32 x{}, y{}, rotation{ 0.0f };
 	s32 Hp{ 15 };
+	AEVec2 center{ 0,0 };
 };
 
 void enemy3_init();

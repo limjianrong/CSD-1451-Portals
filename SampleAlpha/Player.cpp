@@ -17,6 +17,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Utilities.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"
+#include "Enemy3.hpp"
 
 // for fontID
 #include "GameState_Mainmenu.hpp"
@@ -105,10 +106,23 @@ void draw_player() {
 
 	s8* notif = nullptr;
 
-	if (player.Level == 0) level = (s8*)"Level: 0";
+	//if (player.Level == 0) level = (s8*)"Level: 0";
+	if (player.Level == 0) {
+		level = (s8*)"Level: 0";
+		u32 timer = 100+AEFrameRateControllerGetFrameCount();
+		notif = new s8[40];
+		strcpy_s(notif, 40, "LEVEL UP: Increased portal range");
+		//notif = (s8*)"LEVEL UP: Increased portal range";
+		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
+		timer -= AEFrameRateControllerGetFrameCount();
+		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
+			delete[] notif; // use delete[] to free array memory
+			notif = nullptr; // set to nullptr to avoid potential memory issues
+		}
+	}
 	else if (player.Level == 1) {
 		level = (s8*)"Level: 1";
-		f64 timer = 2.0;
+		u32 timer = 100;
 		notif = new s8[40];
 		strcpy_s(notif, 40, "LEVEL UP: Increased portal range");
 		//notif = (s8*)"LEVEL UP: Increased portal range";
@@ -171,7 +185,7 @@ void update_player() {
 	}
 
 	// --------    Player Hp & Lives   -----------
-	if (player.Hp == 0) {
+	if (player.Hp <= 0) {
 		player.Lives--;
 		player.Hp += 5;
 	}
@@ -192,6 +206,7 @@ void update_player() {
 	// ------------  Collision   --------------
 	player_collision();
 	enemy_collision(&player); 
+	enemy3_collision(&player);
 	//enemy_collision(&player, enemy1_a);
 	//enemy_collision(&player, enemy1_b);
 
