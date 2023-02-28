@@ -51,18 +51,7 @@ void enemy3_init() {
 void draw_enemy3() {
 
 	if (enemy3_a.Hp > 0 && enemy3_a_Dead == FALSE) {
-		// Tell the engine to get ready to draw something with texture.
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		// Set the tint to white, so that the sprite can 
-		// display the full range of colors (default is black).
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		// Set blend mode to AE_GFX_BM_BLEND
-		// This will allow transparency.
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		//AEGfxSetTransparency(1.0f);
-		// Set the texture
-		AEGfxTextureSet(enemy3, 0, 0);
-		// Create a scale matrix
+		
 		AEMtx33 scale = { 0 };
 		AEMtx33Scale(&scale, ENEMY3_WIDTH, ENEMY3_HEIGHT);
 		// Create a rotation matrix that rotates by 90 degrees

@@ -23,27 +23,39 @@
 
 #include "AEEngine.h"
 
+// ----- Enemy 1 -----
+#define ENEMY1_WIDTH 60.f
 #define ENEMY1_HEIGHT 80.f
-#define ENEMY1_WIDTH 40.f
 
+// ----- Enemy 2 (Shoots bullet) -----
+#define ENEMY2_WIDTH 80.f
+#define ENEMY2_HEIGHT 60.f
+
+// ------- Enemy types -------
 struct Enemy1_stats {
-	f32 x{}, y{}, rotation{ 0.0f };
+	f32 x{}, y{}, rotation{ PI };
+	f32 width{ ENEMY1_WIDTH }, height{ ENEMY1_HEIGHT };
 	s32 Hp{ 5 };
-	AEVec2 center{ 0,0 };
+	AEVec2 center;
+};
+
+struct Enemy2_stats {
+	f32 x{}, y{}, rotation{ PI };
+	f32 width{ ENEMY2_WIDTH }, height{ ENEMY2_HEIGHT };
+	f32 range_x{ ENEMY2_WIDTH + 200 }, range_y{ ENEMY2_HEIGHT + 200 };
+	s32 Hp{ 5 };
+	AEVec2 center;
+
+	// ----- Texture -----
+	AEGfxTexture* enemy2_fly1, * enemy2_fly2, *enemy2_dead;
 };
 
 void enemy_init();
 void draw_enemy();
-f32 enemy_update(f32 enemy_x);
+void update_enemy();
+void unload_enemy();
 //void enemy_collision(); zh
 void enemy_collision(Player_stats* player);
 
-/* zh
-struct Enemy1_stats {
-	f32 x{}, y{}, rotation{0.0f};
-	s32 Hp{ 5 };
-	//AEVec2 center{ 0,0 }; zh
-};
-*/
 
 

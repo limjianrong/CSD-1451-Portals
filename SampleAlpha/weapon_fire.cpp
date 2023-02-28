@@ -35,7 +35,7 @@ AEVec2 center_cursor; // cursor coords, origin is middle of screen
 AEVec2 player_center; // player coords, origin is middle of screen
 AEVec2 normalized_vector; // direction vector from player to cursor
 
-bool isRunning = FALSE;
+static bool isRunning = FALSE;
 
 // ----- Objects -----
 extern Enemy1_stats enemy1_a, enemy1_b;

@@ -25,18 +25,24 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Utilities.hpp"
+#include "weapon_fire.hpp"
 #include "GameState_Platformer.hpp"
 
 // ----- Mesh & Texture -----
-AEGfxTexture* enemy1;
+AEGfxTexture* enemy1Tex;
 AEGfxVertexList* enemy1_mesh;
+extern AEMtx33 scale, rotate, translate, transform; // TRS
 
-// ----- Enemy -----
-Enemy1_stats enemy1_a, enemy1_b;
-bool enemy1_a_Dead, enemy1_b_Dead, damage_allowed{ TRUE };
-
-// ----- Player -----
+// ----- Objects -----
 extern Player_stats player;
+Enemy1_stats enemy1;
+Enemy2_stats enemy2;
+Bullet bullet_enemy2;
+extern Bullet bullet;
+
+f32 dist_enemy2bullet, dist_enemy2player;
+bool enemy1_Dead{ FALSE }, damage_allowed{ TRUE };
+static bool isRunning = FALSE;
 
 // ----- Pause Menu -----
 extern bool isPaused;
@@ -46,18 +52,25 @@ extern bool isPaused;
 	Loads texture and initializes mesh for enemy
 *******************************************************************************************************/
 void enemy_init() {
+	
+	// ---- Enemy1 Texture ----
+	enemy1Tex = AEGfxTextureLoad("Assets/enemy.png");
 
-	enemy1 = AEGfxTextureLoad("Assets/enemy.png");
+	// ---- Enemy2 Texture ----
+	enemy2.enemy2_fly1 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat.png");
+	enemy2.enemy2_fly2 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat_fly.png");
+	enemy2.enemy2_dead = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat_dead.png");
+
 	// Saving the mesh (list of triangles) in enemy_mesh
 	enemy1_mesh = create_Square_Mesh();
 
 
 	// FOR NOW ONLY
-	enemy1_a.x = -300.0f;
-	enemy1_a.y = -110.0f;
+	enemy1.x = -300.0f;
+	enemy1.y = -110.0f;
 
-	enemy1_b.x = 100.0f;
-	enemy1_b.y = 40.0f;
+	enemy2.x = 50.0f;
+	enemy2.y = 50.0f;
 }
 
 /*!**************************************************************************************************
@@ -66,101 +79,53 @@ void enemy_init() {
 *******************************************************************************************************/
 void draw_enemy() {
 
-	if (enemy1_a.Hp > 0 && enemy1_a_Dead == FALSE) {
-		// Tell the engine to get ready to draw something with texture.
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		// Set the tint to white, so that the sprite can 
-		// display the full range of colors (default is black).
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		// Set blend mode to AE_GFX_BM_BLEND
-		// This will allow transparency.
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		//AEGfxSetTransparency(1.0f);
-		// Set the texture
-		AEGfxTextureSet(enemy1, 0, 0);
-		// Create a scale matrix
-		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, 60.f, 80.f);
-		// Create a rotation matrix that rotates by 90 degrees
-		AEMtx33 rotate = { 0 };
-		AEMtx33Rot(&rotate, PI);
-		// Create a translation matrix that translates by
-		// 100 in the x-axis and 100 in the y-axis
-		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, enemy1_a.x, enemy1_a.y);
-		// Concatenate the matrices (TRS)
-		AEMtx33 transform = { 0 };
+	// No idea why this is required
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+
+	// ------  Enemy1  ------
+	if (enemy1.Hp > 0 && enemy1_Dead == FALSE) {
+
+		AEMtx33Scale(&scale, enemy1.width, enemy1.height);
+		AEMtx33Rot(&rotate, enemy1.rotation);
+		AEMtx33Trans(&translate, enemy1.x, enemy1.y);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
-		// Choose the transform to apply onto the vertices 
-		// of the mesh that we are choose to draw in the next line.
 		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(enemy1, 0, 0);
-		// With the above settings, draw the mesh.
+		AEGfxTextureSet(enemy1Tex, 0, 0);
 		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
-
-
-		AEVec2Set(&enemy1_a.center, enemy1_a.x, enemy1_a.y); 
-		// updates enemy position
-		enemy1_a.x = enemy_update(enemy1_a.x);
+		// Set vector
+		AEVec2Set(&enemy1.center, enemy1.x, enemy1.y);
 	}
 	// ------- XP for player -------
-	else if (enemy1_a.Hp <= 0 && enemy1_a_Dead == FALSE) {
+	else if (enemy1.Hp <= 0 && enemy1_Dead == FALSE) {
 		player.XP += 10;
-		enemy1_a_Dead = TRUE;
+		enemy1_Dead = TRUE;
 	}
 
 
+	// ------  Enemy2  ------
+	AEMtx33Scale(&scale, enemy2.width, enemy2.height);
+	AEMtx33Rot(&rotate, enemy2.rotation);
+	AEMtx33Trans(&translate, enemy2.x, enemy2.y);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxTextureSet(enemy2.enemy2_fly1, 0, 0);
+	AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
+	// Set vector
+	AEVec2Set(&enemy2.center, enemy1.x, enemy1.y);
 
-
-	// ----------------  FOR NOW ONLY  ----------------
-	// -------------- (TESTING PURPOSES) --------------
-
-	if (enemy1_b.Hp > 0 && enemy1_b_Dead == FALSE) {
-		// Tell the engine to get ready to draw something with texture.
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		// Set the tint to white, so that the sprite can 
-		// display the full range of colors (default is black).
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		// Set blend mode to AE_GFX_BM_BLEND
-		// This will allow transparency.
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		//AEGfxSetTransparency(1.0f);
-		// Set the texture
-		AEGfxTextureSet(enemy1, 0, 0);
-		// Create a scale matrix
-		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, 60.f, 80.f);
-		// Create a rotation matrix that rotates by 90 degrees
-		AEMtx33 rotate = { 0 };
-		AEMtx33Rot(&rotate, PI);
-		// Create a translation matrix that translates by
-		// 100 in the x-axis and 100 in the y-axis
-		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, enemy1_b.x, enemy1_b.y);
-		// Concatenate the matrices (TRS)
-		AEMtx33 transform = { 0 };
+	// ------  Enemy2 bullets ------
+	if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+		AEMtx33Scale(&scale, bullet_enemy2.width, bullet_enemy2.height); // scaling it up
+		AEMtx33Trans(&translate, bullet_enemy2.x, bullet_enemy2.y); // shifts along x & y axis
+		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
-		// Choose the transform to apply onto the vertices 
-		// of the mesh that we are choose to draw in the next line.
 		AEGfxSetTransform(transform.m);
-		AEGfxTextureSet(enemy1, 0, 0);
-		// With the above settings, draw the mesh.
-		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
-
-		AEVec2Set(&enemy1_b.center, enemy1_b.x, enemy1_b.y);
-
-		// updates enemy position
-		enemy1_b.x = enemy_update(enemy1_b.x);
+		AEGfxTextureSet(bullet.bulletTex, 0, 0);
+		AEGfxMeshDraw(bullet.shootMesh, AE_GFX_MDM_TRIANGLES);
 	}
-	// ------- XP for player -------
-	else if (enemy1_b.Hp <= 0 && enemy1_b_Dead == FALSE) {
-		player.XP += 10;
-		enemy1_b_Dead = TRUE;
-	}
-
-	//enemy_collision(); zh
 }
 
 /*!**************************************************************************************************
@@ -173,50 +138,84 @@ void draw_enemy() {
 \return
 	new enemy x position
 *******************************************************************************************************/
-f32 enemy_update (f32 enemy_x) {
+void update_enemy () {
 	
+	// ------  Enemy1 & Enemy2  ------
 	if (!isPaused) {
 		// get 0-200
 		s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
-		if (value <= 100)
-			enemy_x -= 1.0f;
-		else
-			enemy_x += 1.0f;
-
-		return enemy_x;
+		if (value <= 100) {
+			enemy1.x -= 1.0f;
+			enemy2.x -= 1.0f;
+		}
+		else {
+			enemy1.x += 1.0f;
+			enemy2.x += 1.0f;
+		}
 	}
 
-	//AEGfxMeshFree(enemy_mesh);
-	//AEGfxTextureUnload(enemy);
+	// ----- Enemy2 bullet -----
+	// distance between enemy2 -> bullet, enemy2 -> player
+	dist_enemy2bullet = sqrt((bullet_enemy2.x - enemy2.x) * (bullet_enemy2.x - enemy2.x) + (bullet_enemy2.y - enemy2.y) * (bullet_enemy2.y - enemy2.y));
+	dist_enemy2player = sqrt((enemy2.x - player.x) * (enemy2.x - player.x) + (enemy2.y - player.y) * (enemy2.y - player.y));
+
+	// If player is within enemy2 range (100x100 FOR NOW)
+	if (player.x >= (enemy2.x - enemy2.range_x) && player.x <= (enemy2.x + enemy2.range_x) &&
+		player.y >= (enemy2.y - enemy2.range_y) && player.y <= (enemy2.y + enemy2.range_y)) {
+		// --- Enable shooting ---
+		isRunning = TRUE;
+		// ---- Loops bullet ----
+		if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+
+			// ----- Movement of bullet from enemy2 to player -----
+			bullet_enemy2.x -= 5;
+			bullet_enemy2.y = enemy2.y;
+		}
+		else {
+			// --- Resets bullet ---
+			bullet_enemy2.x = enemy2.x;
+		}
+	}
+	else { // No longer in range of boss
+		// ---- Loops bullet ----
+		if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+
+			// ----- Movement of bullet from boss to player -----
+			bullet_enemy2.x -= 5;
+			bullet_enemy2.y = enemy2.y;
+		}
+		else {
+			// --- Disable shooting ---
+			isRunning = FALSE;
+			// --- Resets bullet ---
+			bullet_enemy2.x = enemy2.x;
+		}
+	}
+	// ----- Bullet collision with boss -----
+	if (AETestRectToRect(&bullet_enemy2.center, bullet_enemy2.width, bullet_enemy2.height, &enemy2.center, enemy2.width, enemy2.height) && bullet_enemy2.isTeleported) {
+		bullet_enemy2.x = enemy2.x;
+		bullet_enemy2.y = enemy2.y;
+		bullet_enemy2.isTeleported = FALSE;
+		--enemy2.Hp;
+	}
+
 }
-/* zh
-void enemy_collision(){
-	if (damage_allowed == TRUE) {
-		if (AETestRectToRect(&enemy1_a.center, ENEMY1_HEIGHT, ENEMY1_WIDTH, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-			--player.Lives;
-			damage_allowed = FALSE;
-			//call transparancy function(?) to show invincibility
-		}
-	}
-	else if(damage_allowed == FALSE) {
-		if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
-			damage_allowed = TRUE;
-			//set transparacny function(?) to false
-		}
-		*/
+
+void unload_enemy() {
+	//AEGfxMeshFree(enemy1_mesh);
+	//AEGfxTextureUnload(enemy1Tex);
+}
+
+// zh 
 void enemy_collision(Player_stats* player) {
 	AEVec2 player_vec{ player->x , player->y };
 
 	if (damage_allowed) {
-		if (AETestRectToRect(&enemy1_a.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&enemy1.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 			--player->Hp;
 			damage_allowed = FALSE;
 		} 
-		if (AETestRectToRect(&enemy1_b.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-			--player->Hp;
-			damage_allowed = FALSE;
-		}
 	}
 
 	else {
