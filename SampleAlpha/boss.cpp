@@ -89,8 +89,8 @@ void update_boss() {
 
 	//boss attack #1
 	if (AEInputCheckReleased(AEVK_1)) {
-		boss.previous_direction = boss.direction;
-		boss.direction = STOP;
+		//boss.previous_direction = boss.direction;
+		//boss.direction = STOP;
 		token1 = 1;
 
 		//set vector for direction for boss to charge in
@@ -195,6 +195,7 @@ void boss_charge() {
 		boss.x_pos += boss.charge_velocity * (cos(boss.charge_angle));
 		boss.y_pos += boss.charge_velocity * (sin(boss.charge_angle));
 		if (boss.x_pos > boss.original_position.x && boss.y_pos > boss.original_position.y) {
+			std::cout << "\nback to original position";
 			token1 = 0;
 			if (boss.previous_direction == UP) {
 				boss.direction = UP;

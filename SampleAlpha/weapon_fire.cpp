@@ -52,10 +52,6 @@ f32 dist_boss2bullet, dist_boss2player;
 int direction_x, direction_y;
 int prevState;
 
-// ----- To be removed -----
-f32 bullet_x, bullet_y;
-//enum Bullet_Direction { LEFT, RIGHT, UP, DOWN };
-
 
 /*!**************************************************************************************************
 \brief
@@ -72,10 +68,6 @@ void bullet_initialise() {
 }
 
 void bullet_update() {
-
-	// TEMP FOR PORTAL_FEATURE
-	bullet_x = bullet.x;
-	bullet_y = bullet.y;
 
 	// ----------  Boss  ----------
 	if (player.y <= boss.y_pos) {			// Player below boss

@@ -72,4 +72,4 @@ void draw_portal(f32& playerx, f32& playery);
 void draw_portal_range(f32 playerx, f32 playery);
 
 
-int check_bullet_collide_with_portal(f32 bullet_x, f32 bullet_y);
+void check_bullet_collide_with_portal();

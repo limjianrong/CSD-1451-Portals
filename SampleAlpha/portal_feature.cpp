@@ -26,10 +26,9 @@
 int drawportal{}, token{}; //drawportal and token are used in draw_portal
 int draw_portal_outline{};
 portal portal_1, portal_2;
-extern f32 bullet_x;
-extern f32 bullet_y;
-extern f32* pointer_to_bullet_x{ &bullet_x };
-extern f32* pointer_to_bullet_y{ &bullet_y };
+
+extern Bullet bullet;
+
 
 AEGfxTexture* greencircle;
 AEGfxVertexList* greencirclemesh{}; //mesh to draw the portal's valid range
@@ -180,7 +179,7 @@ void draw_portal(f32& playerx, f32& playery) {
 			token = 0;
 		}
 
-		check_bullet_collide_with_portal(bullet_x, bullet_y);
+		check_bullet_collide_with_portal();
 	}
 
 	//std::cout << "\nportal.center.x is" << portal_1->x;
@@ -210,18 +209,17 @@ void draw_portal_range(f32 playerx, f32 playery) {
 	AEGfxMeshDraw(greencirclemesh, AE_GFX_MDM_LINES_STRIP);
 }
 
-int check_bullet_collide_with_portal(f32 bullet_x,f32 bullet_y) {
-	AEVec2 bullet_center{};
-	f32 bullet_width{ 20.0f }, bullet_height{ 20.0f }; //needs to be standardized in weapon_fire.cpp
+void check_bullet_collide_with_portal() {
 
-	AEVec2Set(&bullet_center, bullet_x, bullet_y);
+
+	//AEVec2Set(&bullet.center, bullet.x, bullet.y);
 	//std::cout << "\nprotal1x is" << portal_1.x;
-	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_center,bullet_width, bullet_height)) {
-		std::cout << "\nBULLET COLLIDED WITH PORTAL";
-		*pointer_to_bullet_x= portal_2.x;
-		*pointer_to_bullet_y = portal_2.y;
+	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
+		//std::cout << "\nBULLET COLLIDED WITH PORTAL";
+		bullet.x = portal_2.x;
+		bullet.y = portal_2.y;
+		//std::cout << "\nportal_2 x is " << portal_2.x;
+		//std::cout << "\nbullet.x is " << bullet.x;
 	}
-
-	return 0;
 }
 
