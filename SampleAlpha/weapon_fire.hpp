@@ -24,14 +24,20 @@
 
 void bullet_initialise();
 void weapon_fire(f32 player_x, f32 player_y, int state);
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 enemy_height);
+//bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
+bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height);
 
 void bullet_update();
 void bullet_draw();
 
 struct Bullet {
 	f32 x{}, y{};
+	AEVec2 center{};
+	f32 width{ 20.0f }, height{ 20.0f };
 	f32 speed{ 5.0f };
-	bool vulnerable{ FALSE };
+	bool doesDamage{ FALSE }, isTeleported{ FALSE };
 
+	// ----- Mesh & Texture -----
+	AEGfxVertexList* shootMesh;
+	AEGfxTexture* bulletTex;
 };

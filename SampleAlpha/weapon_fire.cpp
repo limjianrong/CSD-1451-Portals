@@ -29,17 +29,12 @@
 #include "boss.hpp"
 
 #include <iostream>
-// ----- Mesh & Texture -----
-AEGfxVertexList* shootMesh;
-AEGfxTexture* bulletTex;
 
 // ----- Cursor -----
 AEVec2 center_cursor; // cursor coords, origin is middle of screen
 AEVec2 player_center; // player coords, origin is middle of screen
 AEVec2 normalized_vector; // direction vector from player to cursor
 
-int direction_x, direction_y;
-int prevState;
 bool isRunning = FALSE;
 
 // ----- Objects -----
@@ -48,11 +43,17 @@ extern Player_stats player;
 extern Boss boss;
 Bullet bullet;
 
-f32 bullet_x, bullet_y;
-f32 adj, opp;
-f32 angle;
+// ----- Normalization -----
+f32 adj, opp, angle;
 f32 dist_boss2bullet, dist_boss2player;
 
+
+// ----- (No longer using) For mouse shooting -----
+int direction_x, direction_y;
+int prevState;
+
+// ----- To be removed -----
+f32 bullet_x, bullet_y;
 //enum Bullet_Direction { LEFT, RIGHT, UP, DOWN };
 
 
@@ -64,9 +65,9 @@ f32 dist_boss2bullet, dist_boss2player;
 void bullet_initialise() {
 
 	// load texture
-	bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
 	// create mesh
-	shootMesh = create_Square_Mesh();
+	bullet.shootMesh = create_Square_Mesh();
 
 }
 
@@ -114,19 +115,14 @@ void bullet_update() {
 		// ---- Loops bullet ----
 		if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 
-			bullet.vulnerable = FALSE;
 			// ----- Movement of bullet from boss to player -----
 			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
 			else if (player.y >= boss.y_pos) bullet.y -= normalized_vector.y;
 			if (player.x >= boss.x_pos) bullet.x += normalized_vector.x;
 			else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
-
-			if (dist_boss2bullet >= 100) {
-				bullet.vulnerable = TRUE;
-			}
 		}
 		else {
-			bullet.vulnerable = FALSE;
+	
 			// --- Resets bullet ---
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
@@ -137,19 +133,14 @@ void bullet_update() {
 		// ---- Loops bullet ----
 		if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 
-			bullet.vulnerable = FALSE;
 			// ----- Movement of bullet from boss to player -----
 			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
 			else if (player.y >= boss.y_pos) bullet.y -= normalized_vector.y;
 			if (player.x >= boss.x_pos) bullet.x += normalized_vector.x;
 			else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
-
-			if (dist_boss2bullet >= 100) {
-				bullet.vulnerable = TRUE;
-			}
 		}
 		else {
-			bullet.vulnerable = FALSE;
+			
 			// --- Disable shooting ---
 			isRunning = FALSE;
 			// --- Resets bullet ---
@@ -158,32 +149,42 @@ void bullet_update() {
 		}
 	}
 
+	/*if (bullet.x <= boss.x_pos + boss.width && bullet.x >= boss.x_pos - boss.width &&
+		bullet.y <= boss.y_pos + boss.height && bullet.y >= boss.y_pos - boss.height) {
+		bullet.vulnerable = FALSE;
+	}
+	else
+		bullet.vulnerable = TRUE;*/
+
 	// ----- Bullet collision with player -----
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, player.x, player.y, PLAYER_HEIGHT) == TRUE) {
-		bullet_x = boss.x_pos;
-		bullet_y = boss.y_pos;
+	AEVec2Set(&bullet.center, bullet.x, bullet.y);
+	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &player.center, player.width, player.height)) {
+		bullet.x = boss.x_pos;
+		bullet.y = boss.y_pos;
 		--player.Hp;
 	}
 
 	// ----- Bullet collision with boss -----
-	/*if (isbullet_enemy_colliding(bullet_x, bullet_y, boss.x_pos, boss.y_pos) == TRUE) {
+	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &boss.center, boss.width, boss.height) && bullet.isTeleported) {
+		bullet.x = boss.x_pos;
+		bullet.y = boss.y_pos;
+		bullet.isTeleported = FALSE;
 		--boss.Hp;
-	}*/
-
+	}
 
 
 
 	// ----- Bullet collision with enemy1 -----
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_a.x, enemy1_a.y, ENEMY1_WIDTH) == TRUE) {
+	/*if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_a.x, enemy1_a.y) == TRUE) {
 		bullet_x = boss.x_pos;
 		bullet_y = boss.y_pos;
 		--enemy1_a.Hp;
 	}
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_b.x, enemy1_b.y, ENEMY1_WIDTH) == TRUE) {
+	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_b.x, enemy1_b.y) == TRUE) {
 		bullet_x = boss.x_pos;
 		bullet_y = boss.y_pos;
 		--enemy1_b.Hp;
-	}
+	}*/
 }
 
 
@@ -192,7 +193,7 @@ void bullet_draw() {
 	// ---- Loops bullet ----
 	if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 		AEMtx33 weapon_scale = { 0 };
-		AEMtx33Scale(&weapon_scale, 20.f, 20.f); // scaling it up
+		AEMtx33Scale(&weapon_scale, bullet.width, bullet.height); // scaling it up
 		AEMtx33 weapon_translate = { 0 };
 		AEMtx33Trans(&weapon_translate, bullet.x, bullet.y); // shifts along x & y axis
 		AEMtx33 weapon_rotate = { 0 };
@@ -201,8 +202,8 @@ void bullet_draw() {
 		AEMtx33Concat(&weapon_transform, &weapon_rotate, &weapon_scale);
 		AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
 		AEGfxSetTransform(weapon_transform.m);
-		AEGfxTextureSet(bulletTex, 0, 0);
-		AEGfxMeshDraw(shootMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxTextureSet(bullet.bulletTex, 0, 0);
+		AEGfxMeshDraw(bullet.shootMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 }
@@ -382,12 +383,20 @@ void bullet_draw() {
 \return
 	TRUE if bullet is colliding with enemy, else FALSE
 *******************************************************************************************************/
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 enemy_height) {
-	// Pythagoras theorem
-	f32 dist_bullet2enemy = sqrt((bullet_x - enemy_x) * (bullet_x - enemy_x) + (bullet_y - enemy_y) * (bullet_y - enemy_y));
-	// 25 is the width of enemy/player/boss...
-	if (dist_bullet2enemy <= 2) //enemy_height/2) 
+//bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y) {
+//	// Pythagoras theorem
+//	f32 dist_bullet2enemy = sqrt((bullet_x - enemy_x) * (bullet_x - enemy_x) + (bullet_y - enemy_y) * (bullet_y - enemy_y));
+//	// 25 is the width of enemy/player/boss...
+//	if (dist_bullet2enemy <= 2) //enemy_height/2) 
+//		return TRUE;
+//	else 
+//		return FALSE;
+//}
+
+bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height) {
+	if (bullet_x <= enemy_x + width && bullet_x >= enemy_x - width &&
+		bullet_y <= enemy_y + height && bullet_y >= enemy_y - height)
 		return TRUE;
-	else 
+	else
 		return FALSE;
 }

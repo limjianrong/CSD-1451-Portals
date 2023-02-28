@@ -20,8 +20,8 @@ struct Boss{
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* standTex, * deadTex;
 
-	AEVec2 original_position{ 0,0 };
-	AEVec2 center{0,0};
+	AEVec2 original_position{ 0,0 };	// SAME AS center?
+	AEVec2 center{0,0};					// SAME AS original_position?
 	AEVec2 charge_direction{ 0,0 };
 };
 

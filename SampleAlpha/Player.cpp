@@ -163,6 +163,9 @@ void draw_player() {
 
 void update_player() {
 
+	// --------  Setting player's position into a vector --------
+	//AEVec2Set(&player.center, player.x, player.y);
+
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {

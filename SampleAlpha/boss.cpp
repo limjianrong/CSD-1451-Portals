@@ -24,15 +24,15 @@ void initialize_boss() {
 void draw_boss() {
 
 	// -------------  Boss   ---------------
-	AEMtx33Scale(&boss.scale, boss.width, boss.height);
-	AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
-	AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-	AEGfxSetTransform(boss.matrix.m);
-	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-	AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
-
-	// --- Boss dead ---
-	if (boss.Hp <= 0) {
+	if (boss.Hp > 0) {
+		AEMtx33Scale(&boss.scale, boss.width, boss.height);
+		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
+		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
+		AEGfxSetTransform(boss.matrix.m);
+		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
+		AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+	}
+	else {  // --- Boss dead ---
 		AEMtx33Scale(&boss.scale, boss.width, boss.height);
 		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
 		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);

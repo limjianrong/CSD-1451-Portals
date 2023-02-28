@@ -29,9 +29,10 @@ void player_collision();
 // --------------  Initialise player  ----------------
 struct Player_stats {
 	f32 x{ PLAYER_INITIAL_POS_X }, y{ PLAYER_INITIAL_POS_Y }, rotation{ 0.0f };
+	AEVec2 center{ 0,0 }; // same as .x & .y
+	f32 width{ PLAYER_WIDTH }, height{ PLAYER_HEIGHT };
 	s32 Hp{ 5 }, Lives{ 3 };
 	s32 Level{ 0 }, XP{ 0 };
-	AEVec2 center{ 0,0 };
 };
 
 // --------------  Checkpoints  ----------------
