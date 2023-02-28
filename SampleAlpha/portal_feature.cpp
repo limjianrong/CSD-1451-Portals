@@ -68,11 +68,13 @@ void initialize_portal() {
 void draw_portal(f32& playerx, f32& playery) {
 
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-
-
 	AEVec2 PlayerCenter{};
 	AEVec2Set(&PlayerCenter, playerx, playery);
-	
+	if (AEInputCheckTriggered(AEVK_F)) {
+		drawportal = 0;
+		token = 0;
+		draw_portal_outline = FALSE;
+	}
 	if (AEInputCheckTriggered(VK_RBUTTON)) { // first right click, assign cursor x and y to portal_1 x and y.
 		if (drawportal == 0) {
 			drawportal = 1;
