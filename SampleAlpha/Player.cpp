@@ -208,7 +208,7 @@ void update_player() {
 
 	// ------------  Collision   --------------
 	player_collision();
-	enemy_collision(&player); 
+	//enemy_collision(&player); 
 	enemy3_collision(&player);
 	//enemy_collision(&player, enemy1_a);
 	//enemy_collision(&player, enemy1_b);

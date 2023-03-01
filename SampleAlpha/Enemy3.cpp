@@ -78,102 +78,35 @@ void draw_enemy3() {
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-150.f+player.x) && player.x > 0 && !going_left ) {
-			// Tell the engine to get ready to draw something with texture.
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			// Set the tint to white, so that the sprite can 
-			// display the full range of colors (default is black).
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			// Set blend mode to AE_GFX_BM_BLEND
-			// This will allow transparency.
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			//AEGfxSetTransparency(1.0f);
-			// Set the texture
-			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// Create a scale matrix
-			AEMtx33 scale = { 0 };
+			
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			// Create a rotation matrix that rotates by 90 degrees
-			AEMtx33 rotate = { 0 };
 			AEMtx33Rot(&rotate, PI);
-			// Create a translation matrix that translates by
-			// 100 in the x-axis and 100 in the y-axis
-			AEMtx33 translate = { 0 };
 			AEMtx33Trans(&translate, (player.x+( - WINDOWLENGTH_X / 2)) + WARNING_WIDTH/2, enemy3_a.y);
-			// Concatenate the matrices (TRS)
-			AEMtx33 transform = { 0 };
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
-			// Choose the transform to apply onto the vertices 
-			// of the mesh that we are choose to draw in the next line.
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) + 150.f) && player.x <= 0 && going_left) {
-			// Tell the engine to get ready to draw something with texture.
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			// Set the tint to white, so that the sprite can 
-			// display the full range of colors (default is black).
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			// Set blend mode to AE_GFX_BM_BLEND
-			// This will allow transparency.
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			//AEGfxSetTransparency(1.0f);
-			// Set the texture
-			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// Create a scale matrix
-			AEMtx33 scale = { 0 };
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			// Create a rotation matrix that rotates by 90 degrees
-			AEMtx33 rotate = { 0 };
 			AEMtx33Rot(&rotate, PI);
-			// Create a translation matrix that translates by
-			// 100 in the x-axis and 100 in the y-axis
-			AEMtx33 translate = { 0 };
 			AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2) - WARNING_WIDTH / 2, enemy3_a.y);
-			// Concatenate the matrices (TRS)
-			AEMtx33 transform = { 0 };
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
-			// Choose the transform to apply onto the vertices 
-			// of the mesh that we are choose to draw in the next line.
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 150.f) && player.x <= 0 && !going_left) {
-			// Tell the engine to get ready to draw something with texture.
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			// Set the tint to white, so that the sprite can 
-			// display the full range of colors (default is black).
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			// Set blend mode to AE_GFX_BM_BLEND
-			// This will allow transparency.
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			//AEGfxSetTransparency(1.0f);
-			// Set the texture
-			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// Create a scale matrix
-			AEMtx33 scale = { 0 };
+			
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			// Create a rotation matrix that rotates by 90 degrees
-			AEMtx33 rotate = { 0 };
 			AEMtx33Rot(&rotate, PI);
-			// Create a translation matrix that translates by
-			// 100 in the x-axis and 100 in the y-axis
-			AEMtx33 translate = { 0 };
 			AEMtx33Trans(&translate, (-WINDOWLENGTH_X / 2) + WARNING_WIDTH / 2, enemy3_a.y);
-			// Concatenate the matrices (TRS)
-			AEMtx33 transform = { 0 };
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
-			// Choose the transform to apply onto the vertices 
-			// of the mesh that we are choose to draw in the next line.
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			// With the above settings, draw the mesh.
 			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 

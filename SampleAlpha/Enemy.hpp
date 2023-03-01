@@ -36,7 +36,8 @@ struct Enemy1_stats {
 	f32 x{}, y{}, rotation{ PI };
 	f32 width{ ENEMY1_WIDTH }, height{ ENEMY1_HEIGHT };
 	s32 Hp{ 5 };
-	AEVec2 center;
+	//AEVec2 center;
+	AEGfxTexture* texture;
 };
 
 struct Enemy2_stats {
@@ -51,11 +52,12 @@ struct Enemy2_stats {
 };
 
 void enemy_init();
+void draw_enemy1(Enemy1_stats enemy1);
 void draw_enemy();
 void update_enemy();
 void unload_enemy();
 //void enemy_collision(); zh
-void enemy_collision(Player_stats* player);
+void enemy1_collision(Enemy1_stats enemy1);
 
 
 

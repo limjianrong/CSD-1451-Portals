@@ -29,7 +29,7 @@
 #include "GameState_Platformer.hpp"
 
 // ----- Mesh & Texture -----
-AEGfxTexture* enemy1Tex;
+//AEGfxTexture* enemy1Tex;
 AEGfxVertexList* enemy1_mesh;
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 
@@ -54,7 +54,7 @@ extern bool isPaused;
 void enemy_init() {
 	
 	// ---- Enemy1 Texture ----
-	enemy1Tex = AEGfxTextureLoad("Assets/enemy.png");
+	enemy1.texture = AEGfxTextureLoad("Assets/enemy.png");
 
 	// ---- Enemy2 Texture ----
 	enemy2.enemy2_fly1 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat.png");
@@ -73,6 +73,43 @@ void enemy_init() {
 	enemy2.y = 50.0f;
 }
 
+void draw_enemy1(Enemy1_stats enemy1) {
+	if (enemy1.Hp > 0 && enemy1_Dead == FALSE) {
+		//enemy1.x = update_enemy1(enemy1.x);
+
+		AEMtx33Scale(&scale, enemy1.width, enemy1.height);
+		AEMtx33Rot(&rotate, enemy1.rotation);
+		AEMtx33Trans(&translate, enemy1.x, enemy1.y);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(enemy1.texture, 0, 0);
+		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
+		// Set vector
+		//AEVec2Set(&enemy1.center, enemy1.x, enemy1.y);
+		
+	}
+	// ------- XP for player -------
+	else if (enemy1.Hp <= 0 && enemy1_Dead == FALSE) {
+		player.XP += 10;
+		enemy1_Dead = TRUE;
+	}
+}
+
+f32 update_enemy1(f32 x) {
+	if (!isPaused) {
+		// get 0-200
+		s32 value = AEFrameRateControllerGetFrameCount() % 201;
+
+		if (value <= 100) {
+			x -= 1.0f;
+		}
+		else {
+			x += 1.0f;
+		}
+		return x;
+	}
+}
 /*!**************************************************************************************************
 \brief
 	Draws enemy if enemy HP is more than 0 to its updated position from function enemy_update
@@ -81,7 +118,8 @@ void draw_enemy() {
 
 	// No idea why this is required
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-
+	draw_enemy1(enemy1);
+	/*
 	// ------  Enemy1  ------
 	if (enemy1.Hp > 0 && enemy1_Dead == FALSE) {
 
@@ -94,7 +132,7 @@ void draw_enemy() {
 		AEGfxTextureSet(enemy1Tex, 0, 0);
 		AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 		// Set vector
-		AEVec2Set(&enemy1.center, enemy1.x, enemy1.y);
+		//AEVec2Set(&enemy1.center, enemy1.x, enemy1.y);
 	}
 	// ------- XP for player -------
 	else if (enemy1.Hp <= 0 && enemy1_Dead == FALSE) {
@@ -102,6 +140,7 @@ void draw_enemy() {
 		enemy1_Dead = TRUE;
 	}
 
+	*/
 
 	// ------  Enemy2  ------
 	AEMtx33Scale(&scale, enemy2.width, enemy2.height);
@@ -139,6 +178,9 @@ void draw_enemy() {
 	new enemy x position
 *******************************************************************************************************/
 void update_enemy () {
+
+	enemy1.x = update_enemy1(enemy1.x);
+	enemy1_collision(enemy1);
 	
 	// ------  Enemy1 & Enemy2  ------
 	if (!isPaused) {
@@ -146,14 +188,15 @@ void update_enemy () {
 		s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
 		if (value <= 100) {
-			enemy1.x -= 1.0f;
+			//enemy1.x -= 1.0f;
 			enemy2.x -= 1.0f;
 		}
 		else {
-			enemy1.x += 1.0f;
+			//enemy1.x += 1.0f;
 			enemy2.x += 1.0f;
 		}
 	}
+
 
 	// ----- Enemy2 bullet -----
 	// distance between enemy2 -> bullet, enemy2 -> player
@@ -207,20 +250,20 @@ void unload_enemy() {
 	//AEGfxTextureUnload(enemy1Tex);
 }
 
-// zh 
-void enemy_collision(Player_stats* player) {
-	AEVec2 player_vec{ player->x , player->y };
+void enemy1_collision(Enemy1_stats enemy1) {
+	AEVec2 player_vec{ player.x , player.y };
+	AEVec2 enemy_vec{ enemy1.x, enemy1.y };
 
 	if (damage_allowed) {
-		if (AETestRectToRect(&enemy1.center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-			--player->Hp;
+		if (AETestRectToRect(&enemy_vec, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			--player.Hp;
 			damage_allowed = FALSE;
-		} 
+		}
 	}
 
 	else {
 		if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
 			damage_allowed = TRUE;
 		}
-	} 
+	}
 }
