@@ -27,7 +27,7 @@ int drawportal{}, token{}; //drawportal and token are used in draw_portal
 int draw_portal_outline{};
 portal portal_1, portal_2;
 
-extern Bullet bullet;
+extern Bullet bullet, bullet_enemy2;
 
 
 AEGfxTexture* greencircle;
@@ -211,15 +211,19 @@ void draw_portal_range(f32 playerx, f32 playery) {
 
 void check_bullet_collide_with_portal() {
 
-
-	//AEVec2Set(&bullet.center, bullet.x, bullet.y);
 	//std::cout << "\nprotal1x is" << portal_1.x;
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
-		//std::cout << "\nBULLET COLLIDED WITH PORTAL";
 		bullet.x = portal_2.x;
 		bullet.y = portal_2.y;
-		//std::cout << "\nportal_2 x is " << portal_2.x;
-		//std::cout << "\nbullet.x is " << bullet.x;
+	}
+
+	//check if bullet_enemy2 collided with portal 
+	AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2.center, bullet_enemy2.width, bullet_enemy2.height)){
+		bullet_enemy2.x = portal_2.x;
+		bullet_enemy2.y = portal_2.y;
 	}
 }
+
+
 

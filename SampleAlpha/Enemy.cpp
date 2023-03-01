@@ -76,6 +76,9 @@ void enemy_init() {
 	enemy2.x = 50.0f;
 	enemy2.y = 50.0f;
 
+	//initialize bullet_enemy2
+	bullet_enemy2.x = enemy2.x;
+	bullet_enemy2.y = enemy2.y;
 }
 
 void draw_enemy1(Enemy1_stats enemy1) {
@@ -171,7 +174,7 @@ void draw_enemy() {
 	AEGfxTextureSet(enemy2.enemy2_fly1, 0, 0);
 	AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
 	// Set vector
-	AEVec2Set(&enemy2.center, enemy1.x, enemy1.y);
+	AEVec2Set(&enemy2.center, enemy2.x, enemy2.y);
 
 	// ------  Enemy2 bullets ------
 	if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
@@ -232,11 +235,12 @@ void update_enemy () {
 
 			// ----- Movement of bullet from enemy2 to player -----
 			bullet_enemy2.x -= 5;
-			bullet_enemy2.y = enemy2.y;
+			//bullet_enemy2.y = enemy2.y;
 		}
 		else {
 			// --- Resets bullet ---
 			bullet_enemy2.x = enemy2.x;
+			bullet_enemy2.y = enemy2.y;
 		}
 	}
 	else { // No longer in range of boss
@@ -245,13 +249,16 @@ void update_enemy () {
 
 			// ----- Movement of bullet from boss to player -----
 			bullet_enemy2.x -= 5;
-			bullet_enemy2.y = enemy2.y;
+			//bullet_enemy2.y = enemy2.y;
 		}
 		else {
 			// --- Disable shooting ---
 			isRunning = FALSE;
+
 			// --- Resets bullet ---
 			bullet_enemy2.x = enemy2.x;
+			bullet_enemy2.y = enemy2.y;
+
 		}
 	}
 	// ----- Bullet collision with boss -----
