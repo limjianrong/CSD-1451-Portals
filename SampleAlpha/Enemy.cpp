@@ -35,7 +35,7 @@ extern AEMtx33 scale, rotate, translate, transform; // TRS
 
 // ----- Objects -----
 extern Player_stats player;
-Enemy1_stats enemy1;
+Enemy1_stats enemy1, enemy1_a;
 Enemy2_stats enemy2;
 Bullet bullet_enemy2;
 extern Bullet bullet;
@@ -59,7 +59,7 @@ void enemy_init() {
 	
 	// ---- Enemy1 Texture ----
 	enemy1.texture = AEGfxTextureLoad("Assets/enemy.png");
-
+	enemy1_a.texture = AEGfxTextureLoad("Assets/enemy.png");
 	// ---- Enemy2 Texture ----
 	enemy2.enemy2_fly1 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat.png");
 	enemy2.enemy2_fly2 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat_fly.png");
@@ -70,13 +70,15 @@ void enemy_init() {
 
 
 	// FOR NOW ONLY
-	enemy1.x = -300.0f;
+	enemy1.x = -200.0f;
 	enemy1.y = -110.0f;
 
-	enemy2.x = 50.0f;
-	enemy2.y = 50.0f;
+	enemy2.x = 1750.0f;
+	enemy2.y = 80.0f;
 
-	//initialize bullet_enemy2
+	enemy1_a.x = 150.0f;
+	enemy1_a.y = 190.0f;
+
 	bullet_enemy2.x = enemy2.x;
 	bullet_enemy2.y = enemy2.y;
 }
@@ -141,6 +143,7 @@ void draw_enemy() {
 	// No idea why this is required
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	draw_enemy1(enemy1);
+	draw_enemy1(enemy1_a);
 	/*
 	// ------  Enemy1  ------
 	if (enemy1.Hp > 0 && enemy1_Dead == FALSE) {
@@ -203,6 +206,8 @@ void update_enemy () {
 
 	enemy1.x = update_enemy1(enemy1.x);
 	enemy1_collision(enemy1);
+	enemy1_a.x = update_enemy1(enemy1_a.x);
+	enemy1_collision(enemy1_a);
 	
 	// ------  Enemy1 & Enemy2  ------
 	if (!isPaused) {

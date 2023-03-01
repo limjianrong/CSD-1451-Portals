@@ -24,20 +24,20 @@ extern Player_stats player;
 extern Enemy1_stats enemy1;
 bool damage_ok{ TRUE };
 
-float moveSpeed = 50.f;
+float moveSpeed = 75.f;
 
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
 void draw_level_init() {
 	
-	rect = AEGfxTextureLoad("Assets/simplified_png/PNG/Tiles/platformPack_tile001.png");
+	rect = AEGfxTextureLoad("Assets/fullpack/PNG/Ground/Grass/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	rectmesh = move1.mesh = trapmesh = create_Square_Mesh();
-	move1.x = -200.f;
-	move1.y = -250.f;
-	move1.max_x = -200.f + 450.f;
-	move1.min_x = -200.f;
+	move1.x = 400.f;
+	move1.y = 0.f;
+	move1.max_x = 400.f + MID_DIST;
+	move1.min_x = 250.f;
 
 	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
 	//blocklist[0].name = "move1";
@@ -54,15 +54,29 @@ void draw_level_init() {
 void draw_level() {
 
 	// examples
-	blocks(5, -500, -200);
-	blocks(4, -100, -50);
-	blocks(6, 200, 100);
-	blocks(4, 650, 0);
-	blocks(14, 1100, -200);
-	moving_blocks(5, move1.x, move1.y);
-	damanging_traps(2, -200, -200);
+	// 	enemy1.x = -300.0f;
+	enemy1.y = -110.0f;
+	//blocks(5, -500, -200);
+	//blocks(4, -100, -50);
+	//blocks(6, 200, 100);
+	//blocks(4, 650, 0);
+	//blocks(14, 1100, -200);
+	//moving_blocks(5, move1.x, move1.y);
+	//damanging_traps(2, -200, -200);
+	blocks(8, -500, -200);
+	blocks(4, 0, 100);
+	moving_blocks(4, move1.x, move1.y);
+	blocks(4, 1200, 200);
+	spikes(1, 1425, 0);
+	blocks(1, 1475, 0);
+	spikes(1, 1525, 0);
 
+	blocks(2, 1600, -100);
+	spikes(16, 1700, -150);
+	blocks(1, 2050, -50);
+	blocks(2, 2450, -100);
 
+	blocks(12, 2600, 0);
 }
 
 void update_level() {
@@ -115,7 +129,7 @@ int check_player_in_gravity_zone(Player_stats player) {
 	return 0;
 }
 
-void damanging_traps(s32 length, f32 x, f32 y) {
+void spikes(s32 length, f32 x, f32 y) {
 	trapping.length = length;
 	trapping.x = x;
 	trapping.y = y;
@@ -126,12 +140,12 @@ void damanging_traps(s32 length, f32 x, f32 y) {
 		trapping.height = BLOCK_HEIGHT / 2 + y;
 
 		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT/2);
 		AEMtx33 rotate = { 0 };
 		AEMtx33Rot(&rotate, PI);
 		AEMtx33 translate = { 0 };
 		AEMtx33Trans(&translate, BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x
-			, BLOCK_HEIGHT / 2 + y);
+			, BLOCK_HEIGHT / 4 *3 + y);
 		// Concat the matrices
 		AEMtx33 transform = { 0 };
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -173,11 +187,12 @@ void moving_blocks(s32 length, f32 x, f32 y) {
 		AEGfxMeshDraw(move1.mesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
+		
 		platform_collision(length, x, y);
 
 
 	}
-
+	AEVec2Set(&move1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
 }
 
 void move_update() {
@@ -188,7 +203,7 @@ void move_update() {
 
 	if (move1.pos == OG) {
 		move1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-		//if (platform_collision()) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&move1.center, BLOCK_WIDTH*4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
 		if (move1.x >= move1.max_x) {
 			move1.pos = MOVED;
 		}
@@ -196,12 +211,14 @@ void move_update() {
 
 	if (move1.pos == MOVED) {
 		move1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&move1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
 		if (move1.x <= move1.min_x) {
 			move1.pos = OG;
 		}
 	}
 
 }
+
 
 void platform_collision(s32 cnt, f32 x, f32 y) {
 	for (f32 i = 0; i < cnt; i++) {

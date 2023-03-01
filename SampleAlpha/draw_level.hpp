@@ -17,6 +17,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define BLOCK_HEIGHT 50.0f
 #define GRAVITY 5.0f
 #define NUM_OF_MOVING_PLAT 1
+#define SHORT_DIST 450.0f
+#define MID_DIST 650.0f
+
 enum { OG, MOVED };
 
 //std::vector<Block> blocklist;
@@ -27,7 +30,7 @@ void update_level();
 
 void blocks(s32 length, f32 x, f32 y);
 int check_player_in_gravity_zone(Player_stats player);
-void damanging_traps(s32 length, f32 x, f32 y);
+void spikes(s32 length, f32 x, f32 y);
 void moving_blocks(s32 length, f32 x, f32 y);
 void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);
