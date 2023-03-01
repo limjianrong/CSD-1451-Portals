@@ -29,6 +29,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // ----- Others -----
 #include "Utilities.hpp"
 #include "draw_level.hpp"
+#include "Upgrades.hpp"
 
 
 //#include <iostream>
@@ -53,6 +54,7 @@ void GameStatePlatformerLoad(void) {
 	enemy_init();
 	enemy3_init();
 	initialize_boss();
+	upgrades_init();
 }
 /*!**************************************************************************************************
 \brief
@@ -114,6 +116,8 @@ void GameStatePlatformerUpdate(void) {
 		update_enemy();
 		update_boss();
 		move_update();
+		update_upgrade_cards();
+		
 	}
 
 
@@ -146,6 +150,7 @@ void GameStatePlatformerDraw(void) {
 	draw_enemy();
 	draw_level();
 	draw_enemy3();
+	draw_upgrade_cards();
 
 
 	// -------------- Pause menu --------------

@@ -47,6 +47,10 @@ static bool isRunning = FALSE;
 // ----- Pause Menu -----
 extern bool isPaused;
 
+//f64 deltaTime{};
+//f64 lastFrameTime{};
+
+
 /*!**************************************************************************************************
 \brief
 	Loads texture and initializes mesh for enemy
@@ -71,6 +75,7 @@ void enemy_init() {
 
 	enemy2.x = 50.0f;
 	enemy2.y = 50.0f;
+
 }
 
 void draw_enemy1(Enemy1_stats enemy1) {
@@ -98,6 +103,7 @@ void draw_enemy1(Enemy1_stats enemy1) {
 
 f32 update_enemy1(f32 x) {
 	if (!isPaused) {
+		
 		// get 0-200
 		s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
@@ -108,6 +114,19 @@ f32 update_enemy1(f32 x) {
 			x += 1.0f;
 		}
 		return x;
+		
+		///////////////
+		/*
+		f64 currentTime = AEFrameRateControllerGetFrameTime();
+		deltaTime = currentTime - lastFrameTime;
+		lastFrameTime = currentTime;
+
+		f64 enemyMovement = 10.f * deltaTime;
+		f64 enemyMovementDirection = (AEFrameRateControllerGetFrameCount() % 201 <= 100) ? -1.0f : 1.0f;
+		x += enemyMovement * enemyMovementDirection;
+
+		return static_cast<f32>(x);
+		*/
 	}
 }
 /*!**************************************************************************************************

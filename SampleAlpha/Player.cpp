@@ -106,34 +106,8 @@ void draw_player() {
 
 	s8* notif = nullptr;
 
-	//if (player.Level == 0) level = (s8*)"Level: 0";
-	if (player.Level == 0) {
-		level = (s8*)"Level: 0";
-		u32 timer = 100+AEFrameRateControllerGetFrameCount();
-		notif = new s8[40];
-		strcpy_s(notif, 40, "LEVEL UP: Increased portal range");
-		//notif = (s8*)"LEVEL UP: Increased portal range";
-		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
-		timer -= AEFrameRateControllerGetFrameCount();
-		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
-			delete[] notif; // use delete[] to free array memory
-			notif = nullptr; // set to nullptr to avoid potential memory issues
-		}
-	}
-	else if (player.Level == 1) {
-		level = (s8*)"Level: 1";
-		u32 timer = 100;
-		notif = new s8[40];
-		strcpy_s(notif, 40, "LEVEL UP: Increased portal range");
-		//notif = (s8*)"LEVEL UP: Increased portal range";
-		AEGfxPrint(Albam_fontID, notif, -0.25f, 0.7f, 0.5f, 1.f, 0.f, 0.f);
-		timer -= AEFrameRateControllerGetFrameCount();
-		if (timer <= 0 && notif != nullptr) { // check if notif is not null before deleting
-			delete[] notif; // use delete[] to free array memory
-			notif = nullptr; // set to nullptr to avoid potential memory issues
-		}
-	}
-	//else if (player.Level == 1) level = (s8*)"Level: 1";
+	if (player.Level == 0) level = (s8*)"Level: 0";
+	else if (player.Level == 1) level = (s8*)"Level: 1";
 
 	
 

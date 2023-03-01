@@ -183,17 +183,17 @@ void enemy3_update(Player_stats* player) {
 void enemy3_collision(Player_stats* player) {
 	AEVec2 player_vec{ player->x , player->y };
 
-	s32 value = AEFrameRateControllerGetFrameCount() % 1000;
+	s32 value = AEFrameRateControllerGetFrameCount() % 100;
 
 	if (damage_allowed3) {
-		if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/100, ENEMY3_HEIGHT, &player_vec, PLAYER_WIDTH/100, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/75, ENEMY3_HEIGHT, &player_vec, PLAYER_WIDTH/75, PLAYER_HEIGHT)) {
 			player->Hp -= 3;
 		damage_allowed3 = FALSE;
 		}
 	}
 
 	else{
-		if (value < 500) {
+		if (value < 51) {
 			damage_allowed3 = TRUE;
 		}
 	} 
