@@ -5,7 +5,7 @@
 enum { UP, DOWN,STOP, BTM_RIGHT, BTM_LEFT, TOP_RIGHT, TOP_LEFT };
 
 struct Boss{
-	f32 x_pos{ 3050.0f }, y_pos{ 200.0f };
+	f32 x_pos{ 3050.0f }, y_pos{ 200.0f }; 
 	f32 width{ 200 }, height{ 200 }, velocity{ 100 };
 	f32 range_x{ 100 + 200 }, range_y{ 100 + 500 };
 	s32 Hp{ 5 };
@@ -20,9 +20,11 @@ struct Boss{
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* standTex, * deadTex;
 
+
 	AEVec2 original_position{ 0,0 };	// SAME AS center?
 	AEVec2 center{0,0};					// SAME AS original_position?
 	AEVec2 charge_direction{ 0,0 };
+	AEVec2 charge_endpoint{ 0,0 };
 };
 
 struct Laser_beam{
