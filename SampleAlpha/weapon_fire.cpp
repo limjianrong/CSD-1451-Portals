@@ -38,7 +38,7 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 static bool isRunning = FALSE;
 
 // ----- Objects -----
-extern Enemy1_stats enemy1_a, enemy1_b;
+//extern Enemy1_stats enemy1_a, enemy1_b;
 extern Player_stats player;
 extern Boss boss;
 Bullet bullet;
@@ -98,7 +98,7 @@ void bullet_update() {
 	dist_boss2player = sqrt((boss.x_pos - player.x) * (boss.x_pos - player.x) + (boss.y_pos - player.y) * (boss.y_pos - player.y));
 
 
-	// If player is within boss range (300x300 FOR NOW)
+	// If player is within boss range (300x500 FOR NOW)
 	if (player.x >= (boss.x_pos - boss.range_x) && player.x <= (boss.x_pos + boss.range_x) &&
 		player.y >= (boss.y_pos - boss.range_y) && player.y <= (boss.y_pos + boss.range_y)) {
 
@@ -114,7 +114,7 @@ void bullet_update() {
 			else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
 		}
 		else {
-	
+
 			// --- Resets bullet ---
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
@@ -132,7 +132,7 @@ void bullet_update() {
 			else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
 		}
 		else {
-			
+
 			// --- Disable shooting ---
 			isRunning = FALSE;
 			// --- Resets bullet ---
@@ -140,13 +140,6 @@ void bullet_update() {
 			bullet.y = boss.y_pos;
 		}
 	}
-
-	/*if (bullet.x <= boss.x_pos + boss.width && bullet.x >= boss.x_pos - boss.width &&
-		bullet.y <= boss.y_pos + boss.height && bullet.y >= boss.y_pos - boss.height) {
-		bullet.vulnerable = FALSE;
-	}
-	else
-		bullet.vulnerable = TRUE;*/
 
 	// ----- Bullet collision with player -----
 	AEVec2Set(&bullet.center, bullet.x, bullet.y);
@@ -163,7 +156,6 @@ void bullet_update() {
 		bullet.isTeleported = FALSE;
 		--boss.Hp;
 	}
-
 
 
 	// ----- Bullet collision with enemy1 -----

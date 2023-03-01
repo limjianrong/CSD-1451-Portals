@@ -36,7 +36,8 @@ struct Enemy1_stats {
 	f32 x{}, y{}, rotation{ PI };
 	f32 width{ ENEMY1_WIDTH }, height{ ENEMY1_HEIGHT };
 	s32 Hp{ 5 };
-	//AEVec2 center;
+	bool status{ TRUE }; // TRUE for alive, FALSE for dead
+	AEVec2 center;
 	AEGfxTexture* texture;
 };
 
@@ -45,19 +46,24 @@ struct Enemy2_stats {
 	f32 width{ ENEMY2_WIDTH }, height{ ENEMY2_HEIGHT };
 	f32 range_x{ ENEMY2_WIDTH + 200 }, range_y{ ENEMY2_HEIGHT + 200 };
 	s32 Hp{ 5 };
+	bool status{ TRUE }; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 
 	// ----- Texture -----
 	AEGfxTexture* enemy2_fly1, * enemy2_fly2, *enemy2_dead;
 };
 
-void enemy_init();
+void draw_enemy2();
+void update_enemy2();
+
 void draw_enemy1(Enemy1_stats enemy1);
+void enemy1_collision(Enemy1_stats enemy1);
+f32 update_enemy1(f32 x);
+
+void enemy_init();
 void draw_enemy();
 void update_enemy();
 void unload_enemy();
-//void enemy_collision(); zh
-void enemy1_collision(Enemy1_stats enemy1);
 
 
 

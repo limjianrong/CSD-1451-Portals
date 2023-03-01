@@ -213,13 +213,15 @@ void check_bullet_collide_with_portal() {
 
 	//std::cout << "\nprotal1x is" << portal_1.x;
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
+		bullet.isTeleported = TRUE;
 		bullet.x = portal_2.x;
 		bullet.y = portal_2.y;
 	}
 
 	//check if bullet_enemy2 collided with portal 
-	AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
+	//AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2.center, bullet_enemy2.width, bullet_enemy2.height)){
+		bullet_enemy2.isTeleported = TRUE;
 		bullet_enemy2.x = portal_2.x;
 		bullet_enemy2.y = portal_2.y;
 	}
