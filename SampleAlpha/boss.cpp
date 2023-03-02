@@ -66,37 +66,56 @@ void update_boss() {
 
 	if (boss.Hp > 0) {
 		//boss movement UP and DOWN
-		/*if (boss.direction == UP) {
-			boss.y_pos += AEFrameRateControllerGetFrameTime() * boss.velocity;
-			if (boss.y_pos+ static_cast<f32>(boss.height/2) > static_cast<f32>(AEGetWindowHeight() / 2)){
-			boss.direction = DOWN;
-			}
-		}
+		//if (boss.direction == UP) {
 
-		if (boss.direction == DOWN) {
-			boss.y_pos -= AEFrameRateControllerGetFrameTime() * boss.velocity;
-			if (boss.y_pos- static_cast<f32>(boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
-				boss.direction = UP;
-			}
-		}*/
+		//	boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+		//	if (player.y >= 0) {
+		//		if (boss.y_pos + (boss.height / 2) - (player.y) > static_cast<f32>(AEGetWindowHeight() / 2)) {
+		//			boss.direction = DOWN;
+		//		}
+		//	}
+
+		//	else if (player.y < 0) {
+		//		if (boss.y_pos + (boss.height / 2) > static_cast<f32>(AEGetWindowHeight() / 2)) {
+		//			boss.direction = DOWN;
+		//		}
+		//	}
+		//}
+
+		//if (boss.direction == DOWN) {
+		//	boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+
+		//	if (player.y >= 0) {
+		//		if (boss.y_pos - (boss.height / 2) - (player.y) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
+
+		//			boss.direction = UP;
+		//		}
+		//	}
+
+		//	else if (player.y < 0) {
+		//		if (boss.y_pos - (boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
+
+		//			boss.direction = UP;
+		//		}
+		//	}
+		//}
 		AEVec2Set(&boss.center, boss.x_pos, boss.y_pos);
 		bullet_update();
 
 		//laser_beam is firing left, use boss.x - xxx to get the center of laser beam
 		AEVec2Set(&laser_beam.center, boss.x_pos - laser_beam.width / 2, boss.y_pos);
 		boss_laser_beam();
-		//u32 value = AEFrameRateControllerGetFrameCount() % 401;
-		//if (value < 201) {
-		//	boss.y += AEFrameRateControllerGetFrameTime() * boss.velocity;
-		//}
-		//else {
-		//	boss.y -= AEFrameRateControllerGetFrameTime() * boss.velocity;
-		//}
+
 
 		//boss attack #1
-		if (AEInputCheckReleased(AEVK_1)) {
-			//boss.previous_direction = boss.direction;
-			//boss.direction = STOP;
+		
+		//decrement timer for boss's charge cooldown
+		--boss.charge_cooldown;
+
+		//boss will charge towards the player when cooldown = 0 and player is within a certain range
+		if (boss.charge_cooldown == 0.0f && AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < 500) {
+			boss.previous_direction = boss.direction;
+			boss.direction = STOP;
 			boss.return_to_position = 0;
 			token1 = 1;
 
@@ -131,6 +150,7 @@ void update_boss() {
 			boss_charge();
 
 		}
+
 	}
 }
 
@@ -187,9 +207,11 @@ void boss_charge() {
 			boss.y_pos = boss.original_position.y;
 			if (boss.previous_direction == UP) {
 				boss.direction = UP;
+				boss.charge_cooldown = 1000.0f;
 			}
 			else {
 				boss.direction = DOWN;
+				boss.charge_cooldown = 1000.0f;
 			}
 		}
 	}
@@ -218,9 +240,11 @@ void boss_charge() {
 			boss.y_pos = boss.original_position.y;
 			if (boss.previous_direction == UP) {
 				boss.direction = UP;
+				boss.charge_cooldown = 1000.0f;
 			}
 			else {
 				boss.direction = DOWN;
+				boss.charge_cooldown = 1000.0f;
 			}
 		}
 
@@ -245,9 +269,11 @@ void boss_charge() {
 			boss.y_pos = boss.original_position.y;
 			if (boss.previous_direction == UP) {
 				boss.direction = UP;
+				boss.charge_cooldown = 1000.0f;
 			}
 			else {
 				boss.direction = DOWN;
+				boss.charge_cooldown = 1000.0f;
 			}
 		}
 	}
@@ -274,9 +300,11 @@ void boss_charge() {
 			boss.y_pos = boss.original_position.y;
 			if (boss.previous_direction == UP) {
 				boss.direction = UP;
+				boss.charge_cooldown = 1000.0f;
 			}
 			else {
 				boss.direction = DOWN;
+				boss.charge_cooldown = 1000.0f;
 			}
 		}
 	}
