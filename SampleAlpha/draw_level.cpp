@@ -24,7 +24,7 @@ extern Player_stats player;
 extern Enemy1_stats enemy1;
 bool damage_ok{ TRUE };
 
-float moveSpeed = 75.f;
+float moveSpeed = 150.f;
 
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
@@ -64,7 +64,7 @@ void draw_level() {
 	//moving_blocks(5, move1.x, move1.y);
 	//damanging_traps(2, -200, -200);
 	blocks(8, -500, -200);
-	blocks(4, 0, 100);
+	blocks(6, 0, 100);
 	moving_blocks(4, move1.x, move1.y);
 	blocks(4, 1200, 200);
 	spikes(1, 1425, 0);

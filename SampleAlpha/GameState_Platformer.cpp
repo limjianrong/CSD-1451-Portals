@@ -136,7 +136,7 @@ void GameStatePlatformerDraw(void) {
 
 
 	// ------- Background -------
-	AEMtx33Scale(&scale, WINDOWLENGTH_X + 20, WINDOWLENGTH_Y + 20);
+	AEMtx33Scale(&scale, WINDOWLENGTH_X *10, WINDOWLENGTH_Y * 10);
 	AEMtx33Trans(&translate, originX, originY);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
