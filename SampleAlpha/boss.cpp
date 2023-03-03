@@ -34,11 +34,13 @@ void draw_boss() {
 
 		// -------------  Attack 1 (Laser)   ---------------
 		if (laser_beam.status == TRUE) {
+			laser_beam.matrix = {};
 			AEMtx33Scale(&laser_beam.scale, laser_beam.width, laser_beam.height);
-			AEMtx33Trans(&laser_beam.translate, static_cast<f32>(boss.x_pos - laser_beam.width / 2), boss.y_pos);
-			AEMtx33Rot(&laser_beam.rotate, PI);
+			AEMtx33Trans(&laser_beam.translate, laser_beam.center.x, laser_beam.center.y);
+			
+			//AEMtx33Rot(&laser_beam.rotate, PI/4);
 			AEMtx33Concat(&laser_beam.matrix, &laser_beam.translate, &laser_beam.scale);
-			AEMtx33Concat(&laser_beam.matrix, &laser_beam.matrix, &laser_beam.rotate);
+			//AEMtx33Concat(&laser_beam.matrix, &laser_beam.matrix, &laser_beam.rotate);
 			AEGfxTextureSet(laser_beam.picture, 0.0f, 0.0f);
 			AEGfxSetTransform(laser_beam.matrix.m);
 			AEGfxMeshDraw(laser_beam.mesh, AE_GFX_MDM_TRIANGLES);
@@ -66,44 +68,43 @@ void update_boss() {
 
 	if (boss.Hp > 0) {
 		//boss movement UP and DOWN
-		//if (boss.direction == UP) {
+		if (boss.direction == UP) {
 
-		//	boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
-		//	if (player.y >= 0) {
-		//		if (boss.y_pos + (boss.height / 2) - (player.y) > static_cast<f32>(AEGetWindowHeight() / 2)) {
-		//			boss.direction = DOWN;
-		//		}
-		//	}
+			boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+			if (player.y >= 0) {
+				if (boss.y_pos + (boss.height / 2) - (player.y) > static_cast<f32>(AEGetWindowHeight() / 2)) {
+					boss.direction = DOWN;
+				}
+			}
 
-		//	else if (player.y < 0) {
-		//		if (boss.y_pos + (boss.height / 2) > static_cast<f32>(AEGetWindowHeight() / 2)) {
-		//			boss.direction = DOWN;
-		//		}
-		//	}
-		//}
+			else if (player.y < 0) {
+				if (boss.y_pos + (boss.height / 2) > static_cast<f32>(AEGetWindowHeight() / 2)) {
+					boss.direction = DOWN;
+				}
+			}
+		}
 
-		//if (boss.direction == DOWN) {
-		//	boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+		if (boss.direction == DOWN) {
+			boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
 
-		//	if (player.y >= 0) {
-		//		if (boss.y_pos - (boss.height / 2) - (player.y) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
+			if (player.y >= 0) {
+				if (boss.y_pos - (boss.height / 2) - (player.y) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
 
-		//			boss.direction = UP;
-		//		}
-		//	}
+					boss.direction = UP;
+				}
+			}
 
-		//	else if (player.y < 0) {
-		//		if (boss.y_pos - (boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
+			else if (player.y < 0) {
+				if (boss.y_pos - (boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
 
-		//			boss.direction = UP;
-		//		}
-		//	}
-		//}
+					boss.direction = UP;
+				}
+			}
+		}
 		AEVec2Set(&boss.center, boss.x_pos, boss.y_pos);
 		bullet_update();
 
-		//laser_beam is firing left, use boss.x - xxx to get the center of laser beam
-		AEVec2Set(&laser_beam.center, boss.x_pos - laser_beam.width / 2, boss.y_pos);
+
 		boss_laser_beam();
 
 
@@ -113,7 +114,7 @@ void update_boss() {
 		--boss.charge_cooldown;
 
 		//boss will charge towards the player when cooldown = 0 and player is within a certain range
-		if (boss.charge_cooldown == 0.0f && AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < 500) {
+		if (boss.charge_cooldown == 0.0f && AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss.charge_range) {
 			boss.previous_direction = boss.direction;
 			boss.direction = STOP;
 			boss.return_to_position = 0;
@@ -158,29 +159,32 @@ int counter{};
 int numberofhundreds{};
 
 void boss_laser_beam() {
+	--laser_beam.timer;
+	if (laser_beam.timer ==0 ) {
+		// set laser_beam to be firing left if player is on left of boss, firing right if player is on right of boss
+		if (player.x < boss.x_pos) {
+			AEVec2Set(&laser_beam.center, boss.x_pos - laser_beam.width / 2, boss.y_pos);
+		}
+		else {
+			AEVec2Set(&laser_beam.center, boss.x_pos + laser_beam.width / 2, boss.y_pos);
+		}
 
-	if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
-		//std::cout << "\nframe is " << (numberofhundreds += 100 );
 		laser_beam.status = TRUE;
-		//std::cout << "\nframe count 1 is" << AEFrameRateControllerGetFrameCount();
-		//std::cout << "\nlaser status true";
+		laser_beam.duration = 200.0f;
+
 	}
 	if (laser_beam.status == TRUE) {
-		
-		if (AEFrameRateControllerGetFrameCount() % 300 == 0) {
+		--laser_beam.duration;
+		if (laser_beam.duration==0) {
 			laser_beam.status = FALSE;
-			//std::cout << "\nlaser status false";
+			laser_beam.timer = 300.0f;
 			taken_damage = 0;
 			return;
-			//std::cout << "\nframe count 2 is" << AEFrameRateControllerGetFrameCount();
 		}
 
 		if (AETestRectToRect(&laser_beam.center, laser_beam.width, laser_beam.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-			//std::cout << "\ncollided";
-			//std::cout << "\n health is" << player.Lives;
 			if (taken_damage == 0) {
 				--player.Lives;
-				//std::cout << "\nacutally minused";
 				taken_damage = 1;
 			}
 		}

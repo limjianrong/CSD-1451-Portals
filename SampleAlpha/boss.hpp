@@ -16,6 +16,7 @@ struct Boss{
 	s32 charge_towards{};
 	s32 return_to_position{};
 	f32 charge_cooldown{1000.0f};
+	f32 charge_range{ 500.0f };
 	// ---- Mesh & Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxVertexList* mesh{};
@@ -32,12 +33,15 @@ struct Laser_beam{
 	int status{};
 	f32 x{}, y{};
 	f32 width{300}, height{50};
+	f32 timer{300.0f};
+	f32 duration{ 200.0f };
 	AEVec2 center{};
 
 	// ---- Mesh & Texture ----
 	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
 	AEGfxVertexList* mesh{};
 	AEGfxTexture* picture{};
+
 };
 
 
