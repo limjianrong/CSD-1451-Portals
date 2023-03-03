@@ -8,6 +8,9 @@ Keyboard input
 --------------
 A key - Player moves left
 D key - Player moves right
+F key - Resets the creation of portals
+P key - Pauses the game
+ESC key - Exits the game
 
 Mouse input
 -----------

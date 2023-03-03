@@ -5,7 +5,7 @@
 enum { UP, DOWN,STOP, BTM_RIGHT, BTM_LEFT, TOP_RIGHT, TOP_LEFT };
 
 struct Boss{
-	f32 x_pos{ 050.0f }, y_pos{ 200.0f };//3050
+	f32 x_pos{ 3050.0f }, y_pos{ 200.0f };//3050
 	f32 width{ 200 }, height{ 200 }, velocity{ 100 };
 	f32 range_x{ 100 + 200 }, range_y{ 100 + 500 };
 	s32 Hp{ 5 };
@@ -15,7 +15,7 @@ struct Boss{
 	f32 charge_angle{};
 	s32 charge_towards{};
 	s32 return_to_position{};
-	f32 charge_cooldown{200.0f};
+	f32 charge_cooldown{800.0f};
 	f32 charge_range{ 500.0f };
 	s32 charge_token{};
 	// ---- Mesh & Texture ----
