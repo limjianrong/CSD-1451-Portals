@@ -26,8 +26,8 @@ struct portal {
 	AEVec2 center{ 2000, 2000 };
 	AEMtx33 matrix{};
 	AEMtx33 scale_matrix{};
-
-
+	bool created{};
+	bool draw_outline{};
 }; 
 
 
@@ -55,7 +55,7 @@ void initialize_portal();
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal(f32& playerx, f32& playery);
+void draw_portal();
 
 
 /*!**************************************************************************************************
@@ -69,7 +69,7 @@ void draw_portal(f32& playerx, f32& playery);
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal_range(f32 playerx, f32 playery);
+void draw_portal_range();
 
 
 void check_bullet_collide_with_portal();

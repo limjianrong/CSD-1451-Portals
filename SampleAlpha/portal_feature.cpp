@@ -17,21 +17,19 @@
 #include "weapon_fire.hpp"
 #include <iostream> //for std::cout
 #include <cstdlib> //for absolute value, abs()
+#include "Player.hpp"
 
 #define PORTAL_WIDTH 60.0f
 #define PORTAL_HEIGHT 60.0f
 #define TRUE 1
 #define FALSE 0
 
-int drawportal{}, token{}; //drawportal and token are used in draw_portal
-int draw_portal_outline{};
 portal portal_1, portal_2;
-
 extern Bullet bullet, bullet_enemy2;
+extern Player_stats player;
 
-
-AEGfxTexture* greencircle;
-AEGfxVertexList* greencirclemesh{}; //mesh to draw the portal's valid range
+AEGfxTexture* portal_range_picture;
+AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 //f32* pointer_to_bullet_x{ &bullet_x };
 //f32* pointer_to_bullet_y{ &bullet_y };
 /*!**************************************************************************************************
@@ -40,9 +38,12 @@ AEGfxVertexList* greencirclemesh{}; //mesh to draw the portal's valid range
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
 void initialize_portal() {
-	greencircle = AEGfxTextureLoad("Assets/greencircle1.png");
+	portal_range_picture = AEGfxTextureLoad("Assets/greencircle1.png");
+	if (portal_range_picture) {
+		std::cout << "loaded portal_range_picture";
+	}
 
-	greencirclemesh  = portal_1.mesh = portal_2.mesh = create_Square_Mesh();
+	portal_range_mesh  = portal_1.mesh = portal_2.mesh = create_Square_Mesh();
 
 }
 
@@ -58,25 +59,24 @@ void initialize_portal() {
   Takes in a pointer to the player's center, if cursor is too far from player's center, player has to right click
   a valid location.
 
-\param[in] playerx
+\param[in] player.x
   x coordinate of the player's position
 
-\param[in] playery
+\param[in] player.y
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal(f32& playerx, f32& playery) {
-
+void draw_portal() {
+	draw_portal_range();
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEVec2 PlayerCenter{};
-	AEVec2Set(&PlayerCenter, playerx, playery);
 	if (AEInputCheckTriggered(AEVK_F)) {
-		drawportal = 0;
-		token = 0;
-		draw_portal_outline = FALSE;
+		portal_1.created = FALSE;
+		portal_2.created = FALSE;
+
+		portal_1.draw_outline = FALSE;
 	}
 	if (AEInputCheckTriggered(VK_RBUTTON)) { // first right click, assign cursor x and y to portal_1 x and y.
-		if (drawportal == 0) {
-			drawportal = 1;
+		if (portal_1.created == FALSE) {
+			portal_1.created = TRUE;
 			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
 
 			//offset portal_1's x by half of window width
@@ -87,43 +87,43 @@ void draw_portal(f32& playerx, f32& playery) {
 			//std::cout << "\nplayercenter x is" << PlayerCenter.x;
 			//offset portal_1's y by half of the window height
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			if (playerx > 0) {
-				portal_1.x += playerx;
+			if (player.x > 0) {
+				portal_1.x += player.x;
 				//std::cout << "\nportal 1 x after += portal_width" << portal_1.x;
 			}
-			if (playery > 0) {
-				portal_1.y += playery;
+			if (player.y > 0) {
+				portal_1.y += player.y;
 			}
 
 			//set vector to portal_1's center
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 
 			//if right click is too far from the player, input is invalid, player must select again
-			if (sqrt(AEVec2SquareDistance(&PlayerCenter, &portal_1.center)) > 300) {
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > 300) {
 				std::cout << "\nportal 1 selection is out of range, select again";
-				drawportal = 0;
-				token = 0;
-				draw_portal_outline = FALSE;
+				portal_1.created = FALSE;
+				portal_2.created = FALSE;
+				portal_1.draw_outline = FALSE;
 			}
 			else {
-				draw_portal_outline = TRUE;
+				portal_1.draw_outline = TRUE;
 			}
 		}
 
 		//if first right click is valid, and there is a second right click, assign the cursor's x and y to portal_2's x and y
-		else if (drawportal == 1) {
+		else if (portal_1.created == 1) {
 			AEInputGetCursorPosition(&(portal_2.x), &(portal_2.y));
 
 			//offset portal_2's x by half of window width
 			portal_2.x -= AEGetWindowWidth() / 2;
-			if (playerx > 0) {
-				portal_2.x += playerx;
+			if (player.x > 0) {
+				portal_2.x += player.x;
 				//std::cout << "\nportal 2 x after += portal_width" << portal_2.x;
 			}
 
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			if (playery > 0) {
-				portal_2.y += playery;
+			if (player.y > 0) {
+				portal_2.y += player.y;
 			}
 
 			//offset portal_2.y by windowheight()/2
@@ -133,19 +133,19 @@ void draw_portal(f32& playerx, f32& playery) {
 			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 			
 			
-			token = 1;
+			portal_2.created = TRUE;
 			//if there is right click but cursor is too far from player, input for portal_2's x and y is invalid, player will START OVER and select portal_1's x and y again
 			//if there is right click and cursor is within range, and portal_2 is already being drawn, player can change the position of portal_2 without 
 			//resetting portal_1's location
-			if (sqrt(AEVec2SquareDistance(&PlayerCenter, &portal_2.center)) > 500) {
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > 500) {
 				std::cout<<"\nportal 2 selection is out of range";
-				drawportal = 0;
-				token = 0;
-				draw_portal_outline = FALSE;
+				portal_1.created = 0;
+				portal_2.created = FALSE;
+				portal_1.draw_outline = FALSE;
 			}		
 		}
 	}
-	if (draw_portal_outline == TRUE) {
+	if (portal_1.draw_outline == TRUE) {
 		AEGfxSetTransparency(0.5f);
 		AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
 		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
@@ -154,9 +154,9 @@ void draw_portal(f32& playerx, f32& playery) {
 		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
-	//if token==1, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
-	if (token == 1) {
-		draw_portal_outline = FALSE;
+	//if portal_2.created==TRUE, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
+	if (portal_2.created == TRUE) {
+		portal_1.draw_outline = FALSE;
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 
 		AEGfxSetTransform(portal_1.matrix.m);
@@ -172,17 +172,16 @@ void draw_portal(f32& playerx, f32& playery) {
 
 		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player
 		//select where to draw the portals again
-		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &PlayerCenter, 50.0f, 50.0f)) {
-			playerx = portal_2.center.x;
-			playery = portal_2.center.y;
-			drawportal = 0;
-			token = 0;
+		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &player.center, 50.0f, 50.0f)) {
+			player.x = portal_2.center.x;
+			player.y = portal_2.center.y;
+			portal_1.created = FALSE;
+			portal_2.created = FALSE;
 		}
 
 		check_bullet_collide_with_portal();
 	}
 
-	//std::cout << "\nportal.center.x is" << portal_1->x;
 
 }//end of draw_portal
 
@@ -193,20 +192,20 @@ void draw_portal(f32& playerx, f32& playery) {
   If the player clicks a point outside of this circle, the click will be invalid and a portal will not be
   created. Not fully implemented yet.
 
-\param[in] playerx
+\param[in] player.x
   x coordinate of the player's position
 
-\param[in] playery
+\param[in] player.y
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal_range(f32 playerx, f32 playery) {
+void draw_portal_range() {
 	AEMtx33 portal_range_mtx{};
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxTextureSet(greencircle, 0, 0);
-	AEMtx33Trans(&portal_range_mtx, playerx, playery);
+	AEGfxTextureSet(portal_range_picture, 0, 0);
+	AEMtx33Trans(&portal_range_mtx, player.x, player.y);
 	AEGfxSetTransform(portal_range_mtx.m);
 
-	AEGfxMeshDraw(greencirclemesh, AE_GFX_MDM_LINES_STRIP);
+	AEGfxMeshDraw(portal_range_mesh, AE_GFX_MDM_LINES_STRIP);
 }
 
 void check_bullet_collide_with_portal() {

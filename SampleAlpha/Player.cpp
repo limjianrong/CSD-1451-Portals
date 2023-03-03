@@ -123,7 +123,7 @@ void draw_player() {
 
 
 	// --------- Portal draw & update ---------
-	draw_portal(player.x, player.y);
+	draw_portal();
 	AEVec2Set(&player.center, player.x, player.y);
 
 	// ---------  Firing of bullets   -----------
