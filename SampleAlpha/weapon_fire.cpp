@@ -118,6 +118,7 @@ void bullet_update() {
 			// --- Resets bullet ---
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
+			bullet.isTeleported = FALSE;
 		}
 	}
 	else { // No longer in range of boss
@@ -138,6 +139,7 @@ void bullet_update() {
 			// --- Resets bullet ---
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
+			bullet.isTeleported = FALSE;
 		}
 	}
 
@@ -156,6 +158,10 @@ void bullet_update() {
 		bullet.isTeleported = FALSE;
 		--boss.Hp;
 	}
+
+	//// If bullet is within range of boss
+	//if (bullet.x >= (boss.x_pos - boss.width) && bullet.x <= (boss.x_pos + boss.width) &&
+	//	bullet.y >= (boss.y_pos) - boss.height && bullet.y <= (boss.y_pos) + boss.height) {
 
 
 	// ----- Bullet collision with enemy1 -----

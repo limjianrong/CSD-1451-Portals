@@ -1,6 +1,6 @@
 /*!**************************************************************************************************
 \file     Enemy.cpp
-\author   Lee Zhi Yee
+\author   Lee Zhi Yee & Lin ZhaoZhi
 \par      DP email: zhiyee.l@digipen.edu
 \par      Course: CSD 1451
 \par      Software Engineering Project 2
@@ -265,6 +265,7 @@ void update_enemy2() {
 				// --- Resets bullet ---
 				bullet_enemy2.x = enemy2.x;
 				bullet_enemy2.y = enemy2.y;
+				bullet_enemy2.isTeleported = FALSE;
 			}
 		}
 		else { // No longer in range of boss
@@ -282,6 +283,7 @@ void update_enemy2() {
 				// --- Resets bullet ---
 				bullet_enemy2.x = enemy2.x;
 				bullet_enemy2.y = enemy2.y;
+				bullet_enemy2.isTeleported = FALSE;
 
 			}
 		}
