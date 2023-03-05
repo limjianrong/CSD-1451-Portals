@@ -16,6 +16,7 @@
     <ProjectGuid>{6d0ff7f2-021d-4554-a668-c871264a7fd6}</ProjectGuid>
     <RootNamespace>SampleAlpha</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Portals</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

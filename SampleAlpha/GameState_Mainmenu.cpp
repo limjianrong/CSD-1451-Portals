@@ -17,9 +17,9 @@ AEGfxTexture* backgroundTex;
 extern f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 
 void GameStateMainmenuLoad(void) {
-	buttonNotPressed = AEGfxTextureLoad("Assets/uipack/PNG/blue_button04.png");
-	buttonPressed = AEGfxTextureLoad("Assets/uipack/PNG/blue_button05.png");
-	backgroundTex = AEGfxTextureLoad("Assets/background/Backgrounds/backgroundForest.png");
+	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
+	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 	button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }

@@ -62,9 +62,9 @@ void enemy_init() {
 	enemy1.texture = AEGfxTextureLoad("Assets/enemy.png");
 	enemy1_a.texture = AEGfxTextureLoad("Assets/enemy.png");
 	// ---- Enemy2 Texture ----
-	enemy2.enemy2_fly1 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat.png");
-	enemy2.enemy2_fly2 = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat_fly.png");
-	enemy2.enemy2_dead = AEGfxTextureLoad("Assets/characters/Enemy sprites/bat_dead.png");
+	enemy2.enemy2_fly1 = AEGfxTextureLoad("Assets/bat.png");
+	enemy2.enemy2_fly2 = AEGfxTextureLoad("Assets/bat_fly.png");
+	enemy2.enemy2_dead = AEGfxTextureLoad("Assets/bat_dead.png");
 
 	// Saving the mesh (list of triangles) in enemy_mesh
 	enemy1_mesh = create_Square_Mesh();

@@ -31,7 +31,7 @@ float moveSpeed = 150.f;
 
 void draw_level_init() {
 	
-	rect = AEGfxTextureLoad("Assets/fullpack/PNG/Ground/Grass/grassMid.png");
+	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	rectmesh = move1.mesh = trapmesh = create_Square_Mesh();
 	move1.x = 400.f;

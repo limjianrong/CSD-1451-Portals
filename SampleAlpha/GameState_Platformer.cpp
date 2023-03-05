@@ -46,7 +46,7 @@ bool isPaused;
   In charge of loading platformer game
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
-	background2Tex = AEGfxTextureLoad("Assets/background/Backgrounds/backgroundColorFall.png");
+	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
 
 	initialize_player();
 	initialize_portal();
