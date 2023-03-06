@@ -38,17 +38,8 @@ void upgrades_init() {
 
 
 void draw_upgrade_cards() {
-	// Tell the engine to get ready to draw something with texture.
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	// Set the tint to white, so that the sprite can 
-	// display the full range of colors (default is black).
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	// Set blend mode to AE_GFX_BM_BLEND
-	// This will allow transparency.
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
-	
-	if (player.Level == 1 && visible) {
+	//if (player.Level == 1 && visible) {
 		
 		AEMtx33Scale(&scale, CARD_WIDTH, CARD_HEIGHT);
 		AEMtx33Rot(&rotate, PI);
@@ -85,7 +76,7 @@ void draw_upgrade_cards() {
 		AEGfxPrint(Albam_fontID, t3, 0.5f, c3.y/100.f, 0.5f, 0.0f, 0.0f, 0.0f);
 
 		
-	}
+	//}
 }
 
 void update_upgrade_cards() {

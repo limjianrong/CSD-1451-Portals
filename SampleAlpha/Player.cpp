@@ -159,6 +159,7 @@ void update_player() {
 	if (player.XP == 20) {
 		player.Level++;
 		player.XP -= 20;
+		player.justLeveledUp = TRUE;
 	}
 
 	// --------    Player Hp & Lives   -----------

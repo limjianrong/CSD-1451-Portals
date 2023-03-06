@@ -20,6 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Player.hpp"
 #include "weapon_fire.hpp"
 #include "portal_feature.hpp"
+#include "Upgrades.hpp"
 
 // ----- Enemies related -----
 #include "Enemy.hpp"
@@ -29,7 +30,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // ----- Others -----
 #include "Utilities.hpp"
 #include "draw_level.hpp"
-#include "Upgrades.hpp"
 
 
 //#include <iostream>
@@ -116,7 +116,7 @@ void GameStatePlatformerUpdate(void) {
 		update_enemy();
 		update_boss();
 		move_update();
-		update_upgrade_cards();
+		//update_upgrade_cards();
 		
 	}
 
@@ -144,12 +144,16 @@ void GameStatePlatformerDraw(void) {
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
+	if (player.justLeveledUp) {
+		draw_upgrade_cards();
+	}
+
 	draw_boss();
 	draw_player();
 	draw_enemy();
 	draw_level();
 	draw_enemy3();
-	draw_upgrade_cards();
+
 
 
 	// -------------- Pause menu --------------

@@ -33,6 +33,7 @@ struct Player_stats {
 	f32 width{ PLAYER_WIDTH }, height{ PLAYER_HEIGHT };
 	s32 Hp{ 5 }, Lives{ 3 };
 	s32 Level{ 0 }, XP{ 0 };
+	bool justLeveledUp{ FALSE };
 };
 
 // --------------  Checkpoints  ----------------
