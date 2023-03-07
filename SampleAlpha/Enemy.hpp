@@ -26,10 +26,12 @@
 // ----- Enemy 1 -----
 #define ENEMY1_WIDTH 60.f
 #define ENEMY1_HEIGHT 80.f
+#define MAX_ENEMIES_1 2			// Change this for total number of enemy1
 
 // ----- Enemy 2 (Shoots bullet) -----
 #define ENEMY2_WIDTH 80.f
 #define ENEMY2_HEIGHT 60.f
+#define MAX_ENEMIES_2 7			// Change this for total number of enemy2
 
 // ------- Enemy types -------
 struct Enemy1_stats {
@@ -38,32 +40,44 @@ struct Enemy1_stats {
 	s32 Hp{ 5 };
 	bool status{ TRUE }; // TRUE for alive, FALSE for dead
 	AEVec2 center;
+
+	// ---- Draw ----
+	AEMtx33 scale, rotate, translate, transform; // TRS
 	AEGfxTexture* texture;
+
 };
 
 struct Enemy2_stats {
 	f32 x{}, y{}, rotation{ PI };
 	f32 width{ ENEMY2_WIDTH }, height{ ENEMY2_HEIGHT };
-	f32 range_x{ ENEMY2_WIDTH + 200 }, range_y{ ENEMY2_HEIGHT + 200 };
+	f32 range_x{ ENEMY2_WIDTH + 500 }, range_y{ ENEMY2_HEIGHT + 500 };
 	s32 Hp{ 5 };
 	bool status{ TRUE }; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 
-	// ----- Texture -----
-	AEGfxTexture* enemy2_fly1, * enemy2_fly2, *enemy2_dead;
+	// ---- Draw ----
+	AEMtx33 scale, rotate, translate, transform; // TRS
+	AEGfxTexture* enemy2_fly1, * enemy2_fly2, * enemy2_dead, * bullet;
 };
 
-void draw_enemy2();
-void update_enemy2();
+// ------- Enemy1 -------
+void enemy1_create(f32 x, f32 y, s32 index);
+void draw_enemy1();
+//void enemy1_collision(Enemy1_stats enemy1);
+void update_enemy1();
 
-void draw_enemy1(Enemy1_stats enemy1);
-void enemy1_collision(Enemy1_stats enemy1);
-f32 update_enemy1(f32 x);
+// ------- Enemy2 -------
+void enemy2_create(f32 x, f32 y, s32 index);
+void enemy2_draw();
+void enemy2_update();
 
-void enemy_init();
-void draw_enemy();
-void update_enemy();
-void unload_enemy();
+// ------- Main functions -------
+void enemies_load();
+void enemies_init();
+void enemies_draw();
+void enemies_update();
+void enemies_unload();
+void enemies_free();
 
 
 

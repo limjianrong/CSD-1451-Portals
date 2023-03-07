@@ -18,6 +18,7 @@
 #include <iostream> //for std::cout
 #include <cstdlib> //for absolute value, abs()
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 #define PORTAL_WIDTH 60.0f
 #define PORTAL_HEIGHT 60.0f
@@ -25,7 +26,8 @@
 #define FALSE 0
 
 portal portal_1, portal_2;
-extern Bullet bullet, bullet_enemy2;
+extern Bullet bullet;
+extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 extern Player_stats player;
 
 //portal range
@@ -232,16 +234,17 @@ void check_bullet_collide_with_portal() {
 		portal_2.created = FALSE;
 		portal_1.draw_outline = FALSE;
 	}
-
-	//check if bullet_enemy2 collided with portal 
-	//AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2.center, bullet_enemy2.width, bullet_enemy2.height)){
-		bullet_enemy2.isTeleported = TRUE;
-		bullet_enemy2.x = portal_2.x;
-		bullet_enemy2.y = portal_2.y;
-		portal_1.created = FALSE;
-		portal_2.created = FALSE;
-		portal_1.draw_outline = FALSE;
+	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
+		//check if bullet_enemy2 collided with portal 
+		//AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
+		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
+			bullet_enemy2[i].isTeleported = TRUE;
+			bullet_enemy2[i].x = portal_2.x;
+			bullet_enemy2[i].y = portal_2.y;
+			portal_1.created = FALSE;
+			portal_2.created = FALSE;
+			portal_1.draw_outline = FALSE;
+		}
 	}
 }
 

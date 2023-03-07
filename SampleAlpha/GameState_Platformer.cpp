@@ -51,7 +51,7 @@ void GameStatePlatformerLoad(void) {
 	initialize_player();
 	initialize_portal();
 	draw_level_init();
-	enemy_init();
+	enemies_load();
 	enemy3_init();
 	initialize_boss();
 	upgrades_init();
@@ -61,7 +61,7 @@ void GameStatePlatformerLoad(void) {
   Initialise all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
-
+	enemies_init();
 }
 /*!**************************************************************************************************
 \brief
@@ -113,7 +113,7 @@ void GameStatePlatformerUpdate(void) {
 		update_player();
 		update_level();
 		enemy3_update(&player);
-		update_enemy();
+		enemies_update();
 		update_boss();
 		move_update();
 		//update_upgrade_cards();
@@ -150,7 +150,7 @@ void GameStatePlatformerDraw(void) {
 
 	draw_boss();
 	draw_player();
-	draw_enemy();
+	enemies_draw();
 	draw_level();
 	draw_enemy3();
 

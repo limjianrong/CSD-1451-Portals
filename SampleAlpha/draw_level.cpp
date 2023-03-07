@@ -21,7 +21,7 @@ AEGfxVertexList* rectmesh, * trapmesh;
 Block leftright1, trapping, updown1;
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
-extern Enemy1_stats enemy1;
+//extern Enemy1_stats enemy1;
 bool damage_ok{ TRUE };
 
 float moveSpeed = 150.f;
@@ -60,7 +60,7 @@ void draw_level() {
 
 	// examples
 	// 	enemy1.x = -300.0f;
-	enemy1.y = -110.0f;
+	//enemy1.y = -110.0f;
 	//blocks(5, -500, -200);
 	//blocks(4, -100, -50);
 	//blocks(6, 200, 100);

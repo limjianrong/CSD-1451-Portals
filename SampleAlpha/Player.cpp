@@ -41,7 +41,7 @@ int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 f32 cameraX{}, cameraY{};
 
 // ----- Enemy -----
-extern Enemy1_stats enemy1_a, enemy1_b;
+//extern Enemy1_stats enemy1_a, enemy1_b;
 
 void initialize_player() {
 

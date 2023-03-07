@@ -106,7 +106,8 @@ void bullet_update() {
 		isRunning = TRUE;
 
 		// ---- Loops bullet ----
-		if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+		//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
 
 			// ----- Movement of bullet from boss to player -----
 			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
@@ -125,7 +126,8 @@ void bullet_update() {
 	else { // No longer in range of boss
 
 		// ---- Loops bullet ----
-		if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+		//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
 
 			// ----- Movement of bullet from boss to player -----
 			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
@@ -182,7 +184,9 @@ void bullet_update() {
 void bullet_draw() {
 
 	// ---- Loops bullet ----
-	if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+	//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+	if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
+
 		AEMtx33 weapon_scale = { 0 };
 		AEMtx33Scale(&weapon_scale, bullet.width, bullet.height); // scaling it up
 		AEMtx33 weapon_translate = { 0 };
