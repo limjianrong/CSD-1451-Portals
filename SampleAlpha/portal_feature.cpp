@@ -38,7 +38,7 @@ AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
 void initialize_portal() {
-	portal_range_picture = AEGfxTextureLoad("Assets/greencircle1.png");
+	portal_range_picture = AEGfxTextureLoad("../Assets/greencircle1.png");
 	if (portal_range_picture) {
 		std::cout << "loaded portal_range_picture";
 	}
@@ -139,7 +139,7 @@ void draw_portal() {
 			//resetting portal_1's location
 			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > 500) {
 				std::cout<<"\nportal 2 selection is out of range";
-				portal_1.created = 0;
+				portal_1.created = FALSE;
 				portal_2.created = FALSE;
 				portal_1.draw_outline = FALSE;
 			}		
@@ -210,11 +210,15 @@ void draw_portal_range() {
 
 void check_bullet_collide_with_portal() {
 
-	//std::cout << "\nprotal1x is" << portal_1.x;
+	
+	//check if boss bullet collided with portal
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
 		bullet.isTeleported = TRUE;
 		bullet.x = portal_2.x;
 		bullet.y = portal_2.y;
+		portal_1.created = FALSE;
+		portal_2.created = FALSE;
+		portal_1.draw_outline = FALSE;
 	}
 
 	//check if bullet_enemy2 collided with portal 
@@ -223,6 +227,9 @@ void check_bullet_collide_with_portal() {
 		bullet_enemy2.isTeleported = TRUE;
 		bullet_enemy2.x = portal_2.x;
 		bullet_enemy2.y = portal_2.y;
+		portal_1.created = FALSE;
+		portal_2.created = FALSE;
+		portal_1.draw_outline = FALSE;
 	}
 }
 
