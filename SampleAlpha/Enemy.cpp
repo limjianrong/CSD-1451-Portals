@@ -215,7 +215,7 @@ void draw_enemy2() {
 		AEVec2Set(&enemy2.center, enemy2.x, enemy2.y);
 
 		// ------  Enemy2 bullets ------
-		if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+		//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
 			AEMtx33Scale(&scale, bullet_enemy2.width, bullet_enemy2.height); // scaling it up
 			AEMtx33Trans(&translate, bullet_enemy2.x, bullet_enemy2.y); // shifts along x & y axis
 			AEMtx33Rot(&rotate, PI); // rotation
@@ -224,7 +224,7 @@ void draw_enemy2() {
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(bullet.bulletTex, 0, 0);
 			AEGfxMeshDraw(bullet.shootMesh, AE_GFX_MDM_TRIANGLES);
-		}
+		//}
 	}
 }
 
@@ -254,19 +254,30 @@ void update_enemy2() {
 			player.y >= (enemy2.y - enemy2.range_y) && player.y <= (enemy2.y + enemy2.range_y)) {
 			// --- Enable shooting ---
 			isRunning = TRUE;
-			// ---- Loops bullet ----
-			if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
 
-				// ----- Movement of bullet from enemy2 to player -----
+			if (bullet_enemy2.x >= (player.x - 200)) {
 				bullet_enemy2.x -= 5;
-				//bullet_enemy2.y = enemy2.y;
 			}
 			else {
-				// --- Resets bullet ---
 				bullet_enemy2.x = enemy2.x;
 				bullet_enemy2.y = enemy2.y;
 				bullet_enemy2.isTeleported = FALSE;
 			}
+
+
+			//// ---- Loops bullet ----
+			//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+
+			//	// ----- Movement of bullet from enemy2 to player -----
+			//	bullet_enemy2.x -= 5;
+			//	//bullet_enemy2.y = enemy2.y;
+			//}
+			//else {
+			//	// --- Resets bullet ---
+			//	bullet_enemy2.x = enemy2.x;
+			//	bullet_enemy2.y = enemy2.y;
+			//	bullet_enemy2.isTeleported = FALSE;
+			//}
 		}
 		else { // No longer in range of boss
 			// ---- Loops bullet ----

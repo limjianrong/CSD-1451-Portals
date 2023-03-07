@@ -104,6 +104,7 @@ void bullet_update() {
 
 		// --- Enable shooting ---
 		isRunning = TRUE;
+
 		// ---- Loops bullet ----
 		if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 
