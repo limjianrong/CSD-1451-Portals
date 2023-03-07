@@ -28,22 +28,35 @@ portal portal_1, portal_2;
 extern Bullet bullet, bullet_enemy2;
 extern Player_stats player;
 
+//portal range
+const float portal_range{ 300.0f };
 AEGfxTexture* portal_range_picture;
 AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
-//f32* pointer_to_bullet_x{ &bullet_x };
-//f32* pointer_to_bullet_y{ &bullet_y };
+
+
 /*!**************************************************************************************************
 \brief
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
 void initialize_portal() {
-	portal_range_picture = AEGfxTextureLoad("../Assets/greencircle1.png");
+	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	if (portal_range_picture) {
 		std::cout << "loaded portal_range_picture";
 	}
 
-	portal_range_mesh  = portal_1.mesh = portal_2.mesh = create_Square_Mesh();
+	portal_1.mesh = portal_2.mesh = create_Square_Mesh();
+	portal_range_mesh = create_Square_Mesh();
+	//int Parts = 12;
+	//for (float i = 0; i < Parts; ++i)
+	//{
+	//	AEGfxTriAdd(
+	//		0.0f, 0.0f, 0xFFFFFF00, 0.0f, 0.0f,
+	//		cosf(i * 2 * PI / Parts) * 0.5f, sinf(i * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f,
+	//		cosf((i + 1) * 2 * PI / Parts) * 0.5f, sinf((i + 1) * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
+	//}
+
+	//portal_range_mesh = AEGfxMeshEnd();
 
 }
 
@@ -83,13 +96,10 @@ void draw_portal() {
 
 			portal_1.x -= AEGetWindowWidth() / 2;
 			
-			//std::cout << "\nportal 1 after minus" << portal_1.x;
-			//std::cout << "\nplayercenter x is" << PlayerCenter.x;
 			//offset portal_1's y by half of the window height
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
 			if (player.x > 0) {
 				portal_1.x += player.x;
-				//std::cout << "\nportal 1 x after += portal_width" << portal_1.x;
 			}
 			if (player.y > 0) {
 				portal_1.y += player.y;
@@ -99,7 +109,7 @@ void draw_portal() {
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 
 			//if right click is too far from the player, input is invalid, player must select again
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > 300) {
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > portal_range) {
 				std::cout << "\nportal 1 selection is out of range, select again";
 				portal_1.created = FALSE;
 				portal_2.created = FALSE;
@@ -137,7 +147,7 @@ void draw_portal() {
 			//if there is right click but cursor is too far from player, input for portal_2's x and y is invalid, player will START OVER and select portal_1's x and y again
 			//if there is right click and cursor is within range, and portal_2 is already being drawn, player can change the position of portal_2 without 
 			//resetting portal_1's location
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > 500) {
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > portal_range) {
 				std::cout<<"\nportal 2 selection is out of range";
 				portal_1.created = FALSE;
 				portal_2.created = FALSE;
@@ -199,13 +209,15 @@ void draw_portal() {
   y coordinate of the player's position
 *******************************************************************************************************/
 void draw_portal_range() {
+	AEMtx33 portal_range_scale_mtx{};
 	AEMtx33 portal_range_mtx{};
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxTextureSet(portal_range_picture, 0, 0);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
+	AEMtx33Scale(&portal_range_scale_mtx, portal_range*2, portal_range*2);
 	AEMtx33Trans(&portal_range_mtx, player.x, player.y);
+	AEMtx33Concat(&portal_range_mtx, &portal_range_mtx, &portal_range_scale_mtx);
 	AEGfxSetTransform(portal_range_mtx.m);
-
-	AEGfxMeshDraw(portal_range_mesh, AE_GFX_MDM_LINES_STRIP);
+	AEGfxMeshDraw(portal_range_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void check_bullet_collide_with_portal() {
