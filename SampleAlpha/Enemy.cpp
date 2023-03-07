@@ -237,10 +237,10 @@ void update_enemy2() {
 			s32 value = AEFrameRateControllerGetFrameCount() % 201;
 
 			if (value <= 100) {
-				enemy2.x -= 1.0f;
+				enemy2.y -= 1.0f;
 			}
 			else {
-				enemy2.x += 1.0f;
+				enemy2.y += 1.0f;
 			}
 		}
 

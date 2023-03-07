@@ -26,6 +26,7 @@ bool damage_ok{ TRUE };
 
 float moveSpeed = 150.f;
 
+extern AEMtx33 scale, rotate, translate, transform; // TRS
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
@@ -85,15 +86,10 @@ void draw_level() {
 }
 
 void update_level() {
-	player.y -= GRAVITY;
-	//if (
-	//	check_player_in_gravity_zone(player)) {
-	//	player.y += GRAVITY;
-	//}
-	//else {
-	//	player.y -= GRAVITY;
-	//	//pointer_to_player->y -= GRAVITY;
-	//}
+	
+	// Creates an anti-gravity zone
+	anti_gravity_zone(500, 700);
+	
 }
 
 //-------------------- Parameters --------------------
@@ -104,11 +100,8 @@ void update_level() {
 void blocks(s32 length, f32 x, f32 y) {
 
 	for (s32 i = 0; i < length; i++) {
-		AEMtx33 scale = { 0 };
 		AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-		AEMtx33 rotate = { 0 };
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33 translate = { 0 };
 		AEMtx33Trans(&translate, BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x
 			, BLOCK_HEIGHT / 2 + y);
 		// Concat the matrices
@@ -124,14 +117,6 @@ void blocks(s32 length, f32 x, f32 y) {
 		// Player collision with platforms
 		platform_collision(length, x, y);
 	}
-}
-
-int check_player_in_gravity_zone(Player_stats player) {
-	//std::cout << "player x is" << player.x;
-	if (player.x > static_cast<f32>(AEGetWindowWidth() / 2) && player.x < AEGetWindowWidth()) {
-		return 1;
-	}
-	return 0;
 }
 
 void spikes(s32 length, f32 x, f32 y) {
@@ -306,4 +291,26 @@ void trap_collision(s32 cnt, f32 x, f32 y) {
 	
 
 	
+}
+
+// x1 - x2 will be the anti-gravity zone
+void anti_gravity_zone(f64 x1, f64 x2) {
+	
+	if (player.x >= x1 && player.x <= x2)
+		player.y += GRAVITY;
+	else // player <= x2
+		player.y -= GRAVITY;
+
+}
+
+void draw_anti_gravity_zone(f64 x1, f64 x2) {
+
+	/*AEGfxSetTransparency(0.55f);
+	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
+	AEMtx33Rot(&rotate, PI);
+	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 }

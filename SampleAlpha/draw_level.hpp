@@ -29,13 +29,13 @@ void draw_level();
 void update_level();
 
 void blocks(s32 length, f32 x, f32 y);
-int check_player_in_gravity_zone(Player_stats player);
 void spikes(s32 length, f32 x, f32 y);
 void leftright_blocks(s32 length, f32 x, f32 y);
 void updown_blocks(s32 length, f32 x, f32 y);
 void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);
 void trap_collision(s32 cnt, f32 x, f32 y);
+void anti_gravity_zone(f64 x1, f64 x2);
 struct Block {
 	//sstring name;
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
