@@ -18,7 +18,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 AEGfxTexture* rect, * trap;
 AEGfxVertexList* rectmesh, * trapmesh;
-Block move1, trapping;
+Block leftright1, trapping, updown1;
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
 extern Enemy1_stats enemy1;
@@ -33,11 +33,15 @@ void draw_level_init() {
 	
 	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
-	rectmesh = move1.mesh = trapmesh = create_Square_Mesh();
-	move1.x = 400.f;
-	move1.y = 0.f;
-	move1.max_x = 400.f + MID_DIST;
-	move1.min_x = 250.f;
+	rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
+	leftright1.x = 400.f;
+	leftright1.y = 0.f;
+	leftright1.max_x = 400.f + MID_DIST;
+	leftright1.min_x = 250.f;
+	updown1.x = 0.f;
+	updown1.y = -100.f;
+	updown1.max_y = -100.f;
+	updown1.min_y = -200.f;
 
 	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
 	//blocklist[0].name = "move1";
@@ -64,8 +68,9 @@ void draw_level() {
 	//moving_blocks(5, move1.x, move1.y);
 	//damanging_traps(2, -200, -200);
 	blocks(8, -500, -200);
+	updown_blocks(4, updown1.x, updown1.y);
 	blocks(6, 0, 100);
-	moving_blocks(4, move1.x, move1.y);
+	leftright_blocks(4, leftright1.x, leftright1.y);
 	blocks(4, 1200, 200);
 	spikes(1, 1425, 0);
 	blocks(1, 1475, 0);
@@ -163,28 +168,28 @@ void spikes(s32 length, f32 x, f32 y) {
 	}
 }
 
-void moving_blocks(s32 length, f32 x, f32 y) {
+void leftright_blocks(s32 length, f32 x, f32 y) {
 
-	move1.length = length;
-	move1.x = x;
-	move1.y = y;
+	leftright1.length = length;
+	leftright1.x = x;
+	leftright1.y = y;
 
 
 	for (s32 i = 0; i < length; i++) {
-		move1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
-		move1.height = BLOCK_HEIGHT / 2 + y;
+		leftright1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		leftright1.height = BLOCK_HEIGHT / 2 + y;
 
-		AEMtx33Scale(&move1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-		AEMtx33Rot(&move1.rotate, PI);
-		AEMtx33Trans(&move1.translate, move1.width, move1.height);
+		AEMtx33Scale(&leftright1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&leftright1.rotate, PI);
+		AEMtx33Trans(&leftright1.translate, leftright1.width, leftright1.height);
 		// Concat the matrices
-		AEMtx33Concat(&move1.transform, &move1.rotate, &move1.scale);
-		AEMtx33Concat(&move1.transform, &move1.translate, &move1.transform);
-		AEGfxSetTransform(move1.transform.m);
+		AEMtx33Concat(&leftright1.transform, &leftright1.rotate, &leftright1.scale);
+		AEMtx33Concat(&leftright1.transform, &leftright1.translate, &leftright1.transform);
+		AEGfxSetTransform(leftright1.transform.m);
 
 		// Set the texture
 		AEGfxTextureSet(rect, 0, 0);
-		AEGfxMeshDraw(move1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(leftright1.mesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
 		
@@ -192,31 +197,78 @@ void moving_blocks(s32 length, f32 x, f32 y) {
 
 
 	}
-	AEVec2Set(&move1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
+	AEVec2Set(&leftright1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
+}
+
+void updown_blocks(s32 length, f32 x, f32 y) {
+
+	updown1.length = length;
+	updown1.x = x;
+	updown1.y = y;
+
+
+	for (s32 i = 0; i < length; i++) {
+		updown1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		updown1.height = BLOCK_HEIGHT / 2 + y;
+
+		AEMtx33Scale(&updown1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&updown1.rotate, PI);
+		AEMtx33Trans(&updown1.translate, updown1.width, updown1.height);
+		// Concat the matrices
+		AEMtx33Concat(&updown1.transform, &updown1.rotate, &updown1.scale);
+		AEMtx33Concat(&updown1.transform, &updown1.translate, &updown1.transform);
+		AEGfxSetTransform(updown1.transform.m);
+
+		// Set the texture
+		AEGfxTextureSet(rect, 0, 0);
+		AEGfxMeshDraw(updown1.mesh, AE_GFX_MDM_TRIANGLES);
+
+		// Player collision with platforms
+
+		platform_collision(length, x, y);
+
+
+	}
+	AEVec2Set(&updown1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
 }
 
 void move_update() {
 	//in case of using sine
-	//f64* time = nullptr;
+	f64* time = nullptr;
 	//move1.x = 200 * sinf(static_cast<float>(AEGetTime(time)/0.5f));
 	//if the x value is now == original position 
 
-	if (move1.pos == OG) {
-		move1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (AETestRectToRect(&move1.center, BLOCK_WIDTH*4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (move1.x >= move1.max_x) {
-			move1.pos = MOVED;
+	if (leftright1.pos == OG) {
+		leftright1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&leftright1.center, BLOCK_WIDTH*4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (leftright1.x >= leftright1.max_x) {
+			leftright1.pos = MOVED;
 		}
 	}
 
-	if (move1.pos == MOVED) {
-		move1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (AETestRectToRect(&move1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (move1.x <= move1.min_x) {
-			move1.pos = OG;
+	if (leftright1.pos == MOVED) {
+		leftright1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&leftright1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (leftright1.x <= leftright1.min_x) {
+			leftright1.pos = OG;
 		}
 	}
 
+	if (updown1.pos == OG) {
+		updown1.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&updown1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (updown1.y >= updown1.max_y) {
+			updown1.pos = MOVED;
+		}
+	}
+
+	if (updown1.pos == MOVED) {
+		updown1.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&updown1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (updown1.y <= updown1.min_y) {
+			updown1.pos = OG;
+		}
+	}
 }
 
 
