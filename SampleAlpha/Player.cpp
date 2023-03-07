@@ -22,6 +22,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
+// for isPaused
+#include "GameState_Platformer.hpp"
+
 //#include <iostream>
 
 Player_stats player;
@@ -31,63 +34,82 @@ Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1250, 1350, 250, 350}, {0, 2450
 extern s8 Albam_fontID;
 s8* lives_counter; // temp counter (Replacing with hearts?)
 s8* level, * XP, * Hp;
-// ----- Mesh & Texture -----
-AEMtx33 scale, rotate, translate, transform;
+// ----- TEMPORARY Mesh -----
 AEGfxVertexList* pMesh;
-AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex, * checkpointTex;
+//AEMtx33 scale, rotate, translate, transform; // TRS
+//AEGfxTexture* checkpointTex;
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
 // ----- Camera -----
 f32 cameraX{}, cameraY{};
-
+extern bool isPaused;
 // ----- Enemy -----
 //extern Enemy1_stats enemy1_a, enemy1_b;
 
-void initialize_player() {
-
-	player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
-	player_left1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_left.png");
-	player_left2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_left.png");
-	player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
-	player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
-	checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
+void player_load() {
+	player.player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
+	player.player_left1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_left.png");
+	player.player_left2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_left.png");
+	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
+	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
+	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
 	pMesh = create_Square_Mesh();
 
-	bullet_initialise();
+	bullet_load();
 }
 
-void draw_player() {
+void player_init() {
+	// -------- Player --------
+	player.x				= PLAYER_INITIAL_POS_X;		// Player's initial X position
+	player.y				= PLAYER_INITIAL_POS_Y;		// Player's initial Y position
+	player.rotation			= 0.f;						// Player's Rotation
+	player.Hp				= 5;						// Player's Health
+	player.Lives			= 3;						// Player's Lives
+	player.Level			= 0;						// Player's Level
+	player.XP				= 0;						// Player's XP
+	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
-	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	//AEGfxSetTransparency(1.0f);
-	//AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	// -------- Camera --------
+	AEGfxSetCamPosition(0, 0);							// Reset camera
+
+	// -------- Checkpoint --------
+	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
+		checkpoint[i].check = FALSE;					// Disable all checkpoints
+	}
+
+	// -------- Pause Menu --------
+	isPaused = FALSE;									// Unpause game
+}
+
+void player_draw() {
+
 	
 	// ---------------- Player ----------------
 	// Creates a player size 50x50
-	AEMtx33Scale(&scale, PLAYER_WIDTH, PLAYER_HEIGHT);
+	AEMtx33Scale(&player.scale, PLAYER_WIDTH, PLAYER_HEIGHT);
 	// Rotate player
-	AEMtx33Rot(&rotate, PI);
+	AEMtx33Rot(&player.rotate, PI);
 	// Move player when A / D keys pressed
-	AEMtx33Trans(&translate, player.x, player.y);
+	AEMtx33Trans(&player.translate, player.x, player.y);
 	// Concat the matrices (TRS)
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
+	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
+	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
 	// Choose the transform to use
-	AEGfxSetTransform(transform.m);
+	AEGfxSetTransform(player.transform.m);
 	if (AEInputCheckCurr(AEVK_D)) {
-		if ((num_of_Dpressed % 9) <= 4) AEGfxTextureSet(player_left1Tex, 0, 0);
-		else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player_left2Tex, 0, 0);
+		if ((num_of_Dpressed % 9) <= 4) AEGfxTextureSet(player.player_left1Tex, 0, 0);
+		else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player.player_left2Tex, 0, 0);
 	}
 	else if (AEInputCheckCurr(AEVK_A)) {
-		if ((num_of_Apressed % 9) <= 4) AEGfxTextureSet(player_right1Tex, 0, 0);
-		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player_right2Tex, 0, 0);
+		if ((num_of_Apressed % 9) <= 4) AEGfxTextureSet(player.player_right1Tex, 0, 0);
+		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
 	} 
-	else AEGfxTextureSet(player_standTex, 0, 0);
+	else AEGfxTextureSet(player.player_standTex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------------- Checkpoint --------------
-	checkpoint_create(1300, 300);
-	checkpoint_create(2500, 0);
+	checkpoint_create(1300, 300, 0);
+	checkpoint_create(2500, 0, 1);
 
 	// -------- Printing out no. of lives --------
 	if (player.Lives == 3) lives_counter = (s8*)"Lives: 3";
@@ -103,14 +125,10 @@ void draw_player() {
 	else if (player.Hp == 1 && player.Lives > 0) Hp = (s8*)"HP: 1";
 	else if (player.Lives == 0 || player.Hp == 0) Hp = (s8*)"HP: 0";
 
-
-	s8* notif = nullptr;
-
+	// --- Printing Level ---
 	if (player.Level == 0) level = (s8*)"Level: 0";
 	else if (player.Level == 1) level = (s8*)"Level: 1";
-
-	
-
+	// --- Printing XP ---
 	if (player.XP == 0) XP = (s8*)"XP: 0";
 	else if (player.XP == 10) XP = (s8*)"XP: 10";
 
@@ -135,7 +153,7 @@ void draw_player() {
 	}*/
 }
 
-void update_player() {
+void player_update() {
 
 	// --------  Setting player's position into a vector --------
 	//AEVec2Set(&player.center, player.x, player.y);
@@ -218,7 +236,7 @@ void update_player() {
 	}
 }
 
-void unload_player() {
+void player_unload() {
 	
 }
 
@@ -234,8 +252,8 @@ void player_collision() {
 	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
-	//if (player.y > WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2)
-	//	player.y = WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2;
+	if (player.y > WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2)
+		player.y = WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2;
 
 	// bottom of screen
 	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {
@@ -256,14 +274,15 @@ void player_collision() {
 	}
 }
 
-void checkpoint_create(f32 x, f32 y) {
-
-	AEMtx33Scale(&scale, PLAYER_WIDTH * 2, PLAYER_HEIGHT * 2);
-	AEMtx33Rot(&rotate, PI);
-	AEMtx33Trans(&translate, x, y);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxSetTransform(transform.m);
-	AEGfxTextureSet(checkpointTex, 0, 0);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+void checkpoint_create(f32 x, f32 y, s32 index) {
+	for (s32 i = 0; i < NUM_OF_CHECKPOINT; ++i) {
+		AEMtx33Scale(&checkpoint[i].scale, PLAYER_WIDTH * 2, PLAYER_HEIGHT * 2);
+		AEMtx33Rot(&checkpoint[i].rotate, PI);
+		AEMtx33Trans(&checkpoint[i].translate, x, y);
+		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].rotate, &checkpoint[i].scale);
+		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].translate, &checkpoint[i].transform);
+		AEGfxSetTransform(checkpoint[i].transform.m);
+		AEGfxTextureSet(checkpoint[0].checkpointTex, 0, 0);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 }

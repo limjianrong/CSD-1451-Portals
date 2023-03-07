@@ -10,10 +10,11 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
 #pragma once
-void initialize_player();
-void draw_player();
-void update_player();
-void unload_player();
+void player_load();
+void player_init();
+void player_draw();
+void player_update();
+void player_unload();
 
 
 void player_collision();
@@ -28,21 +29,29 @@ void player_collision();
 
 // --------------  Initialise player  ----------------
 struct Player_stats {
-	f32 x{ PLAYER_INITIAL_POS_X }, y{ PLAYER_INITIAL_POS_Y }, rotation{ 0.0f };
+	f32 x, y, rotation;
 	AEVec2 center{ 0,0 }; // same as .x & .y
 	f32 width{ PLAYER_WIDTH }, height{ PLAYER_HEIGHT };
-	s32 Hp{ 5 }, Lives{ 3 };
-	s32 Level{ 0 }, XP{ 0 };
-	bool justLeveledUp{ FALSE };
+	s32 Hp, Lives;
+	s32 Level, XP;
+	bool justLeveledUp;
+
+	// ----- Transformation & Texture -----
+	AEMtx33 scale, rotate, translate, transform;
+	AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex;
 };
 
 // --------------  Checkpoints  ----------------
 struct Checkpoint {
 	bool check;
 	f32 x1, x2, y1, y2;
+
+	// ----- Transformation & Texture -----
+	AEMtx33 scale, rotate, translate, transform;
+	AEGfxTexture* checkpointTex;
 };
 #define NUM_OF_CHECKPOINT 2
-void checkpoint_create(f32 x, f32 y);
+void checkpoint_create(f32 x, f32 y, s32 index);
 
 
 

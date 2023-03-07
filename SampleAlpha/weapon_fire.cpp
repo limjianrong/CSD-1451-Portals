@@ -10,7 +10,7 @@
   This source file implements the functions used to initialize and bullet mechanics.
 
   The function includes:
-  - bullet_initialise
+  - bullet_load
 	Load texture, initialise mesh
 
   - weapon_fire
@@ -58,7 +58,7 @@ int prevState;
 	Loads texture being used for bullet
 	Save created mesh into AEGfxVertexList
 *******************************************************************************************************/
-void bullet_initialise() {
+void bullet_load() {
 
 	// load texture
 	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");

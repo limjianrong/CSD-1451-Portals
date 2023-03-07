@@ -27,14 +27,7 @@ extern Player_stats player;
 // ----- Pause Menu -----
 extern bool isPaused;
 
-/*!**************************************************************************************************
-\brief
-	Loads texture and initializes mesh for enemy
-*******************************************************************************************************/
-
-
-void enemy3_init() {
-
+void enemy3_load() {
 	enemy3 = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/wingMan3.png");
 	// Saving the mesh (list of triangles) in enemy3_mesh
 	enemy3_mesh = create_Square_Mesh();
@@ -42,6 +35,14 @@ void enemy3_init() {
 	enemy3_warning = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 	// Saving the mesh (list of triangles) in enemy3_mesh
 	enemy3_warning_mesh = create_Square_Mesh();
+}
+
+/*!**************************************************************************************************
+\brief
+	Loads texture and initializes mesh for enemy
+*******************************************************************************************************/
+
+void enemy3_init() {
 
 	// spawn outside screen
 	enemy3_a.x = -WINDOWLENGTH_X/2 - 1000.f;

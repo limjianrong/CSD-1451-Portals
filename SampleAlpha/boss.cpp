@@ -11,12 +11,14 @@ extern Player_stats player;
 Boss boss;
 Laser_beam laser_beam;
 
-
-void initialize_boss() {
+void boss_load() {
 	laser_beam.mesh = boss.mesh = create_Square_Mesh();
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/uipack/PNG/red_button02.png");
+}
+
+void boss_init () {
 
 }
 

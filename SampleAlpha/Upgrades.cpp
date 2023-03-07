@@ -27,9 +27,12 @@ f64 deltaTime{};
 f64 lastFrameTime{};
 f64 idle_time{ 2.f };
 
-void upgrades_init() {
+void upgrades_load() {
 	card_texture = AEGfxTextureLoad("Assets/card.png");
 	uMesh = create_Square_Mesh();
+}
+
+void upgrades_init() {
 
 	deltaTime = 0.0f;
 	lastFrameTime = AEFrameRateControllerGetFrameTime();

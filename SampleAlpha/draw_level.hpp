@@ -24,6 +24,8 @@ enum { OG, MOVED };
 
 //std::vector<Block> blocklist;
 
+// ---- Main Functions ----
+void draw_level_load();
 void draw_level_init();
 void draw_level();
 void update_level();

@@ -10,7 +10,7 @@
   This source file implements the functions used for the game's portal feature
 
   The functions include:
-  - initialize_portal
+  - portal_load
 	  creates a square mesh for the portal
 
   - draw_portal
@@ -38,8 +38,8 @@ struct portal {
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
-void initialize_portal();
-
+void portal_load();
+void portal_init();
 
 
 /*!**************************************************************************************************

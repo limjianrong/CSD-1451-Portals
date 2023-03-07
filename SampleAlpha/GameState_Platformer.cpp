@@ -47,21 +47,28 @@ bool isPaused;
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
 	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
-
-	initialize_player();
-	initialize_portal();
-	draw_level_init();
+	
+	draw_level_load();
+	player_load();
+	boss_load();
 	enemies_load();
-	enemy3_init();
-	initialize_boss();
-	upgrades_init();
+	enemy3_load();
+	upgrades_load();
+	portal_load();
+
 }
 /*!**************************************************************************************************
 \brief
   Initialise all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
+	draw_level_init();
+	player_init();
+	boss_init();
 	enemies_init();
+	enemy3_init();
+	upgrades_init();
+	portal_init();
 }
 /*!**************************************************************************************************
 \brief
@@ -110,7 +117,7 @@ void GameStatePlatformerUpdate(void) {
 	}
 
 	else {
-		update_player();
+		player_update();
 		update_level();
 		enemy3_update(&player);
 		enemies_update();
@@ -144,12 +151,12 @@ void GameStatePlatformerDraw(void) {
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	if (player.justLeveledUp) {
+	if (player.justLeveledUp) {		// If player levels up
 		draw_upgrade_cards();
 	}
 
 	draw_boss();
-	draw_player();
+	player_draw();
 	enemies_draw();
 	draw_level();
 	draw_enemy3();
@@ -169,20 +176,22 @@ void GameStatePlatformerDraw(void) {
 		AEMtx33Trans(&translate, originX, originY);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxTextureSet(nullptr, 0, 0);
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// --------- Window in middle of screen ---------
-		AEGfxSetTransparency(1.0f);
+		/*AEGfxSetTransparency(1.0f);
 		AEMtx33Scale(&scale, WINDOWLENGTH_X/3, WINDOWLENGTH_Y/2);
 		AEMtx33Rot(&rotate, PI);
 		AEMtx33Trans(&translate, originX, originY -WINDOWLENGTH_Y/10);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 		
 		// --------- Buttons ---------
+		AEGfxSetTransparency(1.0f);
 		for (int i = 9; i <= 15; i+=2) {
 			AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
 			AEMtx33Rot(&rotate, PI);
@@ -222,7 +231,7 @@ void GameStatePlatformerFree(void) {
 *******************************************************************************************************/
 void GameStatePlatformerUnload(void) {
 
-	//unload_player();
+	//player_unload();
 	// 
 	// Informing the system about the loop's end
 	AESysFrameEnd();

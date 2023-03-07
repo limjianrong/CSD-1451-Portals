@@ -46,11 +46,13 @@ struct Laser_beam{
 
 };
 
-
-
-void initialize_boss();
-void boss_movement();
+// ---- Main Functions ----
+void boss_load();
+void boss_init();
 void draw_boss();
 void update_boss();
+
+
+void boss_movement();
 void boss_laser_beam();
 void boss_charge();

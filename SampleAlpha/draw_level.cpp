@@ -26,15 +26,18 @@ bool damage_ok{ TRUE };
 
 float moveSpeed = 150.f;
 
-extern AEMtx33 scale, rotate, translate, transform; // TRS
+AEMtx33 scale, rotate, translate, transform; // TRS
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
-void draw_level_init() {
-	
+void draw_level_load() {
 	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
+}
+
+void draw_level_init() {
+	
 	leftright1.x = 400.f;
 	leftright1.y = 0.f;
 	leftright1.max_x = 400.f + MID_DIST;

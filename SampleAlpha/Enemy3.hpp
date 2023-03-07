@@ -15,9 +15,11 @@ struct Enemy3_stats {
 	AEVec2 center{ 0,0 };
 };
 
+void enemy3_load();
 void enemy3_init();
 void draw_enemy3();
 void enemy3_update(Player_stats* player);
+
 void enemy3_collision(Player_stats* player);
 
 

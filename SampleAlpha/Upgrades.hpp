@@ -10,6 +10,7 @@ struct card {
 	f32 x, y;
 };
 
+void upgrades_load();
 void upgrades_init();
 void draw_upgrade_cards();
 void update_upgrade_cards();

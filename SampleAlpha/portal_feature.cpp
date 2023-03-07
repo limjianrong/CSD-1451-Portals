@@ -41,7 +41,7 @@ AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
   portal_1's mesh is green in color and portal_2's mesh is red in color.
 *******************************************************************************************************/
-void initialize_portal() {
+void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	if (portal_range_picture) {
 		std::cout << "loaded portal_range_picture";
@@ -60,6 +60,10 @@ void initialize_portal() {
 
 	//portal_range_mesh = AEGfxMeshEnd();
 
+}
+
+void portal_init() {
+	// Initialise
 }
 
 /*!**************************************************************************************************
