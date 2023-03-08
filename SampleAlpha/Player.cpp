@@ -128,9 +128,11 @@ void player_draw() {
 	// --- Printing Level ---
 	if (player.Level == 0) level = (s8*)"Level: 0";
 	else if (player.Level == 1) level = (s8*)"Level: 1";
+	else if (player.Level == 2) level = (s8*)"Level: 2";
 	// --- Printing XP ---
 	if (player.XP == 0) XP = (s8*)"XP: 0";
-	else if (player.XP == 10) XP = (s8*)"XP: 10";
+	else if (player.XP == 20) XP = (s8*)"XP: 20";
+	else if (player.XP == 40) XP = (s8*)"XP: 40";
 
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
@@ -173,10 +175,22 @@ void player_update() {
 	}
 
 	// --------  Player's level & XP   ----------
-	// FOR NOW ONLY: 20xp to level up (1 enemy = 10xp)
-	if (player.XP == 20) {
+	// FOR NOW ONLY: 20xp to level up from lvl0 -> lvl1 (1 enemy = 20xp)
+	if (player.XP == 20 && player.Level == 0) {
 		player.Level++;
-		player.XP -= 20;
+		player.XP = 0;
+		player.justLeveledUp = TRUE;
+	}
+	// FOR NOW ONLY: 40xp to level up from lvl1 -> lvl2 (1 enemy = 20xp)
+	else if (player.XP == 40 && player.Level == 1) {
+		player.Level++;
+		player.XP = 0;
+		player.justLeveledUp = TRUE;
+	}
+	// FOR NOW ONLY: 60xp to level up from lvl2 -> lvl3 (1 enemy = 20xp)
+	else if (player.XP == 60 && player.Level == 2) {
+		player.Level++;
+		player.XP = 0;
 		player.justLeveledUp = TRUE;
 	}
 

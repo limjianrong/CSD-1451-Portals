@@ -177,11 +177,6 @@ void draw_enemy1 () {
 			AEVec2Set(&enemy1[i].center, enemy1[i].x, enemy1[i].y);
 
 		}
-		// ------- XP for player -------
-		else if (enemy1[i].Hp <= 0 && enemy1[i].status == TRUE) {
-			player.XP += 10;
-			enemy1[i].status = FALSE;
-		}
 	}
 }
 
@@ -197,6 +192,12 @@ void update_enemy1() {
 			}
 			else {
 				enemy1[i].x += 1.0f;
+			}
+
+			// ------- XP for player -------
+			if (enemy1[i].Hp <= 0 && enemy1[i].status == TRUE) {
+				player.XP += 20;
+				enemy1[i].status = FALSE;
 			}
 
 			///////////////
@@ -269,10 +270,10 @@ void enemy2_update () {
 				s32 value = AEFrameRateControllerGetFrameCount() % 401;
 
 				if (value <= 200) {
-					enemy2[i].y -= 1.0f;
+					enemy2[i].y -= 0.5f;
 				}
 				else {
-					enemy2[i].y += 1.0f;
+					enemy2[i].y += 0.5f;
 				}
 			}
 
@@ -350,7 +351,9 @@ void enemy2_update () {
 				}
 			}
 		}
-		else {	// enemy2 dead
+
+		// ------- XP for player -------
+		if (enemy2[i].Hp <= 0 && enemy2[i].status == TRUE) {
 			player.XP += 20;
 			enemy2[i].status = FALSE;
 		}

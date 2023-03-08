@@ -123,7 +123,7 @@ void GameStatePlatformerUpdate(void) {
 		enemies_update();
 		update_boss();
 		move_update();
-		//update_upgrade_cards();
+		upgrade_update();
 		
 	}
 
@@ -151,16 +151,15 @@ void GameStatePlatformerDraw(void) {
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	if (player.justLeveledUp) {		// If player levels up
-		draw_upgrade_cards();
-	}
-
 	draw_boss();
 	player_draw();
 	enemies_draw();
-	draw_level();
 	draw_enemy3();
+	draw_level();
 
+	//if (player.justLeveledUp) {		// If player levels up
+	upgrade_draw();
+	//}
 
 
 	// -------------- Pause menu --------------
