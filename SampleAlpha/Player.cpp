@@ -25,7 +25,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // for isPaused
 #include "GameState_Platformer.hpp"
 
-//#include <iostream>
+#include <iostream>
 
 Player_stats player;
 Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1250, 1350, 250, 350}, {0, 2450, 2550, -50, 50} };
@@ -63,8 +63,10 @@ void player_init() {
 	player.x				= PLAYER_INITIAL_POS_X;		// Player's initial X position
 	player.y				= PLAYER_INITIAL_POS_Y;		// Player's initial Y position
 	player.rotation			= 0.f;						// Player's Rotation
-	player.Hp				= 5;						// Player's Health
+	player.Max_Hp			= 5;						// Player's Maximum Health
+	player.Hp				= player.Max_Hp;			// Player's Health
 	player.Lives			= 3;						// Player's Lives
+	player.Speed			= 1;						// Player's Movement Speed
 	player.Level			= 0;						// Player's Level
 	player.XP				= 0;						// Player's XP
 	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
@@ -118,12 +120,14 @@ void player_draw() {
 	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
 
 	// -------- Printing out Hp ----------
-	if (player.Hp == 5 && player.Lives > 0) Hp = (s8*)"HP: 5";
-	else if (player.Hp == 4 && player.Lives > 0) Hp = (s8*)"HP: 4";
-	else if (player.Hp == 3 && player.Lives > 0) Hp = (s8*)"HP: 3";
-	else if (player.Hp == 2 && player.Lives > 0) Hp = (s8*)"HP: 2";
-	else if (player.Hp == 1 && player.Lives > 0) Hp = (s8*)"HP: 1";
-	else if (player.Lives == 0 || player.Hp == 0) Hp = (s8*)"HP: 0";
+	if (player.Hp == 7) Hp = (s8*)"HP: 7";
+	else if (player.Hp == 6) Hp = (s8*)"HP: 6";
+	else if (player.Hp == 5) Hp = (s8*)"HP: 5";
+	else if (player.Hp == 4) Hp = (s8*)"HP: 4";
+	else if (player.Hp == 3) Hp = (s8*)"HP: 3";
+	else if (player.Hp == 2) Hp = (s8*)"HP: 2";
+	else if (player.Hp == 1) Hp = (s8*)"HP: 1";
+	else if (player.Hp == 0) Hp = (s8*)"HP: 0";
 
 	// --- Printing Level ---
 	if (player.Level == 0) level = (s8*)"Level: 0";
@@ -156,20 +160,19 @@ void player_draw() {
 }
 
 void player_update() {
-
 	// --------  Setting player's position into a vector --------
 	//AEVec2Set(&player.center, player.x, player.y);
 
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {
-		player.x += 5;
+		player.x += 5 * player.Speed;
 		num_of_Dpressed++;
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
-		player.x -= 5;
+		player.x -= 5 * player.Speed;
 		num_of_Apressed++;
 		//player.rotation += 0.1f;
 	}
@@ -197,7 +200,7 @@ void player_update() {
 	// --------    Player Hp & Lives   -----------
 	if (player.Hp <= 0) {
 		player.Lives--;
-		player.Hp += 5;
+		player.Hp = player.Max_Hp;
 	}
 
 	// ---------  Firing of bullets   -----------
@@ -272,6 +275,7 @@ void player_collision() {
 	// bottom of screen
 	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {
 		--player.Lives;
+		player.Hp = player.Max_Hp;
 
 		// ---------  Set player's position to latest checkpoint  ---------
 		for (s32 i = NUM_OF_CHECKPOINT-1; i >= 0; i--) {

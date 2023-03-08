@@ -35,7 +35,7 @@ struct Bullet {
 	AEVec2 center{};
 	f32 width{ 20.0f }, height{ 20.0f };
 	f32 speed{ 5.0f };
-	bool doesDamage{ FALSE }, isTeleported{ FALSE };
+	bool doesDamage{ FALSE }, isTeleported{ FALSE }, isShooting { FALSE };
 
 	// ----- Mesh & Texture -----
 	AEGfxVertexList* shootMesh;

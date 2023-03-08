@@ -19,6 +19,7 @@
 #include <cstdlib> //for absolute value, abs()
 #include "Player.hpp"
 #include "Enemy.hpp"
+//#include "Upgrades.hpp"
 
 #define PORTAL_WIDTH 60.0f
 #define PORTAL_HEIGHT 60.0f
@@ -31,7 +32,7 @@ extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 extern Player_stats player;
 
 //portal range
-const float portal_range{ 300.0f };
+float portal_range{ 300.0f };
 AEGfxTexture* portal_range_picture;
 AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 

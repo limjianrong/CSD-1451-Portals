@@ -32,7 +32,8 @@ struct Player_stats {
 	f32 x, y, rotation;
 	AEVec2 center{ 0,0 }; // same as .x & .y
 	f32 width{ PLAYER_WIDTH }, height{ PLAYER_HEIGHT };
-	s32 Hp, Lives;
+	s32 Max_Hp, Hp, Lives;
+	f32 Speed;
 	s32 Level, XP;
 	bool justLeveledUp;
 

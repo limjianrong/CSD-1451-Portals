@@ -35,10 +35,10 @@
 
 // ------- Enemy types -------
 struct Enemy1_stats {
-	f32 x{}, y{}, rotation{ PI };
-	f32 width{ ENEMY1_WIDTH }, height{ ENEMY1_HEIGHT };
-	s32 Hp{ 5 };
-	bool status{ TRUE }; // TRUE for alive, FALSE for dead
+	f32 x{}, y{}, rotation;
+	f32 width, height;
+	s32 Hp;
+	bool status; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 
 	// ---- Draw ----
@@ -48,11 +48,11 @@ struct Enemy1_stats {
 };
 
 struct Enemy2_stats {
-	f32 x{}, y{}, rotation{ PI };
-	f32 width{ ENEMY2_WIDTH }, height{ ENEMY2_HEIGHT };
-	f32 range_x{ ENEMY2_WIDTH + 500 }, range_y{ ENEMY2_HEIGHT + 500 };
-	s32 Hp{ 5 };
-	bool status{ TRUE }; // TRUE for alive, FALSE for dead
+	f32 x{}, y{}, rotation;
+	f32 width, height;
+	f32 range_x, range_y;
+	s32 Hp;
+	bool status; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 
 	// ---- Draw ----
@@ -62,7 +62,7 @@ struct Enemy2_stats {
 
 // ------- Enemy1 -------
 void enemy1_create(f32 x, f32 y, s32 index);
-void draw_enemy1();
+void enemy1_draw();
 //void enemy1_collision(Enemy1_stats enemy1);
 void update_enemy1();
 

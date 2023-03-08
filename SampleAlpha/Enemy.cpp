@@ -41,7 +41,6 @@ Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
 
 f32 dist_enemy2bullet, dist_enemy2player;
 bool damage_allowed{ TRUE };
-static bool isRunning = FALSE;
 
 // ----- Pause Menu -----
 extern bool isPaused;
@@ -73,23 +72,51 @@ void enemies_load() {
 *******************************************************************************************************/
 void enemies_init() {
 
-
+	// ------- Enemy 1 -------
 	enemy1_create(-200, -110, 0);
 	enemy1_create(150, 190, 1);
 
-	enemy2_create(-50, -120, 0);
-	enemy2_create(-50, -60, 1);
-	enemy2_create(-50, 0, 2);
-	enemy2_create(-50, 60, 3);
-	enemy2_create(-50, 120, 4);
-	enemy2_create(-50, 180, 5);
+	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+
+		enemy1[i].rotation				= PI;					// Enemy1's Rotation
+		enemy1[i].width					= ENEMY1_WIDTH;			// Enemy1's Width
+		enemy1[i].height				= ENEMY1_HEIGHT;		// Enemy1's Height
+		enemy1[i].Hp					= 5;					// Enemy1's Health
+		enemy1[i].status				= TRUE;					// TRUE for alive, FALSE for dead
+	}
+
+
+	// ------- Enemy 2 & bullets -------
+	enemy2_create(300, -120, 0);
+	enemy2_create(300, -60, 1);
+	enemy2_create(300, 0, 2);
+	enemy2_create(300, 60, 3);
+	enemy2_create(300, 120, 4);
+	enemy2_create(300, 180, 5);
 	enemy2_create(1750, 240, 6);
 
-	// Initialise bullet position for all enemy2
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		bullet_enemy2[i].x = enemy2[i].x;
-		bullet_enemy2[i].y = enemy2[i].y;
+
+		// ---- Enemy2 ----
+		enemy2[i].rotation				= PI;					// Enemy2's Rotation
+		enemy2[i].width					= ENEMY2_WIDTH;			// Enemy2's Width
+		enemy2[i].height				= ENEMY2_HEIGHT;		// Enemy2's Height
+		enemy2[i].range_x				= ENEMY2_WIDTH + 350;	// Enemy2's Horizonal range
+		enemy2[i].range_y				= ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
+		enemy2[i].Hp					= 5;					// Enemy2's Health
+		enemy2[i].status				= TRUE;					// TRUE for alive, FALSE for dead
+		// ---- Bullet ----
+		bullet_enemy2[i].x				= enemy2[i].x;			// Bullet x position
+		bullet_enemy2[i].y				= enemy2[i].y;			// Bullet y position
+		bullet_enemy2[i].width			= 20.0f;				// Bullet width
+		bullet_enemy2[i].height			= 20.0f;				// Bullet height
+		bullet_enemy2[i].speed			= 5;					// Bullet speed
+		bullet_enemy2[i].doesDamage		= FALSE;				// Indicator for dealing damage
+		bullet_enemy2[i].isTeleported	= FALSE;				// Indicator for teleporation
+		bullet_enemy2[i].isShooting		= FALSE;				// Indicator to check whether bullet is still shooting
 	}
+
+
 }
 /*!**************************************************************************************************
 \brief
@@ -100,7 +127,7 @@ void enemies_draw () {
 	// No idea why this is required
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
-	draw_enemy1();
+	enemy1_draw();
 	enemy2_draw();
 }
 
@@ -159,7 +186,7 @@ void enemy1_create(f32 x, f32 y, s32 index) {
 	enemy1[index].y = y;
 }
 
-void draw_enemy1 () {
+void enemy1_draw() {
 	
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (enemy1[i].Hp > 0 && enemy1[i].status == TRUE) {
@@ -244,9 +271,7 @@ void enemy2_draw () {
 			//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
 
 			// If player is within range & left of enemy2
-			if (player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
-				player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y)) {
-
+			if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].x) {
 				AEMtx33Scale(&enemy2[i].scale, bullet_enemy2[i].width, bullet_enemy2[i].height); // scaling it up
 				AEMtx33Trans(&enemy2[i].translate, bullet_enemy2[i].x, bullet_enemy2[i].y); // shifts along x & y axis
 				AEMtx33Rot(&enemy2[i].rotate, PI); // rotation
@@ -286,14 +311,14 @@ void enemy2_update () {
 			/*if (player.x >= (enemy2.x - enemy2.range_x) && player.x <= (enemy2.x + enemy2.range_x) &&
 				player.y >= (enemy2.y - enemy2.range_y) && player.y <= (enemy2.y + enemy2.range_y)) {*/
 
-			// If player is within enemy2 range (500x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
+			// If player is within enemy2 range (300x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
 			if (player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
 				player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y)) {
 				// --- Enable shooting ---
-				isRunning = TRUE;
+				bullet_enemy2[i].isShooting = TRUE;
 
 				// ----- Movement of bullet from enemy2 -----
-				if (bullet_enemy2[i].x >= (player.x - 200)) {
+				if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
 					bullet_enemy2[i].x -= 5;
 				}
 				else {
@@ -310,13 +335,21 @@ void enemy2_update () {
 			else { // No longer in range
 				// ---- Loops bullet ----
 				//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
-				if (isRunning) {
-					// ----- Movement of bullet from boss to player -----
-					bullet_enemy2[i].x -= 5;
+				if (bullet_enemy2[i].isShooting) {
+
+					// ----- Movement of bullet from enemy2 -----
+					if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
+						bullet_enemy2[i].x -= 5;
+					}
+					else {
+						// --- Disable shooting ---
+						bullet_enemy2[i].isShooting = FALSE;
+
+					}
 				}
 				else {
 					// --- Disable shooting ---
-					isRunning = FALSE;
+					bullet_enemy2[i].isShooting = FALSE;
 
 					// --- Resets bullet ---
 					bullet_enemy2[i].x = enemy2[i].x;
@@ -330,6 +363,12 @@ void enemy2_update () {
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
 				bullet_enemy2[i].x = enemy2[i].x;
 				bullet_enemy2[i].y = enemy2[i].y;
+				
+				// --- Disable shooting when player out of range of Enemy2 ---
+				if (!(player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
+					player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y))) {
+					bullet_enemy2[i].isShooting = FALSE;
+				}
 				--player.Hp;
 			}
 
