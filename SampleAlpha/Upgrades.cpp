@@ -2,7 +2,7 @@
 #include "AEEngine.h"
 #include "Player.hpp"			// For player_stats
 #include "portal_feature.hpp"	// For portal range
-#include "Utilities.hpp"
+#include "Utilities.hpp"		// For cursor coords, 
 #include "Upgrades.hpp"
 #include "GameState_Platformer.hpp"	 // For isPaused
 
@@ -12,15 +12,16 @@
 #include <iostream>
 
 extern Player_stats player;
-//extern s8 Albam_fontID;
-//s8* t1;
-//s8* t2;
-//s8* t3;
 
 #define MAX_UPGRADES 3
 Card upgrades[MAX_UPGRADES];
 
+// --- COMMENTED OUT ---
 bool visible{ false };
+f64 deltaTime{};
+f64 lastFrameTime{};
+f64 idle_time{ 2.f };
+
 static bool isUpgradeTime{ FALSE };	 // Boolean for storing upgradeTime
 s32 selected;	// temp variable to store selected card
 
@@ -35,9 +36,12 @@ static AEMtx33 scale, rotate, translate, transform;
 AEGfxVertexList* uMesh;
 extern f32 originX, originY;
 
-f64 deltaTime{};
-f64 lastFrameTime{};
-f64 idle_time{ 2.f };
+
+// ----- Cursor positions -----
+extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
+extern AEVec2 center_cursor;		 // Origin is CENTER of window
+extern AEVec2 world_center_cursor;  // Origin is CENTER of window
+
 
 void upgrades_load() {
 	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
@@ -128,7 +132,6 @@ void upgrade_update() {
 	upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
 	upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 
-
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
 		player.justLeveledUp = FALSE;	// Reset bool
@@ -136,12 +139,17 @@ void upgrade_update() {
 		//isPaused = TRUE;				// Pause game
 	}
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
-
-		AEVec2 temp_Mouse = get_cursor_center_position();
 		for (s32 i = 0; i < MAX_UPGRADES; ++i) {
 			// Checks which upgrade is selected
 			AEVec2Set(&upgrades[i].center, upgrades[i].x, upgrades[i].y);
-			if (AETestRectToRect(&upgrades[i].center, upgrades[i].width, upgrades[i].height, &temp_Mouse, 0, 0)) {
+			/*std::cout << "Center X: " << upgrades[i].center.x << std::endl;
+			std::cout << "Center Y: " << upgrades[i].center.y << std::endl;
+			std::cout << "Mouse X: " << world_center_cursor.x << std::endl;
+			std::cout << "Mouse Y: " << world_center_cursor.y << std::endl;
+			std::cout << "Player X: " << player.x << std::endl;
+			std::cout << "Player Y: " << player.y << std::endl;
+			std::cout << "--------------------------------------------" << std::endl;*/
+			if (AETestRectToRect(&upgrades[i].center, upgrades[i].width, upgrades[i].height, &world_center_cursor, 0.1f, 0.1f)) {
 				selected = upgrades[i].type;
 			}
 			else {

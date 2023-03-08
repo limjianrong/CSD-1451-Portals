@@ -31,16 +31,26 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Utilities.hpp"
 #include "draw_level.hpp"
 
-
 //#include <iostream>
+
 extern AEGfxVertexList* pMesh; // Mesh
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 extern s8 Albam_fontID; // FontID
 extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
-extern Player_stats player; // player stats
 AEGfxTexture* background2Tex; // Background texture
-f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
+
+// ----- Game objects -----
+extern Player_stats player; // player stats
+// ----- Game states -----
 bool isPaused;
+
+// ----- Cursor positions -----
+extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
+extern AEVec2 center_cursor;			// Origin is CENTER of window
+extern AEVec2 world_center_cursor;		// Origin is CENTER of window
+// ----- Window origin -----
+extern f32 originX, originY;			// Center of screen, no matter where the camera moves
+
 /*!**************************************************************************************************
 \brief
   In charge of loading platformer game
@@ -48,13 +58,13 @@ bool isPaused;
 void GameStatePlatformerLoad(void) {
 	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
 	
-	draw_level_load();
-	player_load();
-	boss_load();
-	enemies_load();
-	enemy3_load();
-	upgrades_load();
-	portal_load();
+	draw_level_load();			// Level
+	enemies_load();				// Enemy1 & Enemy2
+	enemy3_load();				// Enemy3
+	boss_load();				// Boss
+	portal_load();				// Portal
+	upgrades_load();			// Upgrades
+	player_load();				// Player
 
 }
 /*!**************************************************************************************************
@@ -62,68 +72,65 @@ void GameStatePlatformerLoad(void) {
   Initialise all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
-	draw_level_init();
-	player_init();
-	boss_init();
-	enemies_init();
-	enemy3_init();
-	upgrades_init();
-	portal_init();
+	draw_level_init();			// Level
+	enemies_init();				// Enemy1 & Enemy2
+	enemy3_init();				// Enemy3
+	boss_init();				// Boss
+	portal_init();				// Portal
+	upgrades_init();			// Upgrades
+	player_init();				// Player
 }
 /*!**************************************************************************************************
 \brief
   Updates all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerUpdate(void) {
-	
-	// --------- Gets origin (0,0) of constantly moving screen ---------
-	originX = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
-	originY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
+
+	variables_update();  // Updating all global variables commonly used is utmost priority
 
 	if (isPaused) {
 
 		// --------- Collision ---------
 		// Resume button
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
-			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
-			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
+			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
 			isPaused = FALSE;
 		}
 		// Restart button
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
-			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
-			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
+			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
 			gGameStateNext = GS_RESTART;
-			//isPaused = FALSE;
 		}
 		// Settings button
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
-			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
-			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
+			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
 			gGameStateNext = GS_Settings;
 			isPaused = FALSE;
 		}
 		// Main menu button
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
-			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
-			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
+			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
 			gGameStateNext = GS_MainMenu;
 			isPaused = FALSE;
 		}
 	}
 
 	else {
-		player_update();
-		update_level();
-		enemy3_update(&player);
-		enemies_update();
-		update_boss();
-		move_update();
-		upgrade_update();
+		update_level();				// Level
+		enemies_update();			// Enemy1 & Enemy2
+		enemy3_update(&player);		// Enemy3
+		update_boss();				// Boss
+		move_update();			// ????????????????????????????? Level
+		upgrade_update();			// Upgrade
+		player_update();			// Player
 		
 	}
 
@@ -148,18 +155,17 @@ void GameStatePlatformerDraw(void) {
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
+	//AEGfxTextureSet(nullptr, 0, 0);
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	draw_boss();
-	player_draw();
-	enemies_draw();
-	draw_enemy3();
-	draw_level();
-
-	//if (player.justLeveledUp) {		// If player levels up
-	upgrade_draw();
-	//}
+	draw_level();		// Level
+	enemies_draw();		// Enemy1 & Enemy2
+	draw_enemy3();		// Enemy3
+	draw_boss();		// Boss
+	draw_portal();		// Portal
+	upgrade_draw();		// Upgrade
+	player_draw();		// Player
 
 
 	// -------------- Pause menu --------------
@@ -198,16 +204,15 @@ void GameStatePlatformerDraw(void) {
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
-			if (get_cursor_center_position().x >= -WINDOWLENGTH_X / 8 && get_cursor_center_position().x <= WINDOWLENGTH_X / 8 &&
-				get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
-				get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24)
+			if (center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24)
 				AEGfxTextureSet(buttonPressed, 0, 0);
 			else AEGfxTextureSet(buttonNotPressed, 0, 0);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 
 		// --------- Texts ---------
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.35f, 0.55f, 2.0f, 1, 1, 0);
 		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.17f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.17f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);

@@ -24,5 +24,8 @@
 //#define WINDOWLENGTH_X 2000
 //#define WINDOWLENGTH_Y 1200
 
+
+
 AEGfxVertexList* create_Square_Mesh();
-AEVec2 get_cursor_center_position();
+//AEVec2 get_cursor_center_position();
+void variables_update();

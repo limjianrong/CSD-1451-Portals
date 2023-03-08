@@ -13,6 +13,11 @@ AEGfxTexture* buttonNotPressed, * buttonPressed;
 // ----- Background -----
 AEGfxTexture* backgroundTex;
 
+// ----- Cursor positions -----
+extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
+extern AEVec2 center_cursor;		 // Origin is CENTER of window
+extern AEVec2 world_center_cursor;  // Origin is CENTER of window
+
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
 extern f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 
@@ -31,47 +36,49 @@ void GameStateMainmenuInit(void) {
 
 void GameStateMainmenuUpdate(void) {
 
-	//for (int i = 15; i <= 27; i += 4) {
-	//	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-	//		get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-	//		get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
-	//		get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16) {
-	//		if (i == 15) gGameStateNext = GS_Platformer;
-	//		else if (i == 19) gGameStateNext = GS_Tutorial;
-	//		else if (i == 23) gGameStateNext = GS_Settings;
-	//		//else if (i == 27) gGameStateNext = GS_QUIT;
-	//	}
-	//}
+	variables_update();  // Updating all global variables commonly used is utmost priority
+	
+	for (s32 i = 15; i <= 27; i += 4) {
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16) {
+			if (i == 15) gGameStateNext = GS_Platformer;
+			else if (i == 19) std::cout << "TUTORIAL NOT YET" << std::endl; //gGameStateNext = GS_Tutorial;
+			else if (i == 23) gGameStateNext = GS_Settings;
+			else if (i == 27) gGameStateNext = GS_QUIT;
+		}
+	}
 
-	// ------ Start game button ------
-	if (AEInputCheckReleased(AEVK_LBUTTON) && 
-		get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-		get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
-		get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 + WINDOWLENGTH_Y / 16) {
-		gGameStateNext = GS_Platformer;
-	}
-	// ------ Tutorial button ------
-	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-		get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-		get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 - WINDOWLENGTH_Y / 16 &&
-		get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 + WINDOWLENGTH_Y / 16) {
-		//gGameStateNext = GS_Tutorial;
-		std::cout << "TUTORIAL NOT YET" << std::endl;
-	}
-	// ------ Settings button ------
-	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-		get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-		get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 - WINDOWLENGTH_Y / 16 &&
-		get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 + WINDOWLENGTH_Y / 16) {
-		gGameStateNext = GS_Settings;
-	}
-	// ------ Quit game button ------
-	if (AEInputCheckReleased(AEVK_LBUTTON) && 
-		get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-		get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 - WINDOWLENGTH_Y / 16 &&
-		get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 + WINDOWLENGTH_Y / 16) {
-		gGameStateNext = GS_QUIT;
-	}
+	//// ------ Start game button ------
+	//if (AEInputCheckReleased(AEVK_LBUTTON) && 
+	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
+	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 + WINDOWLENGTH_Y / 16) {
+	//	gGameStateNext = GS_Platformer;
+	//}
+	//// ------ Tutorial button ------
+	//if (AEInputCheckReleased(AEVK_LBUTTON) &&
+	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 - WINDOWLENGTH_Y / 16 &&
+	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 + WINDOWLENGTH_Y / 16) {
+	//	//gGameStateNext = GS_Tutorial;
+	//	std::cout << "TUTORIAL NOT YET" << std::endl;
+	//}
+	//// ------ Settings button ------
+	//if (AEInputCheckReleased(AEVK_LBUTTON) &&
+	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 - WINDOWLENGTH_Y / 16 &&
+	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 + WINDOWLENGTH_Y / 16) {
+	//	gGameStateNext = GS_Settings;
+	//}
+	//// ------ Quit game button ------
+	//if (AEInputCheckReleased(AEVK_LBUTTON) && 
+	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 - WINDOWLENGTH_Y / 16 &&
+	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 + WINDOWLENGTH_Y / 16) {
+	//	gGameStateNext = GS_QUIT;
+	//}
 
 
 }
@@ -81,6 +88,7 @@ void GameStateMainmenuDraw(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
@@ -100,16 +108,15 @@ void GameStateMainmenuDraw(void) {
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
-		if (get_cursor_center_position().x >= -WINDOWLENGTH_X / 6 && get_cursor_center_position().x <= WINDOWLENGTH_X / 6 &&
-			get_cursor_center_position().y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
-			get_cursor_center_position().y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
+		if (center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
 	}
 
 	// ------ Texts ------
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.55, 0.4, 3.0F, 1, 1, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.25, -0.05, 0.95F, 1, 1, 1);
 	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.19, -0.3, 0.95F, 1, 1, 1);

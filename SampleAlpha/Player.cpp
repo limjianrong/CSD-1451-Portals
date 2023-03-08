@@ -43,6 +43,13 @@ int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 // ----- Camera -----
 f32 cameraX{}, cameraY{};
 extern bool isPaused;
+// ----- Cursor positions -----
+extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
+extern AEVec2 center_cursor;			// Origin is CENTER of window
+extern AEVec2 world_center_cursor;		// Origin is CENTER of window
+// ----- Window origin -----
+extern f32 originX, originY;			// Center of screen, no matter where the camera moves
+
 // ----- Enemy -----
 //extern Enemy1_stats enemy1_a, enemy1_b;
 
@@ -138,17 +145,11 @@ void player_draw() {
 	else if (player.XP == 20) XP = (s8*)"XP: 20";
 	else if (player.XP == 40) XP = (s8*)"XP: 40";
 
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, level, -1.0f, 0.7f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, XP, -1.0f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, Hp, -0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 	
-
-
-	// --------- Portal draw & update ---------
-	draw_portal();
-	AEVec2Set(&player.center, player.x, player.y);
 
 	// ---------  Firing of bullets   -----------
 	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
@@ -213,7 +214,7 @@ void player_update() {
 
 	// ---------  Portal creation   -----------
 	//draw_portal(player.x, player.y);
-	//AEVec2Set(&player.center, player.x, player.y);
+	AEVec2Set(&player.center, player.x, player.y);
 
 
 	// ------------  Collision   --------------
@@ -224,7 +225,7 @@ void player_update() {
 	//enemy_collision(&player, enemy1_b);
 
 	// -------------  Camera   ---------------
-	AEGfxSetCamPosition(cameraX, cameraY);
+	/*AEGfxSetCamPosition(cameraX, cameraY);
 	if (player.x > 0)
 		cameraX = player.x;
 
@@ -241,7 +242,14 @@ void player_update() {
 		cameraY += 2.0f;
 
 	if (AEInputCheckCurr(AEVK_S))
-		cameraY -= 2.0f;
+		cameraY -= 2.0f;*/
+
+	AEVec2 cameraPos{ player.x, player.y };
+	cameraPos.x = AEClamp(cameraPos.x, originX, AEGfxGetWinMaxX());		// If player.x < originX, cameraX = originX = 0		If player.x > originX, cameraX = player.x		If player.x > WINDOWX, cameraX = WINDOWX
+	//std::cout << center_cursor.x << std::endl;
+	cameraPos.y = AEClamp(cameraPos.y, originY, AEGfxGetWinMaxY());		// If player.y < originY, cameraY = originY = 0		If player.y > originY, cameraY = player.y		If player.y > WINDOWY, cameraY = WINDOWY
+	// Set camera pos
+	AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {

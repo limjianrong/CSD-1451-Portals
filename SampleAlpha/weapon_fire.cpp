@@ -30,11 +30,6 @@
 
 #include <iostream>
 
-// ----- Cursor -----
-AEVec2 center_cursor; // cursor coords, origin is middle of screen
-AEVec2 player_center; // player coords, origin is middle of screen
-AEVec2 normalized_vector; // direction vector from player to cursor
-
 static bool isRunning = FALSE;
 
 // ----- Objects -----
@@ -45,8 +40,8 @@ Bullet bullet;
 
 // ----- Normalization -----
 f32 adj, opp, angle;
-f32 dist_boss2bullet, dist_boss2player;
-
+f32 dist_boss2bullet, dist_boss2player;  // no longer using
+AEVec2 normalized_vector; // direction vector from player to cursor
 
 // ----- (No longer using) For mouse shooting -----
 int direction_x, direction_y;
@@ -223,8 +218,6 @@ void bullet_draw() {
 // parameters are x & y values that are being translated
 //void weapon_fire (f32 player_x, f32 player_y, int state) {
 //
-//	// Get mouse's x and y positions from middle of display screen
-//	center_cursor = get_cursor_center_position();
 //	AEVec2Set(&player_center, player_x, player_y);
 //
 //	// Changes background colour when globe is pressed with LEFT MOUSE BUTTON

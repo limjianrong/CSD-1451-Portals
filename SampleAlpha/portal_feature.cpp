@@ -36,7 +36,7 @@ float portal_range{ 300.0f };
 AEGfxTexture* portal_range_picture;
 AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 
-
+AEGfxTexture* temp; // TEMP
 /*!**************************************************************************************************
 \brief
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
@@ -44,9 +44,11 @@ AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 *******************************************************************************************************/
 void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
+	AE_ASSERT(portal_range_picture); // Similar to your checking
 	if (portal_range_picture) {
 		std::cout << "loaded portal_range_picture";
 	}
+	temp = AEGfxTextureLoad("Assets/card.png");
 
 	portal_1.mesh = portal_2.mesh = create_Square_Mesh();
 	portal_range_mesh = create_Square_Mesh();
@@ -87,7 +89,7 @@ void portal_init() {
 *******************************************************************************************************/
 void draw_portal() {
 	draw_portal_range();
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	if (AEInputCheckTriggered(AEVK_F)) {
 		portal_1.created = FALSE;
 		portal_2.created = FALSE;
@@ -168,15 +170,17 @@ void draw_portal() {
 		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 		AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
 		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxTextureSet(temp, 0.0f, 0.0f);
 		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
 	//if portal_2.created==TRUE, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
 	if (portal_2.created == TRUE) {
 		portal_1.draw_outline = FALSE;
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 
 		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxTextureSet(temp, 0.0f, 0.0f);
 		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
 
 		
@@ -218,7 +222,7 @@ void draw_portal() {
 void draw_portal_range() {
 	AEMtx33 portal_range_scale_mtx{};
 	AEMtx33 portal_range_mtx{};
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	//AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
 	AEMtx33Scale(&portal_range_scale_mtx, portal_range*2, portal_range*2);
 	AEMtx33Trans(&portal_range_mtx, player.x, player.y);

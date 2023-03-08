@@ -124,9 +124,6 @@ void enemies_init() {
 *******************************************************************************************************/
 void enemies_draw () {
 
-	// No idea why this is required
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-
 	enemy1_draw();
 	enemy2_draw();
 }
