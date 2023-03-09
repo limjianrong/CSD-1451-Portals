@@ -36,7 +36,8 @@ struct Player_stats {
 	f32 Speed;
 	s32 Level, XP;
 	bool justLeveledUp;
-
+	bool falling{false};
+	AEVec2 bottom_hotspot{};
 	// ----- Transformation & Texture -----
 	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex;

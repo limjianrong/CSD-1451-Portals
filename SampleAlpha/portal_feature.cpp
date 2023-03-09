@@ -20,11 +20,11 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 //#include "Upgrades.hpp"
-
-#define PORTAL_WIDTH 60.0f
-#define PORTAL_HEIGHT 60.0f
 #define TRUE 1
 #define FALSE 0
+
+float constexpr PORTAL_WIDTH{ 60.0f };
+float constexpr PORTAL_HEIGHT{ 60.0f };
 
 portal portal_1, portal_2;
 extern Bullet bullet;
@@ -87,8 +87,9 @@ void portal_init() {
 \param[in] player.y
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal() {
-	draw_portal_range();
+void update_portal() {
+
+	
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	if (AEInputCheckTriggered(AEVK_F)) {
 		portal_1.created = FALSE;
@@ -100,7 +101,8 @@ void draw_portal() {
 		if (portal_1.created == FALSE) {
 			portal_1.created = TRUE;
 			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
-
+			//std::cout << "\nraw mouse y_pos " << portal_1.y;
+			//std::cout << "\nraw value x_pos is " << portal_1.x;
 			//offset portal_1's x by half of window width
 
 			portal_1.x -= AEGetWindowWidth() / 2;
@@ -113,7 +115,8 @@ void draw_portal() {
 			if (player.y > 0) {
 				portal_1.y += player.y;
 			}
-
+			//std::cout << "\nafter offsetting portal_1 y_pos " << portal_1.y;
+			//std::cout << "\nafter offsetting portal_1 x_pos " << portal_1.x;
 			//set vector to portal_1's center
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 
@@ -164,32 +167,17 @@ void draw_portal() {
 			}		
 		}
 	}
-	if (portal_1.draw_outline == TRUE) {
-		AEGfxSetTransparency(0.5f);
-		AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
-		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-		AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
-		AEGfxSetTransform(portal_1.matrix.m);
-		AEGfxTextureSet(temp, 0.0f, 0.0f);
-		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(1.0f);
-	}
+	
 	//if portal_2.created==TRUE, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
 	if (portal_2.created == TRUE) {
 		portal_1.draw_outline = FALSE;
 		//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 
-		AEGfxSetTransform(portal_1.matrix.m);
-		AEGfxTextureSet(temp, 0.0f, 0.0f);
-		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
-
-		
 		//AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		AEMtx33Scale(&portal_2.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
 		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		AEMtx33Concat(&portal_2.matrix, &portal_2.matrix, &portal_2.scale_matrix);
-		AEGfxSetTransform(portal_2.matrix.m);
-		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
+
 
 		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player
 		//select where to draw the portals again
@@ -257,5 +245,30 @@ void check_bullet_collide_with_portal() {
 	}
 }
 
+void draw_portal() {
+	draw_portal_range();
+	if (portal_1.draw_outline == TRUE) {
+		AEGfxSetTransparency(0.5f);
+		AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
+		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+		AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
+		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxTextureSet(temp, 0.0f, 0.0f);
+		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(1.0f);
+	}
+	if (portal_2.created == true) {
+		//portal_2 has been created, meaning that the portal_1 has also been created
 
+		//draw portal 1
+		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxTextureSet(temp, 0.0f, 0.0f);
+		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
+
+		//draw portal 2
+		AEGfxSetTransform(portal_2.matrix.m);
+		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
+	}
+
+}
 

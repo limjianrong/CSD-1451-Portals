@@ -55,7 +55,7 @@ void portal_init();
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal();
+void update_portal();
 
 
 /*!**************************************************************************************************
@@ -73,3 +73,5 @@ void draw_portal_range();
 
 
 void check_bullet_collide_with_portal();
+
+void draw_portal();

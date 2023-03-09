@@ -41,7 +41,6 @@ AEGfxVertexList* pMesh;
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
 // ----- Camera -----
-f32 cameraX{}, cameraY{};
 extern bool isPaused;
 // ----- Cursor positions -----
 extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
@@ -177,7 +176,13 @@ void player_update() {
 		num_of_Apressed++;
 		//player.rotation += 0.1f;
 	}
-
+	//testing gravity on player (only for slippery platforms)
+	//if (player.falling == false) {
+	//	player.y -= 5.0f;
+	//	std::cout << "\nfalse";
+	//}
+	//update player's bottom hotspot
+	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
 	// --------  Player's level & XP   ----------
 	// FOR NOW ONLY: 20xp to level up from lvl0 -> lvl1 (1 enemy = 20xp)
 	if (player.XP == 20 && player.Level == 0) {
@@ -225,29 +230,32 @@ void player_update() {
 	//enemy_collision(&player, enemy1_b);
 
 	// -------------  Camera   ---------------
-	/*AEGfxSetCamPosition(cameraX, cameraY);
+	//AEGfxSetCamPosition(cameraX, cameraY);
+	AEVec2 cameraPos{ 0, 0 };
 	if (player.x > 0)
-		cameraX = player.x;
+		cameraPos.x = player.x;
 
 	if (player.x <= 0)
-		cameraX = 0;
-
+		cameraPos.x = 0;
+	else {
+		cameraPos.x = player.x;
+	}
 	if (player.y > 0)
-		cameraY = player.y;
+		cameraPos.y = player.y;
 
 	if (player.y <= 0)
-		cameraY = 0;
+		cameraPos.y = 0;
 	
 	if (AEInputCheckCurr(AEVK_W))
-		cameraY += 2.0f;
+		cameraPos.y += 2.0f;
 
 	if (AEInputCheckCurr(AEVK_S))
-		cameraY -= 2.0f;*/
+		cameraPos.y -= 2.0f;
 
-	AEVec2 cameraPos{ player.x, player.y };
-	cameraPos.x = AEClamp(cameraPos.x, originX, AEGfxGetWinMaxX());		// If player.x < originX, cameraX = originX = 0		If player.x > originX, cameraX = player.x		If player.x > WINDOWX, cameraX = WINDOWX
-	//std::cout << center_cursor.x << std::endl;
-	cameraPos.y = AEClamp(cameraPos.y, originY, AEGfxGetWinMaxY());		// If player.y < originY, cameraY = originY = 0		If player.y > originY, cameraY = player.y		If player.y > WINDOWY, cameraY = WINDOWY
+	//cameraPos= { player.x, player.y };
+	//cameraPos.x = AEClamp(cameraPos.x, originX, AEGfxGetWinMaxX());		// If player.x < originX, cameraX = originX = 0		If player.x > originX, cameraX = player.x		If player.x > WINDOWX, cameraX = WINDOWX
+	////////std::cout << center_cursor.x << std::endl;
+	//cameraPos.y = AEClamp(cameraPos.y, originY, AEGfxGetWinMaxY());		// If player.y < originY, cameraY = originY = 0		If player.y > originY, cameraY = player.y		If player.y > WINDOWY, cameraY = WINDOWY
 	// Set camera pos
 	AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
 

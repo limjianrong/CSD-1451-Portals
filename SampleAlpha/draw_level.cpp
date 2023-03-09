@@ -16,9 +16,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Enemy.hpp"
 #include <iostream>
 
+int const platform_max_count{ 50 };
+
 AEGfxTexture* rect, * trap;
-AEGfxVertexList* rectmesh, * trapmesh;
+AEGfxVertexList* rectmesh, * trapmesh,  *slippery_platform_mesh{};
 Block leftright1, trapping, updown1;
+Slippery_platform slippery_platform[platform_max_count];
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
 //extern Enemy1_stats enemy1;
@@ -34,6 +37,7 @@ void draw_level_load() {
 	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
+	slippery_platform_mesh = create_Square_Mesh();
 }
 
 void draw_level_init() {
@@ -46,6 +50,11 @@ void draw_level_init() {
 	updown1.y = -100.f;
 	updown1.max_y = -100.f;
 	updown1.min_y = -200.f;
+
+	//initialize a single slippery platform
+	slippery_platform[0].status = true;
+	slippery_platform[0].x = 0;
+	slippery_platform[0].y = 0;
 
 	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
 	//blocklist[0].name = "move1";
@@ -86,13 +95,14 @@ void draw_level() {
 	blocks(2, 2450, -100);
 
 	blocks(12, 2600, 0);
+	draw_slippery_platform();
 }
 
 void update_level() {
 	
 	// Creates an anti-gravity zone
 	anti_gravity_zone(500, 700);
-	
+	update_slippery_platform();
 }
 
 //-------------------- Parameters --------------------
@@ -316,4 +326,34 @@ void draw_anti_gravity_zone(f64 x1, f64 x2) {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
+}
+
+
+void draw_slippery_platform() {
+	for (int i = 0; i < platform_max_count; ++i) {
+		if (slippery_platform[i].status == false) {
+			continue;
+		}
+
+		AEGfxSetTransform(slippery_platform[i].transform.m);
+		AEGfxMeshDraw(slippery_platform_mesh, AE_GFX_MDM_TRIANGLES);
+	}
+}
+
+void update_slippery_platform() {
+	AEMtx33 scale{}, translate{};
+	for (int i = 0; i < platform_max_count; ++i) {
+		if (slippery_platform[i].status == false) {
+			continue;
+		}
+		AEVec2Set(&slippery_platform[i].center, slippery_platform[i].x, slippery_platform[i].y);
+		AEMtx33Scale(&scale, slippery_platform[i].width, slippery_platform[i].height);
+		AEMtx33Trans(&translate, slippery_platform[i].x, slippery_platform[i].y);
+		AEMtx33Concat(&slippery_platform[i].transform, &rotate, &scale);
+		if (AECalcDistPointToRect(&player.bottom_hotspot, &slippery_platform[i].center, slippery_platform[i].width, slippery_platform[i].height) <= 0.0f) {
+			player.falling == true;
+		}
+
+	}
+
 }
