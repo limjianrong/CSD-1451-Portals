@@ -11,9 +11,6 @@ extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID;
 extern f32 originX, originY;
 extern AEVec2 center_cursor;
-extern AEVec2 cursor;		 // Origin is CENTER of window
-extern AEVec2 world_center_cursor;		 // Origin is CENTER of window
-// Origin is CENTER of window
 
 bool fullscreen = { false };
 
@@ -28,6 +25,7 @@ void GameStateSettingsInit(void) {
 
 void GameStateSettingsUpdate(void) {
 
+	variables_update();
 
 	// full screen button pressed
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
@@ -35,11 +33,18 @@ void GameStateSettingsUpdate(void) {
 		center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
 		center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 + WINDOWLENGTH_Y / 16) {
 		fullscreen = !fullscreen;
+
+		AESysToggleFullScreen(fullscreen);
 	}
+	/*if (AEInputCheckReleased(AEVK_F)) {
+		fullscreen = !fullscreen;
+		AESysToggleFullScreen(fullscreen);
 
-	if (AEInputCheckReleased(AEVK_F)) fullscreen = !fullscreen;
+	}*/
 
-	AESysToggleFullScreen(fullscreen);
+	//if (AEInputCheckReleased(AEVK_E)) gGameStateNext = GS_MainMenu;
+
+	//AESysToggleFullScreen(fullscreen);
 
 	// if prev game state was main menu, return to main menu
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
