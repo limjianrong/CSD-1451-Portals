@@ -11,7 +11,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
 #include "AEEngine.h"
 #include "draw_level.hpp"
-#include "Utilities.hpp"
+
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <iostream>
@@ -20,8 +20,8 @@ int const platform_max_count{ 50 };
 
 AEGfxTexture* rect, * trap;
 AEGfxVertexList* rectmesh, * trapmesh,  *slippery_platform_mesh{};
-Block leftright1, trapping, updown1;
 Slippery_platform slippery_platform[platform_max_count];
+Block leftright1, trapping, updown1, diagup1, diagdown1, oneuse1, verti1;
 extern Player_stats player;
 //Player_stats* pointer_to_player{ &player };
 //extern Enemy1_stats enemy1;
@@ -36,7 +36,9 @@ AEMtx33 scale, rotate, translate, transform; // TRS
 void draw_level_load() {
 	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	trap = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
-	rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
+	//rectmesh = leftright1.mesh = updown1.mesh = diagup1.mesh = diagdown1.mesh = oneuse1.mesh = verti1.mesh = trapmesh = create_Square_Mesh();
+	rectmesh = create_Square_Mesh();
+	//rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
 	slippery_platform_mesh = create_Square_Mesh();
 }
 
@@ -44,12 +46,33 @@ void draw_level_init() {
 	
 	leftright1.x = 400.f;
 	leftright1.y = 0.f;
-	leftright1.max_x = 400.f + MID_DIST;
-	leftright1.min_x = 250.f;
+	leftright1.end_x = 400.f + MID_DIST;
+	leftright1.start_x = 250.f;
 	updown1.x = 0.f;
 	updown1.y = -100.f;
-	updown1.max_y = -100.f;
+	updown1.end_y = -100.f;
 	updown1.min_y = -200.f;
+
+	diagup1.x = 400.f;
+	diagup1.y = 100.f;
+	diagup1.end_x = 600.f;
+	diagup1.start_x = 100.f;
+	diagup1.end_y = 250.f;
+	diagup1.min_y = 100.f;
+
+	//diagdown1.x = -250.f;
+	//diagdown1.y = 250.f;
+	//diagdown1.end_x = -150.f;
+	//diagdown1.start_x = -250.f;
+	//diagdown1.end_y = 150.f;
+	//diagdown1.min_y = 250.f;
+
+	oneuse1.x = -400.f;
+	oneuse1.y = 150.f;
+	oneuse1.flag = ACTIVE;
+
+	verti1.x = -300.f;
+	verti1.y = -150.f;
 
 	//initialize a single slippery platform
 	slippery_platform[0].status = true;
@@ -84,6 +107,10 @@ void draw_level() {
 	updown_blocks(4, updown1.x, updown1.y);
 	blocks(6, 0, 100);
 	leftright_blocks(4, leftright1.x, leftright1.y);
+	diag_up_blocks(4, diagup1.x, diagup1.y);
+	//diag_down_blocks(4, diagdown1.x, diagdown1.y);
+	one_use_blocks(4, oneuse1.x, oneuse1.y);
+	//verti_blocks(3, verti1.x, verti1.y);
 	blocks(4, 1200, 200);
 	spikes(1, 1425, 0);
 	blocks(1, 1475, 0);
@@ -99,9 +126,8 @@ void draw_level() {
 }
 
 void update_level() {
-	
 	// Creates an anti-gravity zone
-	anti_gravity_zone(500, 700);
+	anti_gravity_zone(1000, 1200);
 	update_slippery_platform();
 }
 
@@ -157,7 +183,7 @@ void spikes(s32 length, f32 x, f32 y) {
 
 		// Set the texture
 		AEGfxTextureSet(trap, 0, 0);
-		AEGfxMeshDraw(trapmesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
 		AEVec2Set(&trapping.center, BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x , trapping.height);
@@ -187,7 +213,7 @@ void leftright_blocks(s32 length, f32 x, f32 y) {
 
 		// Set the texture
 		AEGfxTextureSet(rect, 0, 0);
-		AEGfxMeshDraw(leftright1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
 		
@@ -195,7 +221,7 @@ void leftright_blocks(s32 length, f32 x, f32 y) {
 
 
 	}
-	AEVec2Set(&leftright1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
+	AEVec2Set(&leftright1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT/4*3);
 }
 
 void updown_blocks(s32 length, f32 x, f32 y) {
@@ -219,7 +245,7 @@ void updown_blocks(s32 length, f32 x, f32 y) {
 
 		// Set the texture
 		AEGfxTextureSet(rect, 0, 0);
-		AEGfxMeshDraw(updown1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
 
 		// Player collision with platforms
 
@@ -227,9 +253,136 @@ void updown_blocks(s32 length, f32 x, f32 y) {
 
 
 	}
-	AEVec2Set(&updown1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
+	AEVec2Set(&updown1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT / 4 * 3);
 }
 
+void diag_up_blocks(s32 length, f32 x, f32 y) {
+
+	diagup1.length = length;
+	diagup1.x = x;
+	diagup1.y = y;
+
+
+	for (s32 i = 0; i < length; i++) {
+		diagup1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		diagup1.height = BLOCK_HEIGHT / 2 + y;
+
+		AEMtx33Scale(&diagup1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&diagup1.rotate, PI);
+		AEMtx33Trans(&diagup1.translate, diagup1.width, diagup1.height);
+		// Concat the matrices
+		AEMtx33Concat(&diagup1.transform, &diagup1.rotate, &diagup1.scale);
+		AEMtx33Concat(&diagup1.transform, &diagup1.translate, &diagup1.transform);
+		AEGfxSetTransform(diagup1.transform.m);
+
+		// Set the texture
+		AEGfxTextureSet(rect, 0, 0);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
+
+		// Player collision with platforms
+
+		platform_collision(length, x, y);
+
+
+	}
+	AEVec2Set(&diagup1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT / 4 * 3);
+}
+
+void diag_down_blocks(s32 length, f32 x, f32 y) {
+
+	diagdown1.length = length;
+	diagdown1.x = x;
+	diagdown1.y = y;
+
+
+	for (s32 i = 0; i < length; i++) {
+		diagdown1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		diagdown1.height = BLOCK_HEIGHT / 2 + y;
+
+		AEMtx33Scale(&diagdown1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&diagdown1.rotate, PI);
+		AEMtx33Trans(&diagdown1.translate, diagdown1.width, diagdown1.height);
+		// Concat the matrices
+		AEMtx33Concat(&diagdown1.transform, &diagdown1.rotate, &diagdown1.scale);
+		AEMtx33Concat(&diagdown1.transform, &diagdown1.translate, &diagdown1.transform);
+		AEGfxSetTransform(diagdown1.transform.m);
+
+		// Set the texture
+		AEGfxTextureSet(rect, 0, 0);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
+
+		// Player collision with platforms
+
+		platform_collision(length, x, y);
+
+
+	}
+	AEVec2Set(&diagdown1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT / 4 * 3);
+}
+
+void one_use_blocks(s32 length, f32 x, f32 y) {
+
+	oneuse1.length = length;
+	oneuse1.x = x;
+	oneuse1.y = y;
+
+
+	for (s32 i = 0; i < length; i++) {
+		oneuse1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
+		oneuse1.height = BLOCK_HEIGHT / 2 + y;
+
+		AEMtx33Scale(&oneuse1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&oneuse1.rotate, PI);
+		AEMtx33Trans(&oneuse1.translate, oneuse1.width, oneuse1.height);
+		// Concat the matrices
+		AEMtx33Concat(&oneuse1.transform, &oneuse1.rotate, &oneuse1.scale);
+		AEMtx33Concat(&oneuse1.transform, &oneuse1.translate, &oneuse1.transform);
+		AEGfxSetTransform(oneuse1.transform.m);
+
+		// Set the texture
+		AEGfxTextureSet(rect, 0, 0);
+		if (oneuse1.flag == ACTIVE) {
+			AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
+			// Player collision with platforms
+			platform_collision(length, x, y);
+		}
+		
+	}
+	AEVec2Set(&oneuse1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT / 4 * 3);
+}
+
+
+void verti_blocks(s32 length, f32 x, f32 y) {
+
+	verti1.length = length;
+	verti1.x = x;
+	verti1.y = y;
+
+
+	for (s32 i = 0; i < length; i++) {
+		diagdown1.width = BLOCK_WIDTH / 2 + x;
+		diagdown1.height = BLOCK_HEIGHT / 2 + BLOCK_WIDTH * i + y;
+
+		AEMtx33Scale(&diagdown1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+		AEMtx33Rot(&diagdown1.rotate, PI);
+		AEMtx33Trans(&diagdown1.translate, diagdown1.width, diagdown1.height);
+		// Concat the matrices
+		AEMtx33Concat(&diagdown1.transform, &diagdown1.rotate, &diagdown1.scale);
+		AEMtx33Concat(&diagdown1.transform, &diagdown1.translate, &diagdown1.transform);
+		AEGfxSetTransform(diagdown1.transform.m);
+
+		// Set the texture
+		AEGfxTextureSet(rect, 0, 0);
+		AEGfxMeshDraw(rectmesh, AE_GFX_MDM_TRIANGLES);
+
+		// Player collision with platforms
+
+		verti_collision(length, x, y);
+
+
+	}
+	//AEVec2Set(&diagdown1.center, (BLOCK_WIDTH * length) / 2 + x, y + BLOCK_HEIGHT);
+}
 void move_update() {
 	//in case of using sine
 	f64* time = nullptr;
@@ -239,7 +392,7 @@ void move_update() {
 	if (leftright1.pos == OG) {
 		leftright1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
 		if (AETestRectToRect(&leftright1.center, BLOCK_WIDTH*4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (leftright1.x >= leftright1.max_x) {
+		if (leftright1.x >= leftright1.end_x) {
 			leftright1.pos = MOVED;
 		}
 	}
@@ -247,7 +400,7 @@ void move_update() {
 	if (leftright1.pos == MOVED) {
 		leftright1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
 		if (AETestRectToRect(&leftright1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (leftright1.x <= leftright1.min_x) {
+		if (leftright1.x <= leftright1.start_x) {
 			leftright1.pos = OG;
 		}
 	}
@@ -255,7 +408,7 @@ void move_update() {
 	if (updown1.pos == OG) {
 		updown1.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
 		if (AETestRectToRect(&updown1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
-		if (updown1.y >= updown1.max_y) {
+		if (updown1.y >= updown1.end_y) {
 			updown1.pos = MOVED;
 		}
 	}
@@ -267,6 +420,60 @@ void move_update() {
 			updown1.pos = OG;
 		}
 	}
+
+	if (diagup1.pos == OG) {
+		diagup1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		diagup1.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&diagup1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+			player.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		}
+		if (diagup1.y >= diagup1.end_y ) { //&& diagup1.x >= diagup1.end_x
+			diagup1.pos = MOVED;
+		}
+	}
+
+	if (diagup1.pos == MOVED) {
+		diagup1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		diagup1.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&diagup1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+			player.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		}
+		if (diagup1.y <= diagup1.min_y) {
+			diagup1.pos = OG;
+		}
+	}
+
+	if (diagdown1.pos == OG) {
+		diagdown1.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		diagdown1.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&diagdown1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
+			player.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		}
+		if (diagdown1.y <= diagdown1.end_y ) {//&& diagdown1.x >= diagdown1.end_x
+			diagdown1.pos = MOVED;
+		}
+	}
+
+	if (diagdown1.pos == MOVED) {
+		diagdown1.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+		diagdown1.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		if (AETestRectToRect(&diagdown1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			player.x -= AEFrameRateControllerGetFrameTime() * moveSpeed;
+			player.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
+		}
+		if (diagdown1.y >= diagdown1.min_y) {
+			diagdown1.pos = OG;
+		}
+	}
+
+
+	if (AETestRectToRect(&oneuse1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		oneuse1.timer += AEFrameRateControllerGetFrameTime();
+		if (oneuse1.timer >= 5) oneuse1.flag = NOT_ACTIVE; 
+	}
 }
 
 
@@ -277,6 +484,16 @@ void platform_collision(s32 cnt, f32 x, f32 y) {
 			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
 			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
 			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+	}
+}
+
+void verti_collision(s32 cnt, f32 x, f32 y) {
+	for (f32 i = 0; i < cnt; i++) {
+		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
+			(player.y >= y + PLAYER_HEIGHT / 2) &&
+			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
+			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
+			player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
 	}
 }
 
