@@ -31,6 +31,7 @@
 // ----- Enemy 2 (Shoots bullet) -----
 #define ENEMY2_WIDTH 80.f
 #define ENEMY2_HEIGHT 60.f
+#define ENEMY2_TIMER 0.75f
 #define MAX_ENEMIES_2 7			// Change this for total number of enemy2
 
 // ------- Enemy types -------

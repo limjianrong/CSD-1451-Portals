@@ -110,8 +110,9 @@ void enemies_init() {
 		bullet_enemy2[i].y				= enemy2[i].y;			// Bullet y position
 		bullet_enemy2[i].width			= 20.0f;				// Bullet width
 		bullet_enemy2[i].height			= 20.0f;				// Bullet height
-		bullet_enemy2[i].speed			= 5;					// Bullet speed
-		bullet_enemy2[i].doesDamage		= FALSE;				// Indicator for dealing damage
+		bullet_enemy2[i].speed			= 5.0f;					// Bullet speed
+		bullet_enemy2[i].timer			= ENEMY2_TIMER;			// Bullet timer between each bullet
+		bullet_enemy2[i].isTimerActive	= FALSE;				// Indicator for timer activeness
 		bullet_enemy2[i].isTeleported	= FALSE;				// Indicator for teleporation
 		bullet_enemy2[i].isShooting		= FALSE;				// Indicator to check whether bullet is still shooting
 	}
@@ -308,25 +309,33 @@ void enemy2_update () {
 			/*if (player.x >= (enemy2.x - enemy2.range_x) && player.x <= (enemy2.x + enemy2.range_x) &&
 				player.y >= (enemy2.y - enemy2.range_y) && player.y <= (enemy2.y + enemy2.range_y)) {*/
 
-			// If player is within enemy2 range (300x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
+			// If player is within enemy2 range (350x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
 			if (player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
 				player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y)) {
 				// --- Enable shooting ---
 				bullet_enemy2[i].isShooting = TRUE;
 
-				// ----- Movement of bullet from enemy2 -----
-				if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
-					bullet_enemy2[i].x -= 5;
-				}
-				else {
-					// --- Resets bullet ---
-					bullet_enemy2[i].x = enemy2[i].x;
-					bullet_enemy2[i].y = enemy2[i].y;
-					bullet_enemy2[i].isTeleported = FALSE;
-				}
+				// If timer is over
+				if (bullet_enemy2[i].isTimerActive == FALSE) {
+					// ----- Movement of bullet from enemy2 -----
+					if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
+						bullet_enemy2[i].x -= 5;
+					}
+					else {
+						// --- Resets bullet ---
+						bullet_enemy2[i].x = enemy2[i].x;
+						bullet_enemy2[i].y = enemy2[i].y;
+						bullet_enemy2[i].isTeleported = FALSE;
 
-				//// ---- Loops bullet ----
-				//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+						// If player x within 100 units of enemy2
+						if (player.x >= (enemy2[i].x - 100) && player.x <= enemy2[i].x) {
+							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+						}
+					}
+
+					//// ---- Loops bullet ----
+					//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
+				}
 
 			}
 			else { // No longer in range
@@ -358,8 +367,10 @@ void enemy2_update () {
 			// ----- Bullet collision with player -----
 			AEVec2Set(&bullet_enemy2[i].center, bullet_enemy2[i].x, bullet_enemy2[i].y);
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
-				bullet_enemy2[i].x = enemy2[i].x;
-				bullet_enemy2[i].y = enemy2[i].y;
+				bullet_enemy2[i].x = enemy2[i].x;			// Reset bullet x
+				bullet_enemy2[i].y = enemy2[i].y;			// Reset bullet y
+				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+
 				
 				// --- Disable shooting when player out of range of Enemy2 ---
 				if (!(player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
@@ -374,6 +385,8 @@ void enemy2_update () {
 				bullet_enemy2[i].x = enemy2[i].x;
 				bullet_enemy2[i].y = enemy2[i].y;
 				bullet_enemy2[i].isTeleported = FALSE;
+				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+
 				--enemy2[i].Hp;
 			}
 
@@ -383,8 +396,19 @@ void enemy2_update () {
 					bullet_enemy2[i].x = enemy2[i].x;
 					bullet_enemy2[i].y = enemy2[i].y;
 					bullet_enemy2[i].isTeleported = FALSE;
+					bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+
 					--enemy1[j].Hp;
 				}
+			}
+
+			// ----- Resets bullet timer (Delay inbetween bullets) -----
+			if (bullet_enemy2[i].isTimerActive == TRUE) {
+				bullet_enemy2[i].timer -= AEFrameRateControllerGetFrameTime();
+			}
+			if (bullet_enemy2[i].timer <= 0) {
+				bullet_enemy2[i].timer = ENEMY2_TIMER;
+				bullet_enemy2[i].isTimerActive = FALSE;
 			}
 		}
 

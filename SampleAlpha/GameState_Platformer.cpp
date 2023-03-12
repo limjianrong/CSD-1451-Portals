@@ -165,8 +165,8 @@ void GameStatePlatformerDraw(void) {
 	draw_enemy3();		// Enemy3
 	draw_boss();		// Boss
 	draw_portal();		// Portal
-	upgrade_draw();		// Upgrade
 	player_draw();		// Player
+	upgrade_draw();		// Upgrade
 
 
 	// -------------- Pause menu --------------

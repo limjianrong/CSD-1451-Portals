@@ -13,7 +13,7 @@
 
 extern Player_stats player;
 
-#define MAX_UPGRADES 3
+#define MAX_UPGRADES 4
 Card upgrades[MAX_UPGRADES];
 
 // --- COMMENTED OUT ---
@@ -36,6 +36,9 @@ static AEMtx33 scale, rotate, translate, transform;
 AEGfxVertexList* uMesh;
 extern f32 originX, originY;
 
+// Shield
+AEGfxTexture* ShieldTex;
+static f32 Shield_X, Shield_Y;
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
@@ -47,6 +50,9 @@ void upgrades_load() {
 	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
 	upgrades[MOVEMENT_SPEED_card].Texture = AEGfxTextureLoad("Assets/Speed_card.png");
 	upgrades[PORTAL_RANGE_card].Texture = AEGfxTextureLoad("Assets/Portal_Range_card.png");
+	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
+
+	ShieldTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
 
 	uMesh = create_Square_Mesh();
 }
@@ -64,10 +70,15 @@ void upgrades_init() {
 	upgrades[MOVEMENT_SPEED_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 	upgrades[MOVEMENT_SPEED_card].type = MOVEMENT_SPEED_card;
 
+	//// Right card
+	//upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
+	//upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
+	//upgrades[PORTAL_RANGE_card].type = PORTAL_RANGE_card;
+
 	// Right card
-	upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
-	upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
-	upgrades[PORTAL_RANGE_card].type = PORTAL_RANGE_card;
+	upgrades[SHIELD_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
+	upgrades[SHIELD_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
+	upgrades[SHIELD_card].type = SHIELD_card;
 
 	for (s32 i = 0; i < MAX_UPGRADES; ++i) {
 		upgrades[i].rotation = PI;
@@ -109,7 +120,7 @@ void upgrade_draw() {
 			AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
 		}
 	}
-
+	shield_upgrade_draw();
 }
 
 void upgrade_update() {
@@ -128,9 +139,13 @@ void upgrade_update() {
 	upgrades[MOVEMENT_SPEED_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 2;		// Center of window
 	upgrades[MOVEMENT_SPEED_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 
+	//// Right card
+	//upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
+	//upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
+
 	// Right card
-	upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
-	upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
+	upgrades[SHIELD_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
+	upgrades[SHIELD_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;				// Center of window
 
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
@@ -170,6 +185,8 @@ void upgrade_update() {
 				case PORTAL_RANGE_card: portal_range += 50;
 					//std::cout << "Portal range: " << portal_range << std::endl;
 					break;
+				case SHIELD_card: shield_upgrade_update();
+					break;
 				}
 			}
 		}
@@ -180,22 +197,24 @@ void upgrade_update() {
 }
 
 
+void shield_upgrade_update() {
+	Shield_X = player.x;
+	Shield_Y = player.y;
 
+}
 
-//void update_upgrade_cards() {
-//
-//	
-//	if ((player.Level != 0) && !visible ) {
-//		visible = true;
-//		idle_time -= AEFrameRateControllerGetFrameTime();
-//		if (idle_time > 0) {
-//			//draw_upgrade_cards();
-//		}
-//	
-//		else {
-//			visible = false;
-//		}
-//
-//		if (!visible) idle_time = 2.f;
-//	}
-//}
+void shield_upgrade_draw() {
+
+	AEGfxSetTransparency(0.6f);
+
+	// Creates a player size 50x50
+	AEMtx33Scale(&scale, PLAYER_WIDTH + 20, PLAYER_HEIGHT + 20);
+	AEMtx33Rot(&rotate, PI);
+	AEMtx33Trans(&translate, player.x, player.y);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxTextureSet(ShieldTex, 0, 0);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+
+}

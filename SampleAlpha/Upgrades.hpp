@@ -9,6 +9,7 @@ static enum card_type {
 	MAX_HP_card,
 	MOVEMENT_SPEED_card,
 	PORTAL_RANGE_card,
+	SHIELD_card,
 	NO_card
 };
 
@@ -29,4 +30,5 @@ void upgrade_draw();
 void upgrade_update();
 
 
-void update_upgrade_cards();
+void shield_upgrade_update();
+void shield_upgrade_draw();
