@@ -9,7 +9,12 @@ static enum card_type {
 	MAX_HP_card,
 	MOVEMENT_SPEED_card,
 	PORTAL_RANGE_card,
-	SHIELD_card,
+	SHIELD_card, 
+
+	MAX_HP_card2, MAX_HP_card3, 
+	MOVEMENT_SPEED_card2, MOVEMENT_SPEED_card3,
+	PORTAL_RANGE_card2, PORTAL_RANGE_card3,
+	SHIELD_card2, SHIELD_card3,
 	NO_card
 };
 
