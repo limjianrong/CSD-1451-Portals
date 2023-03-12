@@ -23,6 +23,7 @@
 *****************************************************************************************************/
 
 void bullet_load();
+void bullet_init();
 void weapon_fire(f32 player_x, f32 player_y, int state);
 //bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height);
@@ -30,13 +31,15 @@ bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy
 void bullet_update();
 void bullet_draw();
 
+#define BOSS_TIMER 0.5f
+
 struct Bullet {
 	f32 x{}, y{};
 	AEVec2 center{};
-	f32 width{ 20.0f }, height{ 20.0f };
-	f32 speed{ 5.0f };
+	f32 width, height;
+	f32 speed;
 	f32 timer;
-	bool isTimerActive { FALSE }, isTeleported{ FALSE }, isShooting { FALSE };
+	bool isTimerActive, isTeleported, isShooting;
 
 	// ----- Mesh & Texture -----
 	AEGfxVertexList* shootMesh;

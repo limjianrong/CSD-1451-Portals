@@ -20,6 +20,7 @@ void boss_load() {
 
 void boss_init () {
 
+	bullet_init();
 }
 
 void draw_boss() {

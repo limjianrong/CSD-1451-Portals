@@ -62,6 +62,20 @@ void bullet_load() {
 
 }
 
+void bullet_init() {
+
+	// ---- Bullet ----
+	bullet.x				= boss.x_pos;			// Bullet x position
+	bullet.y				= boss.y_pos;			// Bullet y position
+	bullet.width			= 20.0f;				// Bullet width
+	bullet.height			= 20.0f;				// Bullet height
+	bullet.speed			= 5.0f;					// Bullet speed
+	bullet.timer			= BOSS_TIMER;			// Bullet timer between each bullet
+	bullet.isTimerActive	= FALSE;				// Indicator for timer activeness
+	bullet.isTeleported		= FALSE;				// Indicator for teleporation
+	bullet.isShooting		= FALSE;				// Indicator to check whether bullet is still shooting
+}
+
 void bullet_update() {
 
 	// ----------  Boss  ----------
@@ -100,22 +114,30 @@ void bullet_update() {
 		// --- Enable shooting ---
 		isRunning = TRUE;
 
-		// ---- Loops bullet ----
-		//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
-		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
+		// If timer is over
+		if (bullet.isTimerActive == FALSE) {
+			// ---- Loops bullet ----
+			//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
+			if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
 
-			// ----- Movement of bullet from boss to player -----
-			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
-			else if (player.y >= boss.y_pos) bullet.y -= normalized_vector.y;
-			if (player.x >= boss.x_pos) bullet.x += normalized_vector.x;
-			else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
-		}
-		else {
+				// ----- Movement of bullet from boss to player -----
+				if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
+				else if (player.y >= boss.y_pos) bullet.y -= normalized_vector.y;
+				if (player.x >= boss.x_pos) bullet.x += normalized_vector.x;
+				else if (player.x <= boss.x_pos) bullet.x -= normalized_vector.x;
+			}
+			else {
 
-			// --- Resets bullet ---
-			bullet.x = boss.x_pos;
-			bullet.y = boss.y_pos;
-			bullet.isTeleported = FALSE;
+				// --- Resets bullet ---
+				bullet.x = boss.x_pos;
+				bullet.y = boss.y_pos;
+				bullet.isTeleported = FALSE;
+
+				// If player x within 100 units of boss
+				if (player.x >= (boss.x_pos - 100) && player.x <= boss.x_pos) {
+					bullet.isTimerActive = TRUE;		// Enable bullet delay
+				}
+			}
 		}
 	}
 	else { // No longer in range of boss
@@ -144,8 +166,9 @@ void bullet_update() {
 	// ----- Bullet collision with player -----
 	AEVec2Set(&bullet.center, bullet.x, bullet.y);
 	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &player.center, player.width, player.height)) {
-		bullet.x = boss.x_pos;
-		bullet.y = boss.y_pos;
+		bullet.x = boss.x_pos;				// Reset bullet x
+		bullet.y = boss.y_pos;				// Reset bullet y
+		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--player.Hp;
 	}
 
@@ -154,7 +177,17 @@ void bullet_update() {
 		bullet.x = boss.x_pos;
 		bullet.y = boss.y_pos;
 		bullet.isTeleported = FALSE;
+		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--boss.Hp;
+	}
+
+	// ----- Resets bullet timer (Delay inbetween bullets) -----
+	if (bullet.isTimerActive == TRUE) {
+		bullet.timer -= AEFrameRateControllerGetFrameTime();
+	}
+	if (bullet.timer <= 0) {
+		bullet.timer = BOSS_TIMER;
+		bullet.isTimerActive = FALSE;
 	}
 
 	//// If bullet is within range of boss
