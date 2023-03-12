@@ -28,7 +28,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 
 Player_stats player;
-Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1250, 1350, 250, 350}, {0, 2450, 2550, -50, 50} };
+Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1550, 1650, 50, 150}, {0, 2500, 2600, -50, 50} };
 
 // ------  Text  ------
 extern s8 Albam_fontID;
@@ -116,8 +116,8 @@ void player_draw() {
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------------- Checkpoint --------------
-	checkpoint_create(1300, 300, 0);
-	checkpoint_create(2500, 0, 1);
+	checkpoint_create(1550, 100, 0);
+	checkpoint_create(2550, 0, 1);
 
 	// -------- Printing out no. of lives --------
 	if (player.Lives == 3) lives_counter = (s8*)"Lives: 3";
@@ -285,8 +285,8 @@ void player_collision() {
 	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
-	if (player.y > WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2)
-		player.y = WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2;
+	if (player.y > (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 1.5)
+		player.y = (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 1.5;
 
 	// bottom of screen
 	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {

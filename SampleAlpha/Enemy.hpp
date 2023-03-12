@@ -32,7 +32,7 @@
 #define ENEMY2_WIDTH 80.f
 #define ENEMY2_HEIGHT 60.f
 #define ENEMY2_TIMER 0.75f
-#define MAX_ENEMIES_2 7			// Change this for total number of enemy2
+#define MAX_ENEMIES_2 1		// Change this for total number of enemy2
 
 // ------- Enemy types -------
 struct Enemy1_stats {

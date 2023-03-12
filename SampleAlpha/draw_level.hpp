@@ -42,9 +42,9 @@ struct Block {
 	AEVec2 center{};
 
 	f32 end_x, end_y;
-	f32 start_x, min_y; //for oscillating behaviour
+	f32 start_x, start_y; //for oscillating behaviour
 
-	int flag = ACTIVE;
+	int flag = NOT_ACTIVE;
 	f64 timer = 0.f;
 };
 //std::vector<Block> blocklist;
@@ -63,6 +63,8 @@ void diag_up_blocks(s32 length, f32 x, f32 y);
 void diag_down_blocks(s32 length, f32 x, f32 y);
 void one_use_blocks(s32 length, f32 x, f32 y);
 void verti_blocks(s32 length, f32 x, f32 y);
+void dropping_spikes(s32 length, f32 x, f32 y);
+void left_right_blades(s32 length, f32 x, f32 y);
 
 void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);
