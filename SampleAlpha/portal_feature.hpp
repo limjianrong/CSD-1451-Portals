@@ -22,7 +22,6 @@
 struct portal {
 	
 	s32 x{}, y{};
-	AEGfxVertexList* mesh{};
 	AEVec2 center{ 2000, 2000 };
 	AEMtx33 matrix{};
 	AEMtx33 scale_matrix{};
@@ -56,7 +55,8 @@ void portal_init();
   y coordinate of the player's position
 *******************************************************************************************************/
 void update_portal();
-
+void portal_free();
+void portal_unload();
 
 /*!**************************************************************************************************
 \brief

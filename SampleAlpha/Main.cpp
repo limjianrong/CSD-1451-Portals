@@ -30,7 +30,6 @@
 // ---------------------------------------------------------------------------
 // main
 s8 Albam_fontID;
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -43,10 +42,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	//// enable run-time memory check for debug builds.
-	/*#if defined(DEBUG) | defined(_DEBUG)
+	#if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	#endif*/
-	//_crtBreakAlloc = 272; // (type in the memory allocation number)
+	#endif
+	//_crtBreakAlloc = 411; // (type in the memory allocation number)
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, WINDOWLENGTH_X, WINDOWLENGTH_Y, 1, 60, true, NULL);
@@ -57,10 +56,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Set background color
 	//AEGfxSetBackgroundColor(0.0f, 0.0f, 100.0f);
 
-	// Loads font ID into memory
+	// Loads fontID into memory
 	Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
-
-
+	
 	// Initialize GameStateManager to initialize the starting state
 	GameStateMgrInit(GS_MainMenu);
 

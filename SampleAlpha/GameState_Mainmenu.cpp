@@ -24,11 +24,15 @@ extern AEVec2 world_center_cursor;  // Origin is CENTER of window
 extern f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
 
 void GameStateMainmenuLoad(void) {
+	// Texture load
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
+
+	// Loads fontID into memory
+	//Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
 	mesh_load();
-	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
+	
 }
 
 void GameStateMainmenuInit(void) {
@@ -130,12 +134,17 @@ void GameStateMainmenuFree() {
 }
 
 void GameStateMainmenuUnload(void) {
-	//AEGfxDestroyFont(fontID);
+
+	//// FontID unload
+	//AEGfxDestroyFont(Albam_fontID);
 	
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
+
+	// Mesh free
+	AEGfxMeshFree(square_mesh);
 
 	AESysFrameEnd();
 }

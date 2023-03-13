@@ -42,6 +42,8 @@ extern Player_stats player;
 //used to check if game is paused
 extern bool isPaused;
 
+// shared square mesh
+extern AEGfxVertexList* square_mesh;
 //used to print text to the screen
 extern s8 Albam_fontID;
 
@@ -51,9 +53,8 @@ float portal_max_range, portal_cooldown, portal_timer{};
 //used to check if portal cooldown is to be decremented or not
 bool decrease_cooldown;
 
-//texture and mesh used by both portals
+//texture used by both portals
 AEGfxTexture* portal_range_picture;
-AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 
 //texture for cards that are drawn when choosing upgrade
 AEGfxTexture* temp; // TEMP
@@ -69,10 +70,6 @@ void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	AE_ASSERT(portal_range_picture); // check if texture is loaded
 	temp = AEGfxTextureLoad("Assets/card.png");
-
-	// 1x1 mesh, use standardized mesh, TRS will be done when updating
-	portal_1.mesh = portal_2.mesh = create_Square_Mesh();
-	portal_range_mesh = create_Square_Mesh();
 
 }
 
@@ -242,7 +239,7 @@ void portal_range() {
 	//draw the maximum portal range
 	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
 	AEGfxSetTransform(portal_range_mtx.m);
-	AEGfxMeshDraw(portal_range_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
 //function to check if enemy/boss bullets are colliding with the portal
@@ -281,7 +278,7 @@ void draw_portal() {
 		//draw the portal outline
 		AEGfxSetTransform(portal_1.matrix.m);
 		AEGfxTextureSet(temp, 0.0f, 0.0f);
-		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
 	if (portal_2.created == true) {
@@ -289,11 +286,11 @@ void draw_portal() {
 		//draw portal 1
 		AEGfxSetTransform(portal_1.matrix.m);
 		AEGfxTextureSet(temp, 0.0f, 0.0f);
-		AEGfxMeshDraw((portal_1.mesh), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw((square_mesh), AE_GFX_MDM_TRIANGLES);
 
 		//draw portal 2
 		AEGfxSetTransform(portal_2.matrix.m);
-		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	//print the portal cooldown to the screen
@@ -319,4 +316,14 @@ void portal_teleport_enemy() {
 		portal_1.draw_outline = false;
 	}
 
+}
+
+void portal_free() {
+
+}
+
+void portal_unload() {
+	// Texture unload
+	AEGfxTextureUnload(portal_range_picture);
+	AEGfxTextureUnload(temp);
 }

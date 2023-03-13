@@ -22,6 +22,7 @@ void GameStateWinLoad() {
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 
+	mesh_load();
 }
 
 void GameStateWinInit() {
@@ -89,6 +90,9 @@ void GameStateWinUnload() {
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
+
+	// Mesh free
+	AEGfxMeshFree(square_mesh);
 
 	AESysFrameEnd();
 }

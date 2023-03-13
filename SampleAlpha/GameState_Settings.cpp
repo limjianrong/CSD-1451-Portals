@@ -29,6 +29,10 @@ void GameStateSettingsLoad(void) {
 
 	volume_bar = AEGfxTextureLoad("Assets/volume_bar.png");
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
+
+	// Loads fontID into memory
+	//Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
+	mesh_load();
 }
 
 
@@ -167,12 +171,18 @@ void GameStateSettingsFree() {
 
 void GameStateSettingsUnload(void) {
 
-	// Texture unload
+	//// FontID unload
+	//AEGfxDestroyFont(Albam_fontID);
+
+	// Button texture unload
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
 	
-	// Texture unload
+	// Volume texture unload
 	AEGfxTextureUnload(volume_bar);
 	AEGfxTextureUnload(volume_button);
+
+	// Mesh free
+	AEGfxMeshFree(square_mesh);
 }

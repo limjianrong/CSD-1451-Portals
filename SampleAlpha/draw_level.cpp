@@ -141,7 +141,7 @@ void draw_level_init() {
 	//}
 }
 
-void draw_level() {
+void draw_level_draw() {
 
 	blocks_draw();
 	leftright_blocks_draw();
@@ -209,7 +209,7 @@ void one_time_use_create(s32 len, f32 x, f32 y, s32 index) {
 	onetimeuse[index].y = y;
 }
 
-void update_level() {
+void draw_level_update() {
 	// Creates an anti-gravity zone
 
 	//anti_gravity_zone(5000, 5200);
@@ -223,6 +223,17 @@ void update_level() {
 
 
 
+}
+
+void draw_level_free() {
+
+}
+
+void draw_level_unload() {
+	// Texture unload
+	AEGfxTextureUnload(rect);
+	AEGfxTextureUnload(upwardspike);
+	AEGfxTextureUnload(downwardspike);
 }
 
 //-------------------- Parameters --------------------

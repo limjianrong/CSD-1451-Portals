@@ -45,8 +45,6 @@ bool damage_allowed{ TRUE };
 // ----- Pause Menu -----
 extern bool isPaused;
 
-//f64 deltaTime{};
-//f64 lastFrameTime{};
 
 void enemies_load() {
 
@@ -246,18 +244,6 @@ void update_enemy1() {
 				enemy1[i].status = FALSE;
 			}
 
-			///////////////
-			/*
-			f64 currentTime = AEFrameRateControllerGetFrameTime();
-			deltaTime = currentTime - lastFrameTime;
-			lastFrameTime = currentTime;
-
-			f64 enemyMovement = 10.f * deltaTime;
-			f64 enemyMovementDirection = (AEFrameRateControllerGetFrameCount() % 201 <= 100) ? -1.0f : 1.0f;
-			x += enemyMovement * enemyMovementDirection;
-
-			return static_cast<f32>(x);
-			*/
 		}
 		enemy1_collision();
 	}

@@ -58,10 +58,18 @@ extern f32 originX, originY;			// Center of screen, no matter where the camera m
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
 
+	// --- Loads fontID into memory ---
+	//Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
+
+	// --- Loads textures ---
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
-	
+
+	// --- Loads mesh ---
+	mesh_load();
+
+	// --- Loads different functions ---
 	draw_level_load();			// Level
 	enemies_load();				// Enemy1 & Enemy2
 	enemy3_load();				// Enemy3
@@ -128,7 +136,7 @@ void GameStatePlatformerUpdate(void) {
 	}
 
 	else {
-		update_level();				// Level
+		draw_level_update();				// Level
 		enemies_update();			// Enemy1 & Enemy2
 		enemy3_update(&player);		// Enemy3
 		boss_update();				// Boss
@@ -169,7 +177,7 @@ void GameStatePlatformerDraw(void) {
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
-	draw_level();		// Level
+	draw_level_draw();		// Level
 	enemies_draw();		// Enemy1 & Enemy2
 	draw_enemy3();		// Enemy3
 	boss_draw();		// Boss
@@ -244,19 +252,22 @@ void GameStatePlatformerFree(void) {
 *******************************************************************************************************/
 void GameStatePlatformerUnload(void) {
 
-								// Level
+	draw_level_unload();		// Level
 	enemies_unload();			// Enemy1 & Enemy2
 	enemy3_unload();			// Enemy3
 	boss_unload();				// Boss
-								// Portal
+	portal_unload();			// Portal
 	upgrades_unload();			// Upgrades
 	player_unload();			// Player
 
-	
+
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(background2Tex);
+
+	// Mesh free
+	AEGfxMeshFree(square_mesh);
 
 	// Informing the system about the loop's end
 	AESysFrameEnd();

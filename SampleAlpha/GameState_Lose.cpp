@@ -8,11 +8,11 @@
 
 
 extern AEGfxVertexList* square_mesh;	// Created square mesh
+extern s8 Albam_fontID;
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;
 extern f32 originX, originY;
 extern AEVec2 center_cursor;
 
@@ -21,6 +21,7 @@ void GameStateLoseLoad() {
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
+	mesh_load();
 }
 
 void GameStateLoseInit() {
@@ -88,6 +89,9 @@ void GameStateLoseUnload() {
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
+
+	// Mesh free
+	AEGfxMeshFree(square_mesh);
 
 	AESysFrameEnd();
 }

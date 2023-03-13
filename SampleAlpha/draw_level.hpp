@@ -59,8 +59,10 @@ struct Block {
 // ---- Main Functions ----
 void draw_level_load();
 void draw_level_init();
-void draw_level();
-void update_level();
+void draw_level_draw();
+void draw_level_update();
+void draw_level_free();
+void draw_level_unload();
 
 
 void normal_blocks_create(s32 len, f32 x, f32 y, s32 index);
