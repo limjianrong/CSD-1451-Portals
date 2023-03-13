@@ -18,7 +18,7 @@ extern AEVec2 center_cursor;
 
 bool fullscreen = { false };
 AEVec2 vbutton, vbar;
-float scalex, scaley;
+float buttonscalex, buttonscaley;
 float barscalex, barscaley;
 
 void GameStateSettingsLoad(void) {
@@ -30,8 +30,8 @@ void GameStateSettingsLoad(void) {
 void GameStateSettingsInit(void) {
 	vbutton.x = originX;
 	vbutton.y = originY + 150.f;
-	scalex = WINDOWLENGTH_X / 27;
-	scaley = WINDOWLENGTH_Y / 18;
+	buttonscalex = WINDOWLENGTH_X / 27;
+	buttonscaley = WINDOWLENGTH_Y / 18;
 
 	vbar.x = originX;
 	vbar.y = originY + 150.f;
@@ -72,19 +72,21 @@ void GameStateSettingsUpdate(void) {
 	}
 
 
-	if (AETestPointToRect(&center_cursor, &vbutton, scalex, scaley) && AEInputCheckTriggered(AEVK_LBUTTON)) {
+	if (AETestPointToRect(&center_cursor, &vbutton, buttonscalex, buttonscaley) && (AEInputCheckReleased(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_LBUTTON))) {
 		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
 
 		if (vbutton.x < -WINDOWLENGTH_X / 4) vbutton.x = -WINDOWLENGTH_X / 4;
 		if (vbutton.x > WINDOWLENGTH_X / 4) vbutton.x = WINDOWLENGTH_X / 4;
 	}
 
-	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley*10) && AEInputCheckTriggered(AEVK_LBUTTON)) {
+	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley*5) && (AEInputCheckReleased(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_LBUTTON))) {
 		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
 
 		if (vbutton.x < -WINDOWLENGTH_X / 4) vbutton.x = -WINDOWLENGTH_X / 4;
 		if (vbutton.x > WINDOWLENGTH_X / 4) vbutton.x = WINDOWLENGTH_X / 4;
 	}
+	
+	
 }
 
 void GameStateSettingsDraw(void) {
@@ -136,7 +138,7 @@ void GameStateSettingsDraw(void) {
 	AEGfxMeshDraw(volume_mesh, AE_GFX_MDM_TRIANGLES);
 
 	//volume button
-	AEMtx33Scale(&scale, scalex, scaley);
+	AEMtx33Scale(&scale, buttonscalex, buttonscaley);
 	AEMtx33Trans(&translate, vbutton.x, vbutton.y);
 	AEMtx33Rot(&rotate, 0);
 	AEMtx33Concat(&transform, &rotate, &scale);
