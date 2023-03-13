@@ -234,7 +234,7 @@ void player_update() {
 
 	// ------------  Collision   --------------
 	player_collision();
-	enemy3_collision(&player);
+	enemy3_collision();
 
 	// -------------  Camera   ---------------
 	//AEGfxSetCamPosition(cameraX, cameraY);

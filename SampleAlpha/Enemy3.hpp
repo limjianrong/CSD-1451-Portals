@@ -22,7 +22,7 @@ void draw_enemy3();
 void enemy3_free();
 void enemy3_unload();
 
-void enemy3_collision(Player_stats* player);
+void enemy3_collision();
 
 
 

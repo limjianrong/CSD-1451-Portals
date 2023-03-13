@@ -8,18 +8,19 @@
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
-
 AEGfxTexture* volume_bar, * volume_button;
 
+// --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;
-extern f32 originX, originY;
-extern AEVec2 center_cursor;
+extern s8 Albam_fontID; // text font
+extern f32 originX, originY; // center coordinates of screen
+extern AEVec2 center_cursor; // cursor coordinates 
 
-bool fullscreen = { false };
-AEVec2 vbutton, vbar;
-float buttonscalex, buttonscaley;
-float barscalex, barscaley;
+// --- Settings variables ---
+bool fullscreen = { false }; 
+AEVec2 vbutton, vbar; // vector for volume button & bar coordinates
+float buttonscalex, buttonscaley; // x and y scale of volume button
+float barscalex, barscaley; // x and y scale of volume bar
 
 void GameStateSettingsLoad(void) {
 
@@ -37,11 +38,13 @@ void GameStateSettingsLoad(void) {
 
 
 void GameStateSettingsInit(void) {
+	// initialize volume button coordinates and scale
 	vbutton.x = originX;
 	vbutton.y = originY + 150.f;
 	buttonscalex = WINDOWLENGTH_X / 27;
 	buttonscaley = WINDOWLENGTH_Y / 18;
 
+	// initialize volume bar coordinates and scale
 	vbar.x = originX;
 	vbar.y = originY + 150.f;
 	barscalex = WINDOWLENGTH_X / 2;
@@ -50,9 +53,10 @@ void GameStateSettingsInit(void) {
 
 void GameStateSettingsUpdate(void) {
 
+	// get cursor coordinates
 	variables_update();
 
-	// full screen button pressed
+	// if full screen button pressed
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
 		center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
 		center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
@@ -80,17 +84,11 @@ void GameStateSettingsUpdate(void) {
 		gGameStateNext = GS_Platformer;
 	}
 
-
-	if (AETestPointToRect(&center_cursor, &vbutton, buttonscalex, buttonscaley) && (AEInputCheckReleased(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_LBUTTON))) {
+	// if cursor held down onto and released from volume bar, new volume button located at cursor x location upon release
+	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley*5) && AEInputCheckReleased(AEVK_LBUTTON) ) {
 		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
 
-		if (vbutton.x < -WINDOWLENGTH_X / 4) vbutton.x = -WINDOWLENGTH_X / 4;
-		if (vbutton.x > WINDOWLENGTH_X / 4) vbutton.x = WINDOWLENGTH_X / 4;
-	}
-
-	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley*5) && (AEInputCheckReleased(AEVK_LBUTTON) || AEInputCheckTriggered(AEVK_LBUTTON))) {
-		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
-
+		// button x coordinates to never exceed volume bar edges
 		if (vbutton.x < -WINDOWLENGTH_X / 4) vbutton.x = -WINDOWLENGTH_X / 4;
 		if (vbutton.x > WINDOWLENGTH_X / 4) vbutton.x = WINDOWLENGTH_X / 4;
 	}
@@ -99,12 +97,6 @@ void GameStateSettingsUpdate(void) {
 }
 
 void GameStateSettingsDraw(void) {
-
-	//AEGfxPrint(Albam_fontID, (s8*)"Click ANYWHERE", -0.5, 0.35, 2.0f, 1, 1, 1);
-	//AEGfxPrint(Albam_fontID, (s8*)"to go back to", -0.5, 0, 2.0f, 1, 1, 1);
-	//AEGfxPrint(Albam_fontID, (s8*)"Main Menu!", -0.5, -0.38, 2.0f, 1, 1, 1);
-
-	//AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
@@ -122,8 +114,8 @@ void GameStateSettingsDraw(void) {
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scaling it up
-		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x=0, start counting y from bottom edge of screen
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scale of button
+		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x = screen center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
@@ -131,12 +123,12 @@ void GameStateSettingsDraw(void) {
 		if (center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
 			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
-			AEGfxTextureSet(buttonPressed, 0, 0);
+			AEGfxTextureSet(buttonPressed, 0, 0); 
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	//volume slider
+	//volume bar
 	AEMtx33Scale(&scale, barscalex, barscaley);
 	AEMtx33Trans(&translate, vbar.x, vbar.y);
 	AEMtx33Rot(&rotate, 0);
@@ -157,12 +149,9 @@ void GameStateSettingsDraw(void) {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
-
-		AEGfxPrint(Albam_fontID, (s8*)"Full Screen", -0.2, -0.05, 0.95F, 1, 1, 1);
-		AEGfxPrint(Albam_fontID, (s8*)"Back", -0.1, -0.3, 0.95F, 1, 1, 1);
-
-
-
+	// text on buttons
+	AEGfxPrint(Albam_fontID, (s8*)"Full Screen", -0.2, -0.05, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Back", -0.1, -0.3, 0.95F, 1, 1, 1);
 
 }
 void GameStateSettingsFree() {

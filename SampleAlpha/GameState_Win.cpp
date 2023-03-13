@@ -10,11 +10,11 @@
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
-
+// --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;
-extern f32 originX, originY;
-extern AEVec2 center_cursor;
+extern s8 Albam_fontID; //text font
+extern f32 originX, originY; // screen center coordinates
+extern AEVec2 center_cursor; // cursor coordinates
 
 void GameStateWinLoad() {
 
@@ -30,8 +30,10 @@ void GameStateWinInit() {
 }
 
 void GameStateWinUpdate() {
+	// get cursor position
 	variables_update();
 
+	// if respective buttons clicked, go to their game states
 	for (s32 i = 15; i <= 19; i += 4) {
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
 			center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
@@ -61,8 +63,8 @@ void GameStateWinDraw() {
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scaling it up
-		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x=0, start counting y from bottom edge of screen
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // button scale
+		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x = center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);

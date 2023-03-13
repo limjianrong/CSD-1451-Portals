@@ -41,7 +41,7 @@ struct Enemy1_stats {
 	f32 x{}, y{}, rotation;
 	f32 width, height;
 	s32 Hp;
-	f64 totalframetime;
+	f64 movementCounter;
 	bool status; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 

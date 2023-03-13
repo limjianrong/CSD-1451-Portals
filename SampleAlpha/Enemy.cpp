@@ -83,7 +83,7 @@ void enemies_init() {
 		enemy1[i].height				= ENEMY1_HEIGHT;		// Enemy1's Height
 		enemy1[i].Hp					= 5;					// Enemy1's Health
 		enemy1[i].status				= TRUE;					// TRUE for alive, FALSE for dead
-		enemy1[i].totalframetime		= 0.f;					// ????
+		enemy1[i].movementCounter		= 0.f;					// Enemy1's Movement Counter
 
 	}
 
@@ -181,13 +181,16 @@ void enemy1_collision() {
 	AEVec2 player_vec{ player.x , player.y };
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (damage_allowed) {
+			// decreases 1 player hp whenever player and enemy1 collide
 			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				--player.Hp;
+				// disables damage temporarily once collided
 				damage_allowed = FALSE;
 			}
 		}
 
 		else {
+			// allows damage again 100 frames after player-enemy1 collision 
 			if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
 				damage_allowed = TRUE;
 			}
@@ -203,8 +206,8 @@ void enemy1_create(f32 x, f32 y, s32 index) {
 void enemy1_draw() {
 	
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+		// Draw enemies if alive
 		if (enemy1[i].Hp > 0 && enemy1[i].status == TRUE) {
-			//enemy1.x = update_enemy1(enemy1.x);
 
 			AEMtx33Scale(&enemy1[i].scale, enemy1[i].width, enemy1[i].height);
 			AEMtx33Rot(&enemy1[i].rotate, enemy1[i].rotation);
@@ -226,16 +229,18 @@ void update_enemy1() {
 	if (!isPaused) {
 		for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 			
+			// total time that has passed since counter = 0 added into counter
+			enemy1[i].movementCounter += AEFrameRateControllerGetFrameTime();
 			
-			enemy1[i].totalframetime += AEFrameRateControllerGetFrameTime();
-				
-			if (enemy1[i].totalframetime > 200 * AEFrameRateControllerGetFrameTime()) enemy1[i].totalframetime = 0.f;
+			// resets counter = 0 once counter has collected 200 frames worth of seconds
+			if (enemy1[i].movementCounter > 200 * AEFrameRateControllerGetFrameTime()) enemy1[i].movementCounter = 0.f;
 			
-		
-			if (enemy1[i].totalframetime <= 200*AEFrameRateControllerGetFrameTime() && enemy1[i].totalframetime > 100 * AEFrameRateControllerGetFrameTime()) {
+			// moves right when 100 < frames <= 200 
+			if (enemy1[i].movementCounter <= 200*AEFrameRateControllerGetFrameTime() && enemy1[i].movementCounter > 100 * AEFrameRateControllerGetFrameTime()) {
 				enemy1[i].x += 1.0f;
 			}
-			else if (enemy1[i].totalframetime <= 100 * AEFrameRateControllerGetFrameTime()) {
+			// moves left when 0 < frames <= 100
+			else if (enemy1[i].movementCounter <= 100 * AEFrameRateControllerGetFrameTime()) {
 				enemy1[i].x -= 1.0f;
 			}
 
@@ -246,6 +251,7 @@ void update_enemy1() {
 			}
 
 		}
+		// enemy collision with player
 		enemy1_collision();
 	}
 }
