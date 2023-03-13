@@ -75,6 +75,8 @@ void enemies_init() {
 	enemy1_create(625, 90, 0);
 	enemy1_create(1950, 240, 1);
 
+	enemy1_create(100, 100, 2);
+
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
 		enemy1[i].rotation				= PI;					// Enemy1's Rotation
@@ -82,6 +84,8 @@ void enemies_init() {
 		enemy1[i].height				= ENEMY1_HEIGHT;		// Enemy1's Height
 		enemy1[i].Hp					= 5;					// Enemy1's Health
 		enemy1[i].status				= TRUE;					// TRUE for alive, FALSE for dead
+		enemy1[i].totalframetime		= 0.f;					// 
+
 	}
 
 
@@ -206,17 +210,21 @@ void enemy1_draw() {
 }
 
 void update_enemy1() {
-
+	
 	if (!isPaused) {
 		for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-			// get 0-200
-			s32 value = AEFrameRateControllerGetFrameCount() % 201;
-
-			if (value <= 100) {
-				enemy1[i].x -= 1.0f;
-			}
-			else {
+			
+			
+			enemy1[i].totalframetime += AEFrameRateControllerGetFrameTime();
+				
+			if (enemy1[i].totalframetime > 200 * AEFrameRateControllerGetFrameTime()) enemy1[i].totalframetime = 0.f;
+			
+		
+			if (enemy1[i].totalframetime <= 200*AEFrameRateControllerGetFrameTime() && enemy1[i].totalframetime > 100 * AEFrameRateControllerGetFrameTime()) {
 				enemy1[i].x += 1.0f;
+			}
+			else if (enemy1[i].totalframetime <= 100 * AEFrameRateControllerGetFrameTime()) {
+				enemy1[i].x -= 1.0f;
 			}
 
 			// ------- XP for player -------

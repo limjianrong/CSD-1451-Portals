@@ -26,7 +26,7 @@
 // ----- Enemy 1 -----
 #define ENEMY1_WIDTH 60.f
 #define ENEMY1_HEIGHT 80.f
-#define MAX_ENEMIES_1 2			// Change this for total number of enemy1
+#define MAX_ENEMIES_1 3			// Change this for total number of enemy1
 
 // ----- Enemy 2 (Shoots bullet) -----
 #define ENEMY2_WIDTH 80.f
@@ -39,6 +39,7 @@ struct Enemy1_stats {
 	f32 x{}, y{}, rotation;
 	f32 width, height;
 	s32 Hp;
+	f64 totalframetime;
 	bool status; // TRUE for alive, FALSE for dead
 	AEVec2 center;
 
