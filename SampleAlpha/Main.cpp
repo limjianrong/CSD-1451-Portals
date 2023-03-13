@@ -49,7 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysSetWindowTitle("CSD 1451 Portals");
 
 	// Set background color
-	//AEGfxSetBackgroundColor(100.0f, 100.0f, 100.0f);
+	//AEGfxSetBackgroundColor(0.0f, 0.0f, 100.0f);
 
 	// Loads font ID into memory
 	Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);

@@ -30,7 +30,6 @@ portal portal_1, portal_2;
 extern Bullet bullet;
 extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 extern Player_stats player;
-
 //portal range
 float portal_range{ 300.0f };
 AEGfxTexture* portal_range_picture;
@@ -45,9 +44,6 @@ AEGfxTexture* temp; // TEMP
 void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	AE_ASSERT(portal_range_picture); // Similar to your checking
-	if (portal_range_picture) {
-		std::cout << "loaded portal_range_picture";
-	}
 	temp = AEGfxTextureLoad("Assets/card.png");
 
 	portal_1.mesh = portal_2.mesh = create_Square_Mesh();
@@ -184,6 +180,7 @@ void update_portal() {
 		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &player.center, 50.0f, 50.0f)) {
 			player.x = portal_2.center.x;
 			player.y = portal_2.center.y;
+			
 			portal_1.created = FALSE;
 			portal_2.created = FALSE;
 		}
