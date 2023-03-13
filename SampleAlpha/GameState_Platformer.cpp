@@ -158,7 +158,7 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	// ------- Background -------
-	AEMtx33Scale(&scale, 1.2*WINDOWLENGTH_X, 1.2*WINDOWLENGTH_Y);
+	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
 	AEMtx33Trans(&translate, originX, originY);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);

@@ -223,10 +223,7 @@ void player_update() {
 
 	// ------------  Collision   --------------
 	player_collision();
-	//enemy_collision(&player); 
 	enemy3_collision();
-	//enemy_collision(&player, enemy1_a);
-	//enemy_collision(&player, enemy1_b);
 
 	// -------------  Camera   ---------------
 	//AEGfxSetCamPosition(cameraX, cameraY);
@@ -238,22 +235,6 @@ void player_update() {
 
 	if(free_moving_camera == false){
 	//camera follow player's x
-		//if (player.x > 0 && cameraPos.x < player.x) {
-		//	cameraPos.x += (player.x - cameraPos.x)/camera_slowdown ;
-		//}
-
-		//else if ((player.x > 0 && cameraPos.x > player.x) || (player.x <= 0 && cameraPos.x > 0)) {
-		//	cameraPos.x -=  (cameraPos.x - player.x) / camera_slowdown;
-		//}
-
-
-		////camera follow player's y
-		//if (player.y > 0 && cameraPos.y < player.y) {
-		//	cameraPos.y += (player.y - cameraPos.y)/camera_slowdown ;
-		//}
-		//else if ((player.y > 0 && cameraPos.y > player.y) || (player.y <= 0 && cameraPos.y > 0)) {
-		//	cameraPos.y -= (cameraPos.y - player.y) / camera_slowdown;
-		//}
 		if (player.x > 0) {
 			cameraPos.x = player.x;
 		}
@@ -282,12 +263,6 @@ void player_update() {
 		if (AEInputCheckCurr(AEVK_L))
 			cameraPos.x += 2*camera_speed;
 	}
-	//cameraPos= { player.x, player.y };
-	//cameraPos.x = AEClamp(cameraPos.x, 0, player.x+AEGfxGetWinMaxX());		// If player.x < originX, cameraX = originX = 0		If player.x > originX, cameraX = player.x		If player.x > WINDOWX, cameraX = WINDOWX
-	//std::cout << center_cursor.x << std::endl;
-	//cameraPos.y = AEClamp(cameraPos.y,0 ,player.y+ AEGfxGetWinMaxY());		// If player.y < originY, cameraY = originY = 0		If player.y > originY, cameraY = player.y		If player.y > WINDOWY, cameraY = WINDOWY
-	// Set camera pos
-	// AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -316,8 +291,6 @@ void player_collision() {
 		player.x = -WINDOWLENGTH_X / 2 + PLAYER_WIDTH / 2;
 
 	// right of screen ---- CURRENTLY NO LIMIT ----
-	//if (player.x > WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2)
-	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
 	if (player.y > (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 10)
