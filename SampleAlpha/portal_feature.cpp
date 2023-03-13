@@ -89,7 +89,7 @@ void portal_init() {
 *******************************************************************************************************/
 void update_portal() {
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
-		std::cout << "\nportal_cooldown is" << portal_timer;
+		//std::cout << "\nportal_cooldown is" << portal_timer;
 	}
 	
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);

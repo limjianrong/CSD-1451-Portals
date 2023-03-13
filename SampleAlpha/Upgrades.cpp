@@ -1,6 +1,8 @@
 
 #include "AEEngine.h"
 #include "Player.hpp"			// For player_stats
+#include "Enemy.hpp"			// For Enemy2 stats
+#include "weapon_fire.hpp"		// For Enemy2_bullet
 #include "portal_feature.hpp"	// For portal range
 #include "Utilities.hpp"		// For cursor coords, 
 #include "Upgrades.hpp"
@@ -13,18 +15,13 @@
 
 #include <stdlib.h>     // srand, rand
 
-#define MAX_UPGRADES 12
+#define MAX_UPGRADES 4
 Card upgrades[MAX_UPGRADES];
-
-// --- COMMENTED OUT ---
-bool visible{ false };
-f64 deltaTime{};
-f64 lastFrameTime{};
-f64 idle_time{ 2.f };
 
 // --- Upgrades ---
 static bool isUpgradeTime{ FALSE };	 // Boolean for storing upgradeTime
 s32 selected;	// temp variable to store selected card
+static AEVec2 left_card_center, middle_card_center, right_card_center;
 static s32 card1, card2, card3;
 
 // ----- Pause Screen -----
@@ -35,6 +32,10 @@ extern float portal_range;
 
 // ----- Game Objects -----
 extern Player_stats player;
+extern Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
+extern Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
+extern Bullet bullet_enemy2[MAX_ENEMIES_2];		// Array of struct enemy2's bullet
+Shield shield;
 
 // ----- Mesh & Texture -----
 static AEMtx33 scale, rotate, translate, transform;
@@ -42,7 +43,6 @@ AEGfxVertexList* uMesh;
 extern f32 originX, originY;
 
 // Shield
-AEGfxTexture* ShieldTex;
 static f32 Shield_X, Shield_Y;
 static bool isShieldActive;
 
@@ -53,46 +53,24 @@ extern AEVec2 world_center_cursor;  // Origin is CENTER of window
 
 
 void upgrades_load() {
-	upgrades[MAX_HP_card].Texture = upgrades[MAX_HP_card2].Texture = upgrades[MAX_HP_card3].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
-	upgrades[MOVEMENT_SPEED_card].Texture = upgrades[MOVEMENT_SPEED_card2].Texture = upgrades[MOVEMENT_SPEED_card3].Texture = AEGfxTextureLoad("Assets/Speed_card.png");
-	upgrades[PORTAL_RANGE_card].Texture = upgrades[PORTAL_RANGE_card2].Texture = upgrades[PORTAL_RANGE_card3].Texture = AEGfxTextureLoad("Assets/Portal_Range_card.png");
-	upgrades[SHIELD_card].Texture = upgrades[SHIELD_card2].Texture = upgrades[SHIELD_card3].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
+	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
+	upgrades[MOVEMENT_SPEED_card].Texture = AEGfxTextureLoad("Assets/Speed_card.png");
+	upgrades[PORTAL_RANGE_card].Texture = AEGfxTextureLoad("Assets/Portal_Range_card.png");
+	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
 
-	ShieldTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
+	shield.Texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
 
 	uMesh = create_Square_Mesh();
 }
 
 void upgrades_init() {
-	// NOTE: Hardcoded for now, soon to be randomised
 
-	//// Left card
-	//upgrades[MAX_HP_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;				
-	//upgrades[MAX_HP_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;				// Center of window
+	// --- Card type ---
 	upgrades[MAX_HP_card].type = MAX_HP_card;
-	upgrades[MAX_HP_card2].type = MAX_HP_card;
-	upgrades[MAX_HP_card3].type = MAX_HP_card;
-
-	//// Middle card
-	//upgrades[MOVEMENT_SPEED_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 2;		// Center of window
-	//upgrades[MOVEMENT_SPEED_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 	upgrades[MOVEMENT_SPEED_card].type = MOVEMENT_SPEED_card;
-	upgrades[MOVEMENT_SPEED_card2].type = MOVEMENT_SPEED_card;
-	upgrades[MOVEMENT_SPEED_card3].type = MOVEMENT_SPEED_card;
-
-	////// Right card
-	////upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
-	////upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 	upgrades[PORTAL_RANGE_card].type = PORTAL_RANGE_card;
-	upgrades[PORTAL_RANGE_card2].type = PORTAL_RANGE_card;
-	upgrades[PORTAL_RANGE_card3].type = PORTAL_RANGE_card;
-
-	//// Right card
-	//upgrades[SHIELD_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
-	//upgrades[SHIELD_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;		// Center of window
 	upgrades[SHIELD_card].type = SHIELD_card;
-	upgrades[SHIELD_card2].type = SHIELD_card2;
-	upgrades[SHIELD_card3].type = SHIELD_card3;
+
 
 	isShieldActive = FALSE;
 
@@ -105,8 +83,12 @@ void upgrades_init() {
 	card1 = card2 = card3 = NO_card;
 	selected = NO_card;
 
-	deltaTime = 0.0f;
-	lastFrameTime = AEFrameRateControllerGetFrameTime();
+	// --- Shield Upgrade ---
+	shield.x = player.x;					// Shield bubble x position
+	shield.y = player.y;					// Shield bubble y position
+	shield.rotation = PI;					// Shield bubble rotation
+	shield.width = player.width + 20;		// Shield bubble height
+	shield.height = player.height + 20;		// Shield bubble width
 
 }
 
@@ -126,7 +108,7 @@ void upgrade_draw() {
 
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
-		for (s32 i = 0; i < MAX_UPGRADES; ++i) {
+		/*for (s32 i = 0; i < MAX_UPGRADES; ++i) {
 			AEMtx33Scale(&upgrades[i].scale, upgrades[i].width, upgrades[i].height);
 			AEMtx33Rot(&upgrades[i].rotate, upgrades[i].rotation);
 			AEMtx33Trans(&upgrades[i].translate, upgrades[i].x, upgrades[i].y);
@@ -135,7 +117,79 @@ void upgrade_draw() {
 			AEGfxSetTransform(upgrades[i].transform.m);
 			AEGfxTextureSet(upgrades[i].Texture, 0, 0);
 			AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+		}*/
+
+		AEMtx33Scale(&scale, upgrades[MAX_HP_card].width, upgrades[MAX_HP_card].height);
+		AEMtx33Rot(&rotate, PI);
+		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+
+		switch (card1) {
+			case MAX_HP_card:
+				AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
+				break;
+			case MOVEMENT_SPEED_card:
+				AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
+				break;
+			case PORTAL_RANGE_card:
+				AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
+				break;
+			case SHIELD_card:
+				AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
+				break;
 		}
+		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+
+
+
+		AEMtx33Scale(&scale, upgrades[MAX_HP_card].width, upgrades[MAX_HP_card].height);
+		AEMtx33Rot(&rotate, PI);
+		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 2, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+		switch (card2) {
+		case MAX_HP_card:
+			AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
+			break;
+		case MOVEMENT_SPEED_card:
+			AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
+			break;
+		case PORTAL_RANGE_card:
+			AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
+			break;
+		case SHIELD_card:
+			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
+			break;
+		}
+		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+
+
+
+		AEMtx33Scale(&scale, upgrades[MAX_HP_card].width, upgrades[MAX_HP_card].height);
+		AEMtx33Rot(&rotate, PI);
+		AEMtx33Trans(&translate, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+		switch (card3) {
+		case MAX_HP_card:
+			AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
+			break;
+		case MOVEMENT_SPEED_card:
+			AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
+			break;
+		case PORTAL_RANGE_card:
+			AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
+			break;
+		case SHIELD_card:
+			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
+			break;
+		}
+		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+
 	}
 	if (isShieldActive) {
 		shield_upgrade_draw();
@@ -148,88 +202,9 @@ void upgrade_update() {
 		player.justLeveledUp = TRUE;
 	}
 
-
-	// ----- Card positions -----
-	if (AEInputCheckTriggered(AEVK_J)) {
-		// Initialize random seed:
-		srand(AEFrameRateControllerGetFrameCount());
-		// Generate secret number between 0 and 3
-		card1 = rand() % 3;
-		card2 = rand() % 3;
-		card3 = rand() % 3;
-
-		std::cout << "card1: " << card1 << std::endl;
-		std::cout << "card2: " << card2 << std::endl;
-		std::cout << "card3: " << card3 << std::endl;
-		std::cout << "---------------" << std::endl;
-	}
-
-	//// Left card
-	//switch (card1) {
-	//	case MAX_HP_card: 			upgrades[MAX_HP_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[MAX_HP_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case MOVEMENT_SPEED_card:	upgrades[MOVEMENT_SPEED_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[MOVEMENT_SPEED_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case PORTAL_RANGE_card:		upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case SHIELD_card:			upgrades[SHIELD_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[SHIELD_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//}
-
-	//// Middle card
-	//switch (card2) {
-	//	case MAX_HP_card:			upgrades[MAX_HP_card2].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[MAX_HP_card2].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case MOVEMENT_SPEED_card:	upgrades[MOVEMENT_SPEED_card2].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[MOVEMENT_SPEED_card2].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case PORTAL_RANGE_card:		upgrades[PORTAL_RANGE_card2].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[PORTAL_RANGE_card2].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//	case SHIELD_card:			upgrades[SHIELD_card2].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//								upgrades[SHIELD_card2].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//								break;
-	//}
-
-	//// Right card
-	//switch (card3) {
-	//case MAX_HP_card:			upgrades[MAX_HP_card3].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//							upgrades[MAX_HP_card3].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//							break;
-	//case MOVEMENT_SPEED_card:	upgrades[MOVEMENT_SPEED_card3].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//							upgrades[MOVEMENT_SPEED_card3].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//							break;
-	//case PORTAL_RANGE_card:		upgrades[PORTAL_RANGE_card3].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//							upgrades[PORTAL_RANGE_card3].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//							break;
-	//case SHIELD_card:			upgrades[SHIELD_card3].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	//							upgrades[SHIELD_card3].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-	//							break;
-	//}
-
-
-
-	// Left card
-	upgrades[MOVEMENT_SPEED_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 4;
-	upgrades[MOVEMENT_SPEED_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-
-	// Middle card
-	upgrades[PORTAL_RANGE_card].x = AEGfxGetWinMinX() + AEGetWindowWidth() / 2;
-	upgrades[PORTAL_RANGE_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-
-	// Right card
-	upgrades[SHIELD_card].x = AEGfxGetWinMaxX() - AEGetWindowWidth() / 4;
-	upgrades[SHIELD_card].y = AEGfxGetWinMinY() + AEGetWindowHeight() / 2;
-
-	// unused card
-	upgrades[MAX_HP_card].x = 2000;
-	upgrades[MAX_HP_card].y = 0;
-
+	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
 
 
 	// ----- Open upgrade screen -----
@@ -237,65 +212,87 @@ void upgrade_update() {
 		player.justLeveledUp = FALSE;	// Reset bool
 		isUpgradeTime = TRUE;			// Enable UpgradeTime!!
 		//isPaused = TRUE;				// Pause game
+
+		// Initialize random seed:
+		srand(AEFrameRateControllerGetFrameCount());
+		// Generate random number between 0 and 3
+		card1 = rand() % 4;			// Card1 type
+		card2 = rand() % 4;			// Card2 type
+		card3 = rand() % 4;			// Card3 type
+
+		std::cout << "card1: " << card1 << std::endl;
+		std::cout << "card2: " << card2 << std::endl;
+		std::cout << "card3: " << card3 << std::endl;
+		std::cout << "---------------" << std::endl;
 	}
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
-		for (s32 i = 0; i < MAX_UPGRADES; ++i) {
-			// Checks which upgrade is selected
-			AEVec2Set(&upgrades[i].center, upgrades[i].x, upgrades[i].y);
-			/*std::cout << "Center X: " << upgrades[i].center.x << std::endl;
-			std::cout << "Center Y: " << upgrades[i].center.y << std::endl;
-			std::cout << "Mouse X: " << world_center_cursor.x << std::endl;
-			std::cout << "Mouse Y: " << world_center_cursor.y << std::endl;
-			std::cout << "Player X: " << player.x << std::endl;
-			std::cout << "Player Y: " << player.y << std::endl;
-			std::cout << "--------------------------------------------" << std::endl;*/
-			if (AETestRectToRect(&upgrades[i].center, upgrades[i].width, upgrades[i].height, &world_center_cursor, 0.1f, 0.1f)) {
-				selected = upgrades[i].type;
-			}
-			else {
-				selected = NO_card;
-			}
 
-			//std::cout << "Mouse: " << world_center_cursor.x << std::endl;
-			//std::cout << "Selected: " << selected << std::endl;
+		// Left card clicked
+		if (AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
+			selected = card1;
+		}
+		// Middle card clicked
+		else if (AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
+			selected = card2;
+		}
+		// Right card clicked
+		else if (AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
+			selected = card3;
+		}
+		else {
+			selected = NO_card;
+		}
 
-			if (selected != NO_card) {
-				switch (selected) {
-				case MAX_HP_card: player.Max_Hp += 1;
-					std::cout << "Max HP: " << player.Max_Hp << std::endl;
-					break;
-				case MOVEMENT_SPEED_card: player.Speed += 0.5;
-					std::cout << "Speed: " << player.Speed << std::endl;
-					break;
-				case PORTAL_RANGE_card: portal_range += 50;
-					std::cout << "Portal range: " << portal_range << std::endl;
-					break;
-				case SHIELD_card: 
-				case SHIELD_card2: 
-				case SHIELD_card3: shield_upgrade_update();
-					std::cout << "Shield cd: " << isShieldActive << std::endl;
-					break;
+		//std::cout << "Mouse: " << world_center_cursor.x << std::endl;
+		//std::cout << "Selected: " << selected << std::endl;
+
+		if (selected != NO_card) {
+			switch (selected) {
+			case MAX_HP_card: player.Max_Hp += 1;
+				std::cout << "Max HP: " << player.Max_Hp << std::endl;
+				break;
+			case MOVEMENT_SPEED_card: player.Speed += 0.5;
+				std::cout << "Speed: " << player.Speed << std::endl;
+				break;
+			case PORTAL_RANGE_card: portal_range += 50;
+				std::cout << "Portal range: " << portal_range << std::endl;
+				break;
+			case SHIELD_card: 
+				// Enable shield
+				if (!isShieldActive) {
+					isShieldActive = TRUE;
 				}
+				std::cout << "Shield cd: " << isShieldActive << std::endl;
+				break;
 			}
 		}
 		// ----- Close upgrade screen -----
 		isUpgradeTime = FALSE;
 	}
 
+	shield_upgrade_update();
+
 }
 
 
 void shield_upgrade_update() {
-	// Enable shield
-	if (!isShieldActive) {
-		isShieldActive = TRUE;
-	}
 
 	// Shield follows player x & y
 	if (isShieldActive) {
-		Shield_X = player.x;
-		Shield_Y = player.y;
+		shield.x = player.x;
+		shield.y = player.y;
+		AEVec2Set(&shield.center, shield.x, shield.y);
 	}
+
+	// ----- Disable shield when shot by Enemy2 -----
+	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
+		// ----- Bullet collision with enemy2 -----
+		if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
+			isShieldActive = FALSE;
+		}
+	}
+
+
 
 }
 
@@ -303,13 +300,13 @@ void shield_upgrade_draw() {
 
 	AEGfxSetTransparency(0.6f);
 	// Creates a shield size 70x70
-	AEMtx33Scale(&scale, PLAYER_WIDTH + 20, PLAYER_HEIGHT + 20);
-	AEMtx33Rot(&rotate, PI);
-	AEMtx33Trans(&translate, player.x, player.y);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxTextureSet(ShieldTex, 0, 0);
-	AEGfxSetTransform(transform.m);
+	AEMtx33Scale(&shield.scale, PLAYER_WIDTH + 20, PLAYER_HEIGHT + 20);
+	AEMtx33Rot(&shield.rotate, PI);
+	AEMtx33Trans(&shield.translate, shield.x, shield.y);
+	AEMtx33Concat(&shield.transform, &shield.rotate, &shield.scale);
+	AEMtx33Concat(&shield.transform, &shield.translate, &shield.transform);
+	AEGfxTextureSet(shield.Texture, 0, 0);
+	AEGfxSetTransform(shield.transform.m);
 	AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
 
 }
