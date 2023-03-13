@@ -51,8 +51,10 @@ extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
 extern AEVec2 center_cursor;			// Origin is CENTER of window
 extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 // ----- Window origin -----
-extern f32 originX, originY;			// Center of screen, no matter where the camera moves
+extern f32 originX, originY;		// Center of screen, no matter where the camera moves
 
+// ----- Camera -----
+extern AEVec2 cameraPos;
 /*!**************************************************************************************************
 \brief
   In charge of loading platformer game
@@ -156,13 +158,12 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	// ------- Background -------
-	AEMtx33Scale(&scale, WINDOWLENGTH_X + 20, WINDOWLENGTH_Y + 20);
+	AEMtx33Scale(&scale, 1.2*WINDOWLENGTH_X, 1.2*WINDOWLENGTH_Y);
 	AEMtx33Trans(&translate, originX, originY);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
-	//AEGfxTextureSet(nullptr, 0, 0);
 	AEGfxTextureSet(background2Tex, 0, 0);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
@@ -183,7 +184,7 @@ void GameStatePlatformerDraw(void) {
 	if (isPaused) {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
-		AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X+200, WINDOWLENGTH_Y+200);
 		AEMtx33Rot(&rotate, PI);
 		AEMtx33Trans(&translate, originX, originY);
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -226,6 +227,7 @@ void GameStatePlatformerDraw(void) {
 		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.18f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.21f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 	}
+	AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
 
 }
 /*!**************************************************************************************************

@@ -14,10 +14,10 @@ struct Boss{
 	f32 charge_velocity{ 5 };
 	f32 charge_angle{};
 	s32 charge_towards{};
-	s32 return_to_position{};
 	f32 charge_cooldown{800.0f};
 	f32 charge_range{ 500.0f };
-	s32 charge_token{};
+	bool charge_token{};
+	bool return_to_position{};
 	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxTexture* standTex, * deadTex;

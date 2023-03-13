@@ -18,9 +18,6 @@ void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
-	if (!laser_beam.picture) {
-		std::cout << "failed to load laser beam picture";
-	}
 
 	bullet_load();
 }
@@ -95,7 +92,7 @@ void boss_unload() {
 	// Texture unload
 	AEGfxTextureUnload(boss.standTex);
 	AEGfxTextureUnload(boss.deadTex);
-	//AEGfxTextureUnload(laser_beam.picture);
+	AEGfxTextureUnload(laser_beam.picture);
 }
 
 void boss_movement() {
@@ -189,7 +186,7 @@ void boss_charge() {
 	if (boss.charge_cooldown == 0.0f && AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss.charge_range) {
 		boss.previous_direction = boss.direction;
 		boss.direction = STOP;
-		boss.return_to_position = 0;
+		boss.return_to_position = false;
 		boss.charge_token = 1;
 
 		//set vector for direction for boss to charge in
@@ -221,21 +218,21 @@ void boss_charge() {
 	}
 
 
-	if (boss.charge_token == 1) {
+	if (boss.charge_token == true) {
 		//if player is top left of boss
-		if (boss.charge_towards == TOP_LEFT && boss.return_to_position == 0) {
+		if (boss.charge_towards == TOP_LEFT && boss.return_to_position == false) {
 			boss.x_pos -= boss.charge_velocity * cos(boss.charge_angle);
 			boss.y_pos += boss.charge_velocity * sin(boss.charge_angle);
 			if (boss.x_pos < boss.charge_endpoint.x && boss.y_pos > boss.charge_endpoint.y) {
-				boss.return_to_position = 1;
+				boss.return_to_position = true;
 			}
 		}
 		//boss has finished charging forward, now return to original position
-		else if (boss.charge_towards == TOP_LEFT && boss.return_to_position == 1) {
+		else if (boss.charge_towards == TOP_LEFT && boss.return_to_position == true) {
 			boss.x_pos += boss.charge_velocity * cos(boss.charge_angle);
 			boss.y_pos -= boss.charge_velocity * sin(boss.charge_angle);
 			if (boss.x_pos > boss.original_position.x && boss.y_pos < boss.original_position.y) {
-				boss.charge_token = 0;
+				boss.charge_token = false;
 				boss.x_pos = boss.original_position.x;
 				boss.y_pos = boss.original_position.y;
 				if (boss.previous_direction == UP) {
@@ -251,24 +248,24 @@ void boss_charge() {
 
 
 		//if player is bottom left of boss
-		else if (boss.charge_towards == BTM_LEFT && boss.return_to_position == 0) {
+		else if (boss.charge_towards == BTM_LEFT && boss.return_to_position == false) {
 
 			boss.x_pos -= boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos -= boss.charge_velocity * (sin(boss.charge_angle));
 
 			if (boss.x_pos < boss.charge_endpoint.x && boss.y_pos < boss.charge_endpoint.y) {
-				boss.return_to_position = 1;
+				boss.return_to_position = true;
 			}
 		}
 
 		//boss has finished charging forward, now return to original position
-		else if (boss.charge_towards == BTM_LEFT && boss.return_to_position == 1) {
+		else if (boss.charge_towards == BTM_LEFT && boss.return_to_position == true) {
 			boss.x_pos += boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos += boss.charge_velocity * (sin(boss.charge_angle));
 			if (boss.x_pos > boss.original_position.x && boss.y_pos > boss.original_position.y) {
 
 				//std::cout << "\nback to original position";
-				boss.charge_token = 0;
+				boss.charge_token = false;
 				boss.x_pos = boss.original_position.x;
 				boss.y_pos = boss.original_position.y;
 				if (boss.previous_direction == UP) {
@@ -284,20 +281,20 @@ void boss_charge() {
 		}
 
 		//if player is top right of boss
-		else if (boss.charge_towards == TOP_RIGHT && boss.return_to_position == 0) {
+		else if (boss.charge_towards == TOP_RIGHT && boss.return_to_position == false) {
 			boss.x_pos += boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos += boss.charge_velocity * (sin(boss.charge_angle));
 			if (boss.x_pos > boss.charge_endpoint.x && boss.y_pos > boss.charge_endpoint.y) {
-				boss.return_to_position = 1;
+				boss.return_to_position = true;
 			}
 		}
 
 		//boss has finished charging forward, now return to original position
-		else if (boss.charge_towards == TOP_RIGHT && boss.return_to_position == 1) {
+		else if (boss.charge_towards == TOP_RIGHT && boss.return_to_position == true) {
 			boss.x_pos -= boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos -= boss.charge_velocity * (sin(boss.charge_angle));
 			if (boss.x_pos < boss.original_position.x && boss.y_pos < boss.original_position.y) {
-				boss.charge_token = 0;
+				boss.charge_token = true;
 				boss.x_pos = boss.original_position.x;
 				boss.y_pos = boss.original_position.y;
 				if (boss.previous_direction == UP) {
@@ -313,22 +310,22 @@ void boss_charge() {
 
 
 		//if player is bottom right of boss
-		else if (boss.charge_towards == BTM_RIGHT && boss.return_to_position == 0) {
+		else if (boss.charge_towards == BTM_RIGHT && boss.return_to_position == false) {
 			boss.x_pos += boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos -= boss.charge_velocity * (sin(boss.charge_angle));
 			if (boss.x_pos > boss.charge_endpoint.x && boss.y_pos < boss.charge_endpoint.y) {
-				boss.return_to_position = 1;
+				boss.return_to_position = true;
 			}
 		}
 
 		//boss has finished charging forward, now return to original position
-		else if (boss.charge_towards == BTM_RIGHT && boss.return_to_position == 1) {
+		else if (boss.charge_towards == BTM_RIGHT && boss.return_to_position == true) {
 
 			boss.x_pos -= boss.charge_velocity * (cos(boss.charge_angle));
 			boss.y_pos += boss.charge_velocity * (sin(boss.charge_angle));
 			if (boss.x_pos < boss.original_position.x && boss.y_pos >boss.original_position.y) {
 
-				boss.charge_token = 0;
+				boss.charge_token = false;
 				boss.x_pos = boss.original_position.x;
 				boss.y_pos = boss.original_position.y;
 				if (boss.previous_direction == UP) {

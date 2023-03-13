@@ -25,7 +25,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // for isPaused
 #include "GameState_Platformer.hpp"
 
-#include <string>
 #include <iostream>
 
 Player_stats player;
@@ -61,36 +60,35 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
-	
+
+	bullet_load();
 }
 
 void player_init() {
 	// -------- Player --------
-	player.x				= PLAYER_INITIAL_POS_X;			// Player's initial X position
-	player.y				= PLAYER_INITIAL_POS_Y;			// Player's initial Y position
-	player.rotation			= 0.f;							// Player's Rotation
-	player.Max_Hp			= 5;							// Player's Maximum Health
-	player.Hp				= player.Max_Hp;				// Player's Health
-	player.Lives			= 3;							// Player's Lives
-	player.Speed			= 1;							// Player's Movement Speed
-	player.Level			= 0;							// Player's Level
-	player.XP				= PLAYER_XP_RESET;				// Player's XP
-	player.requiredXP		= PLAYER_NEEDED_XP_TILL_10;		// Player's required xp to level up
-	player.justLeveledUp	= FALSE;						// Indicator to show player levelling up
+	player.x				= PLAYER_INITIAL_POS_X;		// Player's initial X position
+	player.y				= PLAYER_INITIAL_POS_Y;		// Player's initial Y position
+	player.rotation			= 0.f;						// Player's Rotation
+	player.Max_Hp			= 5;						// Player's Maximum Health
+	player.Hp				= player.Max_Hp;			// Player's Health
+	player.Lives			= 3;						// Player's Lives
+	player.Speed			= 1;						// Player's Movement Speed
+	player.Level			= 0;						// Player's Level
+	player.XP				= 0;						// Player's XP
+	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
 	// -------- Camera --------
-	AEGfxSetCamPosition(0, 0);								// Reset camera
+	AEGfxSetCamPosition(0, 0);							// Reset camera
 	free_moving_camera = false;
 	camera_speed = 15.0f;
 	camera_slowdown = 10.0f;
-
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
-		checkpoint[i].check = FALSE;						// Disable all checkpoints
+		checkpoint[i].check = FALSE;					// Disable all checkpoints
 	}
 
 	// -------- Pause Menu --------
-	isPaused = FALSE;										// Unpause game
+	isPaused = FALSE;									// Unpause game
 }
 
 void player_draw() {
@@ -143,17 +141,6 @@ void player_draw() {
 	if (player.Level == 0) level = (s8*)"Level: 0";
 	else if (player.Level == 1) level = (s8*)"Level: 1";
 	else if (player.Level == 2) level = (s8*)"Level: 2";
-
-	//for (s32 i = 0; i <= PLAYER_HIGHEST_LVL; i++) {
-	//	if (player.Level == i) {
-	//		std::string temp = "Level: " + std::to_string(i);
-	//		//strcpy(level, temp.c_str());
-	//		level = temp.c_str();
-	//		//level = (s8*)temp;
-	//		//std::cout << temp << std::endl;
-	//	}
-	//}
-
 	// --- Printing XP ---
 	if (player.XP == 0) XP = (s8*)"XP: 0";
 	else if (player.XP == 20) XP = (s8*)"XP: 20";
@@ -183,11 +170,13 @@ void player_update() {
 	if (AEInputCheckCurr(AEVK_D)) {
 		player.x += 5 * player.Speed;
 		num_of_Dpressed++;
+		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
 		player.x -= 5 * player.Speed;
 		num_of_Apressed++;
+		//player.rotation += 0.1f;
 	}
 	
 
@@ -196,24 +185,24 @@ void player_update() {
 
 	//update player's bottom hotspot
 	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
-	
 	// --------  Player's level & XP   ----------
-	for (s32 i = 0; i <= PLAYER_HIGHEST_LVL; i++) {
-		if (player.Level == i) {
-			if (i <= 10)		// Player below lvl 10
-				player.requiredXP = PLAYER_NEEDED_XP_TILL_10;
-			else if (i <= 20)	// Player below lvl 20
-				player.requiredXP = PLAYER_NEEDED_XP_TILL_20;
-			else				// Player below lvl 30 (Max lvl)
-				player.requiredXP = PLAYER_NEEDED_XP_TILL_30;
-		}
+	// FOR NOW ONLY: 20xp to level up from lvl0 -> lvl1 (1 enemy = 20xp)
+	if (player.XP == 20 && player.Level == 0) {
+		player.Level++;
+		player.XP = 0;
+		player.justLeveledUp = TRUE;
 	}
-
-	// If xp threshold reached
-	if (player.XP == player.requiredXP) {
-		player.Level++;					// Levels up
-		player.XP = PLAYER_XP_RESET;	// Reset XP
-		player.justLeveledUp = TRUE;	// Show upgrade cards
+	// FOR NOW ONLY: 40xp to level up from lvl1 -> lvl2 (1 enemy = 20xp)
+	else if (player.XP == 40 && player.Level == 1) {
+		player.Level++;
+		player.XP = 0;
+		player.justLeveledUp = TRUE;
+	}
+	// FOR NOW ONLY: 60xp to level up from lvl2 -> lvl3 (1 enemy = 20xp)
+	else if (player.XP == 60 && player.Level == 2) {
+		player.Level++;
+		player.XP = 0;
+		player.justLeveledUp = TRUE;
 	}
 
 	// --------    Player Hp & Lives   -----------
@@ -234,7 +223,10 @@ void player_update() {
 
 	// ------------  Collision   --------------
 	player_collision();
+	//enemy_collision(&player); 
 	enemy3_collision();
+	//enemy_collision(&player, enemy1_a);
+	//enemy_collision(&player, enemy1_b);
 
 	// -------------  Camera   ---------------
 	//AEGfxSetCamPosition(cameraX, cameraY);
@@ -246,21 +238,34 @@ void player_update() {
 
 	if(free_moving_camera == false){
 	//camera follow player's x
-		if (player.x > 0 && cameraPos.x < player.x) {
-			cameraPos.x += (player.x - cameraPos.x) / camera_slowdown;
+		//if (player.x > 0 && cameraPos.x < player.x) {
+		//	cameraPos.x += (player.x - cameraPos.x)/camera_slowdown ;
+		//}
+
+		//else if ((player.x > 0 && cameraPos.x > player.x) || (player.x <= 0 && cameraPos.x > 0)) {
+		//	cameraPos.x -=  (cameraPos.x - player.x) / camera_slowdown;
+		//}
+
+
+		////camera follow player's y
+		//if (player.y > 0 && cameraPos.y < player.y) {
+		//	cameraPos.y += (player.y - cameraPos.y)/camera_slowdown ;
+		//}
+		//else if ((player.y > 0 && cameraPos.y > player.y) || (player.y <= 0 && cameraPos.y > 0)) {
+		//	cameraPos.y -= (cameraPos.y - player.y) / camera_slowdown;
+		//}
+		if (player.x > 0) {
+			cameraPos.x = player.x;
+		}
+		else if (player.x <= 0) {
+			cameraPos.x = 0;
 		}
 
-		else if ((player.x > 0 && cameraPos.x > player.x) || (player.x <= 0 && cameraPos.x > 0)) {
-			cameraPos.x -= (cameraPos.x - player.x) / camera_slowdown;
+		if (player.y > 0) {
+			cameraPos.y = player.y;
 		}
-
-
-		//camera follow player's y
-		if (player.y > 0 && cameraPos.y < player.y) {
-			cameraPos.y += (player.y - cameraPos.y) / camera_slowdown;
-		}
-		else if ((player.y > 0 && cameraPos.y > player.y) || (player.y <= 0 && cameraPos.y > 0)) {
-			cameraPos.y -= (cameraPos.y - player.y) / camera_slowdown;
+		else if (player.x <= 0) {
+			cameraPos.y = 0;
 		}
 	}
 
@@ -282,7 +287,7 @@ void player_update() {
 	//std::cout << center_cursor.x << std::endl;
 	//cameraPos.y = AEClamp(cameraPos.y,0 ,player.y+ AEGfxGetWinMaxY());		// If player.y < originY, cameraY = originY = 0		If player.y > originY, cameraY = player.y		If player.y > WINDOWY, cameraY = WINDOWY
 	// Set camera pos
-	AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
+	// AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -295,12 +300,10 @@ void player_update() {
 }
 
 void player_unload() {
-	
-	// Texture unload
 	AEGfxTextureUnload(player.player_standTex);
 	AEGfxTextureUnload(player.player_left1Tex);
-	AEGfxTextureUnload(player.player_left2Tex);
 	AEGfxTextureUnload(player.player_right1Tex);
+	AEGfxTextureUnload(player.player_left2Tex);
 	AEGfxTextureUnload(player.player_right2Tex);
 	AEGfxTextureUnload(checkpoint[0].checkpointTex);
 }

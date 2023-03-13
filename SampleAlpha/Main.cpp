@@ -41,11 +41,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	//// enable run-time memory check for debug builds.
-	/*#if defined(DEBUG) | defined(_DEBUG)
-		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	#endif*/
-	//_crtBreakAlloc = 411; // (type in the memory allocation number)
+	// enable run-time memory check for debug builds.
+	//#if defined(DEBUG) | defined(_DEBUG)
+	//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//#endif
+	////_crtBreakAlloc = 489; // (type in the memory allocation number)
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, WINDOWLENGTH_X, WINDOWLENGTH_Y, 1, 60, true, NULL);
@@ -104,7 +104,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		gGameStatePrev = gGameStateCurr;	// Set previous state to current state
 		gGameStateCurr = gGameStateNext;	// Set current state to next state
 	}
-
+	AEGfxDestroyFont(Albam_fontID);
 	// free the system
 	AESysExit();
 }

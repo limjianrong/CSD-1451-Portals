@@ -20,7 +20,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <string>
-
+#include <stdio.h>
 //portal dimensions
 float constexpr PORTAL_WIDTH{ 60.0f };
 float constexpr PORTAL_HEIGHT{ 60.0f };
@@ -77,7 +77,8 @@ void portal_init() {
 	// Initialise
 	portal_max_range = 300.0f;
 	portal_cooldown = 50.0f;
-	decrease_cooldown = false;
+	portal_timer = 0.0f;
+	decrease_cooldown = true;
 }
 
 /*!**************************************************************************************************
@@ -202,7 +203,7 @@ void update_portal() {
 
 		//function that checks if enemy/boss bullets are colliding with the portal
 		check_bullet_collide_with_portal();
-	}
+	} 
 
 	//cooldown to limit the frequency of portal usage
 	if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
@@ -294,12 +295,14 @@ void draw_portal() {
 	}
 
 	//print the portal cooldown to the screen
-	//AEGfxPrint(Albam_fontID, "portal timer: ", 0.6f, 0.92f, 1, 0.0f, 0.0f, 1.0f);
+	std::string text = "portal timer: ";
+	AEGfxPrint(Albam_fontID, &text[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
 	std::string portal_timer_string = std::to_string(static_cast<int>(portal_timer));
-	AEGfxPrint(Albam_fontID, &portal_timer_string[0], -0.50f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, &portal_timer_string[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void portal_teleport_enemy() {
+	//portal teleport enemy1
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->width, enemy1->height) && portal_2.created == true) {
 		enemy1->x = portal_2.x;
 		enemy1->y = portal_2.y;
@@ -308,6 +311,7 @@ void portal_teleport_enemy() {
 		portal_1.draw_outline = false;
 	}
 
+	//portal teleport enemy2
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->width, enemy2->height) && portal_2.created == true) {
 		enemy2->x = portal_2.x;
 		enemy2->y = portal_2.y;
