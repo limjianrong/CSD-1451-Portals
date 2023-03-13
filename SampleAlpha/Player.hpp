@@ -27,6 +27,9 @@ void player_collision();
 #define PLAYER_INITIAL_POS_X -450
 #define PLAYER_INITIAL_POS_Y -100
 
+//#define PLAYER_INITIAL_POS_X 2250
+//#define PLAYER_INITIAL_POS_Y 550
+
 // --------------  Initialise player  ----------------
 struct Player_stats {
 	f32 x, y, rotation;

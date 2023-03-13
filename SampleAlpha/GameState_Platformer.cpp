@@ -129,7 +129,6 @@ void GameStatePlatformerUpdate(void) {
 		enemies_update();			// Enemy1 & Enemy2
 		enemy3_update(&player);		// Enemy3
 		update_boss();				// Boss
-		move_update();			// ????????????????????????????? Level
 		upgrade_update();			// Upgrade
 		player_update();
 		update_portal();

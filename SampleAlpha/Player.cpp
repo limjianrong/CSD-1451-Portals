@@ -294,8 +294,8 @@ void player_collision() {
 	//	player.x = WINDOWXLENGTH / 2 - PLAYER_WIDTH / 2;
 
 	// top of screen
-	if (player.y > (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 1.5)
-		player.y = (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 1.5;
+	if (player.y > (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 10)
+		player.y = (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 10;
 
 	// bottom of screen
 	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {
