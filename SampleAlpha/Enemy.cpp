@@ -39,11 +39,11 @@ Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
 Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
 
-f32 dist_enemy2bullet, dist_enemy2player;
-bool damage_allowed{ TRUE };
-
 // ----- Pause Menu -----
 extern bool isPaused;
+
+bool damage_allowed{ TRUE };	// Enemy1
+
 
 
 void enemies_load() {
@@ -83,7 +83,7 @@ void enemies_init() {
 		enemy1[i].height				= ENEMY1_HEIGHT;		// Enemy1's Height
 		enemy1[i].Hp					= 5;					// Enemy1's Health
 		enemy1[i].status				= TRUE;					// TRUE for alive, FALSE for dead
-		enemy1[i].totalframetime		= 0.f;					// 
+		enemy1[i].totalframetime		= 0.f;					// ????
 
 	}
 
@@ -97,6 +97,8 @@ void enemies_init() {
 	//enemy2_create(300, 180, 5);
 	//enemy2_create(1750, 240, 6);
 	enemy2_create(2800, 0, 0);
+
+	enemy2_create(100, 0, 1);
 
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
@@ -128,8 +130,8 @@ void enemies_init() {
 *******************************************************************************************************/
 void enemies_draw () {
 
-	enemy1_draw();
-	enemy2_draw();
+	enemy1_draw();		// Draws all enemy1
+	enemy2_draw();		// Draws all enemy2
 }
 
 /*!**************************************************************************************************
@@ -144,10 +146,9 @@ void enemies_draw () {
 *******************************************************************************************************/
 void enemies_update () {
 
-	update_enemy1();
-	//enemy1_collision(enemy1);
+	update_enemy1();		// Updates all enemy1
 
-	enemy2_update();
+	enemy2_update();		// Updates all enemy2
 
 }
 
@@ -240,7 +241,7 @@ void update_enemy1() {
 
 			// ------- XP for player -------
 			if (enemy1[i].Hp <= 0 && enemy1[i].status == TRUE) {
-				player.XP += 20;
+				player.XP += ENEMY1_DROPPED_XP;
 				enemy1[i].status = FALSE;
 			}
 
@@ -274,8 +275,6 @@ void enemy2_draw () {
 			AEVec2Set(&enemy2[i].center, enemy2[i].x, enemy2[i].y);
 
 			// ------  Enemy2 bullets ------
-			//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
-
 			// If player is within range & left of enemy2
 			if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].x) {
 				AEMtx33Scale(&enemy2[i].scale, bullet_enemy2[i].width, bullet_enemy2[i].height); // scaling it up
@@ -297,26 +296,18 @@ void enemy2_update () {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
 			// ------  Enemy2 movement  ------
 			if (!isPaused) {
-				// get 0-200
-				s32 value = AEFrameRateControllerGetFrameCount() % 401;
 
-				if (value <= 200) {
-					enemy2[i].y -= 0.5f;
-				}
-				else {
-					enemy2[i].y += 0.5f;
-				}
+				// Constantly increment movingTime
+				enemy2[i].movingTime += AEFrameRateControllerGetFrameTime();
+
+				// Reset movingTime to 0 when 4 is reached (Get 0-4)
+				if (enemy2[i].movingTime > 4) enemy2[i].movingTime = 0.f;
+
+				if (enemy2[i].movingTime <= 2) enemy2[i].y += 1.0f;		// Move up
+				else enemy2[i].y -= 1.0f;								// Move down
 			}
 
 			// ----- Enemy2 bullet -----
-			// distance between enemy2 -> bullet, enemy2 -> player
-			//dist_enemy2bullet = sqrt((bullet_enemy2.x - enemy2[i].x) * (bullet_enemy2.x - enemy2[i].x) + (bullet_enemy2.y - enemy2[i].y) * (bullet_enemy2.y - enemy2[i].y));
-			//dist_enemy2player = sqrt((enemy2[i].x - player.x) * (enemy2[i].x - player.x) + (enemy2[i].y - player.y) * (enemy2[i].y - player.y));
-
-			// If player is within enemy2 range (500x500 FOR NOW)
-			/*if (player.x >= (enemy2.x - enemy2.range_x) && player.x <= (enemy2.x + enemy2.range_x) &&
-				player.y >= (enemy2.y - enemy2.range_y) && player.y <= (enemy2.y + enemy2.range_y)) {*/
-
 			// If player is within enemy2 range (350x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
 			if (player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
 				player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y)) {
@@ -340,15 +331,11 @@ void enemy2_update () {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 						}
 					}
-
-					//// ---- Loops bullet ----
-					//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
 				}
 
 			}
 			else { // No longer in range
 				// ---- Loops bullet ----
-				//if (dist_enemy2bullet < dist_enemy2player && isRunning == TRUE) {
 				if (bullet_enemy2[i].isShooting) {
 
 					// ----- Movement of bullet from enemy2 -----
@@ -422,7 +409,7 @@ void enemy2_update () {
 
 		// ------- XP for player -------
 		if (enemy2[i].Hp <= 0 && enemy2[i].status == TRUE) {
-			player.XP += 20;
+			player.XP += ENEMY2_DROPPED_XP;
 			enemy2[i].status = FALSE;
 		}
 	}

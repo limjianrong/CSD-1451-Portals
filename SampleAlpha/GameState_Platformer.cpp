@@ -34,14 +34,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 //#include <iostream>
 
 // --- Mesh ---
-extern AEGfxVertexList* square_mesh;	// Created square mesh
-extern AEMtx33 scale, rotate, translate, transform; // TRS
-extern s8 Albam_fontID; // FontID
-static AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
-AEGfxTexture* background2Tex; // Background texture
+extern AEGfxVertexList* square_mesh;					// Created square mesh
+extern AEMtx33 scale, rotate, translate, transform;		// TRS
+extern s8 Albam_fontID;									// FontID
+static AEGfxTexture* buttonNotPressed, * buttonPressed; // Button textures
+AEGfxTexture* background2Tex;							// Background texture
 
 // ----- Game objects -----
-extern Player_stats player; // player stats
+extern Player_stats player;		// player stats
+
 // ----- Game states -----
 bool isPaused;
 
@@ -103,51 +104,39 @@ void GameStatePlatformerUpdate(void) {
 	if (isPaused) {
 
 		// --------- Collision ---------
-		// Resume button
-		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
-			isPaused = FALSE;
-		}
-		// Restart button
-		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
-			gGameStateNext = GS_RESTART;
-		}
-		// Settings button
-		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
-			gGameStateNext = GS_Settings;
-			isPaused = FALSE;
-		}
-		// Main menu button
-		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
-			gGameStateNext = GS_MainMenu;
-			isPaused = FALSE;
+		for (s32 i = 9; i <= 15; i += 2) {
+			if (AEInputCheckReleased(AEVK_LBUTTON) &&
+				center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24) {
+				if (i == 9) {
+					isPaused = FALSE;				// Resume button
+				}
+				else if (i == 11) {
+					gGameStateNext = GS_RESTART;	// Restart button
+				}
+				else if (i == 13) {
+					gGameStateNext = GS_Settings;	// Settings button
+					isPaused = FALSE;				// Resume game
+				}
+				else if (i == 15) {
+					gGameStateNext = GS_MainMenu;	// Main menu button
+					isPaused = FALSE;				// Resume game
+				}
+			}
 		}
 	}
 
 	else {
-		draw_level_update();				// Level
+		draw_level_update();		// Level
 		enemies_update();			// Enemy1 & Enemy2
 		enemy3_update(&player);		// Enemy3
 		boss_update();				// Boss
 		upgrade_update();			// Upgrade
-		player_update();
-		update_portal();
+		player_update();			// Player
+		update_portal();			// Upgrade
 		
-	}
-
-	// lose condition, changes to lose state
-	if (!isPaused) {
+		// Lose condition, changes to lose state
 		if (player.Lives == 0) gGameStateNext = GS_Lose;
 	}
 
@@ -178,12 +167,12 @@ void GameStatePlatformerDraw(void) {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	draw_level_draw();		// Level
-	enemies_draw();		// Enemy1 & Enemy2
-	draw_enemy3();		// Enemy3
-	boss_draw();		// Boss
-	draw_portal();		// Portal
-	player_draw();		// Player
-	upgrade_draw();		// Upgrade
+	enemies_draw();			// Enemy1 & Enemy2
+	draw_enemy3();			// Enemy3
+	boss_draw();			// Boss
+	draw_portal();			// Portal
+	player_draw();			// Player
+	upgrade_draw();			// Upgrade
 
 
 	// -------------- Pause menu --------------

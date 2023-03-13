@@ -24,15 +24,17 @@
 #include "AEEngine.h"
 
 // ----- Enemy 1 -----
-#define ENEMY1_WIDTH 60.f
-#define ENEMY1_HEIGHT 80.f
-#define MAX_ENEMIES_1 3			// Change this for total number of enemy1
+#define ENEMY1_WIDTH 60.f			// Enemy1 width
+#define ENEMY1_HEIGHT 80.f			// Enemy1 height
+#define ENEMY1_DROPPED_XP 20.f		// Amount of XP player gained when Enemy1 is defeated
+#define MAX_ENEMIES_1 3				// Change this for total number of enemy1
 
 // ----- Enemy 2 (Shoots bullet) -----
-#define ENEMY2_WIDTH 80.f
-#define ENEMY2_HEIGHT 60.f
-#define ENEMY2_TIMER 0.75f
-#define MAX_ENEMIES_2 1		// Change this for total number of enemy2
+#define ENEMY2_WIDTH 80.f			// Enemy2 width
+#define ENEMY2_HEIGHT 60.f			// Enemy2 height
+#define ENEMY2_TIMER 0.75f			// Timer between bullets
+#define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
+#define MAX_ENEMIES_2 2				// Change this for total number of enemy2
 
 // ------- Enemy types -------
 struct Enemy1_stats {
@@ -53,6 +55,7 @@ struct Enemy2_stats {
 	f32 x{}, y{}, rotation;
 	f32 width, height;
 	f32 range_x, range_y;
+	f64 movingTime;
 	s32 Hp;
 	bool status; // TRUE for alive, FALSE for dead
 	AEVec2 center;
