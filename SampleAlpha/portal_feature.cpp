@@ -30,8 +30,12 @@ portal portal_1, portal_2;
 extern Bullet bullet;
 extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 extern Player_stats player;
+extern bool isPaused;
 //portal range
 float portal_range{ 300.0f };
+float portal_cooldown{ 50.0f };
+float portal_timer{};
+bool decrease_cooldown = false;
 AEGfxTexture* portal_range_picture;
 AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 
@@ -84,16 +88,17 @@ void portal_init() {
   y coordinate of the player's position
 *******************************************************************************************************/
 void update_portal() {
-
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+		std::cout << "\nportal_cooldown is" << portal_timer;
+	}
 	
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	if (AEInputCheckTriggered(AEVK_F)) {
 		portal_1.created = FALSE;
 		portal_2.created = FALSE;
-
 		portal_1.draw_outline = FALSE;
 	}
-	if (AEInputCheckTriggered(VK_RBUTTON)) { // first right click, assign cursor x and y to portal_1 x and y.
+	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer == 0.0f) { // first right click, assign cursor x and y to portal_1 x and y.
 		if (portal_1.created == FALSE) {
 			portal_1.created = TRUE;
 			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
@@ -183,11 +188,18 @@ void update_portal() {
 			
 			portal_1.created = FALSE;
 			portal_2.created = FALSE;
+			decrease_cooldown = true;
+			portal_timer = portal_cooldown;
 		}
 
 		check_bullet_collide_with_portal();
 	}
-
+	if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
+		portal_timer--;
+		if (portal_timer == 0.0f) {
+			decrease_cooldown = false;
+		}
+	}
 
 }//end of draw_portal
 
