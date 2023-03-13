@@ -135,7 +135,7 @@ void draw_level() {
 	//blocks(1, 2050, -50);
 	//blocks(2, 2450, -100);
 
-<<<<<<< Updated upstream
+
 	//blocks(12, 2600, 0);
 	//draw_slippery_platform();
 
@@ -147,10 +147,10 @@ void draw_level() {
 	blocks(5, 1450, 0);
 	blocks(5, 1800, 150);
 	blocks(6, 2500, -100);
-=======
+
 	blocks(12, 2600, 0);
 	//draw_slippery_platform();
->>>>>>> Stashed changes
+
 }
 
 void update_level() {
