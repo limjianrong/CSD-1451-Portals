@@ -83,12 +83,13 @@ void draw_level_init() {
 
 	normal_blocks_create(4, 2750, 850, 5);
 	normal_blocks_create(4, 3100, 850, 6);
-	normal_blocks_create(4, 4450, 1300, 8);
-	//one_time_use_create(4, 2750, 800, 4);
-	//for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-	//	onetimeuse[i].flag = ACTIVE;
-	//	onetimeuse[i].timer = 5;
-	//}
+	normal_blocks_create(4, 4400, 1300, 8);
+
+	one_time_use_create(4, 100, 0, 0);
+	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
+		onetimeuse[i].flag = ACTIVE;
+		//onetimeuse[i].timer = 5;
+	}
 
 
 
@@ -147,7 +148,7 @@ void draw_level() {
 	updown_blocks_draw();
 	diag_up_blocks_draw();
 	diag_down_blocks_draw();
-	//one_time_use_blocks_draw();
+	one_time_use_blocks_draw();
 
 }
 
@@ -166,8 +167,6 @@ void leftright_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) 
 	leftright[index].end_x = end_x;
 	
 }
-
-	//blocks(12, 2600, 0);
 
 
 void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
@@ -222,7 +221,6 @@ void update_level() {
 	}
 	move_update();
 
-	//anti_gravity_zone(5000, 5200);
 
 
 }
@@ -383,7 +381,7 @@ void diag_up_blocks_draw() {
 
 
 	for (s32 i = 0; i < MAX_DIAGONAL_UP; i++) {
-		for (s32 j = 0; j < diagonalup[i].length; i++) {
+		for (s32 j = 0; j < diagonalup[i].length; j++) {
 			diagonalup[i].width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * j + diagonalup[i].x;
 			diagonalup[i].height = BLOCK_HEIGHT / 2 + diagonalup[i].y;
 
@@ -582,7 +580,7 @@ void move_update() {
 			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				//std::cout << "collided for diag up" << std::endl;
+				std::cout << "collided for diag up" << std::endl;
 			}
 			if (diagonalup[i].y >= diagonalup[i].end_y) { //&& diagup1.x >= diagup1.end_x
 				diagonalup[i].pos = MOVED;
@@ -647,9 +645,11 @@ void move_update() {
 	//		}
 	//	}
 	//}
-	if (AETestRectToRect(&oneuse1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-		oneuse1.timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
-		if (oneuse1.timer >= 5) oneuse1.flag = NOT_ACTIVE;
+	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
+		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
+			if (onetimeuse[i].timer >= 5) onetimeuse[i].flag = NOT_ACTIVE;
+		}
 	}
 
 	if (verti1.flag == ACTIVE) {
