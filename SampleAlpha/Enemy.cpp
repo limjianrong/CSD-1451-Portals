@@ -72,10 +72,10 @@ void enemies_init() {
 	// ------- Enemy 1 -------
 	//enemy1_create(-200, -110, 0);
 	//enemy1_create(150, 190, 1);
-	enemy1_create(625, 90, 0);
-	enemy1_create(1950, 240, 1);
+	enemy1_create(625, 80, 0);
+	enemy1_create(1950, 230, 1);
 
-	enemy1_create(100, 100, 2);
+	enemy1_create(200, 100, 2);
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
@@ -166,23 +166,24 @@ void enemies_unload () {
 //	----------------					 ENEMY 1							---------------  //
 // ----------------------------------------------------------------------------------------  // 
 
-//void enemy1_collision(Enemy1_stats enemy1) {
-//	AEVec2 player_vec{ player.x , player.y };
-//	AEVec2 enemy_vec{ enemy1.x, enemy1.y };
-//
-//	if (damage_allowed) {
-//		if (AETestRectToRect(&enemy_vec, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-//			--player.Hp;
-//			damage_allowed = FALSE;
-//		}
-//	}
-//
-//	else {
-//		if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
-//			damage_allowed = TRUE;
-//		}
-//	}
-//}
+void enemy1_collision() {
+	AEVec2 player_vec{ player.x , player.y };
+	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+		if (damage_allowed) {
+			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+				--player.Hp;
+				damage_allowed = FALSE;
+			}
+		}
+
+		else {
+			if (AEFrameRateControllerGetFrameCount() % 100 == 0) {
+				damage_allowed = TRUE;
+			}
+		}
+	}
+}
+
 void enemy1_create(f32 x, f32 y, s32 index) {
 	enemy1[index].x = x;
 	enemy1[index].y = y;
@@ -246,6 +247,7 @@ void update_enemy1() {
 			return static_cast<f32>(x);
 			*/
 		}
+		enemy1_collision();
 	}
 }
 

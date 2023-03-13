@@ -216,9 +216,9 @@ void update_level() {
 	
 
 	player.y -= GRAVITY;
-	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+	/*for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		enemy1[i].y -= GRAVITY;
-	}
+	}*/
 	move_update();
 
 
