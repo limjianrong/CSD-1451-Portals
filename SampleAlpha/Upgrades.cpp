@@ -28,7 +28,7 @@ static s32 card1, card2, card3;
 extern bool isPaused;
 
 // ----- Portal Upgrades -----
-extern float portal_range;
+extern float portal_max_range;
 
 // ----- Game Objects -----
 extern Player_stats player;
@@ -252,8 +252,8 @@ void upgrade_update() {
 			case MOVEMENT_SPEED_card: player.Speed += 0.5;
 				std::cout << "Speed: " << player.Speed << std::endl;
 				break;
-			case PORTAL_RANGE_card: portal_range += 50;
-				std::cout << "Portal range: " << portal_range << std::endl;
+			case PORTAL_RANGE_card: portal_max_range += 50;
+				std::cout << "Portal range: " << portal_max_range << std::endl;
 				break;
 			case SHIELD_card: 
 				// Enable shield

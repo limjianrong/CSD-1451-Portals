@@ -86,18 +86,19 @@ void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);
 void verti_collision(s32 cnt, f32 x, f32 y);
 void trap_collision(s32 cnt, f32 x, f32 y);
+
 void anti_gravity_zone(f32 x1, f32 x2);
 void draw_slippery_platform();
 void update_slippery_platform();
 
+void anti_gravity_zone(f64 x1, f64 x2);
 
-struct Slippery_platform {
-	f32 x{}, y{};
-	AEVec2 center{ 0,0 };
-	f32 width{ 200 }, height{ 100 };
-	AEMtx33 transform{};
-	bool status{};
-};
+
+
+
+
+
+
 //note to myself
 //create a array of struct
 //create a function called create_moving_platform

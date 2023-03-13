@@ -19,27 +19,47 @@
 #include <cstdlib> //for absolute value, abs()
 #include "Player.hpp"
 #include "Enemy.hpp"
-//#include "Upgrades.hpp"
-#define TRUE 1
-#define FALSE 0
+#include <string>
 
+//portal dimensions
 float constexpr PORTAL_WIDTH{ 60.0f };
 float constexpr PORTAL_HEIGHT{ 60.0f };
 
+//portal objects for teleporting player from one location to another
 portal portal_1, portal_2;
+
+//used to check portal collision with enemy1 and enemy2
+extern Enemy1_stats enemy1[MAX_ENEMIES_1];
+extern Enemy2_stats enemy2[MAX_ENEMIES_2];
+
+//used to check portal collision with bullet
 extern Bullet bullet;
 extern Bullet bullet_enemy2[MAX_ENEMIES_2];
+
+//used to check portal collision with player
 extern Player_stats player;
+
+//used to check if game is paused
 extern bool isPaused;
-//portal range
-float portal_range{ 300.0f };
-float portal_cooldown{ 50.0f };
-float portal_timer{};
-bool decrease_cooldown = false;
+
+//used to print text to the screen
+extern s8 Albam_fontID;
+
+/**************common variables, not specific to either portal***********/
+float portal_max_range, portal_cooldown, portal_timer{};
+
+//used to check if portal cooldown is to be decremented or not
+bool decrease_cooldown;
+
+//texture and mesh used by both portals
 AEGfxTexture* portal_range_picture;
 AEGfxVertexList* portal_range_mesh{}; //mesh to draw the portal's valid range
 
+//texture for cards that are drawn when choosing upgrade
 AEGfxTexture* temp; // TEMP
+/***********************************************************************/
+
+
 /*!**************************************************************************************************
 \brief
   draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
@@ -47,26 +67,20 @@ AEGfxTexture* temp; // TEMP
 *******************************************************************************************************/
 void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
-	AE_ASSERT(portal_range_picture); // Similar to your checking
+	AE_ASSERT(portal_range_picture); // check if texture is loaded
 	temp = AEGfxTextureLoad("Assets/card.png");
 
+	// 1x1 mesh, use standardized mesh, TRS will be done when updating
 	portal_1.mesh = portal_2.mesh = create_Square_Mesh();
 	portal_range_mesh = create_Square_Mesh();
-	//int Parts = 12;
-	//for (float i = 0; i < Parts; ++i)
-	//{
-	//	AEGfxTriAdd(
-	//		0.0f, 0.0f, 0xFFFFFF00, 0.0f, 0.0f,
-	//		cosf(i * 2 * PI / Parts) * 0.5f, sinf(i * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f,
-	//		cosf((i + 1) * 2 * PI / Parts) * 0.5f, sinf((i + 1) * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
-	//}
-
-	//portal_range_mesh = AEGfxMeshEnd();
 
 }
 
 void portal_init() {
 	// Initialise
+	portal_max_range = 300.0f;
+	portal_cooldown = 50.0f;
+	decrease_cooldown = false;
 }
 
 /*!**************************************************************************************************
@@ -88,27 +102,28 @@ void portal_init() {
   y coordinate of the player's position
 *******************************************************************************************************/
 void update_portal() {
-	if (AEInputCheckCurr(AEVK_LBUTTON)) {
-		//std::cout << "\nportal_cooldown is" << portal_timer;
-	}
-	
-	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//check for player input, 'F' resets portal creation, player must create 2 portals again
 	if (AEInputCheckTriggered(AEVK_F)) {
-		portal_1.created = FALSE;
-		portal_2.created = FALSE;
-		portal_1.draw_outline = FALSE;
+		portal_1.created = false;
+		portal_2.created = false;
+		portal_1.draw_outline = false;
 	}
-	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer == 0.0f) { // first right click, assign cursor x and y to portal_1 x and y.
-		if (portal_1.created == FALSE) {
-			portal_1.created = TRUE;
-			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
-			//std::cout << "\nraw mouse y_pos " << portal_1.y;
-			//std::cout << "\nraw value x_pos is " << portal_1.x;
-			//offset portal_1's x by half of window width
 
+	//If player right clicked and the portal timer == 0, player can create a portal
+	//else, player must wait for portal timer to be decremented to 0 before he can create
+	//a portal
+	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer == 0.0f) {
+		//if the first portal has not been created, create it, assign cursor's x and y to become
+		//the portal's x and y 
+		if (portal_1.created == false) {
+			portal_1.created = true;
+			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
+
+			//cursor's x is based on screen coordinates, must offset it to convert to
+			//world coordinates in the game itself
 			portal_1.x -= AEGetWindowWidth() / 2;
 			
-			//offset portal_1's y by half of the window height
+			//offset, similar to cursor's y
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
 			if (player.x > 0) {
 				portal_1.x += player.x;
@@ -116,99 +131,99 @@ void update_portal() {
 			if (player.y > 0) {
 				portal_1.y += player.y;
 			}
-			//std::cout << "\nafter offsetting portal_1 y_pos " << portal_1.y;
-			//std::cout << "\nafter offsetting portal_1 x_pos " << portal_1.x;
-			//set vector to portal_1's center
+			
+			//set a vector to the 1st portal's center
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
 
-			//if right click is too far from the player, input is invalid, player must select again
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > portal_range) {
-				std::cout << "\nportal 1 selection is out of range, select again";
-				portal_1.created = FALSE;
-				portal_2.created = FALSE;
-				portal_1.draw_outline = FALSE;
+			//if right click is too far from the player, input is invalid, player must create a portal again
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > portal_max_range) {
+				portal_1.created = false;
+				portal_2.created = false;
+				portal_1.draw_outline = false;
 			}
 			else {
+				//update transformation matrix of the first portal
+				AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
+				AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
+				AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
+				//else, player's right click input is valid, set a token to draw an outline of where the 1st portal will appear
 				portal_1.draw_outline = TRUE;
 			}
 		}
 
 		//if first right click is valid, and there is a second right click, assign the cursor's x and y to portal_2's x and y
-		else if (portal_1.created == 1) {
+		else if (portal_1.created == true) {
 			AEInputGetCursorPosition(&(portal_2.x), &(portal_2.y));
 
-			//offset portal_2's x by half of window width
+			//offset portal_2's x
 			portal_2.x -= AEGetWindowWidth() / 2;
 			if (player.x > 0) {
 				portal_2.x += player.x;
-				//std::cout << "\nportal 2 x after += portal_width" << portal_2.x;
 			}
 
+			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
 			if (player.y > 0) {
 				portal_2.y += player.y;
 			}
 
-			//offset portal_2.y by windowheight()/2
-
-			
 			//set vector to portal_2's center
 			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 			
-			
+
 			portal_2.created = TRUE;
-			//if there is right click but cursor is too far from player, input for portal_2's x and y is invalid, player will START OVER and select portal_1's x and y again
-			//if there is right click and cursor is within range, and portal_2 is already being drawn, player can change the position of portal_2 without 
-			//resetting portal_1's location
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > portal_range) {
-				std::cout<<"\nportal 2 selection is out of range";
-				portal_1.created = FALSE;
-				portal_2.created = FALSE;
-				portal_1.draw_outline = FALSE;
+			//if right click is too far from player, reset the creation for both portals
+			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > portal_max_range) {
+				portal_1.created = false;
+				portal_2.created = false;
+				portal_1.draw_outline = false;
 			}		
 		}
 	}
 	
-	//if portal_2.created==TRUE, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
-	if (portal_2.created == TRUE) {
-		portal_1.draw_outline = FALSE;
-		//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//if portal_2.created==true, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
+	if (portal_2.created == true) {
+		//stop drawing the outline for the 1st portal(which does not teleport anything) and draw both portals instead
+		portal_1.draw_outline = false;
 
-		//AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
+		//update the transformation matrix for 2nd portal
 		AEMtx33Scale(&portal_2.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
 		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 		AEMtx33Concat(&portal_2.matrix, &portal_2.matrix, &portal_2.scale_matrix);
 
 
-		//check if player is colliding with portal_1, if collided, stop drawing both portals and let player
-		//select where to draw the portals again
+		//check if player is colliding with 1st portal, if collided, teleport player to the position of the 2nd portal
+		// stop drawing both portals and set a cooldown before the player can create portals again
 		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &player.center, 50.0f, 50.0f)) {
 			player.x = portal_2.center.x;
 			player.y = portal_2.center.y;
-			
-			portal_1.created = FALSE;
-			portal_2.created = FALSE;
+			portal_1.created = false;
+			portal_2.created = false;
 			decrease_cooldown = true;
 			portal_timer = portal_cooldown;
 		}
 
+		//function that checks if enemy/boss bullets are colliding with the portal
 		check_bullet_collide_with_portal();
 	}
+
+	//cooldown to limit the frequency of portal usage
 	if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
 		portal_timer--;
 		if (portal_timer == 0.0f) {
 			decrease_cooldown = false;
 		}
 	}
+	portal_teleport_enemy();
 
-}//end of draw_portal
+}//end of update_portal
 
 
 /*!**************************************************************************************************
 \brief
   draws a circle around the player to show the player the furthest range that he can place a portal at.
   If the player clicks a point outside of this circle, the click will be invalid and a portal will not be
-  created. Not fully implemented yet.
+  created.
 
 \param[in] player.x
   x coordinate of the player's position
@@ -216,51 +231,54 @@ void update_portal() {
 \param[in] player.y
   y coordinate of the player's position
 *******************************************************************************************************/
-void draw_portal_range() {
+void portal_range() {
 	AEMtx33 portal_range_scale_mtx{};
 	AEMtx33 portal_range_mtx{};
-	//AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
-	AEMtx33Scale(&portal_range_scale_mtx, portal_range*2, portal_range*2);
+	//set transformation matrix of circle that shows the portals maximum range
+	AEMtx33Scale(&portal_range_scale_mtx, portal_max_range*2, portal_max_range*2);
 	AEMtx33Trans(&portal_range_mtx, player.x, player.y);
 	AEMtx33Concat(&portal_range_mtx, &portal_range_mtx, &portal_range_scale_mtx);
+
+	//draw the maximum portal range
+	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
 	AEGfxSetTransform(portal_range_mtx.m);
 	AEGfxMeshDraw(portal_range_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
+//function to check if enemy/boss bullets are colliding with the portal
 void check_bullet_collide_with_portal() {
-
-	
-	//check if boss bullet collided with portal
+	//if boss bullet collided with portal, teleport the bullet, destroy the portal after teleporting
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
-		bullet.isTeleported = TRUE;
+		bullet.isTeleported = true;
 		bullet.x = portal_2.x;
 		bullet.y = portal_2.y;
-		portal_1.created = FALSE;
-		portal_2.created = FALSE;
-		portal_1.draw_outline = FALSE;
+		portal_1.created = false;
+		portal_2.created = false;
+		portal_1.draw_outline = false;
 	}
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		//check if bullet_enemy2 collided with portal 
-		//AEVec2Set(&bullet_enemy2.center, bullet_enemy2.x, bullet_enemy2.y);
+		//check if bullet_enemy2 collided with portal, teleport the bullet, destroy the portal after teleporting
 		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
-			bullet_enemy2[i].isTeleported = TRUE;
+			bullet_enemy2[i].isTeleported = true;
 			bullet_enemy2[i].x = portal_2.x;
 			bullet_enemy2[i].y = portal_2.y;
-			portal_1.created = FALSE;
-			portal_2.created = FALSE;
-			portal_1.draw_outline = FALSE;
+			portal_1.created = false;
+			portal_2.created = false;
+			portal_1.draw_outline = false;
 		}
 	}
 }
 
+//function to draw both portals, draw the outline of 1st portal(but cannot teleport anything), update and draw the portal maximum range
 void draw_portal() {
-	draw_portal_range();
-	if (portal_1.draw_outline == TRUE) {
+	portal_range();
+	//
+	if (portal_1.draw_outline == true) {
+		//to show that the outline of the 1st portal is different from the actual 1st portal, we can
+		//draw the outline to be more transparent than the actual portal
 		AEGfxSetTransparency(0.5f);
-		AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
-		AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-		AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
+
+		//draw the portal outline
 		AEGfxSetTransform(portal_1.matrix.m);
 		AEGfxTextureSet(temp, 0.0f, 0.0f);
 		AEGfxMeshDraw(portal_1.mesh, AE_GFX_MDM_TRIANGLES);
@@ -268,7 +286,6 @@ void draw_portal() {
 	}
 	if (portal_2.created == true) {
 		//portal_2 has been created, meaning that the portal_1 has also been created
-
 		//draw portal 1
 		AEGfxSetTransform(portal_1.matrix.m);
 		AEGfxTextureSet(temp, 0.0f, 0.0f);
@@ -279,5 +296,27 @@ void draw_portal() {
 		AEGfxMeshDraw(portal_2.mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
+	//print the portal cooldown to the screen
+	//AEGfxPrint(Albam_fontID, "portal timer: ", 0.6f, 0.92f, 1, 0.0f, 0.0f, 1.0f);
+	std::string portal_timer_string = std::to_string(static_cast<int>(portal_timer));
+	AEGfxPrint(Albam_fontID, &portal_timer_string[0], -0.50f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
+void portal_teleport_enemy() {
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->width, enemy1->height) && portal_2.created == true) {
+		enemy1->x = portal_2.x;
+		enemy1->y = portal_2.y;
+		portal_1.created = false;
+		portal_2.created = false;
+		portal_1.draw_outline = false;
+	}
+
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->width, enemy2->height) && portal_2.created == true) {
+		enemy2->x = portal_2.x;
+		enemy2->y = portal_2.y;
+		portal_1.created = false;
+		portal_2.created = false;
+		portal_1.draw_outline = false;
+	}
+
+}

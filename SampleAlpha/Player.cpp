@@ -38,7 +38,8 @@ s8* level, * XP, * Hp;
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
-
+bool free_moving_camera{};
+float camera_speed{}, camera_slowdown{};
 // ----- Camera -----
 extern bool isPaused;
 // ----- Cursor positions -----
@@ -78,7 +79,9 @@ void player_init() {
 
 	// -------- Camera --------
 	AEGfxSetCamPosition(0, 0);							// Reset camera
-
+	free_moving_camera = false;
+	camera_speed = 15.0f;
+	camera_slowdown = 10.0f;
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
 		checkpoint[i].check = FALSE;					// Disable all checkpoints
@@ -175,11 +178,11 @@ void player_update() {
 		num_of_Apressed++;
 		//player.rotation += 0.1f;
 	}
-	//testing gravity on player (only for slippery platforms)
-	//if (player.falling == false) {
-	//	player.y -= 5.0f;
-	//	std::cout << "\nfalse";
-	//}
+	
+
+
+
+
 	//update player's bottom hotspot
 	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
 	// --------  Player's level & XP   ----------
@@ -227,40 +230,45 @@ void player_update() {
 
 	// -------------  Camera   ---------------
 	//AEGfxSetCamPosition(cameraX, cameraY);
-	
 
+
+	if (AEInputCheckTriggered(AEVK_B)) {
+		free_moving_camera = !free_moving_camera;
+	}
+
+	if(free_moving_camera == false){
 	//camera follow player's x
-	if (player.x > 0 && cameraPos.x < player.x) {
-		cameraPos.x += (player.x - cameraPos.x) / 10;
+		if (player.x > 0 && cameraPos.x < player.x) {
+			cameraPos.x += (player.x - cameraPos.x) / camera_slowdown;
+		}
+
+		else if ((player.x > 0 && cameraPos.x > player.x) || (player.x <= 0 && cameraPos.x > 0)) {
+			cameraPos.x -= (cameraPos.x - player.x) / camera_slowdown;
+		}
+
+
+		//camera follow player's y
+		if (player.y > 0 && cameraPos.y < player.y) {
+			cameraPos.y += (player.y - cameraPos.y) / camera_slowdown;
+		}
+		else if ((player.y > 0 && cameraPos.y > player.y) || (player.y <= 0 && cameraPos.y > 0)) {
+			cameraPos.y -= (cameraPos.y - player.y) / camera_slowdown;
+		}
 	}
 
-	else if ((player.x > 0 && cameraPos.x > player.x) || (player.x <= 0 && cameraPos.x > 0)) {
-		cameraPos.x -= (cameraPos.x - player.x) / 10;
+	if (free_moving_camera == true) {
+		if (AEInputCheckCurr(AEVK_I))
+			cameraPos.y += 2*camera_speed;
+
+		if (AEInputCheckCurr(AEVK_K))
+			cameraPos.y -= 2*camera_speed;
+
+		if (AEInputCheckCurr(AEVK_J))
+			cameraPos.x -= 2*camera_speed;
+
+		if (AEInputCheckCurr(AEVK_L))
+			cameraPos.x += 2*camera_speed;
 	}
-
-
-	//camera follow player's y
-	if (player.y > 0 && cameraPos.y < player.y) {
-		cameraPos.y += (player.y - cameraPos.y) / 10;
-	}
-	else if ((player.y > 0 && cameraPos.y > player.y) || (player.y <= 0 && cameraPos.y > 0)) {
-		cameraPos.y -= (cameraPos.y - player.y) / 10;
-	}
-
-
-
-	if (AEInputCheckTriggered(AEVK_N)) {
-		std::cout << "\nplayer y is " << player.y;
-		std::cout << "\ncamera y is " << cameraPos.y;
-	}
-
-
-	if (AEInputCheckCurr(AEVK_W))
-		cameraPos.y += 2.0f;
-
-	if (AEInputCheckCurr(AEVK_S))
-		cameraPos.y -= 2.0f;
-
 	//cameraPos= { player.x, player.y };
 	//cameraPos.x = AEClamp(cameraPos.x, 0, player.x+AEGfxGetWinMaxX());		// If player.x < originX, cameraX = originX = 0		If player.x > originX, cameraX = player.x		If player.x > WINDOWX, cameraX = WINDOWX
 	//std::cout << center_cursor.x << std::endl;

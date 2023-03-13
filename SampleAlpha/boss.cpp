@@ -15,7 +15,10 @@ void boss_load() {
 	laser_beam.mesh = boss.mesh = create_Square_Mesh();
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
-	laser_beam.picture = AEGfxTextureLoad("Assets/uipack/PNG/red_button02.png");
+	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
+	if (!laser_beam.picture) {
+		std::cout << "failed to load laser beam picture";
+	}
 }
 
 void boss_init () {
@@ -30,9 +33,7 @@ void draw_boss() {
 		AEMtx33Scale(&boss.scale, boss.width, boss.height);
 		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
 		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-		AEGfxSetTransform(boss.matrix.m);
-		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-		AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+
 
 		// -------------  Draw Attack 1 (Laser beam)   ---------------
 		if (laser_beam.status == TRUE) {
@@ -55,7 +56,9 @@ void draw_boss() {
 		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
 		AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
 	}
-
+	AEGfxSetTransform(boss.matrix.m);
+	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
+	AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void update_boss() {

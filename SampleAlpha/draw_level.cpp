@@ -19,8 +19,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 int const platform_max_count{ 50 };
 
 AEGfxTexture* rect, * upwardspike, *downwardspike;
+
 extern AEGfxVertexList* square_mesh;	// Created square mesh
-Slippery_platform slippery_platform[platform_max_count];
+
+
+
+AEGfxVertexList* rectmesh, * trapmesh;
+
 Block leftright1, trapping, updown1, diagup1, diagdown1, oneuse1, verti1, droptrap1, horizontaltrap1;
 Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP], 
 diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE], verticalwall[MAX_VERTICAL_WALL];
@@ -39,12 +44,19 @@ void draw_level_load() {
 	rect = AEGfxTextureLoad("Assets/grassMid.png");
 	upwardspike = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 	downwardspike = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_bottom.png");
+
 	//for (s32 i = 0; i < MAX_LEFT_RIGHT; ++i) {
 	//	leftright[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
 	//}
 	//for (s32 i = 0; i < MAX_UP_DOWN; ++i) {
 	//	updown[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
 	//}
+
+	//rectmesh = leftright1.mesh = updown1.mesh = diagup1.mesh = diagdown1.mesh = oneuse1.mesh = verti1.mesh = trapmesh = create_Square_Mesh();
+	rectmesh = create_Square_Mesh();
+	//rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
+
+
 }
 
 void draw_level_init() {
@@ -114,10 +126,7 @@ void draw_level_init() {
 	//horizontaltrap1.end_x = 0.f;
 	//horizontaltrap1.start_x = 100.f;
 
-	//initialize a single slippery platform
-	slippery_platform[0].status = true;
-	slippery_platform[0].x = 0;
-	slippery_platform[0].y = 0;
+
 
 	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
 	//blocklist[0].name = "move1";
@@ -148,6 +157,7 @@ void normal_blocks_create(s32 len, f32 x, f32 y, s32 index) {
 	normal[index].y = y;
 }
 
+
 void leftright_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
 	leftright[index].length = len;
 	leftright[index].x = x;
@@ -157,6 +167,9 @@ void leftright_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) 
 	
 }
 
+	//blocks(12, 2600, 0);
+
+
 void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
 	updown[index].length = len;
 	updown[index].x = x;
@@ -164,6 +177,7 @@ void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
 	updown[index].start_y = start_y;
 	updown[index].end_y = end_y;
 }
+
 
 void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
 	diagonalup[index].length = len;
@@ -174,6 +188,11 @@ void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start
 	diagonalup[index].start_y = start_y;
 	diagonalup[index].end_y = end_y;
 }
+
+
+
+
+
 
 void diagonal_down_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
 	diagonaldown[index].length = len;
@@ -193,13 +212,18 @@ void one_time_use_create(s32 len, f32 x, f32 y, s32 index) {
 
 void update_level() {
 	// Creates an anti-gravity zone
+
 	//anti_gravity_zone(5000, 5200);
-	update_slippery_platform();
+	
+
 	player.y -= GRAVITY;
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		enemy1[i].y -= GRAVITY;
 	}
 	move_update();
+
+	//anti_gravity_zone(5000, 5200);
+
 
 }
 
@@ -789,31 +813,11 @@ void draw_anti_gravity_zone(f32 x1, f32 x2) {
 }
 
 
-void draw_slippery_platform() {
-	for (int i = 0; i < platform_max_count; ++i) {
-		if (slippery_platform[i].status == false) {
-			continue;
-		}
 
-		AEGfxSetTransform(slippery_platform[i].transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-	}
-}
 
-void update_slippery_platform() {
-	AEMtx33 scale{}, translate{};
-	for (int i = 0; i < platform_max_count; ++i) {
-		if (slippery_platform[i].status == false) {
-			continue;
-		}
-		AEVec2Set(&slippery_platform[i].center, slippery_platform[i].x, slippery_platform[i].y);
-		AEMtx33Scale(&scale, slippery_platform[i].width, slippery_platform[i].height);
-		AEMtx33Trans(&translate, slippery_platform[i].x, slippery_platform[i].y);
-		AEMtx33Concat(&slippery_platform[i].transform, &rotate, &scale);
-		if (AECalcDistPointToRect(&player.bottom_hotspot, &slippery_platform[i].center, slippery_platform[i].width, slippery_platform[i].height) <= 0.0f) {
-			player.falling == true;
-		}
 
-	}
 
-}
+
+
+
+
