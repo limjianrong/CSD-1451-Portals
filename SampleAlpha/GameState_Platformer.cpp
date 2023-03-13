@@ -135,6 +135,12 @@ void GameStatePlatformerUpdate(void) {
 		
 	}
 
+	// lose condition, changes to lose state
+	if (!isPaused) {
+		if (player.Lives == 0) gGameStateNext = GS_Lose;
+	}
+
+
 
 }
 /*!**************************************************************************************************

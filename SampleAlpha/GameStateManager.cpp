@@ -21,6 +21,8 @@
 #include "GameState_Platformer.hpp"
 #include "GameState_Mainmenu.hpp"
 #include "GameState_Settings.hpp"
+#include "GameState_Win.hpp"
+#include "GameState_Lose.hpp"
 
 u32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
@@ -93,6 +95,22 @@ void GameStateMgrUpdate()
 			GameStateDraw = GameStateSettingsDraw;
 			GameStateFree = GameStateSettingsFree;
 			GameStateUnload = GameStateSettingsUnload;
+			break;
+		case GS_Win:
+			GameStateLoad = GameStateWinLoad;
+			GameStateInit = GameStateWinInit;
+			GameStateUpdate = GameStateWinUpdate;
+			GameStateDraw = GameStateWinDraw;
+			GameStateFree = GameStateWinFree;
+			GameStateUnload = GameStateWinUnload;
+			break;
+		case GS_Lose:
+			GameStateLoad = GameStateLoseLoad;
+			GameStateInit = GameStateLoseInit;
+			GameStateUpdate = GameStateLoseUpdate;
+			GameStateDraw = GameStateLoseDraw;
+			GameStateFree = GameStateLoseFree;
+			GameStateUnload = GameStateLoseUnload;
 			break;
 		default:	// Error handling
 			AE_FATAL_ERROR("invalid state!!");
