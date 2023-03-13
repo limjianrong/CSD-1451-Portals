@@ -16,12 +16,14 @@
 #include "AEEngine.h"
 #include "Utilities.hpp"
 
+// --- Mesh ---
+AEGfxVertexList* square_mesh;	// Created square mesh
 // --- Mouse coords ---
-AEVec2 cursor;				 // Origin at TOP LEFT corner of window
-AEVec2 center_cursor;		 // Origin is CENTER of window
-AEVec2 world_center_cursor;  // Origin is CENTER of window
+AEVec2 cursor;					// Origin at TOP LEFT corner of window
+AEVec2 center_cursor;			// Origin is CENTER of window
+AEVec2 world_center_cursor;		// Origin is CENTER of window
 // --- Window ---
-f32 originX, originY;		 // Center of screen, no matter where the camera moves
+f32 originX, originY;			// Center of screen, no matter where the camera moves
 
 /*!**************************************************************************************************
 \brief
@@ -63,6 +65,23 @@ AEGfxVertexList* create_Square_Mesh() {
 //	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
 //	return center_cursor;
 //}
+
+void mesh_load() {
+	AEGfxMeshStart();
+	// This shape has 2 triangles that makes up a square
+	// Color parameters represent colours as ARGB
+	// UV coordinates to read from loaded textures 0.0 - 1.0
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+	// Saving the mesh (list of triangles) in pMesh
+	square_mesh = AEGfxMeshEnd();
+}
 
 void variables_update() {
 

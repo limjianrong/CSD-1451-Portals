@@ -34,10 +34,9 @@ Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1550, 1650, 50, 150}, {0, 2500,
 extern s8 Albam_fontID;
 s8* lives_counter; // temp counter (Replacing with hearts?)
 s8* level, * XP, * Hp;
-// ----- TEMPORARY Mesh -----
-AEGfxVertexList* pMesh;
-//AEMtx33 scale, rotate, translate, transform; // TRS
-//AEGfxTexture* checkpointTex;
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
+
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
 // ----- Camera -----
@@ -60,7 +59,6 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
-	pMesh = create_Square_Mesh();
 
 	bullet_load();
 }
@@ -114,7 +112,7 @@ void player_draw() {
 		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
 	} 
 	else AEGfxTextureSet(player.player_standTex, 0, 0);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------------- Checkpoint --------------
 	checkpoint_create(1550, 100, 0);
@@ -162,7 +160,7 @@ void player_draw() {
 
 void player_update() {
 	// --------  Setting player's position into a vector --------
-	//AEVec2Set(&player.center, player.x, player.y);
+	AEVec2Set(&player.center, player.x, player.y);
 
 	// ---------  Player's movement   -----------
 	// D key pressed
@@ -218,9 +216,6 @@ void player_update() {
 		weapon_fire(player.x, player.y, 0);
 	}*/
 
-	// ---------  Portal creation   -----------
-	//draw_portal(player.x, player.y);
-	AEVec2Set(&player.center, player.x, player.y);
 
 
 	// ------------  Collision   --------------
@@ -331,6 +326,6 @@ void checkpoint_create(f32 x, f32 y, s32 index) {
 		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].translate, &checkpoint[i].transform);
 		AEGfxSetTransform(checkpoint[i].transform.m);
 		AEGfxTextureSet(checkpoint[0].checkpointTex, 0, 0);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 }

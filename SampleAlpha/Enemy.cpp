@@ -30,7 +30,7 @@
 
 #include <iostream>
 // ----- Mesh & Texture -----
-AEGfxVertexList* enemy1_mesh;
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 
 // ----- Objects -----
@@ -62,9 +62,6 @@ void enemies_load() {
 		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/bat_dead.png");
 	}
 	enemy2[0].bullet = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
-
-	// Saving the mesh (list of triangles) in enemy_mesh FOR NOW
-	enemy1_mesh = create_Square_Mesh();
 }
 /*!**************************************************************************************************
 \brief
@@ -200,7 +197,7 @@ void enemy1_draw() {
 			AEMtx33Concat(&enemy1[i].transform, &enemy1[i].translate, &enemy1[i].transform);
 			AEGfxSetTransform(enemy1[i].transform.m);
 			AEGfxTextureSet(enemy1[i].texture, 0, 0);
-			AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 			// Set vector
 			AEVec2Set(&enemy1[i].center, enemy1[i].x, enemy1[i].y);
 
@@ -264,7 +261,7 @@ void enemy2_draw () {
 			AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
 			AEGfxSetTransform(enemy2[i].transform.m);
 			AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
-			AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 			// Set vector
 			AEVec2Set(&enemy2[i].center, enemy2[i].x, enemy2[i].y);
 
@@ -280,7 +277,7 @@ void enemy2_draw () {
 				AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
 				AEGfxSetTransform(enemy2[i].transform.m);
 				AEGfxTextureSet(enemy2[0].bullet, 0, 0);
-				AEGfxMeshDraw(enemy1_mesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}

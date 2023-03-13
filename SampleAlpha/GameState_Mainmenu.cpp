@@ -6,10 +6,12 @@
 #include <iostream>
 
 extern s8 Albam_fontID;
-AEGfxVertexList* button;
+//AEGfxVertexList* button;
 extern AEMtx33 scale, rotate, translate, transform;
 AEGfxTexture* buttonNotPressed, * buttonPressed;
 
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 // ----- Background -----
 AEGfxTexture* backgroundTex;
 
@@ -25,7 +27,9 @@ void GameStateMainmenuLoad(void) {
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
-	button = create_Square_Mesh();
+	mesh_load();
+	//square_mesh = create_Square_Mesh();
+	//button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
@@ -98,7 +102,7 @@ void GameStateMainmenuDraw(void) {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 27 ; i+=4) {
@@ -113,7 +117,7 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	// ------ Texts ------

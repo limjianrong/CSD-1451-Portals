@@ -5,11 +5,11 @@
 #include "GameState_Settings.hpp"
 
 
-extern AEGfxVertexList* button;
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 AEGfxTexture* volume_bar, * volume_button;
-AEGfxVertexList* volume_mesh;
 
 extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID;
@@ -24,7 +24,6 @@ float barscalex, barscaley;
 void GameStateSettingsLoad(void) {
 	volume_bar = AEGfxTextureLoad("Assets/volume_bar.png");
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
-	volume_mesh = create_Square_Mesh();
 }
 
 void GameStateSettingsInit(void) {
@@ -109,7 +108,7 @@ void GameStateSettingsDraw(void) {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
@@ -124,7 +123,7 @@ void GameStateSettingsDraw(void) {
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	//volume slider
@@ -135,7 +134,7 @@ void GameStateSettingsDraw(void) {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(volume_bar, 0, 0);
-	AEGfxMeshDraw(volume_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	//volume button
 	AEMtx33Scale(&scale, buttonscalex, buttonscaley);
@@ -145,7 +144,7 @@ void GameStateSettingsDraw(void) {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(volume_button, 0, 0);
-	AEGfxMeshDraw(volume_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
 

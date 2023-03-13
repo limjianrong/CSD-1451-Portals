@@ -33,7 +33,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 //#include <iostream>
 
-extern AEGfxVertexList* pMesh; // Mesh
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 extern s8 Albam_fontID; // FontID
 extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
@@ -164,7 +165,7 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetTransform(transform.m);
 	//AEGfxTextureSet(nullptr, 0, 0);
 	AEGfxTextureSet(background2Tex, 0, 0);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	draw_level();		// Level
 	enemies_draw();		// Enemy1 & Enemy2
@@ -190,7 +191,7 @@ void GameStatePlatformerDraw(void) {
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxTextureSet(nullptr, 0, 0);
 		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 		// --------- Window in middle of screen ---------
 		/*AEGfxSetTransparency(1.0f);
@@ -216,7 +217,7 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24)
 				AEGfxTextureSet(buttonPressed, 0, 0);
 			else AEGfxTextureSet(buttonNotPressed, 0, 0);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 
 		// --------- Texts ---------

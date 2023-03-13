@@ -38,8 +38,8 @@ extern Bullet bullet_enemy2[MAX_ENEMIES_2];		// Array of struct enemy2's bullet
 Shield shield;
 
 // ----- Mesh & Texture -----
-static AEMtx33 scale, rotate, translate, transform;
-AEGfxVertexList* uMesh;
+static AEMtx33 scale, rotate, translate, transform; // temp
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern f32 originX, originY;
 
 // Shield
@@ -59,8 +59,6 @@ void upgrades_load() {
 	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
 
 	shield.Texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
-
-	uMesh = create_Square_Mesh();
 }
 
 void upgrades_init() {
@@ -104,7 +102,7 @@ void upgrade_draw() {
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxTextureSet(nullptr, 0, 0);
 		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
@@ -140,7 +138,7 @@ void upgrade_draw() {
 				AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 				break;
 		}
-		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
 
@@ -164,7 +162,7 @@ void upgrade_draw() {
 			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 			break;
 		}
-		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
 
@@ -188,7 +186,7 @@ void upgrade_draw() {
 			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 			break;
 		}
-		AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	}
 	if (isShieldActive) {
@@ -220,10 +218,10 @@ void upgrade_update() {
 		card2 = rand() % 4;			// Card2 type
 		card3 = rand() % 4;			// Card3 type
 
-		std::cout << "card1: " << card1 << std::endl;
+		/*std::cout << "card1: " << card1 << std::endl;
 		std::cout << "card2: " << card2 << std::endl;
 		std::cout << "card3: " << card3 << std::endl;
-		std::cout << "---------------" << std::endl;
+		std::cout << "---------------" << std::endl;*/
 	}
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
 
@@ -307,6 +305,6 @@ void shield_upgrade_draw() {
 	AEMtx33Concat(&shield.transform, &shield.translate, &shield.transform);
 	AEGfxTextureSet(shield.Texture, 0, 0);
 	AEGfxSetTransform(shield.transform.m);
-	AEGfxMeshDraw(uMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 }

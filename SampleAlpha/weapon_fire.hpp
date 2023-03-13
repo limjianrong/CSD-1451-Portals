@@ -42,6 +42,5 @@ struct Bullet {
 	bool isTimerActive, isTeleported, isShooting;
 
 	// ----- Mesh & Texture -----
-	AEGfxVertexList* shootMesh;
 	AEGfxTexture* bulletTex;
 };

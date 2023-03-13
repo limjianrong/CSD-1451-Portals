@@ -38,6 +38,9 @@ extern Player_stats player;
 extern Boss boss;
 Bullet bullet;
 
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
+
 // ----- Normalization -----
 f32 adj, opp, angle;
 f32 dist_boss2bullet, dist_boss2player;  // no longer using
@@ -57,8 +60,6 @@ void bullet_load() {
 
 	// load texture
 	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
-	// create mesh
-	bullet.shootMesh = create_Square_Mesh();
 
 }
 
@@ -226,7 +227,7 @@ void bullet_draw() {
 		AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
 		AEGfxSetTransform(weapon_transform.m);
 		AEGfxTextureSet(bullet.bulletTex, 0, 0);
-		AEGfxMeshDraw(bullet.shootMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 }

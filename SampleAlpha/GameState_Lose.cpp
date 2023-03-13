@@ -7,7 +7,7 @@
 #include "GameState_Mainmenu.hpp"
 
 
-extern AEGfxVertexList* button;
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 
@@ -52,7 +52,7 @@ void GameStateLoseDraw() {
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
@@ -67,7 +67,7 @@ void GameStateLoseDraw() {
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(button, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	// ------ Texts ------

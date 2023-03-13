@@ -10,10 +10,9 @@
 
 // ----- Mesh & Texture -----
 AEGfxTexture* enemy3;
-AEGfxVertexList* enemy3_mesh;
+extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 AEGfxTexture* enemy3_warning;
-AEGfxVertexList* enemy3_warning_mesh;
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 
 // ----- Enemy -----
@@ -29,12 +28,8 @@ extern bool isPaused;
 
 void enemy3_load() {
 	enemy3 = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/wingMan3.png");
-	// Saving the mesh (list of triangles) in enemy3_mesh
-	enemy3_mesh = create_Square_Mesh();
 
 	enemy3_warning = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
-	// Saving the mesh (list of triangles) in enemy3_mesh
-	enemy3_warning_mesh = create_Square_Mesh();
 }
 
 /*!**************************************************************************************************
@@ -61,7 +56,7 @@ void draw_enemy3() {
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
 		AEGfxTextureSet(enemy3, 0, 0);
-		AEGfxMeshDraw(enemy3_mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
@@ -76,7 +71,7 @@ void draw_enemy3() {
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-150.f+player.x) && player.x > 0 && !going_left ) {
 			
@@ -87,7 +82,7 @@ void draw_enemy3() {
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) + 150.f) && player.x <= 0 && going_left) {
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
@@ -97,7 +92,7 @@ void draw_enemy3() {
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 150.f) && player.x <= 0 && !going_left) {
 			
@@ -108,7 +103,7 @@ void draw_enemy3() {
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(enemy3_warning_mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 
 		// updates enemy position
