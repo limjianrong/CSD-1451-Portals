@@ -24,12 +24,15 @@
 
 void bullet_load();
 void bullet_init();
-void weapon_fire(f32 player_x, f32 player_y, int state);
+void bullet_update();
+void bullet_draw();
+void bullet_free();
+void bullet_unload();
+
+//void weapon_fire(f32 player_x, f32 player_y, int state);
 //bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
 bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height);
 
-void bullet_update();
-void bullet_draw();
 
 #define BOSS_TIMER 0.5f
 

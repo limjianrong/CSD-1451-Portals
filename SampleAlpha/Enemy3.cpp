@@ -175,6 +175,15 @@ void enemy3_update(Player_stats* player) {
 	}
 
 }
+void enemy3_free() {
+
+}
+
+void enemy3_unload() {
+	// Enemy3 texture unload
+	AEGfxTextureUnload(enemy3);
+	AEGfxTextureUnload(enemy3_warning);
+}
 
 void enemy3_collision(Player_stats* player) {
 	AEVec2 player_vec{ player->x , player->y };

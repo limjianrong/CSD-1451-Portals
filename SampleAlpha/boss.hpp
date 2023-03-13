@@ -18,9 +18,8 @@ struct Boss{
 	f32 charge_cooldown{800.0f};
 	f32 charge_range{ 500.0f };
 	s32 charge_token{};
-	// ---- Mesh & Texture ----
+	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
-	AEGfxVertexList* mesh{};
 	AEGfxTexture* standTex, * deadTex;
 
 
@@ -39,9 +38,8 @@ struct Laser_beam{
 	bool damaged_player{};
 	AEVec2 center{};
 
-	// ---- Mesh & Texture ----
+	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
-	AEGfxVertexList* mesh{};
 	AEGfxTexture* picture{};
 
 };
@@ -49,8 +47,10 @@ struct Laser_beam{
 // ---- Main Functions ----
 void boss_load();
 void boss_init();
-void draw_boss();
-void update_boss();
+void boss_draw();
+void boss_update();
+void boss_free();
+void boss_unload();
 
 
 void boss_movement();

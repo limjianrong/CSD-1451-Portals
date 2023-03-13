@@ -7,7 +7,7 @@
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
-extern AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
+static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 AEGfxTexture* volume_bar, * volume_button;
 
@@ -22,9 +22,15 @@ float buttonscalex, buttonscaley;
 float barscalex, barscaley;
 
 void GameStateSettingsLoad(void) {
+
+	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
+	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
+
 	volume_bar = AEGfxTextureLoad("Assets/volume_bar.png");
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
 }
+
 
 void GameStateSettingsInit(void) {
 	vbutton.x = originX;
@@ -160,5 +166,13 @@ void GameStateSettingsFree() {
 }
 
 void GameStateSettingsUnload(void) {
+
+	// Texture unload
+	AEGfxTextureUnload(buttonNotPressed);
+	AEGfxTextureUnload(buttonPressed);
+	AEGfxTextureUnload(backgroundTex);
 	
+	// Texture unload
+	AEGfxTextureUnload(volume_bar);
+	AEGfxTextureUnload(volume_button);
 }

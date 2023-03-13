@@ -60,8 +60,7 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
-
-	bullet_load();
+	
 }
 
 void player_init() {
@@ -288,6 +287,13 @@ void player_update() {
 
 void player_unload() {
 	
+	// Texture unload
+	AEGfxTextureUnload(player.player_standTex);
+	AEGfxTextureUnload(player.player_left1Tex);
+	AEGfxTextureUnload(player.player_left2Tex);
+	AEGfxTextureUnload(player.player_right1Tex);
+	AEGfxTextureUnload(player.player_right2Tex);
+	AEGfxTextureUnload(checkpoint[0].checkpointTex);
 }
 
 void player_collision() {

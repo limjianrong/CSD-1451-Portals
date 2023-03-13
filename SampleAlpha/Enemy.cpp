@@ -63,6 +63,7 @@ void enemies_load() {
 	}
 	enemy2[0].bullet = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
 }
+
 /*!**************************************************************************************************
 \brief
 	Loads texture and initializes mesh for enemy
@@ -156,9 +157,20 @@ void enemies_free() {
 
 }
 
-void enemies_unload () {
-	//AEGfxMeshFree(enemy1_mesh);
-	//AEGfxTextureUnload(enemy1Tex);
+void enemies_unload() {
+
+	// Enemy1 texture unload
+	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+		AEGfxTextureUnload(enemy1[i].texture);
+	}
+	// Enemy2 texture unload
+	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
+		AEGfxTextureUnload(enemy2[i].enemy2_fly1);
+		AEGfxTextureUnload(enemy2[i].enemy2_fly2);
+		AEGfxTextureUnload(enemy2[i].enemy2_dead);
+	}
+	// Bullet texture unload
+	AEGfxTextureUnload(enemy2[0].bullet);
 }
 
 

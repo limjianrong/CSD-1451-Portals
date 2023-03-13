@@ -11,22 +11,27 @@ extern Player_stats player;
 Boss boss;
 Laser_beam laser_beam;
 
+// --- Mesh ---
+extern AEGfxVertexList* square_mesh;	// Created square mesh
+
 void boss_load() {
-	laser_beam.mesh = boss.mesh = create_Square_Mesh();
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
 	if (!laser_beam.picture) {
 		std::cout << "failed to load laser beam picture";
 	}
+
+	bullet_load();
 }
+
 
 void boss_init () {
 
 	bullet_init();
 }
 
-void draw_boss() {
+void boss_draw() {
 
 	// -------------  Boss   ---------------
 	if (boss.Hp > 0) {
@@ -39,7 +44,7 @@ void draw_boss() {
 		if (laser_beam.status == TRUE) {
 			AEGfxTextureSet(laser_beam.picture, 0.0f, 0.0f);
 			AEGfxSetTransform(laser_beam.matrix.m);
-			AEGfxMeshDraw(laser_beam.mesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 
 		// -------------  Attack 2 (Bullet)   ---------------
@@ -54,14 +59,14 @@ void draw_boss() {
 		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
 		AEGfxSetTransform(boss.matrix.m);
 		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-		AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 	AEGfxSetTransform(boss.matrix.m);
 	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-	AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void update_boss() {
+void boss_update() {
 
 	if (boss.Hp > 0) {
 
@@ -77,6 +82,20 @@ void update_boss() {
 		//boss attack #3
 		boss_charge();
 	}
+}
+
+void boss_free() {
+	bullet_free();
+}
+
+void boss_unload() {
+
+	bullet_unload();
+
+	// Texture unload
+	AEGfxTextureUnload(boss.standTex);
+	AEGfxTextureUnload(boss.deadTex);
+	//AEGfxTextureUnload(laser_beam.picture);
 }
 
 void boss_movement() {

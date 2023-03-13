@@ -37,7 +37,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEMtx33 scale, rotate, translate, transform; // TRS
 extern s8 Albam_fontID; // FontID
-extern AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
+static AEGfxTexture* buttonNotPressed, * buttonPressed; // Button texture
 AEGfxTexture* background2Tex; // Background texture
 
 // ----- Game objects -----
@@ -57,6 +57,9 @@ extern f32 originX, originY;			// Center of screen, no matter where the camera m
   In charge of loading platformer game
 *******************************************************************************************************/
 void GameStatePlatformerLoad(void) {
+
+	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
+	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
 	
 	draw_level_load();			// Level
@@ -128,7 +131,7 @@ void GameStatePlatformerUpdate(void) {
 		update_level();				// Level
 		enemies_update();			// Enemy1 & Enemy2
 		enemy3_update(&player);		// Enemy3
-		update_boss();				// Boss
+		boss_update();				// Boss
 		upgrade_update();			// Upgrade
 		player_update();
 		update_portal();
@@ -169,7 +172,7 @@ void GameStatePlatformerDraw(void) {
 	draw_level();		// Level
 	enemies_draw();		// Enemy1 & Enemy2
 	draw_enemy3();		// Enemy3
-	draw_boss();		// Boss
+	boss_draw();		// Boss
 	draw_portal();		// Portal
 	player_draw();		// Player
 	upgrade_draw();		// Upgrade
@@ -233,8 +236,7 @@ void GameStatePlatformerDraw(void) {
   Free all objects
 *******************************************************************************************************/
 void GameStatePlatformerFree(void) {
-	//AEGfxMeshFree(pMesh);
-	//AEGfxTextureUnload(pTex);
+
 }
 /*!**************************************************************************************************
 \brief
@@ -242,8 +244,20 @@ void GameStatePlatformerFree(void) {
 *******************************************************************************************************/
 void GameStatePlatformerUnload(void) {
 
-	//player_unload();
-	// 
+								// Level
+	enemies_unload();			// Enemy1 & Enemy2
+	enemy3_unload();			// Enemy3
+	boss_unload();				// Boss
+								// Portal
+	upgrades_unload();			// Upgrades
+	player_unload();			// Player
+
+	
+	// Texture unload
+	AEGfxTextureUnload(buttonNotPressed);
+	AEGfxTextureUnload(buttonPressed);
+	AEGfxTextureUnload(background2Tex);
+
 	// Informing the system about the loop's end
 	AESysFrameEnd();
 }

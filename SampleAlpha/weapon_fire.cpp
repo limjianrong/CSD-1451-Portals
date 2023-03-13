@@ -60,6 +60,7 @@ void bullet_load() {
 
 	// load texture
 	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	
 
 }
 
@@ -230,6 +231,16 @@ void bullet_draw() {
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
+}
+
+void bullet_free() {
+
+}
+
+void bullet_unload() {
+
+	// Texture unload
+	AEGfxTextureUnload(bullet.bulletTex);
 }
 
 /*!**************************************************************************************************

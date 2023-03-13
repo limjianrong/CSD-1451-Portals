@@ -17,8 +17,10 @@ struct Enemy3_stats {
 
 void enemy3_load();
 void enemy3_init();
-void draw_enemy3();
 void enemy3_update(Player_stats* player);
+void draw_enemy3();
+void enemy3_free();
+void enemy3_unload();
 
 void enemy3_collision(Player_stats* player);
 

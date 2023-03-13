@@ -8,12 +8,12 @@
 extern s8 Albam_fontID;
 //AEGfxVertexList* button;
 extern AEMtx33 scale, rotate, translate, transform;
-AEGfxTexture* buttonNotPressed, * buttonPressed;
+static AEGfxTexture* buttonNotPressed, * buttonPressed;
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 // ----- Background -----
-AEGfxTexture* backgroundTex;
+static AEGfxTexture* backgroundTex;
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
@@ -28,8 +28,6 @@ void GameStateMainmenuLoad(void) {
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 	mesh_load();
-	//square_mesh = create_Square_Mesh();
-	//button = create_Square_Mesh();
 	//fontID = AEGfxCreateFont("Assets/Roboto-Regular.ttf", 50);
 }
 
@@ -133,5 +131,11 @@ void GameStateMainmenuFree() {
 
 void GameStateMainmenuUnload(void) {
 	//AEGfxDestroyFont(fontID);
+	
+	// Texture unload
+	AEGfxTextureUnload(buttonNotPressed);
+	AEGfxTextureUnload(buttonPressed);
+	AEGfxTextureUnload(backgroundTex);
+
 	AESysFrameEnd();
 }
