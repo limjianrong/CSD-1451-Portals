@@ -39,7 +39,7 @@ void enemy3_load() {
 void enemy3_init() {
 
 	// spawn 3000.f outside left edge of screen
-	enemy3_a.x = -WINDOWLENGTH_X/2 - 3000.f;
+	enemy3_a.x = -WINDOWLENGTH_X/2.f - 3000.f;
 	// initialize y to 0
 	enemy3_a.y = 0;
 	
@@ -61,7 +61,7 @@ void draw_enemy3() {
 		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
 			// right edge of screen < enemy3 x position < right edge of screen + 900.f
-		if (((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)+player.x )&& (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)+900.f+player.x)) 
+		if (((enemy3_a.x > (WINDOWLENGTH_X/2.f + ENEMY3_WIDTH/2.f)+player.x )&& (enemy3_a.x < (WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f)+900.f+player.x)) 
 			// player x is greater than initial screen center x = 0
 			&& player.x > 0 
 			// enemy3 currently heading left
@@ -70,7 +70,7 @@ void draw_enemy3() {
 
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
 			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (player.x + WINDOWLENGTH_X/2) - WARNING_WIDTH/2, enemy3_a.y); // warning label drawn at right edge of screen
+			AEMtx33Trans(&translate, (player.x + WINDOWLENGTH_X/2.f) - WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at right edge of screen
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
@@ -78,7 +78,7 @@ void draw_enemy3() {
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-900.f+player.x) 
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f)-900.f+player.x) 
 			// player x is greater than initial screen center x = 0
 			&& player.x > 0 
 			// enemy 3 currently heading right
@@ -86,7 +86,7 @@ void draw_enemy3() {
 			
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
 			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (player.x+( - WINDOWLENGTH_X / 2)) + WARNING_WIDTH/2, enemy3_a.y); // warning label drawn at left edge of screen
+			AEMtx33Trans(&translate, (player.x+( - WINDOWLENGTH_X / 2.f)) + WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at left edge of screen
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
@@ -94,14 +94,14 @@ void draw_enemy3() {
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 				// right edge of screen < enemy 3 x position < right edge of screen + 900.f
-		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) + 900.f)) 
+		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f) && (enemy3_a.x < (WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f) + 900.f)) 
 			// player x is lesser than or equal to initial screen center x = 0, camera has not started moving
 			&& player.x <= 0 
 			// enemy 3 currentlty heading left
 			&& going_left) {
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
 			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2) - WARNING_WIDTH / 2, enemy3_a.y); // warning label drawn at right edge of screen
+			AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2.f) - WARNING_WIDTH / 2.f, enemy3_a.y); // warning label drawn at right edge of screen
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
@@ -109,7 +109,7 @@ void draw_enemy3() {
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 900.f)
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f) - 900.f)
 			// player x is lesser than or equal to initial screen center x = 0, camera has not started moving
 			&& player.x <= 0 
 			// enemy 3 currenly heading right
@@ -117,7 +117,7 @@ void draw_enemy3() {
 			
 			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
 			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (-WINDOWLENGTH_X / 2) + WARNING_WIDTH / 2, enemy3_a.y); // warning label drawn at left edge of screen
+			AEMtx33Trans(&translate, (-WINDOWLENGTH_X / 2.f) + WARNING_WIDTH / 2.f, enemy3_a.y); // warning label drawn at left edge of screen
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);
@@ -176,13 +176,13 @@ void enemy3_update(Player_stats* player) {
 			//enemy3 y position is determined (matches player y pos) when it is 900+ away from left/right edge of screen
 
 				// right edge, player x <= initial screen center x
-			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f && player->x <= 0)
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f + 900.f && player->x <= 0)
 				// left edge, player x <= initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f && player->x <= 0)
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2.f - ENEMY3_WIDTH / 2.f - 900.f && player->x <= 0)
 				// right edge, player x > initial screen center x
-				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f + player->x && player->x > 0)
+				|| (enemy3_a.x > WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f + 900.f + player->x && player->x > 0)
 				// left edge, player x > initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f + player->x && player->x > 0)) {
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2.f - ENEMY3_WIDTH / 2.f - 900.f + player->x && player->x > 0)) {
 				Enemy3_a->y = player->y;
 			}
 			
@@ -195,13 +195,13 @@ void enemy3_update(Player_stats* player) {
 			//enemy3 y position is determined (matches player y pos) when it is more than 900.f away from left/right edge of screen
 
 			// right edge, player x <= initial screen center x
-			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f && player->x <= 0)
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f + 900.f && player->x <= 0)
 				// left edge, player x <= initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f && player->x <= 0)
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2.f - ENEMY3_WIDTH / 2.f - 900.f && player->x <= 0)
 				// right edge, player x > initial screen center x
-				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f + player->x && player->x > 0)
+				|| (enemy3_a.x > WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f + 900.f + player->x && player->x > 0)
 				// left edge, player x > initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f + player->x && player->x > 0)) {
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2.f - ENEMY3_WIDTH / 2.f - 900.f + player->x && player->x > 0)) {
 				Enemy3_a->y = player->y;
 			}
 
