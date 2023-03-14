@@ -60,8 +60,8 @@ void draw_enemy3() {
 		// set center vector
 		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
-			// right edge of screen < enemy3 x position < right edge of screen + 150.f
-		if (((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)+player.x )&& (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2))+150.f+player.x) 
+			// right edge of screen < enemy3 x position < right edge of screen + 900.f
+		if (((enemy3_a.x > (WINDOWLENGTH_X/2 + ENEMY3_WIDTH/2)+player.x )&& (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)+900.f+player.x)) 
 			// player x is greater than initial screen center x = 0
 			&& player.x > 0 
 			// enemy3 currently heading left
@@ -77,8 +77,8 @@ void draw_enemy3() {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-				// left edge of screen - 150.f < enemy 3 x position < left edge of screen
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-150.f+player.x) 
+				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) +player.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)-900.f+player.x) 
 			// player x is greater than initial screen center x = 0
 			&& player.x > 0 
 			// enemy 3 currently heading right
@@ -93,8 +93,8 @@ void draw_enemy3() {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-				// right edge of screen < enemy 3 x position < right edge of screen + 150.f
-		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2)) + 150.f) 
+				// right edge of screen < enemy 3 x position < right edge of screen + 900.f
+		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) && (enemy3_a.x < (WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2) + 900.f)) 
 			// player x is lesser than or equal to initial screen center x = 0, camera has not started moving
 			&& player.x <= 0 
 			// enemy 3 currentlty heading left
@@ -108,8 +108,8 @@ void draw_enemy3() {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-				// left edge of screen - 150.f < enemy 3 x position < left edge of screen
-		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 150.f)
+				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
+		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2) - ENEMY3_WIDTH) - 900.f)
 			// player x is lesser than or equal to initial screen center x = 0, camera has not started moving
 			&& player.x <= 0 
 			// enemy 3 currenly heading right
@@ -169,20 +169,20 @@ void enemy3_update(Player_stats* player) {
 void enemy3_update(Player_stats* player) {
 	Enemy3_stats* Enemy3_a = &enemy3_a;
 	if (!isPaused) {
-		s32 value = AEFrameRateControllerGetFrameCount() % 2000;
+		s32 value = AEFrameRateControllerGetFrameCount() % 3000;
 		
 		// moves right
-		if (value <= 1000) {
-			//enemy3 y position is determined (matches player y pos) when it is 150+ away from left/right edge of screen
+		if (value <= 1500) {
+			//enemy3 y position is determined (matches player y pos) when it is 900+ away from left/right edge of screen
 
 				// right edge, player x <= initial screen center x
-			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 150.f && player->x <= 0)
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f && player->x <= 0)
 				// left edge, player x <= initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 150.f && player->x <= 0)
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f && player->x <= 0)
 				// right edge, player x > initial screen center x
-				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 150.f + player->x && player->x > 0)
+				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f + player->x && player->x > 0)
 				// left edge, player x > initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 150.f + player->x && player->x > 0)) {
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f + player->x && player->x > 0)) {
 				Enemy3_a->y = player->y;
 			}
 			
@@ -192,16 +192,16 @@ void enemy3_update(Player_stats* player) {
 
 		// moves left
 		else {
-			//enemy3 y position is determined (matches player y pos) when it is more than 150.f away from left/right edge of screen
+			//enemy3 y position is determined (matches player y pos) when it is more than 900.f away from left/right edge of screen
 
 			// right edge, player x <= initial screen center x
-			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 150.f && player->x <= 0)
+			if ((enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f && player->x <= 0)
 				// left edge, player x <= initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 150.f && player->x <= 0)
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f && player->x <= 0)
 				// right edge, player x > initial screen center x
-				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 150.f + player->x && player->x > 0)
+				|| (enemy3_a.x > WINDOWLENGTH_X / 2 + ENEMY3_WIDTH / 2 + 900.f + player->x && player->x > 0)
 				// left edge, player x > initial screen center x
-				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 150.f + player->x && player->x > 0)) {
+				|| (enemy3_a.x < -WINDOWLENGTH_X / 2 - ENEMY3_WIDTH / 2 - 900.f + player->x && player->x > 0)) {
 				Enemy3_a->y = player->y;
 			}
 
