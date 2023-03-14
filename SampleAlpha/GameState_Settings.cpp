@@ -150,8 +150,8 @@ void GameStateSettingsDraw(void) {
 
 
 	// text on buttons
-	AEGfxPrint(Albam_fontID, (s8*)"Full Screen", -0.2, -0.05, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Back", -0.1, -0.3, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Full Screen", (f32) - 0.2,(f32) - 0.05, (f32)0.95F, (f32)1,(f32) 1, (f32)1);
+	AEGfxPrint(Albam_fontID, (s8*)"Back", (f32) - 0.1, (f32) - 0.3, (f32)0.95F, (f32)1, (f32)1, (f32)1);
 
 }
 void GameStateSettingsFree() {
