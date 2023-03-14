@@ -93,12 +93,12 @@ void variables_update() {
 	// Origin at TOP LEFT corner of window
 	s32 x_cursor, y_cursor;
 	AEInputGetCursorPosition(&x_cursor, &y_cursor);
-	AEVec2Set(&cursor, x_cursor, y_cursor);
+	AEVec2Set(&cursor, static_cast<f32>(x_cursor), static_cast<f32>(y_cursor));
 
 	// Origin is CENTER of window
 	s32 x_middle_cursor = x_cursor - WINDOWLENGTH_X / 2;
 	s32 y_middle_cursor = WINDOWLENGTH_Y / 2 - y_cursor;
-	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
+	AEVec2Set(&center_cursor, static_cast<f32>(x_middle_cursor), static_cast<f32>(y_middle_cursor));
 	
 	// Origin is CENTER of window
 	AEVec2Set(&world_center_cursor, center_cursor.x + AEGfxGetWinMinX() - (-WINDOWLENGTH_X / 2.0f), center_cursor.y + AEGfxGetWinMinY() - (-WINDOWLENGTH_Y / 2.0f));
