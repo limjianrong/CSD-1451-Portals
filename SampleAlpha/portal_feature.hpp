@@ -31,12 +31,6 @@ struct portal {
 
 
 
-
-/*!**************************************************************************************************
-\brief
-  draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
-  portal_1's mesh is green in color and portal_2's mesh is red in color.
-*******************************************************************************************************/
 void portal_load();
 void portal_init();
 

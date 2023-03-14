@@ -194,17 +194,8 @@ void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32
 }
 
 void draw_level_update() {
-	// Creates an anti-gravity zone
-
-	//anti_gravity_zone(5000, 5200);
 	player.y -= GRAVITY;
-	/*for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-		enemy1[i].y -= GRAVITY;
-	}*/
 	move_update();
-
-
-
 }
 
 void draw_level_free() {
@@ -489,7 +480,6 @@ void move_update() {
 			updown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				//std::cout << "collided for up down" << std::endl;
 			}
 			if (updown[i].y >= updown[i].end_y) {
 				updown[i].pos = MOVED;
@@ -538,8 +528,7 @@ void move_update() {
 			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				//std::cout << "collided with diag down" << std::endl;
-			}
+				}
 			if (diagonaldown[i].y <= diagonaldown[i].end_y) {//&& diagdown1.x >= diagdown1.end_x
 				diagonaldown[i].pos = MOVED;
 			}
@@ -583,7 +572,6 @@ void move_update() {
 			verticalwall[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&verticalwall[i].center, BLOCK_WIDTH, BLOCK_HEIGHT * verticalwall[i].length, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				//std::cout << "colided" << std::endl;
 			}
 			if (verticalwall[i].x <= verticalwall[i].end_x) {
 				verticalwall[i].pos = MOVED;
@@ -592,7 +580,6 @@ void move_update() {
 
 		if (verticalwall[i].pos == MOVED) {
 			verticalwall[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			//if (AETestRectToRect(&verti1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
 			if (verticalwall[i].x >= verticalwall[i].start_x) {
 				verticalwall[i].pos = OG;
 			}
@@ -654,39 +641,13 @@ void verti_collision(s32 cnt, f32 x, f32 y) {
 			(player.y >= y + PLAYER_HEIGHT / 2) &&
 			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
 			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) {
-			//AEVec2 centre;
-			//AEVec2Set(&centre, x, (BLOCK_HEIGHT * cnt) / 2 + (y - BLOCK_HEIGHT / 2));
-			//if (player.x > (centre.x - BLOCK_WIDTH / 2)) player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
-			//else player.x = x + BLOCK_WIDTH / 2;
 			player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
 		}
 		
 	}
 }
 
-//void trap_collision(s32 cnt, f32 x, f32 y) {
-//	
-//	if (((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-//		(player.y >= y + PLAYER_HEIGHT / 2) &&
-//		(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-//		(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) == TRUE ) {
-//
-//		//player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
-//		if (damage_ok == TRUE) {
-//				--player.Hp;
-//				damage_ok = FALSE;
-//				//call transparancy function(?) to show invincibility
-//		}
-//		else if (damage_ok == FALSE) {
-//			if (AEFrameRateControllerGetFrameCount() % 75 == 0) {
-//				damage_ok = TRUE;
-//				//set transparacny function(?) to false
-//			}
-//
-//		}
-//	}
-//	
-//}
+
 
 // x1 - x2 will be the anti-gravity zone
 void anti_gravity_zone(f32 x1, f32 x2) {

@@ -21,7 +21,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <string>
-#include <stdio.h>
+
 //portal dimensions
 float constexpr PORTAL_WIDTH{ 60.0f };
 float constexpr PORTAL_HEIGHT{ 60.0f };
@@ -80,6 +80,8 @@ void portal_init() {
 	portal_cooldown = 50.0f;
 	portal_timer = 0.0f;
 	decrease_cooldown = true;
+	portal_1.created = false;
+	portal_2.created = false;
 }
 
 /*!**************************************************************************************************
@@ -296,10 +298,10 @@ void draw_portal() {
 	}
 
 	//print the portal cooldown to the screen
-	std::string text = "portal timer: ";
-	AEGfxPrint(Albam_fontID, &text[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
-	std::string portal_timer_string = std::to_string(static_cast<int>(portal_timer));
-	AEGfxPrint(Albam_fontID, &portal_timer_string[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
+	std::string timer_string = "portal timer: ";
+	AEGfxPrint(Albam_fontID, &timer_string[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
+	std::string portal_timer_counter = std::to_string(static_cast<int>(portal_timer));
+	AEGfxPrint(Albam_fontID, &portal_timer_counter[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void portal_teleport_enemy() {

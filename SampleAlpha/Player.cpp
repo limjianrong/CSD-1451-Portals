@@ -18,6 +18,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "draw_level.hpp"
 #include "Enemy.hpp"
 #include "Enemy3.hpp"
+#include <string>
 
 // for fontID
 #include "GameState_Mainmenu.hpp"
@@ -79,7 +80,7 @@ void player_init() {
 	// -------- Camera --------
 	AEGfxSetCamPosition(0, 0);							// Reset camera
 	free_moving_camera = false;
-	camera_speed = 15.0f;
+	camera_speed = 30.0f;
 	camera_slowdown = 10.0f;
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -124,34 +125,29 @@ void player_draw() {
 	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Printing out no. of lives --------
-	if (player.Lives == 3) lives_counter = (s8*)"Lives: 3";
-	else if (player.Lives == 2) lives_counter = (s8*)"Lives: 2";
-	else if (player.Lives == 1) lives_counter = (s8*)"Lives: 1";
-	else if (player.Lives == 0) lives_counter = (s8*)"YOU ARE DEAD!";
+	std::string lives_string = "Lives: ";
+	AEGfxPrint(Albam_fontID, &lives_string[0], -1.0f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
+	std::string lives_counter_string = std::to_string(player.Lives);
+	AEGfxPrint(Albam_fontID, &lives_counter_string[0], -0.70f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 
 	// -------- Printing out Hp ----------
-	if (player.Hp == 7) Hp = (s8*)"HP: 7";
-	else if (player.Hp == 6) Hp = (s8*)"HP: 6";
-	else if (player.Hp == 5) Hp = (s8*)"HP: 5";
-	else if (player.Hp == 4) Hp = (s8*)"HP: 4";
-	else if (player.Hp == 3) Hp = (s8*)"HP: 3";
-	else if (player.Hp == 2) Hp = (s8*)"HP: 2";
-	else if (player.Hp == 1) Hp = (s8*)"HP: 1";
-	else if (player.Hp == 0) Hp = (s8*)"HP: 0";
+	std::string hp_string = "Hp: ";
+	AEGfxPrint(Albam_fontID, &hp_string[0], -0.05f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
+	std::string hp_counter_string = std::to_string(player.Hp);
+	AEGfxPrint(Albam_fontID, &hp_counter_string[0], 0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
 
 	// --- Printing Level ---
-	if (player.Level == 0) level = (s8*)"Level: 0";
-	else if (player.Level == 1) level = (s8*)"Level: 1";
-	else if (player.Level == 2) level = (s8*)"Level: 2";
-	// --- Printing XP ---
-	if (player.XP == 0) XP = (s8*)"XP: 0";
-	else if (player.XP == 20) XP = (s8*)"XP: 20";
-	else if (player.XP == 40) XP = (s8*)"XP: 40";
+	std::string level_string = "Level: ";
+	AEGfxPrint(Albam_fontID, &level_string[0], -1.0f, 0.70f, 1, 0.0f, 0.0f, 0.0f);
+	std::string level_counter_string = std::to_string(player.Level);
+	AEGfxPrint(Albam_fontID, &level_counter_string[0], -0.7f, 0.70f, 1.0f, 0.0f, 0.0f, 0.0f);
 
-	AEGfxPrint(Albam_fontID, lives_counter, -1.0f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
-	AEGfxPrint(Albam_fontID, level, -1.0f, 0.7f, 1.0f, 0.0f, 0.0f, 0.0f);
-	AEGfxPrint(Albam_fontID, XP, -1.0f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
-	AEGfxPrint(Albam_fontID, Hp, -0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
+	// --- Printing XP ---
+	std::string xp_string = "Xp: ";
+	AEGfxPrint(Albam_fontID, &xp_string[0], -1.0f, 0.55f, 1, 0.0f, 0.0f, 0.0f);
+	std::string xp_counter_string = std::to_string(player.XP);
+	AEGfxPrint(Albam_fontID, &xp_counter_string[0], -0.7f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
+
 	
 
 	// ---------  Firing of bullets   -----------
@@ -254,16 +250,16 @@ void player_update() {
 
 	if (free_moving_camera == true) {
 		if (AEInputCheckCurr(AEVK_I))
-			cameraPos.y += 2*camera_speed;
+			cameraPos.y += camera_speed;
 
 		if (AEInputCheckCurr(AEVK_K))
-			cameraPos.y -= 2*camera_speed;
+			cameraPos.y -= camera_speed;
 
 		if (AEInputCheckCurr(AEVK_J))
-			cameraPos.x -= 2*camera_speed;
+			cameraPos.x -= camera_speed;
 
 		if (AEInputCheckCurr(AEVK_L))
-			cameraPos.x += 2*camera_speed;
+			cameraPos.x += camera_speed;
 	}
 
 	// -------------  Update latest checkpoint for player  -------------
