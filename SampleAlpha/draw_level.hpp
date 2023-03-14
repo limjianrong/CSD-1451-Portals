@@ -20,7 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define GRAVITY 5.0f
 
 //=== Max Num of Platforms ===
-#define MAX_NORMAL 16
+#define MAX_NORMAL 18
 #define MAX_LEFT_RIGHT 5
 #define MAX_UP_DOWN 3
 #define MAX_DIAGONAL_UP 4

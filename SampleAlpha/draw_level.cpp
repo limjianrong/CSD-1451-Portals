@@ -42,12 +42,6 @@ void draw_level_load() {
 	onetime_text = AEGfxTextureLoad("Assets/onetime_platform.png");
 	spike_text = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 
-	//for (s32 i = 0; i < MAX_LEFT_RIGHT; ++i) {
-	//	leftright[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
-	//}
-	//for (s32 i = 0; i < MAX_UP_DOWN; ++i) {
-	//	updown[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
-	//}
 }
 
 void draw_level_init() {
@@ -74,6 +68,8 @@ void draw_level_init() {
 	normal_blocks_create(7, 6900, 300, 14);
 
 	normal_blocks_create(16, 7400, 450, 15); //boss platform
+	normal_blocks_create(8, 7300, 200, 16);
+	normal_blocks_create(7, 7800, 650, 17);
 
 
 	leftright_create(4, -150, -100, -150, 200, 0);//top route
