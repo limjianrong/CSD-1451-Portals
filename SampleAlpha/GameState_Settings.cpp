@@ -41,14 +41,14 @@ void GameStateSettingsInit(void) {
 	// initialize volume button coordinates and scale
 	vbutton.x = originX;
 	vbutton.y = originY + 150.f;
-	buttonscalex = WINDOWLENGTH_X / 27;
-	buttonscaley = WINDOWLENGTH_Y / 18;
+	buttonscalex = WINDOWLENGTH_X / 27.f;
+	buttonscaley = WINDOWLENGTH_Y / 18.f;
 
 	// initialize volume bar coordinates and scale
 	vbar.x = originX;
 	vbar.y = originY + 150.f;
-	barscalex = WINDOWLENGTH_X / 2;
-	barscaley = WINDOWLENGTH_Y / 80;
+	barscalex = WINDOWLENGTH_X / 2.f;
+	barscaley = WINDOWLENGTH_Y / 80.f;
 }
 
 void GameStateSettingsUpdate(void) {
@@ -58,9 +58,9 @@ void GameStateSettingsUpdate(void) {
 
 	// if full screen button pressed
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-		center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-		center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
-		center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 + WINDOWLENGTH_Y / 16) {
+		center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+		center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 15 - WINDOWLENGTH_Y / 16.f &&
+		center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 15 + WINDOWLENGTH_Y / 16.f) {
 		fullscreen = !fullscreen;
 
 		AESysToggleFullScreen(fullscreen);
@@ -68,18 +68,18 @@ void GameStateSettingsUpdate(void) {
 
 	// if prev game state was main menu, return to main menu
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-		center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-		center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 - WINDOWLENGTH_Y / 16 &&
-		center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 + WINDOWLENGTH_Y / 16 &&
+		center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+		center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 - WINDOWLENGTH_Y / 16.f &&
+		center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 + WINDOWLENGTH_Y / 16.f &&
 		gGameStatePrev == GS_MainMenu) {
 		gGameStateNext = GS_MainMenu;
 	}
 
 	// if prev game state was game level, return to game level
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-		center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-		center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 - WINDOWLENGTH_Y / 16 &&
-		center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 + WINDOWLENGTH_Y / 16 &&
+		center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+		center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 - WINDOWLENGTH_Y / 16.f &&
+		center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 + WINDOWLENGTH_Y / 16.f &&
 		gGameStatePrev == GS_Platformer) {
 		gGameStateNext = GS_Platformer;
 	}
@@ -89,8 +89,8 @@ void GameStateSettingsUpdate(void) {
 		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
 
 		// button x coordinates to never exceed volume bar edges
-		if (vbutton.x < -WINDOWLENGTH_X / 4) vbutton.x = -WINDOWLENGTH_X / 4;
-		if (vbutton.x > WINDOWLENGTH_X / 4) vbutton.x = WINDOWLENGTH_X / 4;
+		if (vbutton.x < -WINDOWLENGTH_X / 4.f) vbutton.x = -WINDOWLENGTH_X / 4.f;
+		if (vbutton.x > WINDOWLENGTH_X / 4.f) vbutton.x = WINDOWLENGTH_X / 4.f;
 	}
 	
 	
@@ -114,15 +114,15 @@ void GameStateSettingsDraw(void) {
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scale of button
-		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x = screen center, start counting y from bottom of screen
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3.f, WINDOWLENGTH_Y / 8.f); // scale of button
+		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i); // x = screen center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
-		if (center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
+		if (center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i - WINDOWLENGTH_Y / 16.f &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i + WINDOWLENGTH_Y / 16.f)
 			AEGfxTextureSet(buttonPressed, 0, 0); 
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
