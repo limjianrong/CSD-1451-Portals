@@ -241,7 +241,7 @@ void update_enemy1() {
 
 			// ------- XP for player -------
 			if (enemy1[i].Hp <= 0 && enemy1[i].status == TRUE) {
-				player.XP += ENEMY1_DROPPED_XP;
+				player.XP += static_cast<s32>(ENEMY1_DROPPED_XP);
 				enemy1[i].status = FALSE;
 			}
 
@@ -400,7 +400,7 @@ void enemy2_update () {
 
 			// ----- Resets bullet timer (Delay inbetween bullets) -----
 			if (bullet_enemy2[i].isTimerActive == TRUE) {
-				bullet_enemy2[i].timer -= AEFrameRateControllerGetFrameTime();
+				bullet_enemy2[i].timer -= static_cast<f32>(AEFrameRateControllerGetFrameTime());
 			}
 			if (bullet_enemy2[i].timer <= 0) {
 				bullet_enemy2[i].timer = ENEMY2_TIMER;
@@ -410,7 +410,7 @@ void enemy2_update () {
 
 		// ------- XP for player -------
 		if (enemy2[i].Hp <= 0 && enemy2[i].status == TRUE) {
-			player.XP += ENEMY2_DROPPED_XP;
+			player.XP += static_cast<s32>(ENEMY2_DROPPED_XP);
 			enemy2[i].status = FALSE;
 		}
 	}
