@@ -126,11 +126,11 @@ void update_portal() {
 			
 			//offset, similar to cursor's y
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			if (player.x > 0) {
-				portal_1.x += player.x;
+			if (player.x > 0.0f) {
+				portal_1.x += static_cast<s32>(player.x);
 			}
-			if (player.y > 0) {
-				portal_1.y += player.y;
+			if (player.y > 0.0f) {
+				portal_1.y += static_cast<s32>(player.y);
 			}
 			
 			//set a vector to the 1st portal's center
@@ -158,14 +158,14 @@ void update_portal() {
 
 			//offset portal_2's x
 			portal_2.x -= AEGetWindowWidth() / 2;
-			if (player.x > 0) {
-				portal_2.x += player.x;
+			if (player.x > 0.0f) {
+				portal_2.x += static_cast<s32>(player.x);
 			}
 
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			if (player.y > 0) {
-				portal_2.y += player.y;
+			if (player.y > 0.0f) {
+				portal_2.y += static_cast<s32>(player.y);
 			}
 
 			//set vector to portal_2's center
@@ -251,8 +251,8 @@ void check_bullet_collide_with_portal() {
 	//if boss bullet collided with portal, teleport the bullet, destroy the portal after teleporting
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
 		bullet.isTeleported = true;
-		bullet.x = portal_2.x;
-		bullet.y = portal_2.y;
+		bullet.x = static_cast<f32>(portal_2.x);
+		bullet.y = static_cast<f32>(portal_2.y);
 		portal_1.created = false;
 		portal_2.created = false;
 		portal_1.draw_outline = false;
@@ -261,8 +261,8 @@ void check_bullet_collide_with_portal() {
 		//check if bullet_enemy2 collided with portal, teleport the bullet, destroy the portal after teleporting
 		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
 			bullet_enemy2[i].isTeleported = true;
-			bullet_enemy2[i].x = portal_2.x;
-			bullet_enemy2[i].y = portal_2.y;
+			bullet_enemy2[i].x = static_cast<f32>(portal_2.x);
+			bullet_enemy2[i].y = static_cast<f32>(portal_2.y);
 			portal_1.created = false;
 			portal_2.created = false;
 			portal_1.draw_outline = false;
@@ -307,8 +307,8 @@ void draw_portal() {
 void portal_teleport_enemy() {
 	//portal teleport enemy1
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->width, enemy1->height) && portal_2.created == true) {
-		enemy1->x = portal_2.x;
-		enemy1->y = portal_2.y;
+		enemy1->x = static_cast<f32>(portal_2.x);
+		enemy1->y = static_cast<f32>(portal_2.y);
 		portal_1.created = false;
 		portal_2.created = false;
 		portal_1.draw_outline = false;
@@ -316,8 +316,8 @@ void portal_teleport_enemy() {
 
 	//portal teleport enemy2
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->width, enemy2->height) && portal_2.created == true) {
-		enemy2->x = portal_2.x;
-		enemy2->y = portal_2.y;
+		enemy2->x = static_cast<f32>(portal_2.x);
+		enemy2->y = static_cast<f32>(portal_2.y);
 		portal_1.created = false;
 		portal_2.created = false;
 		portal_1.draw_outline = false;
