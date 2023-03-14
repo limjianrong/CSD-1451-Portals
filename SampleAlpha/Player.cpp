@@ -285,17 +285,17 @@ void player_collision() {
 
 
 	// left of screen
-	if (player.x < -WINDOWLENGTH_X / 2 + PLAYER_WIDTH / 2)
-		player.x = -WINDOWLENGTH_X / 2 + PLAYER_WIDTH / 2;
+	if (player.x < -WINDOWLENGTH_X / 2.f + PLAYER_WIDTH / 2.f)
+		player.x = -WINDOWLENGTH_X / 2.f + PLAYER_WIDTH / 2.f;
 
 	// right of screen ---- CURRENTLY NO LIMIT ----
 
 	// top of screen
-	if (player.y > (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 10)
-		player.y = (WINDOWLENGTH_Y / 2 - PLAYER_HEIGHT / 2) * 10;
+	if (player.y > (WINDOWLENGTH_Y / 2.f - PLAYER_HEIGHT / 2.f) * 10)
+		player.y = (WINDOWLENGTH_Y / 2.f - PLAYER_HEIGHT / 2.f) * 10;
 
 	// bottom of screen
-	if (player.y < -WINDOWLENGTH_Y / 2 + PLAYER_HEIGHT / 2) {
+	if (player.y < -WINDOWLENGTH_Y / 2.f + PLAYER_HEIGHT / 2.f) {
 		--player.Lives;
 		player.Hp = player.Max_Hp;
 
