@@ -29,8 +29,6 @@ void GameStateMainmenuLoad(void) {
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 
-	// Loads fontID into memory
-	//Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
 	mesh_load();
 	
 }
@@ -135,8 +133,6 @@ void GameStateMainmenuFree() {
 
 void GameStateMainmenuUnload(void) {
 
-	//// FontID unload
-	//AEGfxDestroyFont(Albam_fontID);
 	
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);

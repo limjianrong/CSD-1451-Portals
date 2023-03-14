@@ -23,7 +23,7 @@ AEGfxTexture* platform_text, * spike_text, *onetime_text;
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 Block leftright1, trapping, updown1, diagup1, diagdown1, oneuse1, verti1, droptrap1, horizontaltrap1;
-Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP], 
+Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP],
 diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE], verticalwall[MAX_VERTICAL_WALL], floorspikes[MAX_SPIKES],
 leftrightspikes[MAX_LEFT_RIGHT_SPIKES];
 extern Player_stats player;

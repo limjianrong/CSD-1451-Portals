@@ -174,4 +174,7 @@ void GameStateSettingsUnload(void) {
 
 	// Mesh free
 	AEGfxMeshFree(square_mesh);
+
+	// Informing the system about the loop's end
+	AESysFrameEnd();
 }

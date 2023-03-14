@@ -14,7 +14,8 @@
 #include "Utilities.hpp"
 #include <cmath> //for square root function
 #include "portal_feature.hpp"
-#include "weapon_fire.hpp"
+#include "boss.hpp"
+//#include "weapon_fire.hpp"
 #include <iostream> //for std::cout
 #include <cstdlib> //for absolute value, abs()
 #include "Player.hpp"

@@ -22,28 +22,21 @@
 	Returns true if bullet is colliding with enemy, else returns false
 *****************************************************************************************************/
 
-void bullet_load();
-void bullet_init();
-void bullet_update();
-void bullet_draw();
-void bullet_free();
-void bullet_unload();
-
 //void weapon_fire(f32 player_x, f32 player_y, int state);
 //bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y);
-bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height);
+//bool isbullet_enemy_colliding(f32 bullet_x, f32 bullet_y, f32 enemy_x, f32 enemy_y, f32 width, f32 height);
 
 
-#define BOSS_TIMER 0.5f
-
-struct Bullet {
-	f32 x{}, y{};
-	AEVec2 center{};
-	f32 width, height;
-	f32 speed;
-	f32 timer;
-	bool isTimerActive, isTeleported, isShooting;
-
-	// ----- Mesh & Texture -----
-	AEGfxTexture* bulletTex;
-};
+//#define BOSS_TIMER 0.5f
+//
+//struct Bullet {
+//	f32 x{}, y{};
+//	AEVec2 center{};
+//	f32 width, height;
+//	f32 speed;
+//	f32 timer;
+//	bool isTimerActive, isTeleported, isShooting;
+//
+//	// ----- Mesh & Texture -----
+//	AEGfxTexture* bulletTex;
+//};

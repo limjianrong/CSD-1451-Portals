@@ -2,7 +2,7 @@
 #include "AEEngine.h"
 #include "Player.hpp"			// For player_stats
 #include "Enemy.hpp"			// For Enemy2 stats
-#include "weapon_fire.hpp"		// For Enemy2_bullet
+#include "boss.hpp"				// For Enemy2_bullet
 #include "portal_feature.hpp"	// For portal range
 #include "Utilities.hpp"		// For cursor coords, 
 #include "Upgrades.hpp"

@@ -29,6 +29,7 @@ struct Boss{
 	AEVec2 charge_endpoint{ 0,0 };
 };
 
+// ------ Attack #1 ------
 struct Laser_beam{
 	int status{};
 	f32 x{}, y{};
@@ -44,6 +45,20 @@ struct Laser_beam{
 
 };
 
+// ------ Attack #2 ------
+#define BOSS_TIMER 0.5f
+struct Bullet {
+	f32 x{}, y{};
+	AEVec2 center{};
+	f32 width, height;
+	f32 speed;
+	f32 timer;
+	bool isTimerActive, isTeleported, isShooting;
+
+	// ----- Mesh & Texture -----
+	AEGfxTexture* bulletTex;
+};
+
 // ---- Main Functions ----
 void boss_load();
 void boss_init();
@@ -54,5 +69,7 @@ void boss_unload();
 
 
 void boss_movement();
+void bullet_update();
+void bullet_draw();
 void boss_laser_beam();
 void boss_charge();

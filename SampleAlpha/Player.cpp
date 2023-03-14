@@ -61,8 +61,6 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
-
-	bullet_load();
 }
 
 void player_init() {

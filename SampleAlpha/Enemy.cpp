@@ -25,7 +25,8 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Utilities.hpp"
-#include "weapon_fire.hpp"
+#include "boss.hpp"
+//#include "weapon_fire.hpp"
 #include "GameState_Platformer.hpp"
 
 #include <iostream>

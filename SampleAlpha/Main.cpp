@@ -45,7 +45,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	#if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
-	//_crtBreakAlloc = 627; // (type in the memory allocation number)
+	//_crtBreakAlloc = 555; // (type in the memory allocation number)
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, WINDOWLENGTH_X, WINDOWLENGTH_Y, 1, 60, true, NULL);
@@ -104,6 +104,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		gGameStatePrev = gGameStateCurr;	// Set previous state to current state
 		gGameStateCurr = gGameStateNext;	// Set current state to next state
 	}
+
+	// Destroy fontID from memory
 	AEGfxDestroyFont(Albam_fontID);
 	// free the system
 	AESysExit();
