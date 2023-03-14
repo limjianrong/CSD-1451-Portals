@@ -5,7 +5,7 @@
 enum { UP, DOWN,STOP, BTM_RIGHT, BTM_LEFT, TOP_RIGHT, TOP_LEFT };
 
 struct Boss{
-	f32 x_pos{ 3050.0f }, y_pos{ 200.0f };//3050
+	f32 x_pos{ 8000.0f }, y_pos{ 600.0f };//3050
 	f32 width{ 200 }, height{ 200 }, velocity{ 100 };
 	f32 range_x{ 100 + 200 }, range_y{ 100 + 500 };
 	s32 Hp{ 5 };

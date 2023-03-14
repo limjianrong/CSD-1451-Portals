@@ -34,7 +34,7 @@
 #define ENEMY2_HEIGHT 60.f			// Enemy2 height
 #define ENEMY2_TIMER 0.75f			// Timer between bullets
 #define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
-#define MAX_ENEMIES_2 2				// Change this for total number of enemy2
+#define MAX_ENEMIES_2 5				// Change this for total number of enemy2
 
 // ------- Enemy types -------
 struct Enemy1_stats {

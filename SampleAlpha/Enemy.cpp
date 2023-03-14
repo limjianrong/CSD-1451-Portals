@@ -69,12 +69,11 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	//enemy1_create(-200, -110, 0);
-	//enemy1_create(150, 190, 1);
-	enemy1_create(625, 80, 0);
-	enemy1_create(1950, 230, 1);
+	enemy1_create(600, 90, 0);
+	enemy1_create(2425, 590, 1);
+	enemy1_create(6750, 1090, 2);
 
-	enemy1_create(200, 100, 2);
+	//enemy1_create(200, 100, 2);
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
@@ -89,16 +88,11 @@ void enemies_init() {
 
 
 	// ------- Enemy 2 & bullets -------
-	//enemy2_create(300, -120, 0);
-	//enemy2_create(300, -60, 1);
-	//enemy2_create(300, 0, 2);
-	//enemy2_create(300, 60, 3);
-	//enemy2_create(300, 120, 4);
-	//enemy2_create(300, 180, 5);
-	//enemy2_create(1750, 240, 6);
-	enemy2_create(2800, 0, 0);
-
-	enemy2_create(100, 0, 1);
+	enemy2_create(3350, 900, 0); //y+150   6, 3350, 200, 11
+	enemy2_create(3800, 875, 1);
+	enemy2_create(3800, 925, 2);
+	enemy2_create(3700, 250, 3);
+	enemy2_create(3700, 300, 4);
 
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 

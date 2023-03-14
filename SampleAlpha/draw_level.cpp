@@ -18,17 +18,14 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 int const platform_max_count{ 50 };
 
-AEGfxTexture* rect, * upwardspike, *downwardspike;
+AEGfxTexture* platform_text, * spike_text, *onetime_text;
 
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
-
-
-AEGfxVertexList* rectmesh, * trapmesh;
-
 Block leftright1, trapping, updown1, diagup1, diagdown1, oneuse1, verti1, droptrap1, horizontaltrap1;
 Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP], 
-diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE], verticalwall[MAX_VERTICAL_WALL];
+diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE], verticalwall[MAX_VERTICAL_WALL], floorspikes[MAX_SPIKES],
+leftrightspikes[MAX_LEFT_RIGHT_SPIKES];
 extern Player_stats player;
 extern Enemy1_stats enemy1[MAX_ENEMIES_1];
 bool damage_ok{ TRUE };
@@ -41,9 +38,9 @@ AEMtx33 scale, rotate, translate, transform; // TRS
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
 void draw_level_load() {
-	rect = AEGfxTextureLoad("Assets/grassMid.png");
-	upwardspike = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
-	downwardspike = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_bottom.png");
+	platform_text = AEGfxTextureLoad("Assets/grassMid.png");
+	onetime_text = AEGfxTextureLoad("Assets/onetime_platform.png");
+	spike_text = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
 
 	//for (s32 i = 0; i < MAX_LEFT_RIGHT; ++i) {
 	//	leftright[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
@@ -51,104 +48,82 @@ void draw_level_load() {
 	//for (s32 i = 0; i < MAX_UP_DOWN; ++i) {
 	//	updown[i].texture = AEGfxTextureLoad("Assets/grassMid.png");
 	//}
-
-	//rectmesh = leftright1.mesh = updown1.mesh = diagup1.mesh = diagdown1.mesh = oneuse1.mesh = verti1.mesh = trapmesh = create_Square_Mesh();
-	rectmesh = create_Square_Mesh();
-	//rectmesh = leftright1.mesh = updown1.mesh = trapmesh = create_Square_Mesh();
-
-
 }
 
 void draw_level_init() {
-	
-	normal_blocks_create(6, -500, -200, 0);
+
+	spikes_create(2, 1550, 150, 0);
+	left_right_spikes_create(1, 4800, 525, 4800, 5450, 0);
+	left_right_spikes_create(1, 4950, 525, 4950, 5600, 1);
+
+	normal_blocks_create(6, -500, -200, 0); //top route
 	normal_blocks_create(5, 425, 0, 1);
 	normal_blocks_create(5, 900, 350, 2);
-	normal_blocks_create(5, 1400, 100, 3);
-	normal_blocks_create(5, 2250, 500, 4);//
-	normal_blocks_create(4, 3450, 850, 7);
+	normal_blocks_create(5, 1400, 125, 3);
+	normal_blocks_create(5, 2250, 500, 4);
+	normal_blocks_create(6, 3450, 850, 5);
+	normal_blocks_create(7, 5400, 950, 6);
+	normal_blocks_create(7, 6550, 1000, 7);
+	normal_blocks_create(4, 7000, 750, 8);
+
+	normal_blocks_create(4, 800, -150, 9); // bottom route
+	normal_blocks_create(4, 2550, -250, 10);
+	normal_blocks_create(6, 3350, 200, 11);
+	normal_blocks_create(5, 4200, 300, 12);
+	normal_blocks_create(4, 5800, 100, 13);
+	normal_blocks_create(7, 6900, 300, 14);
+
+	normal_blocks_create(16, 7400, 450, 15); //boss platform
+
+
+	leftright_create(4, -150, -100, -150, 200, 0);//top route
+	leftright_create(5, 5850, 950, 5850, 6250, 1);
 	
+	leftright_create(4, 1050, -200, 1050, 1850, 2);//bottom route
+	leftright_create(4, 4800, 500, 4800, 5450, 3);
+	leftright_create(4, 6150, 200, 6150, 6650, 4);
 	
-	//normal_blocks_create(12, 2600, 0, 5);
+	updown_create(3, 700, 125, 125, 325, 0);//top route
+	updown_create(3, 2550, 600, 600, 775, 1);
 
-	leftright_create(4, -150.f, -100.f, -150.f, 200.f, 0);
+	updown_create(3, 4550, 400, 400, 650, 2);//bottom route
 
-	updown_create(3, 700.f, 125.f, 125.f, 325.f, 0);
-	updown_create(3, 2550.f, 600.f, 600.f, 775.f, 1);
+	
+	diagonal_up_create(4, 1700, 150, 1700, 2000, 150, 450, 0);//top route
+	diagonal_up_create(4, 3800, 900, 3800, 4100, 900, 1200, 1);
+	
+	diagonal_up_create(4, 2000, -150, 2000, 2300, -150, 150, 2);//bottom route
+	diagonal_up_create(3, 2800, -200, 2800, 3150, -200, 150, 3);
+	diagonal_down_create(4, 4700, 1200, 4700, 5050, 1200, 850, 0);
 
-	diagonal_up_create(4, 1700.f, 150.f, 1700.f, 2000.f, 150.f, 450.f, 0);
-	diagonal_up_create(4, 3800.f, 900.f, 3800.f, 4100.f, 900.f, 1200.f, 1);
 
-	diagonal_down_create(4, 900.f, 300.f, 900.f, 1150.f, 300.f, -50.f, 0);
+	one_time_use_create(4, 2750, 850, 0);//top route
+	one_time_use_create(4, 3100, 850, 1);
+	one_time_use_create(4, 4400, 1300, 2);
 
-	normal_blocks_create(4, 2750, 850, 5);
-	normal_blocks_create(4, 3100, 850, 6);
-	normal_blocks_create(4, 4400, 1300, 8);
+	one_time_use_create(4, 2550, 175, 3);//bottom route
+	one_time_use_create(4, 3800, 300, 4);
+	one_time_use_create(4, 5800, 500, 5);
 
-	one_time_use_create(4, 100, 0, 0);
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		onetimeuse[i].flag = ACTIVE;
-		//onetimeuse[i].timer = 5;
 	}
 
-
-
-
-	//diagup1.x = 400.f;
-	//diagup1.y = 100.f;
-	//diagup1.end_x = 600.f;
-	//diagup1.start_x = 100.f;
-	//diagup1.end_y = 250.f;
-	//diagup1.start_y = 100.f;
-
-	//diagdown1.x = -250.f;
-	//diagdown1.y = 250.f;
-	//diagdown1.end_x = -150.f;
-	//diagdown1.start_x = -250.f;
-	//diagdown1.end_y = 150.f;
-	//diagdown1.min_y = 250.f;
+	vertical_create(3, 6450, 1000, 6450, 5900, 0);
 	
-	//oneuse1.x = -400.f;
-	//oneuse1.y = 150.f;
-	//oneuse1.flag = ACTIVE;
 
-	//droptrap1.x = -400.f;
-	//droptrap1.y = 100.f;
-	//droptrap1.start_y = 100.f;
-	//droptrap1.end_y = -150.f;
-
-	//verti1.x = -300.f;
-	//verti1.y = -150.f;
-	//verti1.end_x = -400.f;
-	//verti1.start_x = -300.f;
-
-	//horizontaltrap1.x = 100.f;
-	//horizontaltrap1.y = 150.f;
-	//horizontaltrap1.end_x = 0.f;
-	//horizontaltrap1.start_x = 100.f;
-
-
-
-	//blocklist.emplace_back(Block());		//emplace_back constructs an object at the back of the vector.
-	//blocklist[0].name = "move1";
-	//blocklist[0].x = -200.f;
-	//blocklist[0].y = -250.f;
-	//blocklist[0].max_x = -200.f + 450.f;
-	//blocklist[0].min_x = -200.f;
-
-	//for (int i = 0; i < NUM_OF_MOVING_PLAT; i++) {
-
-	//}
 }
 
 void draw_level_draw() {
-
+	spikes_draw();
+	left_right_spikes_draw();
 	blocks_draw();
 	leftright_blocks_draw();
 	updown_blocks_draw();
 	diag_up_blocks_draw();
 	diag_down_blocks_draw();
 	one_time_use_blocks_draw();
+	vertical_blocks_draw();
 
 }
 
@@ -158,16 +133,13 @@ void normal_blocks_create(s32 len, f32 x, f32 y, s32 index) {
 	normal[index].y = y;
 }
 
-
 void leftright_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
 	leftright[index].length = len;
 	leftright[index].x = x;
 	leftright[index].y = y;
 	leftright[index].start_x = start_x;
 	leftright[index].end_x = end_x;
-	
 }
-
 
 void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
 	updown[index].length = len;
@@ -176,7 +148,6 @@ void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
 	updown[index].start_y = start_y;
 	updown[index].end_y = end_y;
 }
-
 
 void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
 	diagonalup[index].length = len;
@@ -187,11 +158,6 @@ void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start
 	diagonalup[index].start_y = start_y;
 	diagonalup[index].end_y = end_y;
 }
-
-
-
-
-
 
 void diagonal_down_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
 	diagonaldown[index].length = len;
@@ -209,12 +175,32 @@ void one_time_use_create(s32 len, f32 x, f32 y, s32 index) {
 	onetimeuse[index].y = y;
 }
 
+void vertical_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
+	verticalwall[index].length = len;
+	verticalwall[index].x = x;
+	verticalwall[index].y = y;
+	verticalwall[index].start_x = start_x;
+	verticalwall[index].end_x = end_x;
+}
+
+void spikes_create(s32 len, f32 x, f32 y, s32 index) {
+	floorspikes[index].length = len;
+	floorspikes[index].x = x;
+	floorspikes[index].y = y;
+}
+
+void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
+	leftrightspikes[index].length = len;
+	leftrightspikes[index].x = x;
+	leftrightspikes[index].y = y;
+	leftrightspikes[index].start_x = start_x;
+	leftrightspikes[index].end_x = end_x;
+}
+
 void draw_level_update() {
 	// Creates an anti-gravity zone
 
 	//anti_gravity_zone(5000, 5200);
-	
-
 	player.y -= GRAVITY;
 	/*for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		enemy1[i].y -= GRAVITY;
@@ -231,9 +217,9 @@ void draw_level_free() {
 
 void draw_level_unload() {
 	// Texture unload
-	AEGfxTextureUnload(rect);
-	AEGfxTextureUnload(upwardspike);
-	AEGfxTextureUnload(downwardspike);
+	AEGfxTextureUnload(platform_text);
+	AEGfxTextureUnload(spike_text);
+	AEGfxTextureUnload(onetime_text);
 }
 
 //-------------------- Parameters --------------------
@@ -255,7 +241,7 @@ void blocks_draw() {
 			AEGfxSetTransform(transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(platform_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Player collision with platforms
@@ -264,70 +250,26 @@ void blocks_draw() {
 	}
 }
 
-void spikes(s32 length, f32 x, f32 y) {
-	trapping.length = length;
-	trapping.x = x;
-	trapping.y = y;
+void spikes_draw() {
+	for (s32 i = 0; i < MAX_SPIKES; i++) {
+		for (s32 j = 0; j < floorspikes[i].length; j++) {
+			floorspikes[i].width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * j + floorspikes[i].x;
+			floorspikes[i].height = BLOCK_HEIGHT / 2 + floorspikes[i].y;
 
+			AEMtx33Scale(&floorspikes[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+			AEMtx33Rot(&floorspikes[i].rotate, PI);
+			AEMtx33Trans(&floorspikes[i].translate, floorspikes[i].width, floorspikes[i].height);
+			// Concat the matrices
+			AEMtx33Concat(&floorspikes[i].transform, &floorspikes[i].rotate, &floorspikes[i].scale);
+			AEMtx33Concat(&floorspikes[i].transform, &floorspikes[i].translate, &floorspikes[i].transform);
+			AEGfxSetTransform(floorspikes[i].transform.m);
+			// Set the texture
+			AEGfxTextureSet(spike_text, 0, 0);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
-	for (s32 i = 0; i < length; i++) {
-		trapping.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
-		trapping.height = BLOCK_HEIGHT / 2 + y;
-
-		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT/2);
-		AEMtx33 rotate = { 0 };
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33 translate = { 0 };
-		AEMtx33Trans(&translate, BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x
-			, BLOCK_HEIGHT / 4 *3 + y);
-		// Concat the matrices
-		AEMtx33 transform = { 0 };
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-
-		// Set the texture
-		AEGfxTextureSet(upwardspike, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// Player collision with platforms
-		AEVec2Set(&trapping.center, BLOCK_WIDTH / 2 + BLOCK_WIDTH * length + x , trapping.height);
-		trap_collision(length, x, y);
-
+		}
+		AEVec2Set(&floorspikes[i].center, (BLOCK_WIDTH * floorspikes[i].length) / 2 + floorspikes[i].x, floorspikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
-}
-
-void dropping_spikes(s32 length, f32 x, f32 y) {
-
-	droptrap1.length = length;
-	droptrap1.x = x;
-	droptrap1.y = y;
-
-
-	for (s32 i = 0; i < length; i++) {
-		droptrap1.width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * i + x;
-		droptrap1.height = BLOCK_HEIGHT / 2 + y;
-
-		AEMtx33Scale(&droptrap1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-		AEMtx33Rot(&droptrap1.rotate, PI);
-		AEMtx33Trans(&droptrap1.translate, droptrap1.width, droptrap1.height);
-		// Concat the matrices
-		AEMtx33Concat(&droptrap1.transform, &droptrap1.rotate, &droptrap1.scale);
-		AEMtx33Concat(&droptrap1.transform, &droptrap1.translate, &droptrap1.transform);
-		AEGfxSetTransform(droptrap1.transform.m);
-
-		// Set the texture
-		AEGfxTextureSet(downwardspike, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// Player collision with platforms
-
-		//trap_collision(length, x, y);
-
-
-	}
-	AEVec2Set(&droptrap1.center, (BLOCK_WIDTH * length) / 2 + x, y - BLOCK_HEIGHT * 1.2f);
 }
 
 void leftright_blocks_draw() {
@@ -346,7 +288,7 @@ void leftright_blocks_draw() {
 			AEGfxSetTransform(leftright[i].transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(platform_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Player collision with platforms
@@ -375,11 +317,10 @@ void updown_blocks_draw() {
 			AEGfxSetTransform(updown[i].transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(platform_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Player collision with platforms
-
 			platform_collision(updown[i].length, updown[i].x, updown[i].y);
 
 
@@ -389,7 +330,6 @@ void updown_blocks_draw() {
 }
 
 void diag_up_blocks_draw() {
-
 
 	for (s32 i = 0; i < MAX_DIAGONAL_UP; i++) {
 		for (s32 j = 0; j < diagonalup[i].length; j++) {
@@ -405,7 +345,7 @@ void diag_up_blocks_draw() {
 			AEGfxSetTransform(diagonalup[i].transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(platform_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Player collision with platforms
@@ -433,7 +373,7 @@ void diag_down_blocks_draw() {
 			AEGfxSetTransform(diagonaldown[i].transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(platform_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Player collision with platforms
@@ -462,7 +402,7 @@ void one_time_use_blocks_draw() {
 			AEGfxSetTransform(onetimeuse[i].transform.m);
 
 			// Set the texture
-			AEGfxTextureSet(rect, 0, 0);
+			AEGfxTextureSet(onetime_text, 0, 0);
 			if (onetimeuse[i].flag == ACTIVE) {
 				AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 				// Player collision with platforms
@@ -475,80 +415,65 @@ void one_time_use_blocks_draw() {
 }
 
 
-void verti_blocks(s32 length, f32 x, f32 y) {
+void vertical_blocks_draw() {
 
-	verti1.length = length;
-	verti1.x = x;
-	verti1.y = y;
+	for (s32 i = 0; i < MAX_VERTICAL_WALL; i++) {
+		for (s32 j = 0; j < verticalwall[i].length; j++) {
+			verticalwall[i].width = BLOCK_WIDTH / 2 + verticalwall[i].x;
+			verticalwall[i].height = BLOCK_HEIGHT / 2 + BLOCK_WIDTH * j + verticalwall[i].y;
 
+			AEMtx33Scale(&verticalwall[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+			AEMtx33Rot(&verticalwall[i].rotate, PI);
+			AEMtx33Trans(&verticalwall[i].translate, verticalwall[i].width, verticalwall[i].height);
+			// Concat the matrices
+			AEMtx33Concat(&verticalwall[i].transform, &verticalwall[i].rotate, &verticalwall[i].scale);
+			AEMtx33Concat(&verticalwall[i].transform, &verticalwall[i].translate, &verticalwall[i].transform);
+			AEGfxSetTransform(verticalwall[i].transform.m);
 
-	for (s32 i = 0; i < length; i++) {
-		verti1.width = BLOCK_WIDTH / 2 + x;
-		verti1.height = BLOCK_HEIGHT / 2 + BLOCK_WIDTH * i + y;
+			// Set the texture
+			AEGfxTextureSet(platform_text, 0, 0);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
-		AEMtx33Scale(&verti1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-		AEMtx33Rot(&verti1.rotate, PI);
-		AEMtx33Trans(&verti1.translate, verti1.width, verti1.height);
-		// Concat the matrices
-		AEMtx33Concat(&verti1.transform, &verti1.rotate, &verti1.scale);
-		AEMtx33Concat(&verti1.transform, &verti1.translate, &verti1.transform);
-		AEGfxSetTransform(verti1.transform.m);
+			// Player collision with platforms
+			verti_collision(verticalwall[i].length, verticalwall[i].x, verticalwall[i].y);
 
-		// Set the texture
-		AEGfxTextureSet(rect, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// Player collision with platforms
-
-		verti_collision(length, x, y);
-
-
+		}
+		AEVec2Set(&verticalwall[i].center, verticalwall[i].x, (BLOCK_HEIGHT * verticalwall[i].length) / 2 + verticalwall[i].y);
 	}
-	AEVec2Set(&verti1.center, BLOCK_WIDTH + x, (BLOCK_HEIGHT * length) / 2 + y);
+	
 }
 
-void left_right_blades(s32 length, f32 x, f32 y) {
+void left_right_spikes_draw() {
 
-	horizontaltrap1.length = length;
-	horizontaltrap1.x = x;
-	horizontaltrap1.y = y;
+	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
+		for (s32 j = 0; j < leftrightspikes[i].length; j++) {
+			leftrightspikes[i].width = BLOCK_WIDTH / 2 + BLOCK_WIDTH * j + leftrightspikes[i].x;
+			leftrightspikes[i].height = BLOCK_HEIGHT / 2 + leftrightspikes[i].y;
 
+			AEMtx33Scale(&leftrightspikes[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
+			AEMtx33Rot(&leftrightspikes[i].rotate, PI);
+			AEMtx33Trans(&leftrightspikes[i].translate, leftrightspikes[i].width, leftrightspikes[i].height);
+			// Concat the matrices
+			AEMtx33Concat(&leftrightspikes[i].transform, &leftrightspikes[i].rotate, &leftrightspikes[i].scale);
+			AEMtx33Concat(&leftrightspikes[i].transform, &leftrightspikes[i].translate, &leftrightspikes[i].transform);
+			AEGfxSetTransform(leftrightspikes[i].transform.m);
 
-	for (s32 i = 0; i < length; i++) {
-		horizontaltrap1.width = BLOCK_WIDTH / 2 + x;
-		horizontaltrap1.height = BLOCK_HEIGHT / 2 + BLOCK_WIDTH * i + y;
-
-		AEMtx33Scale(&horizontaltrap1.scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-		AEMtx33Rot(&horizontaltrap1.rotate, PI);
-		AEMtx33Trans(&horizontaltrap1.translate, horizontaltrap1.width, horizontaltrap1.height);
-		// Concat the matrices
-		AEMtx33Concat(&horizontaltrap1.transform, &horizontaltrap1.rotate, &horizontaltrap1.scale);
-		AEMtx33Concat(&horizontaltrap1.transform, &horizontaltrap1.translate, &horizontaltrap1.transform);
-		AEGfxSetTransform(horizontaltrap1.transform.m);
-
-		// Set the texture
-		AEGfxTextureSet(downwardspike, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// Player collision with platforms
-
-		//verti_collision(length, x, y);
+			// Set the texture
+			AEGfxTextureSet(spike_text, 0, 0);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
+		}
+		AEVec2Set(&leftrightspikes[i].center, (BLOCK_WIDTH * leftrightspikes[i].length) / 2 + leftrightspikes[i].x, leftrightspikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
-	AEVec2Set(&horizontaltrap1.center, BLOCK_WIDTH + x, (BLOCK_HEIGHT * length) / 2 + y);
 }
 
 void move_update() {
-	//in case of using sine
-	f32* time = nullptr;
-	static bool isIncrementing = false;
-	//move1.x = 200 * sinf(static_cast<float>(AEGetTime(time)/0.5f));
-	//if the x value is now == original position 
+
 	for (s32 i = 0; i < MAX_LEFT_RIGHT; i++) {
 		if (leftright[i].pos == OG) {
 			leftright[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (leftright[i].x >= leftright[i].end_x) {
 				leftright[i].pos = MOVED;
 			}
@@ -556,7 +481,7 @@ void move_update() {
 
 		if (leftright[i].pos == MOVED) {
 			leftright[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (leftright[i].x <= leftright[i].start_x) {
 				leftright[i].pos = OG;
 			}
@@ -566,7 +491,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_UP_DOWN; i++) {
 		if (updown[i].pos == OG) {
 			updown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				//std::cout << "collided for up down" << std::endl;
 			}
@@ -577,7 +502,7 @@ void move_update() {
 
 		if (updown[i].pos == MOVED) {
 			updown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (updown[i].y <= updown[i].start_y) {
 				updown[i].pos = OG;
 			}
@@ -588,10 +513,9 @@ void move_update() {
 		if (diagonalup[i].pos == OG) {
 			diagonalup[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				std::cout << "collided for diag up" << std::endl;
 			}
 			if (diagonalup[i].y >= diagonalup[i].end_y) { //&& diagup1.x >= diagup1.end_x
 				diagonalup[i].pos = MOVED;
@@ -601,7 +525,7 @@ void move_update() {
 		if (diagonalup[i].pos == MOVED) {
 			diagonalup[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
@@ -615,7 +539,7 @@ void move_update() {
 		if (diagonaldown[i].pos == OG) {
 			diagonaldown[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				//std::cout << "collided with diag down" << std::endl;
@@ -628,7 +552,7 @@ void move_update() {
 		if (diagonaldown[i].pos == MOVED) {
 			diagonaldown[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
@@ -638,116 +562,83 @@ void move_update() {
 		}
 	}
 
-	//for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-	//	if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-	//		isIncrementing = TRUE;
-	//		if(isIncrementing == TRUE) onetimeuse[i].timer += AEFrameRateControllerGetFrameTime();
-	//		if (onetimeuse[i].timer >= 5) {
-	//			isIncrementing = FALSE;
-	//			onetimeuse[i].flag = NOT_ACTIVE;
-	//		}
-	//	}
-	//}
-	//for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-	//	if (onetimeuse[i].pos == OG) {
-	//		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
-	//			onetimeuse[i].timer -= 1;
-	//			if (onetimeuse[i].timer <= 0) onetimeuse[i].flag = NOT_ACTIVE;
-	//		}
-	//	}
-	//}
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
-			if (onetimeuse[i].timer >= 5) onetimeuse[i].flag = NOT_ACTIVE;
+			if (onetimeuse[i].timer >= 3) onetimeuse[i].flag = NOT_ACTIVE;
 		}
 	}
 
-	if (verti1.flag == ACTIVE) {
-		if (verti1.pos == OG) {
-			verti1.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&verti1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+	for (s32 i = 0; i < MAX_SPIKES; i++) {
+		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (damage_ok == TRUE) {
+				--player.Hp;
+				damage_ok = FALSE;
+			}
+			else if (damage_ok == FALSE) {
+				if (AEFrameRateControllerGetFrameCount() % 50 == 0)
+					damage_ok = TRUE;
+			}
+		}
+	}
+
+	for (s32 i = 0; i < MAX_VERTICAL_WALL; i++) {
+		if (verticalwall[i].pos == OG) {
+			verticalwall[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&verticalwall[i].center, BLOCK_WIDTH, BLOCK_HEIGHT * verticalwall[i].length, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				//std::cout << "colided" << std::endl;
 			}
-			if (verti1.x <= verti1.end_x) {
-				verti1.pos = MOVED;
+			if (verticalwall[i].x <= verticalwall[i].end_x) {
+				verticalwall[i].pos = MOVED;
 			}
 		}
 
-		if (verti1.pos == MOVED) {
-			verti1.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+		if (verticalwall[i].pos == MOVED) {
+			verticalwall[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			//if (AETestRectToRect(&verti1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-			if (verti1.x >= verti1.start_x) {
-				verti1.pos = OG;
+			if (verticalwall[i].x >= verticalwall[i].start_x) {
+				verticalwall[i].pos = OG;
 			}
 		}
 	}
 
-	if (droptrap1.flag == ACTIVE) {
-		if (droptrap1.pos == OG) {
-			droptrap1.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * dropSpeed;
-			if (AETestRectToRect(&droptrap1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
+		if (leftrightspikes[i].pos == OG) {
+			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				if (damage_ok == TRUE) {
 					--player.Hp;
 					damage_ok = FALSE;
-					//call transparancy function(?) to show invincibility
 				}
 				else if (damage_ok == FALSE) {
-					if (AEFrameRateControllerGetFrameCount() % 50 == 0) {
+					if (AEFrameRateControllerGetFrameCount() % 50 == 0)
 						damage_ok = TRUE;
-						//set transparacny function(?) to false
-					}
-
 				}
-
-			}//player.y += AEFrameRateControllerGetFrameTime() * moveSpeed;
-			if (droptrap1.y <= droptrap1.end_y) {
-				droptrap1.pos = MOVED;
+			}
+			if (leftrightspikes[i].x >= leftrightspikes[i].end_x) {
+				leftrightspikes[i].pos = MOVED;
 			}
 		}
 
-
-		if (droptrap1.pos == MOVED) {
-			droptrap1.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			//if (AETestRectToRect(&droptrap1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y -= AEFrameRateControllerGetFrameTime() * moveSpeed;
-			if (droptrap1.y >= droptrap1.start_y) {
-				droptrap1.pos = OG;
-			}
-		}
-	}
-
-	if (horizontaltrap1.flag == ACTIVE) {
-		if (horizontaltrap1.pos == OG) {
-			horizontaltrap1.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&horizontaltrap1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (leftrightspikes[i].pos == MOVED) {
+			leftrightspikes[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
 				if (damage_ok == TRUE) {
 					--player.Hp;
-					//std::cout << "colided" << std::endl;
 					damage_ok = FALSE;
-					//call transparancy function(?) to show invincibility
 				}
 				else if (damage_ok == FALSE) {
-					if (AEFrameRateControllerGetFrameCount() % 50 == 0) {
+					if (AEFrameRateControllerGetFrameCount() % 50 == 0)
 						damage_ok = TRUE;
-						//set transparacny function(?) to false
-					}
-
 				}
 			}
-			if (horizontaltrap1.x <= horizontaltrap1.end_x) {
-				horizontaltrap1.pos = MOVED;
-			}
-		}
-
-		if (horizontaltrap1.pos == MOVED) {
-			horizontaltrap1.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			//if (AETestRectToRect(&verti1.center, BLOCK_WIDTH * 4, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += AEFrameRateControllerGetFrameTime() * moveSpeed;
-			if (horizontaltrap1.x >= horizontaltrap1.start_x) {
-				horizontaltrap1.pos = OG;
+			if (leftrightspikes[i].x <= leftrightspikes[i].start_x) {
+				leftrightspikes[i].pos = OG;
 			}
 		}
 	}
+	
 }
 
 
@@ -763,43 +654,43 @@ void platform_collision(s32 cnt, f32 x, f32 y) {
 
 void verti_collision(s32 cnt, f32 x, f32 y) {
 	for (f32 i = 0; i < cnt; i++) {
-		//if ((player.x <= BLOCK_WIDTH + x + PLAYER_WIDTH / 2) &&
-		//	(player.x >= x + PLAYER_WIDTH / 2) &&
-		//	(player.y <= BLOCK_HEIGHT / 2 + BLOCK_HEIGHT * cnt + y - PLAYER_HEIGHT / 2) &&
-		//	(player.y >= y + BLOCK_HEIGHT / 2 - PLAYER_HEIGHT / 2))
 		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
 			(player.y >= y + PLAYER_HEIGHT / 2) &&
 			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
+			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) {
+			//AEVec2 centre;
+			//AEVec2Set(&centre, x, (BLOCK_HEIGHT * cnt) / 2 + (y - BLOCK_HEIGHT / 2));
+			//if (player.x > (centre.x - BLOCK_WIDTH / 2)) player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
+			//else player.x = x + BLOCK_WIDTH / 2;
 			player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
+		}
+		
 	}
 }
 
-void trap_collision(s32 cnt, f32 x, f32 y) {
-	
-	if (((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-		(player.y >= y + PLAYER_HEIGHT / 2) &&
-		(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-		(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) == TRUE ) {
-
-		player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
-		if (damage_ok == TRUE) {
-				--player.Hp;
-				damage_ok = FALSE;
-				//call transparancy function(?) to show invincibility
-		}
-		else if (damage_ok == FALSE) {
-			if (AEFrameRateControllerGetFrameCount() % 75 == 0) {
-				damage_ok = TRUE;
-				//set transparacny function(?) to false
-			}
-
-		}
-	}
-	
-
-	
-}
+//void trap_collision(s32 cnt, f32 x, f32 y) {
+//	
+//	if (((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
+//		(player.y >= y + PLAYER_HEIGHT / 2) &&
+//		(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
+//		(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) == TRUE ) {
+//
+//		//player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+//		if (damage_ok == TRUE) {
+//				--player.Hp;
+//				damage_ok = FALSE;
+//				//call transparancy function(?) to show invincibility
+//		}
+//		else if (damage_ok == FALSE) {
+//			if (AEFrameRateControllerGetFrameCount() % 75 == 0) {
+//				damage_ok = TRUE;
+//				//set transparacny function(?) to false
+//			}
+//
+//		}
+//	}
+//	
+//}
 
 // x1 - x2 will be the anti-gravity zone
 void anti_gravity_zone(f32 x1, f32 x2) {

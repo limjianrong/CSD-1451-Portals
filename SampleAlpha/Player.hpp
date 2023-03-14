@@ -36,9 +36,6 @@ void player_collision();
 #define PLAYER_INITIAL_POS_X -450
 #define PLAYER_INITIAL_POS_Y -100
 
-//#define PLAYER_INITIAL_POS_X 2250
-//#define PLAYER_INITIAL_POS_Y 550
-
 // --------------  Initialise player  ----------------
 struct Player_stats {
 	f32 x, y, rotation;
@@ -64,7 +61,7 @@ struct Checkpoint {
 	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* checkpointTex;
 };
-#define NUM_OF_CHECKPOINT 2
+#define NUM_OF_CHECKPOINT 5
 void checkpoint_create(f32 x, f32 y, s32 index);
 
 

@@ -28,7 +28,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 
 Player_stats player;
-Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 1550, 1650, 50, 150}, {0, 2500, 2600, -50, 50} };
+Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 950, 1050, 400, 500}, {0, 3500, 3600, 900, 1000} , {0, 7050, 7150, 800, 900} , 
+												{0, 2600, 2700, -200, -100} , {0, 7050, 6950, 300, 500} };
 
 // ------  Text  ------
 extern s8 Albam_fontID;
@@ -118,8 +119,11 @@ void player_draw() {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------------- Checkpoint --------------
-	checkpoint_create(1550, 100, 0);
-	checkpoint_create(2550, 0, 1);
+	checkpoint_create(1000, 450, 0);// y+100
+	checkpoint_create(3550, 950, 1);//6, 3350, 200, 11
+	checkpoint_create(7100, 850, 2);//4, 7000, 750, 8
+	checkpoint_create(2650, -150, 3);//(4, 2550, -250, 10);
+	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Printing out no. of lives --------
 	if (player.Lives == 3) lives_counter = (s8*)"Lives: 3";
