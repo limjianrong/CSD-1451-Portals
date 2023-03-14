@@ -101,7 +101,7 @@ void variables_update() {
 	AEVec2Set(&center_cursor, x_middle_cursor, y_middle_cursor);
 	
 	// Origin is CENTER of window
-	AEVec2Set(&world_center_cursor, center_cursor.x + AEGfxGetWinMinX() - (-WINDOWLENGTH_X / 2), center_cursor.y + AEGfxGetWinMinY() - (-WINDOWLENGTH_Y / 2));
+	AEVec2Set(&world_center_cursor, center_cursor.x + AEGfxGetWinMinX() - (-WINDOWLENGTH_X / 2.0f), center_cursor.y + AEGfxGetWinMinY() - (-WINDOWLENGTH_Y / 2.0f));
 
 
 	// --------- Gets CENTER origin of constantly moving screen ---------

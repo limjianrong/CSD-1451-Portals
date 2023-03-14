@@ -115,7 +115,7 @@ void upgrade_draw() {
 		}
 		AEMtx33Scale(&scale, CARD_WIDTH, CARD_HEIGHT);
 		AEMtx33Rot(&rotate, CARD_ROTATION);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
@@ -137,7 +137,7 @@ void upgrade_draw() {
 			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 			break;
 		}
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 2, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
@@ -158,7 +158,7 @@ void upgrade_draw() {
 			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 			break;
 		}
-		AEMtx33Trans(&translate, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+		AEMtx33Trans(&translate, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
@@ -191,9 +191,9 @@ void upgrade_update() {
 	}
 
 	// Set card center for collision check
-	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
-	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
-	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4, AEGfxGetWinMinY() + AEGetWindowHeight() / 2);
+	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
 
 	// ----- Open upgrade screen -----
