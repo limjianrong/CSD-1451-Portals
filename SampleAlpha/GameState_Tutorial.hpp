@@ -11,7 +11,7 @@ void GameStateTutorialFree(void);
 void GameStateTutorialUnload(void);
 
 static enum asset {
-	player,
+	_player,
 	portals,
 	range
 };

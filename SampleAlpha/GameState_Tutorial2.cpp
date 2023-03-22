@@ -24,6 +24,7 @@ extern f32 buttonX, buttonY;
 // top row asset positions
 extern f32 assetX, assetY;
 
+
 AEVec2 asset3_scale[asset3_count];
 
 void GameStateTutorial2Load(void) {

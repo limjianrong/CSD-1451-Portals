@@ -51,7 +51,7 @@ void enemies_load() {
 
 	// ---- Enemy1 Texture ----
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-		enemy1[i].texture = AEGfxTextureLoad("Assets/enemy.png");
+		enemy1[i].texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeMan_stand.png");
 	}
 
 	// ---- Enemy2 Texture ----

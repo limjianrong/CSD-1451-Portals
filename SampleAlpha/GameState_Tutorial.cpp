@@ -1,6 +1,7 @@
 #include "AEEngine.h"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
+#include "Enemy.hpp"
 #include "Utilities.hpp"
 #include "GameState_Tutorial.hpp"
 
@@ -16,13 +17,14 @@ extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
 extern f32 originX, originY; // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
-
 // button positions
 f32 buttonX, buttonY;
 // top row asset positions
 f32 assetX, assetY;
 // bottom row asset positions
 f32 asset2X, asset2Y;
+
+AEVec2 asset2_scale[asset2_count];
 
 void GameStateTutorialLoad(void) {
 	// buttons
@@ -31,13 +33,13 @@ void GameStateTutorialLoad(void) {
 	// background
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 	// player
-	assets[player] = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
+	assets[_player] = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
 	// portals
 	assets[portals] = AEGfxTextureLoad("Assets/card.png");
 	// range
 	assets[range] = AEGfxTextureLoad("Assets/greencircle.png");
 	// enemy1
-	assets2[enemy1] = AEGfxTextureLoad("Assets/enemy.png");
+	assets2[enemy1] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeMan_stand.png");
 	// enemy2
 	assets2[enemy2] = AEGfxTextureLoad("Assets/bat.png");
 
@@ -52,6 +54,12 @@ void GameStateTutorialInit(void) {
 
 	asset2X = originX - WINDOWLENGTH_X / 6;
 	asset2Y = originY;
+
+	//asset_scale[_player] = { player.width, player.height };
+	//asset_scale[portals] = { 40.f, 40.f };
+	//asset_scale[range] = { 40.f, 40.f };
+	asset2_scale[enemy1] = { ENEMY1_WIDTH, ENEMY1_HEIGHT };
+	asset2_scale[enemy2] = { ENEMY2_WIDTH, ENEMY2_HEIGHT };
 }
 
 void GameStateTutorialUpdate(void) {
@@ -115,7 +123,7 @@ void GameStateTutorialDraw(void) {
 
 	// ------- Drawing of bottom row asset mesh + Setting texture -------
 	for (int k = 0; k <= 1; k += 1) {
-		AEMtx33Scale(&scale, 70.f, 70.f); // button scale
+		AEMtx33Scale(&scale, asset2_scale[k].x, asset2_scale[k].y); // button scale
 		AEMtx33Trans(&translate, asset2X + (k * (WINDOWLENGTH_X / 3)) % WINDOWLENGTH_X, asset2Y); // x = center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
@@ -152,6 +160,7 @@ void GameStateTutorialDraw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Avoid bullets from", 0.07, -0.25, 0.75F, 0, 0, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"enemy", 0.25, -0.4, 0.75F, 0, 0, 0);
 }
+
 void GameStateTutorialFree(void) {
 
 }
@@ -161,7 +170,7 @@ void GameStateTutorialUnload(void) {
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
 
-	AEGfxTextureUnload(assets[player]);
+	AEGfxTextureUnload(assets[_player]);
 	AEGfxTextureUnload(assets[portals]);
 	AEGfxTextureUnload(assets[range]);
 	AEGfxTextureUnload(assets2[enemy1]);
