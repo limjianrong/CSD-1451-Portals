@@ -339,9 +339,9 @@ void boss_laser_beam() {
 			return;
 		}
 
-		if (AETestRectToRect(&laser_beam.center, laser_beam.width, laser_beam.height, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&laser_beam.center, laser_beam.width, laser_beam.height, &player.center, player.width, player.height)) {
 			if (laser_beam.damaged_player == FALSE) {
-				--player.Lives;
+				--player.Hp;
 				laser_beam.damaged_player = TRUE;
 			}
 		}

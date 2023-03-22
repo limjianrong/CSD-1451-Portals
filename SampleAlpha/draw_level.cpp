@@ -460,7 +460,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_LEFT_RIGHT; i++) {
 		if (leftright[i].pos == OG) {
 			leftright[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (leftright[i].x >= leftright[i].end_x) {
 				leftright[i].pos = MOVED;
 			}
@@ -468,7 +468,7 @@ void move_update() {
 
 		if (leftright[i].pos == MOVED) {
 			leftright[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (leftright[i].x <= leftright[i].start_x) {
 				leftright[i].pos = OG;
 			}
@@ -478,7 +478,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_UP_DOWN; i++) {
 		if (updown[i].pos == OG) {
 			updown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (updown[i].y >= updown[i].end_y) {
@@ -488,7 +488,7 @@ void move_update() {
 
 		if (updown[i].pos == MOVED) {
 			updown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (updown[i].y <= updown[i].start_y) {
 				updown[i].pos = OG;
 			}
@@ -499,7 +499,7 @@ void move_update() {
 		if (diagonalup[i].pos == OG) {
 			diagonalup[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
@@ -511,7 +511,7 @@ void move_update() {
 		if (diagonalup[i].pos == MOVED) {
 			diagonalup[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
@@ -525,7 +525,7 @@ void move_update() {
 		if (diagonaldown[i].pos == OG) {
 			diagonaldown[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				}
@@ -537,7 +537,7 @@ void move_update() {
 		if (diagonaldown[i].pos == MOVED) {
 			diagonaldown[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
@@ -548,14 +548,14 @@ void move_update() {
 	}
 
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 			if (onetimeuse[i].timer >= 3) onetimeuse[i].flag = NOT_ACTIVE;
 		}
 	}
 
 	for (s32 i = 0; i < MAX_SPIKES; i++) {
-		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 			if (damage_ok == TRUE) {
 				--player.Hp;
 				damage_ok = FALSE;
@@ -570,7 +570,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_VERTICAL_WALL; i++) {
 		if (verticalwall[i].pos == OG) {
 			verticalwall[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&verticalwall[i].center, BLOCK_WIDTH, BLOCK_HEIGHT * verticalwall[i].length, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&verticalwall[i].center, BLOCK_WIDTH, BLOCK_HEIGHT * verticalwall[i].length, &player.center, player.width, player.height)) {
 				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (verticalwall[i].x <= verticalwall[i].end_x) {
@@ -589,7 +589,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
 		if (leftrightspikes[i].pos == OG) {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				if (damage_ok == TRUE) {
 					--player.Hp;
 					damage_ok = FALSE;
@@ -606,7 +606,7 @@ void move_update() {
 
 		if (leftrightspikes[i].pos == MOVED) {
 			leftrightspikes[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				if (damage_ok == TRUE) {
 					--player.Hp;
 					damage_ok = FALSE;
@@ -627,21 +627,21 @@ void move_update() {
 
 void platform_collision(s32 cnt, f32 x, f32 y) {
 	for (f32 i = 0; i < cnt; i++) {
-		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-			(player.y >= y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2))
-			player.y = BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2;
+		if ((player.y <= BLOCK_HEIGHT + y + player.height / 2) &&
+			(player.y >= y + player.height / 2) &&
+			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.width / 2) &&
+			(player.x >= x + BLOCK_WIDTH / 2 - player.width / 2))
+			player.y = BLOCK_HEIGHT + y + player.height / 2;
 	}
 }
 
 void verti_collision(s32 cnt, f32 x, f32 y) {
 	for (f32 i = 0; i < cnt; i++) {
-		if ((player.y <= BLOCK_HEIGHT + y + PLAYER_HEIGHT / 2) &&
-			(player.y >= y + PLAYER_HEIGHT / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - PLAYER_WIDTH / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - PLAYER_WIDTH / 2)) {
-			player.x = -BLOCK_WIDTH + x + PLAYER_WIDTH / 2;
+		if ((player.y <= BLOCK_HEIGHT + y + player.height / 2) &&
+			(player.y >= y + player.height / 2) &&
+			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.width / 2) &&
+			(player.x >= x + BLOCK_WIDTH / 2 - player.width / 2)) {
+			player.x = -BLOCK_WIDTH + x + player.width / 2;
 		}
 		
 	}

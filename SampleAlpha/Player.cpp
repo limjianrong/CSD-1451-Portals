@@ -19,7 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Enemy.hpp"
 #include "Enemy3.hpp"
 #include <string>
-
+#include <fstream>
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
@@ -41,7 +41,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 bool free_moving_camera{};
-float camera_speed{}, camera_slowdown{};
+float camera_speed{};
 // ----- Camera -----
 extern bool isPaused;
 // ----- Cursor positions -----
@@ -52,8 +52,12 @@ extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 extern f32 originX, originY;			// Center of screen, no matter where the camera moves
 
 AEVec2 cameraPos{ 0, 0 };
+float constexpr camera_buffer_range{ 200.0f };
 // ----- Enemy -----
 //extern Enemy1_stats enemy1_a, enemy1_b;
+
+//---------File IO-------
+std::ifstream ifs{};
 
 void player_load() {
 	player.player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
@@ -62,12 +66,25 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
+	ifs.open("Assets/textFiles/player_stats.txt");
 }
 
 void player_init() {
 	// -------- Player --------
-	player.x				= PLAYER_INITIAL_POS_X;		// Player's initial X position
-	player.y				= PLAYER_INITIAL_POS_Y;		// Player's initial Y position
+	std::string str{};
+	ifs >> str >> player.width;
+	ifs >> str >> player.height;
+	ifs >> str >> player.initial_pos_x;
+	ifs >> str >> player.initial_pos_y;
+	ifs >> str >> player.highest_level;
+	ifs >> str >> player.XP_TILL_10;
+	ifs >> str >> player.XP_TILL_20;
+	ifs >> str >> player.XP_TILL_30;
+	ifs >> str >> player.XP_RESET;
+	ifs.close();
+
+	player.x				= player.initial_pos_x;		// Player's initial X position
+	player.y				= player.initial_pos_y;		// Player's initial Y position
 	player.rotation			= 0.f;						// Player's Rotation
 	player.Max_Hp			= 5;						// Player's Maximum Health
 	player.Hp				= player.Max_Hp;			// Player's Health
@@ -78,17 +95,19 @@ void player_init() {
 	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
 	// -------- Camera --------
-	AEGfxSetCamPosition(0, 0);							// Reset camera
+	cameraPos.x = 0;
+	cameraPos.y = 0; // Reset camera
 	free_moving_camera = false;
 	camera_speed = 30.0f;
-	camera_slowdown = 10.0f;
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
 		checkpoint[i].check = FALSE;					// Disable all checkpoints
 	}
 
 	// -------- Pause Menu --------
-	isPaused = FALSE;									// Unpause game
+	isPaused = FALSE;		// Unpause game
+
+
 }
 
 void player_draw() {
@@ -96,7 +115,7 @@ void player_draw() {
 	
 	// ---------------- Player ----------------
 	// Creates a player size 50x50
-	AEMtx33Scale(&player.scale, PLAYER_WIDTH, PLAYER_HEIGHT);
+	AEMtx33Scale(&player.scale, player.width, player.height);
 	// Rotate player
 	AEMtx33Rot(&player.rotate, PI);
 	// Move player when A / D keys pressed
@@ -168,12 +187,18 @@ void player_update() {
 	if (AEInputCheckCurr(AEVK_D)) {
 		player.x += 5 * player.Speed;
 		num_of_Dpressed++;
+		if (player.x > ((AEGfxGetWinMinX() + AEGfxGetWinMaxX())/2 + camera_buffer_range) && free_moving_camera == false) {
+			cameraPos.x += 5 * player.Speed;
+		}
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
 		player.x -= 5 * player.Speed;
 		num_of_Apressed++;
+		if (player.x < ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - camera_buffer_range) &&  player.x > 0 && free_moving_camera == false) {
+			cameraPos.x -= 5 * player.Speed;
+		}
 		//player.rotation += 0.1f;
 	}
 	
@@ -229,25 +254,34 @@ void player_update() {
 
 	if (AEInputCheckTriggered(AEVK_B)) {
 		free_moving_camera = !free_moving_camera;
+		//if previous camera state was free_moving(for level-design), and B was pressed
+		//switch back to camera state that is used for playing, now the camera goes back
+		//to following the player
+		if (!free_moving_camera) {
+			cameraPos.x = player.x;
+			cameraPos.y = player.y;
+		}
 	}
 
 	if(free_moving_camera == false){
-	//camera follow player's x
-		if (player.x > 0) {
-			cameraPos.x = player.x;
-		}
-		else if (player.x <= 0) {
-			cameraPos.x = 0;
+	
+		//if player is walking left and playerx goes from +ve to -ve, decrement camera.x 
+		if (player.x <= 0 && cameraPos.x > 0) {
+			cameraPos.x -= 5*player.Speed;
 		}
 
+		//camera will always follow player's y if player.y is +ve
 		if (player.y > 0) {
 			cameraPos.y = player.y;
 		}
-		else if (player.x <= 0) {
+
+		//if player.y is -ve, camera.y stays fixed at 0
+		else if (player.y < 0) {
 			cameraPos.y = 0;
 		}
-	}
 
+	}
+	//toggle free moving camera for debugging/level design purposes
 	if (free_moving_camera == true) {
 		if (AEInputCheckCurr(AEVK_I))
 			cameraPos.y += camera_speed;
@@ -285,17 +319,17 @@ void player_collision() {
 
 
 	// left of screen
-	if (player.x < -WINDOWLENGTH_X / 2.f + PLAYER_WIDTH / 2.f)
-		player.x = -WINDOWLENGTH_X / 2.f + PLAYER_WIDTH / 2.f;
+	if (player.x < -WINDOWLENGTH_X / 2.f + player.width / 2.f)
+		player.x = -WINDOWLENGTH_X / 2.f + player.width / 2.f;
 
 	// right of screen ---- CURRENTLY NO LIMIT ----
 
 	// top of screen
-	if (player.y > (WINDOWLENGTH_Y / 2.f - PLAYER_HEIGHT / 2.f) * 10)
-		player.y = (WINDOWLENGTH_Y / 2.f - PLAYER_HEIGHT / 2.f) * 10;
+	if (player.y > (WINDOWLENGTH_Y / 2.f - player.height / 2.f) * 10)
+		player.y = (WINDOWLENGTH_Y / 2.f - player.height / 2.f) * 10;
 
 	// bottom of screen
-	if (player.y < -WINDOWLENGTH_Y / 2.f + PLAYER_HEIGHT / 2.f) {
+	if (player.y < -WINDOWLENGTH_Y / 2.f + player.height / 2.f) {
 		--player.Lives;
 		player.Hp = player.Max_Hp;
 
@@ -307,16 +341,23 @@ void player_collision() {
 				break;
 			}
 			else {
-				player.x = PLAYER_INITIAL_POS_X;
-				player.y = PLAYER_INITIAL_POS_Y;
+				player.x = player.initial_pos_x;
+				player.y = player.initial_pos_y;
 			}
 		}
+		if (player.x > 0) {
+			cameraPos.x = player.x;
+		}
+		else {
+			cameraPos.x = 0;
+		}
+		cameraPos.y = player.y;
 	}
 }
 
 void checkpoint_create(f32 x, f32 y, s32 index) {
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; ++i) {
-		AEMtx33Scale(&checkpoint[i].scale, PLAYER_WIDTH * 2, PLAYER_HEIGHT * 2);
+		AEMtx33Scale(&checkpoint[i].scale, player.width * 2, player.height * 2);
 		AEMtx33Rot(&checkpoint[i].rotate, PI);
 		AEMtx33Trans(&checkpoint[i].translate, x, y);
 		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].rotate, &checkpoint[i].scale);

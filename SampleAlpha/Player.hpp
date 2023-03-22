@@ -20,27 +20,22 @@ void player_unload();
 void player_collision();
 
 
-// -----  Player's width & height (Adjustable)  -------
-#define PLAYER_WIDTH 50.0f
-#define PLAYER_HEIGHT 50.0f
-
 // -----  Player's levelling requirements  -------
-#define PLAYER_NEEDED_XP_TILL_10 40
-#define PLAYER_NEEDED_XP_TILL_20 100
-#define PLAYER_NEEDED_XP_TILL_30 160
-#define PLAYER_XP_RESET			 0
-
-#define PLAYER_HIGHEST_LVL 30		// Highest level a player can level up to
-
-// -----  Player's initial spawn position (Adjustable)  -------
-#define PLAYER_INITIAL_POS_X -450
-#define PLAYER_INITIAL_POS_Y -100
+//#define PLAYER_NEEDED_XP_TILL_10 40
+//#define PLAYER_NEEDED_XP_TILL_20 100
+//#define PLAYER_NEEDED_XP_TILL_30 160
+//#define PLAYER_XP_RESET			 0
 
 // --------------  Initialise player  ----------------
 struct Player_stats {
+	s32 initial_pos_x{}; //initial start point of player
+	s32 initial_pos_y{}; //initial start point of player
+	s32 highest_level{}; //highest level a player can level up to
+	s32 XP_TILL_10{}, XP_TILL_20{}, XP_TILL_30{}, XP_RESET{};
+
 	f32 x, y, rotation;
 	AEVec2 center{ 0,0 }; // same as .x & .y
-	f32 width{ PLAYER_WIDTH }, height{ PLAYER_HEIGHT };
+	f32 width{ }, height{};
 	s32 Max_Hp, Hp, Lives;
 	f32 Speed;
 	s32 Level, XP, requiredXP;

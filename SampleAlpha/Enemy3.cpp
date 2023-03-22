@@ -231,7 +231,7 @@ void enemy3_unload() {
 //	//s32 value = AEFrameRateControllerGetFrameCount() % 100;
 //
 //	if (damage_allowed3) {
-//		if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/75, ENEMY3_HEIGHT, &player_vec, PLAYER_WIDTH/75, PLAYER_HEIGHT)) {
+//		if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/75, ENEMY3_HEIGHT, &player_vec, player.width/75, player.height)) {
 //			player->Hp -= 3;
 //		damage_allowed3 = FALSE;
 //		}
@@ -250,7 +250,7 @@ void enemy3_collision() {
 	
 		if (damage_allowed3) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, PLAYER_WIDTH/10, PLAYER_HEIGHT/10)) {
+			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, player.width/10, player.height/10)) {
 				player.Hp -= 3;
 				// disables damage temporarily once collided
 				damage_allowed3 = FALSE;

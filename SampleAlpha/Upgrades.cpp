@@ -281,7 +281,7 @@ void shield_upgrade_draw() {
 
 	AEGfxSetTransparency(0.6f);
 	// Creates a shield size 70x70
-	AEMtx33Scale(&shield.scale, PLAYER_WIDTH + 20, PLAYER_HEIGHT + 20);
+	AEMtx33Scale(&shield.scale, player.width + 20, player.height + 20);
 	AEMtx33Rot(&shield.rotate, PI);
 	AEMtx33Trans(&shield.translate, shield.x, shield.y);
 	AEMtx33Concat(&shield.transform, &shield.rotate, &shield.scale);

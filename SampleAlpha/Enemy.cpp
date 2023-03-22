@@ -177,7 +177,7 @@ void enemy1_collision() {
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (damage_allowed) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, PLAYER_WIDTH, PLAYER_HEIGHT)) {
+			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
 				--player.Hp;
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;

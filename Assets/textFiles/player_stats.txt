@@ -1,0 +1,9 @@
+player_width 50.0
+player_height 50.0
+player_initial_x -450
+player_initial_y -100
+highest_level 30
+XP_TILL_10 40
+XP_TILL_20 100
+XP_TILL_30 160
+XP_RESET 0

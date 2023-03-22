@@ -87,13 +87,13 @@ void GameStatePlatformerLoad(void) {
   Initialise all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
+	player_init();				// Player
 	draw_level_init();			// Level
 	enemies_init();				// Enemy1 & Enemy2
 	enemy3_init();				// Enemy3
 	boss_init();				// Boss
 	portal_init();				// Portal
 	upgrades_init();			// Upgrades
-	player_init();				// Player
 }
 /*!**************************************************************************************************
 \brief

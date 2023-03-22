@@ -39,7 +39,7 @@ extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 
 //used to check portal collision with player
 extern Player_stats player;
-
+extern AEVec2 cameraPos;
 //used to check if game is paused
 extern bool isPaused;
 
@@ -128,6 +128,12 @@ void update_portal() {
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
 			if (player.x > 0.0f) {
 				portal_1.x += static_cast<s32>(player.x);
+				if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+					portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+				}
+				else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+					portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+				}
 			}
 			if (player.y > 0.0f) {
 				portal_1.y += static_cast<s32>(player.y);
@@ -160,6 +166,12 @@ void update_portal() {
 			portal_2.x -= AEGetWindowWidth() / 2;
 			if (player.x > 0.0f) {
 				portal_2.x += static_cast<s32>(player.x);
+				if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+					portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+				}
+				else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+					portal_2.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+				}
 			}
 
 			//offset portal_2.y by windowheight()/2
@@ -202,6 +214,12 @@ void update_portal() {
 			portal_2.created = false;
 			decrease_cooldown = true;
 			portal_timer = portal_cooldown;
+
+			//set camera to follow player if the player teleports
+			if (player.x > 0) {
+				cameraPos.x = player.x;
+			}
+			cameraPos.y = player.y;
 		}
 
 		//function that checks if enemy/boss bullets are colliding with the portal
