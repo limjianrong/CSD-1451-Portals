@@ -70,8 +70,8 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	//enemy1_create(600, 90, 0);
-	enemy1_create(-300, 90, 0);
+	enemy1_create(600, 90, 0);
+	//enemy1_create(-300, 90, 0);
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 

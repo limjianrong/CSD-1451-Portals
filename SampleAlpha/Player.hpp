@@ -30,18 +30,18 @@ void player_collision();
 struct Player_stats {
 	s32 initial_pos_x{}; //initial start point of player
 	s32 initial_pos_y{}; //initial start point of player
-	s32 highest_level{}; //highest level a player can level up to
-	s32 XP_TILL_10{}, XP_TILL_20{}, XP_TILL_30{}, XP_RESET{};
+	s32 XP_TILL_10, XP_TILL_20, XP_TILL_30, XP_RESET;
+	s32 highest_level; //highest level a player can level up to
 
 	f32 x, y, rotation;
 	AEVec2 center{ 0,0 }; // same as .x & .y
 	f32 width, height;
 
 	// ----- Player's attributes -----
-	s32 Max_Hp, Hp, Lives;
+	s32 Max_Hp, Max_Hp_Reset, Hp, Lives, Lives_Reset;
 	f32 Lives_width, Lives_height, Lives_x, Lives_y;
-	f32 Speed;
-	s32 Level, XP, requiredXP;
+	f32 Speed, Speed_Reset;
+	s32 Level, Level_Reset, XP, requiredXP;
 	bool justLeveledUp;
 
 	AEVec2 bottom_hotspot{};

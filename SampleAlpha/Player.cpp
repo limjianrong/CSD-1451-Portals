@@ -77,16 +77,51 @@ void player_load() {
 void player_init() {
 	// -------- Player --------
 	std::string str{};
-	ifs >> str >> player.width;
-	ifs >> str >> player.height;
-	ifs >> str >> player.initial_pos_x;
-	ifs >> str >> player.initial_pos_y;
-	ifs >> str >> player.highest_level;
-	ifs >> str >> player.XP_TILL_10;
-	ifs >> str >> player.XP_TILL_20;
-	ifs >> str >> player.XP_TILL_30;
-	ifs >> str >> player.XP_RESET;
+	ifs >> str >> player.width;				// Player's width
+	ifs >> str >> player.height;			// Player's height
+	ifs >> str >> player.initial_pos_x;		// Player's initial X position
+	ifs >> str >> player.initial_pos_y;		// Player's initial Y position
+
+	ifs >> str >> player.highest_level;		// Level cap of 30 lvls
+	ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
+	ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
+	ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
+	ifs >> str >> player.XP_RESET;			// Reset XP to 0
+
+	//ifs >> str >> player.rotation;			// Player's Rotation
+	//ifs >> str >> player.Max_Hp;			// Player's Maximum Health
+	//ifs >> str >> player.Hp;				// Player's Maximum Health
+	//ifs >> str >> player.Max_Hp_Reset;		// Player's Maximum Health
+	//ifs >> str >> player.Lives_Reset;		// Player's Lives
+	//ifs >> str >> player.Speed_Reset;		// Player's Movement Speed
+	//ifs >> str >> player.Level_Reset;		// Player's Level
+	//ifs >> str >> player.XP_RESET;			// Player's XP
+	//ifs >> str >> player.justLeveledUp;		// Indicator to show player levelling up
+
+	/*rotation 0
+	Max_Hp 5
+	Hp 5
+	Max_Hp_Reset 5
+	Lives_Reset 2
+	Speed_Reset 1
+	Level_Reset 0
+	XP_Reset 0
+	justLeveledUp 0*/
+
 	ifs.close();
+
+	//std::cout << player.Lives_Reset << std::endl;
+	//player.x				= player.initial_pos_x;		// Player's initial X position
+	//player.y				= player.initial_pos_y;		// Player's initial Y position
+	////player.rotation			= 0.f;					// Player's Rotation
+	//player.Hp				= player.Max_Hp_Reset;		// Player's Health
+	//player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
+	//player.Lives			= player.Lives_Reset;		// Player's Lives
+	//player.Speed			= player.Speed_Reset;		// Player's Movement Speed
+	//player.Level			= player.Level_Reset;		// Player's Level
+	//player.XP				= player.XP_RESET;			// Player's XP
+	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
+
 
 	player.x				= player.initial_pos_x;		// Player's initial X position
 	player.y				= player.initial_pos_y;		// Player's initial Y position
@@ -99,8 +134,9 @@ void player_init() {
 	player.XP				= 0;						// Player's XP
 	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
-	player.Lives_height = 50.0f;
-	player.Lives_width = 50.0f;
+
+	player.Lives_height		= 50.0f;
+	player.Lives_width		= 50.0f;
 	//player.Lives_x = 0;
 	//player.Lives_y = 0;
 
@@ -116,7 +152,6 @@ void player_init() {
 
 	// -------- Pause Menu --------
 	isPaused = FALSE;		// Unpause game
-
 
 }
 
@@ -163,7 +198,7 @@ void player_draw() {
 	// --- 1st Life ---
 	AEMtx33Scale(&player.scale, player.Lives_width, player.Lives_height);
 	AEMtx33Rot(&player.rotate, PI);
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 25.0f);
 	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
 	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
 	AEGfxSetTransform(player.transform.m);
@@ -174,7 +209,7 @@ void player_draw() {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// --- 2nd Life ---
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 25.0f);
 	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
 	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
 	AEGfxSetTransform(player.transform.m);
@@ -185,7 +220,7 @@ void player_draw() {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// --- 3rd Life ---
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 25.0f);
 	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
 	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
 	AEGfxSetTransform(player.transform.m);
@@ -227,7 +262,11 @@ void player_draw() {
 void player_update() {
 	// --------  Setting player's position into a vector --------
 	AEVec2Set(&player.center, player.x, player.y);
-
+	if (AEInputCheckCurr(AEVK_J)) {
+		player.Max_Hp = 10;						// Player's Maximum Health
+		player.Hp = player.Max_Hp;			// Player's Health
+		std::cout << player.Max_Hp << std::endl;
+	}
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {
@@ -251,22 +290,22 @@ void player_update() {
 	//update player's bottom hotspot
 	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
 	// --------  Player's level & XP   ----------
-	// FOR NOW ONLY: 20xp to level up from lvl0 -> lvl1 (1 enemy = 20xp)
-	if (player.XP == 20 && player.Level == 0) {
+	// 40xp to level up for lvls 0-10 (1 enemy = 20xp)
+	if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
 		player.Level++;
-		player.XP = 0;
+		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
 	}
-	// FOR NOW ONLY: 40xp to level up from lvl1 -> lvl2 (1 enemy = 20xp)
-	else if (player.XP == 40 && player.Level == 1) {
+	// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
+	else if (player.XP == player.XP_TILL_20 && player.Level >= 10 && player.Level <= 20) {
 		player.Level++;
-		player.XP = 0;
+		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
 	}
-	// FOR NOW ONLY: 60xp to level up from lvl2 -> lvl3 (1 enemy = 20xp)
-	else if (player.XP == 60 && player.Level == 2) {
+	// 160xp to level up for lvls 20-30 (1 enemy = 20xp)
+	else if (player.XP == player.XP_TILL_30 && player.Level >= 20 && player.Level <= 30) {
 		player.Level++;
-		player.XP = 0;
+		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
 	}
 
