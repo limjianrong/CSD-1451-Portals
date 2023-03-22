@@ -48,7 +48,7 @@ void GameStateMainmenuUpdate(void) {
 			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16) {
 			if (i == 15) gGameStateNext = GS_Platformer;
-			else if (i == 19) std::cout << "TUTORIAL NOT YET" << std::endl; //gGameStateNext = GS_Tutorial;
+			else if (i == 19) gGameStateNext = GS_Tutorial;
 			else if (i == 23) gGameStateNext = GS_Settings;
 			else if (i == 27) gGameStateNext = GS_QUIT;
 		}

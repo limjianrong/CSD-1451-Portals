@@ -24,6 +24,7 @@ enum
 	GS_MainMenu = 0,
 	GS_Platformer,
 	GS_Settings,
+	GS_Tutorial,
 	GS_Win,
 	GS_Lose,
 	// special game state. Do not change
