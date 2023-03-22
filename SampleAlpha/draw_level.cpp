@@ -195,6 +195,10 @@ void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32
 
 void draw_level_update() {
 	player.y -= GRAVITY;
+
+	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+		enemy1[i].y -= GRAVITY;
+	}
 	move_update();
 }
 
@@ -626,12 +630,24 @@ void move_update() {
 
 
 void platform_collision(s32 cnt, f32 x, f32 y) {
+	// Player collision
 	for (f32 i = 0; i < cnt; i++) {
 		if ((player.y <= BLOCK_HEIGHT + y + player.height / 2) &&
 			(player.y >= y + player.height / 2) &&
 			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.width / 2) &&
 			(player.x >= x + BLOCK_WIDTH / 2 - player.width / 2))
 			player.y = BLOCK_HEIGHT + y + player.height / 2;
+	}
+
+	// Enemy1 collision
+	for (s32 j = 0; j < MAX_ENEMIES_1; ++j) {
+		for (f32 i = 0; i < cnt; i++) {
+			if ((enemy1[j].y <= BLOCK_HEIGHT + y + enemy1[j].height / 2) &&
+				(enemy1[j].y >= y + enemy1[j].height / 2) &&
+				(enemy1[j].x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - enemy1[j].width / 2) &&
+				(enemy1[j].x >= x + BLOCK_WIDTH / 2 - enemy1[j].width / 2))
+				enemy1[j].y = BLOCK_HEIGHT + y + enemy1[j].height / 2;
+		}
 	}
 }
 

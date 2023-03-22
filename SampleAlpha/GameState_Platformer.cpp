@@ -34,11 +34,11 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 //#include <iostream>
 
 // --- Mesh ---
-extern AEGfxVertexList* square_mesh;					// Created square mesh
-extern AEMtx33 scale, rotate, translate, transform;		// TRS
-extern s8 Albam_fontID;									// FontID
-static AEGfxTexture* buttonNotPressed, * buttonPressed; // Button textures
-AEGfxTexture* background2Tex;							// Background texture
+extern AEGfxVertexList* square_mesh;													// Created square mesh
+extern AEMtx33 scale, rotate, translate, transform;										// TRS
+extern s8 Albam_fontID;																	// FontID
+static AEGfxTexture* buttonNotPressed, * buttonPressed;									// Button textures
+AEGfxTexture* background_layer1Tex, * background_layer2Tex, * background_layer3Tex;		// Background texture
 
 // ----- Game objects -----
 extern Player_stats player;		// player stats
@@ -67,7 +67,9 @@ void GameStatePlatformerLoad(void) {
 	// --- Loads textures ---
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
-	background2Tex = AEGfxTextureLoad("Assets/backgroundColorFall.png");
+	background_layer1Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_background.png");
+	background_layer2Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_tiles.png");
+	background_layer3Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_hills.png");
 
 	// --- Loads mesh ---
 	mesh_load();
@@ -164,7 +166,13 @@ void GameStatePlatformerDraw(void) {
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
 	AEGfxSetTransform(transform.m);
-	AEGfxTextureSet(background2Tex, 0, 0);
+	AEGfxTextureSet(background_layer1Tex, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+	AEGfxTextureSet(background_layer2Tex, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+	AEGfxTextureSet(background_layer3Tex, 0, 0);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	draw_level_draw();		// Level
@@ -255,7 +263,9 @@ void GameStatePlatformerUnload(void) {
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
-	AEGfxTextureUnload(background2Tex);
+	AEGfxTextureUnload(background_layer1Tex);
+	AEGfxTextureUnload(background_layer2Tex);
+	AEGfxTextureUnload(background_layer3Tex);
 
 	// Mesh free
 	AEGfxMeshFree(square_mesh);

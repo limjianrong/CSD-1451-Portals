@@ -66,6 +66,11 @@ void player_load() {
 	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
+
+	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
+	//player.fullLivesTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Items/platformPack_item017.png");
+	player.emptyLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/outlineCrystal.png");
+
 	ifs.open("Assets/textFiles/player_stats.txt");
 }
 
@@ -93,6 +98,11 @@ void player_init() {
 	player.Level			= 0;						// Player's Level
 	player.XP				= 0;						// Player's XP
 	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
+
+	player.Lives_height = 50.0f;
+	player.Lives_width = 50.0f;
+	//player.Lives_x = 0;
+	//player.Lives_y = 0;
 
 	// -------- Camera --------
 	cameraPos.x = 0;
@@ -144,10 +154,46 @@ void player_draw() {
 	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Printing out no. of lives --------
-	std::string lives_string = "Lives: ";
+
+	/*std::string lives_string = "Lives: ";
 	AEGfxPrint(Albam_fontID, &lives_string[0], -1.0f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
 	std::string lives_counter_string = std::to_string(player.Lives);
-	AEGfxPrint(Albam_fontID, &lives_counter_string[0], -0.70f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, &lives_counter_string[0], -0.70f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);*/
+
+	// --- 1st Life ---
+	AEMtx33Scale(&player.scale, player.Lives_width, player.Lives_height);
+	AEMtx33Rot(&player.rotate, PI);
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
+	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
+	AEGfxSetTransform(player.transform.m);
+	if (player.Lives >= 1)
+		AEGfxTextureSet(player.fullLivesTex, 0, 0);
+	else
+		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+	// --- 2nd Life ---
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
+	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
+	AEGfxSetTransform(player.transform.m);
+	if (player.Lives >= 2)
+		AEGfxTextureSet(player.fullLivesTex, 0, 0);
+	else
+		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+	// --- 3rd Life ---
+	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 50.0f);
+	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
+	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
+	AEGfxSetTransform(player.transform.m);
+	if (player.Lives >= 3)
+		AEGfxTextureSet(player.fullLivesTex, 0, 0);
+	else
+		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// -------- Printing out Hp ----------
 	std::string hp_string = "Hp: ";
@@ -201,10 +247,6 @@ void player_update() {
 		}
 		//player.rotation += 0.1f;
 	}
-	
-
-
-
 
 	//update player's bottom hotspot
 	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
@@ -307,12 +349,18 @@ void player_update() {
 }
 
 void player_unload() {
+	// Unload player sprites textures
 	AEGfxTextureUnload(player.player_standTex);
 	AEGfxTextureUnload(player.player_left1Tex);
 	AEGfxTextureUnload(player.player_right1Tex);
 	AEGfxTextureUnload(player.player_left2Tex);
 	AEGfxTextureUnload(player.player_right2Tex);
 	AEGfxTextureUnload(checkpoint[0].checkpointTex);
+
+	// Unload Lives (Heart) texture
+	AEGfxTextureUnload(player.fullLivesTex);
+	AEGfxTextureUnload(player.emptyLivesTex);
+
 }
 
 void player_collision() {

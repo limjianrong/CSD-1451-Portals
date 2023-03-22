@@ -35,8 +35,11 @@ struct Player_stats {
 
 	f32 x, y, rotation;
 	AEVec2 center{ 0,0 }; // same as .x & .y
-	f32 width{ }, height{};
+	f32 width, height;
+
+	// ----- Player's attributes -----
 	s32 Max_Hp, Hp, Lives;
+	f32 Lives_width, Lives_height, Lives_x, Lives_y;
 	f32 Speed;
 	s32 Level, XP, requiredXP;
 	bool justLeveledUp;
@@ -45,6 +48,7 @@ struct Player_stats {
 	// ----- Transformation & Texture -----
 	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex;
+	AEGfxTexture* fullLivesTex, * emptyLivesTex;
 };
 
 // --------------  Checkpoints  ----------------
