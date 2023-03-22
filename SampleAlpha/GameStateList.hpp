@@ -25,6 +25,7 @@ enum
 	GS_Platformer,
 	GS_Settings,
 	GS_Tutorial,
+	GS_Tutorial2,
 	GS_Win,
 	GS_Lose,
 	// special game state. Do not change

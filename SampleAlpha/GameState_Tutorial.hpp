@@ -20,3 +20,5 @@ static enum asset2 {
 	enemy1,
 	enemy2
 };
+
+

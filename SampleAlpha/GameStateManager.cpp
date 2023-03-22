@@ -24,6 +24,7 @@
 #include "GameState_Win.hpp"
 #include "GameState_Lose.hpp"
 #include "GameState_Tutorial.hpp"
+#include "GameState_Tutorial2.hpp"
 
 u32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
@@ -120,6 +121,14 @@ void GameStateMgrUpdate()
 			GameStateDraw = GameStateTutorialDraw;
 			GameStateFree = GameStateTutorialFree;
 			GameStateUnload = GameStateTutorialUnload;
+			break;
+		case GS_Tutorial2:
+			GameStateLoad = GameStateTutorial2Load;
+			GameStateInit = GameStateTutorial2Init;
+			GameStateUpdate = GameStateTutorial2Update;
+			GameStateDraw = GameStateTutorial2Draw;
+			GameStateFree = GameStateTutorial2Free;
+			GameStateUnload = GameStateTutorial2Unload;
 			break;
 		default:	// Error handling
 			AE_FATAL_ERROR("invalid state!!");

@@ -65,7 +65,7 @@ void GameStateTutorialUpdate(void) {
 			center_cursor.y >= buttonY - WINDOWLENGTH_Y / 16 &&
 			center_cursor.y <= buttonY + WINDOWLENGTH_Y / 16)) {
 			if (i == 0) gGameStateNext = GS_MainMenu;
-			else if (i == WINDOWLENGTH_X/2) gGameStateNext = GS_Tutorial;
+			else if (i == WINDOWLENGTH_X/2) gGameStateNext = GS_Tutorial2;
 		}
 	}
 }
@@ -133,7 +133,7 @@ void GameStateTutorialDraw(void) {
 	
 	// ----- Player -----
 	AEGfxPrint(Albam_fontID, (s8*)"A for left", -0.8, 0.43, 0.75F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"D for right", -0.8, 0.28, 0.75F, 0, 0, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"D for right", -0.81, 0.28, 0.75F, 0, 0, 0);
 
 	// ----- Portal -----
 	AEGfxPrint(Albam_fontID, (s8*)"Mouse right-click", -0.25, 0.43, 0.75F, 0, 0, 0);
@@ -160,6 +160,14 @@ void GameStateTutorialUnload(void) {
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
+
+	AEGfxTextureUnload(assets[player]);
+	AEGfxTextureUnload(assets[portals]);
+	AEGfxTextureUnload(assets[range]);
+	AEGfxTextureUnload(assets2[enemy1]);
+	AEGfxTextureUnload(assets2[enemy2]);
+
+	//unload all assets
 
 	// Mesh free
 	AEGfxMeshFree(square_mesh);
