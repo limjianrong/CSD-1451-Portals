@@ -561,7 +561,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_SPIKES; i++) {
 		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 			if (damage_ok == TRUE) {
-				//--player.Hp;
+				--player.Hp;
 				damage_ok = FALSE;
 			}
 			else if (damage_ok == FALSE) {
@@ -595,7 +595,7 @@ void move_update() {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				if (damage_ok == TRUE) {
-					//--player.Hp;
+					--player.Hp;
 					damage_ok = FALSE;
 				}
 				else if (damage_ok == FALSE) {
@@ -670,8 +670,10 @@ void anti_gravity_zone(f32 x1, f32 x2) {
 	
 	if (player.x >= x1 && player.x <= x2)
 		player.y += GRAVITY;
-	else // player <= x2
+	else {
+		// player <= x2
 		player.y -= GRAVITY;
+	} 
 
 }
 

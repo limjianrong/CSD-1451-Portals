@@ -71,7 +71,6 @@ void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	AE_ASSERT(portal_range_picture); // check if texture is loaded
 	temp = AEGfxTextureLoad("Assets/card.png");
-
 }
 
 void portal_init() {
@@ -123,18 +122,21 @@ void update_portal() {
 			//cursor's x is based on screen coordinates, must offset it to convert to
 			//world coordinates in the game itself
 			portal_1.x -= AEGetWindowWidth() / 2;
-			
+			portal_1.x += static_cast<s32>(player.x);
 			//offset, similar to cursor's y
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			if (player.x > 0.0f) {
-				portal_1.x += static_cast<s32>(player.x);
-				if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-					portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-				}
-				else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-					portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
-				}
+
+
+			if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+				portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+					
 			}
+			else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+				//portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+				portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			}
+			
+
 			if (player.y > 0.0f) {
 				portal_1.y += static_cast<s32>(player.y);
 			}
@@ -164,16 +166,16 @@ void update_portal() {
 
 			//offset portal_2's x
 			portal_2.x -= AEGetWindowWidth() / 2;
-			if (player.x > 0.0f) {
-				portal_2.x += static_cast<s32>(player.x);
-				if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-					portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-				}
-				else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-					portal_2.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
-				}
-			}
+			portal_2.x += static_cast<s32>(player.x);
 
+
+			if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+				portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			}
+			else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+				portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			}
+			
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
 			if (player.y > 0.0f) {
@@ -219,7 +221,16 @@ void update_portal() {
 			if (player.x > 0) {
 				cameraPos.x = player.x;
 			}
-			cameraPos.y = player.y;
+			else {
+				cameraPos.x = 0;
+			}
+
+			if (player.y < 0) {
+				cameraPos.y = 0;
+			}
+			else {
+				cameraPos.y = player.y;
+			}
 		}
 
 		//function that checks if enemy/boss bullets are colliding with the portal

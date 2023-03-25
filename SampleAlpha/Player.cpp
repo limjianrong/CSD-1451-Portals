@@ -70,18 +70,13 @@ void player_load() {
 	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
 	//player.fullLivesTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Items/platformPack_item017.png");
 	player.emptyLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/outlineCrystal.png");
-
 	ifs.open("Assets/textFiles/player_stats.txt");
-}
-
-void player_init() {
 	// -------- Player --------
 	std::string str{};
 	ifs >> str >> player.width;				// Player's width
 	ifs >> str >> player.height;			// Player's height
 	ifs >> str >> player.initial_pos_x;		// Player's initial X position
 	ifs >> str >> player.initial_pos_y;		// Player's initial Y position
-
 	ifs >> str >> player.highest_level;		// Level cap of 30 lvls
 	ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
 	ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
@@ -109,6 +104,11 @@ void player_init() {
 	justLeveledUp 0*/
 
 	ifs.close();
+
+}
+
+void player_init() {
+
 
 	//std::cout << player.Lives_Reset << std::endl;
 	//player.x				= player.initial_pos_x;		// Player's initial X position
@@ -281,14 +281,11 @@ void player_update() {
 	else if (AEInputCheckCurr(AEVK_A)) {
 		player.x -= 5 * player.Speed;
 		num_of_Apressed++;
-		if (player.x < ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - camera_buffer_range) &&  player.x > 0 && free_moving_camera == false) {
+		if (player.x < ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - camera_buffer_range) && free_moving_camera == false) {
 			cameraPos.x -= 5 * player.Speed;
 		}
-		//player.rotation += 0.1f;
 	}
 
-	//update player's bottom hotspot
-	//AEVec2Set(&player.bottom_hotspot, player.x, player.y - player.height / 2);
 	// --------  Player's level & XP   ----------
 	// 40xp to level up for lvls 0-10 (1 enemy = 20xp)
 	if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
@@ -345,12 +342,42 @@ void player_update() {
 	}
 
 	if(free_moving_camera == false){
-	
+		
+		if (AEInputCheckTriggered(AEVK_G)) {
+			if (player.x < 0) {
+				cameraPos.x = 0;
+			}
+			else {
+				cameraPos.x = player.x;
+			}
+			if (player.y < 0) {
+				cameraPos.y = 0;
+			}
+			else {
+				cameraPos.y = player.y;
+			}
+		}
 		//if player is walking left and playerx goes from +ve to -ve, decrement camera.x 
-		if (player.x <= 0 && cameraPos.x > 0) {
-			cameraPos.x -= 5*player.Speed;
+		//if (player.x <= 0 && cameraPos.x > 0) {
+		//	cameraPos.x -= 5*player.Speed;
+		//}
+
+		if (player.x > AEGfxGetWinMaxX()) {
+			cameraPos.x = player.x;
 		}
 
+		else if (player.x < AEGfxGetWinMinX()) {
+			if (player.x < 0) {
+				cameraPos.x = 0;
+			}
+			else {
+				cameraPos.x = player.x;
+			}
+		}
+
+		//if (player.x > ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 + camera_buffer_range) && free_moving_camera == false) {
+		//	cameraPos.x += player.x;
+		//}
 		//camera will always follow player's y if player.y is +ve
 		if (player.y > 0) {
 			cameraPos.y = player.y;
