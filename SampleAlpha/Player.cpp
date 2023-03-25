@@ -113,7 +113,6 @@ void player_load() {
 void player_init() {
 
 
-	//std::cout << player.Lives_Reset << std::endl;
 	//player.x				= player.initial_pos_x;		// Player's initial X position
 	//player.y				= player.initial_pos_y;		// Player's initial Y position
 	////player.rotation			= 0.f;					// Player's Rotation

@@ -8,31 +8,23 @@ struct Boss{
 	f32 width{}, height{}, x_pos{}, y_pos{}, velocity{};
 	f32 range_x{}, range_y{}; //100+200, 100+500
 	s32 Hp{};
-	f32 charge_cooldown{}, charge_range{}, charge_velocity{};
-	s32 previous_direction{};
 	s32 direction{ UP };
 	f32 charge_angle{};
-	s32 charge_towards{};
 
-	bool charge_token{};
-	bool return_to_position{};
 	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, matrix{};
 	AEGfxTexture* standTex, * deadTex;
-
-
-	AEVec2 original_position{};	// SAME AS center?
-	AEVec2 center{};					// SAME AS original_position?
-	AEVec2 charge_direction{};
-	AEVec2 charge_endpoint{};
+	AEVec2 center{};
 };
+
 
 // ------ Attack #1 ------
 struct Laser_beam{
 	int status{};
 	f32 x{}, y{};
 	f32 width{}, height{}, cooldown{}, duration{};
-	f32 cooldown_reset{}, duration_reset{};
+	f32 max_duration{};
+	f32 time_elapsed{};
 	bool damaged_player{};
 	AEVec2 center{};
 
@@ -56,6 +48,23 @@ struct Bullet {
 	AEGfxTexture* bulletTex;
 };
 
+// ------ Attack #3  -------
+struct Boss_charge {
+	bool status{}, return_to_position{};
+	f32 cooldown{}, range{}, velocity{}, time_elapsed{};
+	s32 previous_direction{}, charge_towards{};
+	f32 charge_angle{};
+
+	//original position when boss first starts the charge attack
+	AEVec2 original_position{};
+
+	//direction of boss's charge
+	AEVec2 direction{};
+
+	//endpoint of boss's charge
+	AEVec2 endpoint{};
+
+};
 // ---- Main Functions ----
 void boss_load();
 void boss_init();
@@ -68,5 +77,5 @@ void boss_unload();
 void boss_movement();
 void bullet_update();
 void bullet_draw();
-void boss_laser_beam();
-void boss_charge();
+void boss_laser_beam_attack();
+void boss_charge_attack();
