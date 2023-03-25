@@ -22,7 +22,7 @@
 struct portal {
 	
 	s32 x{}, y{};
-	AEVec2 center{ 2000, 2000 };
+	AEVec2 center{};
 	AEMtx33 matrix{};
 	AEMtx33 scale_matrix{};
 	bool created{};

@@ -6,7 +6,7 @@
 #include "Player.hpp"
 //#include "weapon_fire.hpp"
 #include <iostream>
-
+#include <fstream>
 extern Player_stats player;
 Boss boss;
 Bullet bullet;
@@ -21,6 +21,8 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
+std::ifstream boss_ifs{};
+
 void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
@@ -28,10 +30,38 @@ void boss_load() {
 
 	// Bullet texture
 	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	boss_ifs.open("Assets/textFiles/boss_stats.txt");
+	if (!boss_ifs) {
+		std::cout << "\nFailed to open boss_stats.txt";
+	}
+	std::string str{};
+	boss_ifs >> str >> boss.width;
+	boss_ifs >> str >> boss.height;
+	boss_ifs >> str >> boss.x_pos;
+	boss_ifs >> str >> boss.y_pos;
+	boss_ifs >> str >> boss.velocity;
+	boss_ifs >> str >> boss.range_x;
+	boss_ifs >> str >> boss.range_y;
+	boss_ifs >> str >> boss.Hp;
+	boss_ifs >> str >> boss.charge_cooldown;
+	boss_ifs >> str >> boss.charge_range;
+	boss_ifs >> str >> boss.charge_velocity;
+	boss_ifs >> str >> laser_beam.width;
+	boss_ifs >> str >> laser_beam.height;
+	boss_ifs >> str >> laser_beam.cooldown;
+	boss_ifs >> str >> laser_beam.duration;
+
+	boss_ifs.close();
+
 }
 
 
 void boss_init () {
+
+	// ---- Attack #1  : Laser beam ----
+	laser_beam.cooldown_reset = laser_beam.cooldown;
+	laser_beam.duration_reset = laser_beam.duration;
+
 
 	// ---- Attack #2  :  Bullet ----
 	bullet.x = boss.x_pos;			// Bullet x position
@@ -44,6 +74,7 @@ void boss_init () {
 	bullet.isTeleported = FALSE;				// Indicator for teleporation
 	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
 
+	
 }
 
 void boss_draw() {
@@ -312,7 +343,7 @@ void boss_laser_beam() {
 	if (laser_beam.cooldown ==0 ) {
 		// set laser_beam to be firing left if player is on left of boss, firing right if player is on right of boss
 		laser_beam.status = TRUE;
-		laser_beam.duration = 200.0f;
+		laser_beam.duration = laser_beam.duration_reset;
 	}
 	if (laser_beam.status == TRUE) {
 		--laser_beam.duration;
@@ -335,7 +366,7 @@ void boss_laser_beam() {
 		if (laser_beam.duration==0) {
 			laser_beam.status = FALSE;
 			laser_beam.cooldown = 300.0f;
-			laser_beam.damaged_player = FALSE;
+			laser_beam.damaged_player = false;
 			return;
 		}
 

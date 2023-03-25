@@ -57,7 +57,7 @@ float constexpr camera_buffer_range{ 200.0f };
 //extern Enemy1_stats enemy1_a, enemy1_b;
 
 //---------File IO-------
-std::ifstream ifs{};
+std::ifstream player_ifs{};
 
 void player_load() {
 	player.player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
@@ -70,18 +70,21 @@ void player_load() {
 	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
 	//player.fullLivesTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Items/platformPack_item017.png");
 	player.emptyLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/outlineCrystal.png");
-	ifs.open("Assets/textFiles/player_stats.txt");
+	player_ifs.open("Assets/textFiles/player_stats.txt");
+	if (!player_ifs) {
+		std::cout << "\nFailed to open player_stats.txt";
+	}
 	// -------- Player --------
 	std::string str{};
-	ifs >> str >> player.width;				// Player's width
-	ifs >> str >> player.height;			// Player's height
-	ifs >> str >> player.initial_pos_x;		// Player's initial X position
-	ifs >> str >> player.initial_pos_y;		// Player's initial Y position
-	ifs >> str >> player.highest_level;		// Level cap of 30 lvls
-	ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
-	ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
-	ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
-	ifs >> str >> player.XP_RESET;			// Reset XP to 0
+	player_ifs >> str >> player.width;				// Player's width
+	player_ifs >> str >> player.height;			// Player's height
+	player_ifs >> str >> player.initial_pos_x;		// Player's initial X position
+	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
+	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
+	player_ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
+	player_ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
+	player_ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
+	player_ifs >> str >> player.XP_RESET;			// Reset XP to 0
 
 	//ifs >> str >> player.rotation;			// Player's Rotation
 	//ifs >> str >> player.Max_Hp;			// Player's Maximum Health
@@ -103,7 +106,7 @@ void player_load() {
 	XP_Reset 0
 	justLeveledUp 0*/
 
-	ifs.close();
+	player_ifs.close();
 
 }
 
