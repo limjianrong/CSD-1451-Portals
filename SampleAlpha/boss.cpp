@@ -341,7 +341,7 @@ void bullet_draw() {
 void boss_laser_beam_attack() {
 
 	laser_beam.time_elapsed += AEFrameRateControllerGetFrameTime();
-	if(laser_beam.time_elapsed >= laser_beam.cooldown){
+	if(laser_beam.time_elapsed >= laser_beam.cooldown && boss_charge.status==false){
 		
 		laser_beam.status = TRUE;
 		laser_beam.duration += AEFrameRateControllerGetFrameTime();
@@ -382,7 +382,8 @@ void boss_charge_attack() {
 	
 	//boss will charge towards the player when cooldown is reached and player is within range
 	if ((boss_charge.time_elapsed >= boss_charge.cooldown) && boss_charge.status == false && 
-		AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss_charge.range) {
+		AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss_charge.range
+		&&laser_beam.status == false) {
 		
 		boss_charge.previous_direction = boss.direction;
 		boss.direction = STOP;
