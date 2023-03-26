@@ -60,7 +60,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
 	
 	// Initialize GameStateManager to initialize the starting state
-	GameStateMgrInit(GS_MainMenu);
+	GameStateMgrInit(GS_SplashScreen);
 
 	// Loop while the program should not quit
 	while (gGameStateCurr != GS_QUIT)

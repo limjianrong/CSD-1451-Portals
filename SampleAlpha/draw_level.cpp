@@ -16,16 +16,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Enemy.hpp"
 #include <iostream>
 
-int const platform_max_count{ 50 };
-
 AEGfxTexture* platform_text, * spike_text, *onetime_text;
 
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
-Block leftright1, trapping, updown1, diagup1, diagdown1, oneuse1, verti1, droptrap1, horizontaltrap1;
 Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP],
-diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE], verticalwall[MAX_VERTICAL_WALL], floorspikes[MAX_SPIKES],
-leftrightspikes[MAX_LEFT_RIGHT_SPIKES];
+diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE],floorspikes[MAX_SPIKES], leftrightspikes[MAX_LEFT_RIGHT_SPIKES];
 extern Player_stats player;
 extern Enemy1_stats enemy1[MAX_ENEMIES_1];
 bool damage_ok{ TRUE };
@@ -104,10 +100,6 @@ void draw_level_init() {
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		onetimeuse[i].flag = ACTIVE;
 	}
-
-	vertical_create(3, 6450, 1000, 6450, 5900, 0);
-	
-
 }
 
 void draw_level_draw() {
@@ -119,7 +111,6 @@ void draw_level_draw() {
 	diag_up_blocks_draw();
 	diag_down_blocks_draw();
 	one_time_use_blocks_draw();
-	vertical_blocks_draw();
 
 }
 
@@ -169,14 +160,6 @@ void one_time_use_create(s32 len, f32 x, f32 y, s32 index) {
 	onetimeuse[index].length = len;
 	onetimeuse[index].x = x;
 	onetimeuse[index].y = y;
-}
-
-void vertical_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
-	verticalwall[index].length = len;
-	verticalwall[index].x = x;
-	verticalwall[index].y = y;
-	verticalwall[index].start_x = start_x;
-	verticalwall[index].end_x = end_x;
 }
 
 void spikes_create(s32 len, f32 x, f32 y, s32 index) {
@@ -405,35 +388,6 @@ void one_time_use_blocks_draw() {
 	}
 }
 
-
-void vertical_blocks_draw() {
-
-	for (s32 i = 0; i < MAX_VERTICAL_WALL; i++) {
-		for (s32 j = 0; j < verticalwall[i].length; j++) {
-			verticalwall[i].width = BLOCK_WIDTH / 2 + verticalwall[i].x;
-			verticalwall[i].height = BLOCK_HEIGHT / 2 + BLOCK_WIDTH * j + verticalwall[i].y;
-
-			AEMtx33Scale(&verticalwall[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&verticalwall[i].rotate, PI);
-			AEMtx33Trans(&verticalwall[i].translate, verticalwall[i].width, verticalwall[i].height);
-			// Concat the matrices
-			AEMtx33Concat(&verticalwall[i].transform, &verticalwall[i].rotate, &verticalwall[i].scale);
-			AEMtx33Concat(&verticalwall[i].transform, &verticalwall[i].translate, &verticalwall[i].transform);
-			AEGfxSetTransform(verticalwall[i].transform.m);
-
-			// Set the texture
-			AEGfxTextureSet(platform_text, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-			// Player collision with platforms
-			verti_collision(verticalwall[i].length, verticalwall[i].x, verticalwall[i].y);
-
-		}
-		AEVec2Set(&verticalwall[i].center, verticalwall[i].x, (BLOCK_HEIGHT * verticalwall[i].length) / 2 + verticalwall[i].y);
-	}
-	
-}
-
 void left_right_spikes_draw() {
 
 	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
@@ -452,8 +406,6 @@ void left_right_spikes_draw() {
 			// Set the texture
 			AEGfxTextureSet(spike_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-
 		}
 		AEVec2Set(&leftrightspikes[i].center, (BLOCK_WIDTH * leftrightspikes[i].length) / 2 + leftrightspikes[i].x, leftrightspikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
@@ -571,25 +523,6 @@ void move_update() {
 		}
 	}
 
-	for (s32 i = 0; i < MAX_VERTICAL_WALL; i++) {
-		if (verticalwall[i].pos == OG) {
-			verticalwall[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&verticalwall[i].center, BLOCK_WIDTH, BLOCK_HEIGHT * verticalwall[i].length, &player.center, player.width, player.height)) {
-				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			}
-			if (verticalwall[i].x <= verticalwall[i].end_x) {
-				verticalwall[i].pos = MOVED;
-			}
-		}
-
-		if (verticalwall[i].pos == MOVED) {
-			verticalwall[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (verticalwall[i].x >= verticalwall[i].start_x) {
-				verticalwall[i].pos = OG;
-			}
-		}
-	}
-
 	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
 		if (leftrightspikes[i].pos == OG) {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
@@ -650,51 +583,5 @@ void platform_collision(s32 cnt, f32 x, f32 y) {
 		}
 	}
 }
-
-void verti_collision(s32 cnt, f32 x, f32 y) {
-	for (f32 i = 0; i < cnt; i++) {
-		if ((player.y <= BLOCK_HEIGHT + y + player.height / 2) &&
-			(player.y >= y + player.height / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.width / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - player.width / 2)) {
-			player.x = -BLOCK_WIDTH + x + player.width / 2;
-		}
-		
-	}
-}
-
-
-
-// x1 - x2 will be the anti-gravity zone
-void anti_gravity_zone(f32 x1, f32 x2) {
-	
-	if (player.x >= x1 && player.x <= x2)
-		player.y += GRAVITY;
-	else {
-		// player <= x2
-		player.y -= GRAVITY;
-	} 
-
-}
-
-void draw_anti_gravity_zone(f32 x1, f32 x2) {
-
-	/*AEGfxSetTransparency(0.55f);
-	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Rot(&rotate, PI);
-	AEMtx33Trans(&translate, originX, originY);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxSetTransform(transform.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
-}
-
-
-
-
-
-
-
-
 
 

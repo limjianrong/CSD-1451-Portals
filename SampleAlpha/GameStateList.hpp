@@ -28,6 +28,7 @@ enum
 	GS_Tutorial2,
 	GS_Win,
 	GS_Lose,
+	GS_SplashScreen,
 	// special game state. Do not change
 	GS_RESTART,
 	GS_QUIT,
