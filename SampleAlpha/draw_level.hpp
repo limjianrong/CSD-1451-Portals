@@ -70,7 +70,6 @@ void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index);
 void diagonal_down_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index);
 void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index);
 void one_time_use_create(s32 len, f32 x, f32 y, s32 index);
-void vertical_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index);
 void spikes_create(s32 len, f32 x, f32 y, s32 index);
 void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index);
 
@@ -82,33 +81,6 @@ void updown_blocks_draw();
 void diag_up_blocks_draw();
 void diag_down_blocks_draw();
 void one_time_use_blocks_draw();
-void vertical_blocks_draw();
 void left_right_spikes_draw();
-
-
-void left_right_blades(s32 length, f32 x, f32 y);
-
 void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);
-void verti_collision(s32 cnt, f32 x, f32 y);
-//void trap_collision(s32 cnt, f32 x, f32 y);
-
-void anti_gravity_zone(f32 x1, f32 x2);
-
-
-
-
-
-
-
-//note to myself
-//create a array of struct
-//create a function called create_moving_platform
-//	- provide the variables to be put into the struct
-// make min max to be +/- of the variables
-// use define num of moving platforms, num of platforms, traps as the size of array
-// 
-// can try use vector
-//
-//
-//
