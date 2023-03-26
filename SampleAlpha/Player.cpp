@@ -343,7 +343,7 @@ void player_update() {
 	}
 
 	if(free_moving_camera == false){
-		
+		//check player input for camera reset
 		if (AEInputCheckTriggered(AEVK_G)) {
 			if (player.x < 0) {
 				cameraPos.x = 0;
@@ -358,10 +358,6 @@ void player_update() {
 				cameraPos.y = player.y;
 			}
 		}
-		//if player is walking left and playerx goes from +ve to -ve, decrement camera.x 
-		//if (player.x <= 0 && cameraPos.x > 0) {
-		//	cameraPos.x -= 5*player.Speed;
-		//}
 
 		if (player.x > AEGfxGetWinMaxX()) {
 			cameraPos.x = player.x;
@@ -376,9 +372,6 @@ void player_update() {
 			}
 		}
 
-		//if (player.x > ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 + camera_buffer_range) && free_moving_camera == false) {
-		//	cameraPos.x += player.x;
-		//}
 		//camera will always follow player's y if player.y is +ve
 		if (player.y > 0) {
 			cameraPos.y = player.y;
@@ -390,7 +383,7 @@ void player_update() {
 		}
 
 	}
-	//toggle free moving camera for debugging/level design purposes
+	//controls for free moving camera, used for debugging/level design purposes
 	if (free_moving_camera == true) {
 		if (AEInputCheckCurr(AEVK_I))
 			cameraPos.y += camera_speed;
