@@ -85,7 +85,6 @@ void player_load() {
 	player_ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
 	player_ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
 	player_ifs >> str >> player.XP_RESET;			// Reset XP to 0
-
 	//ifs >> str >> player.rotation;			// Player's Rotation
 	//ifs >> str >> player.Max_Hp;			// Player's Maximum Health
 	//ifs >> str >> player.Hp;				// Player's Maximum Health

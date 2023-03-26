@@ -50,16 +50,19 @@ struct Bullet {
 
 // ------ Attack #3  -------
 struct Boss_charge {
-	bool status{}, return_to_position{};
+	bool status{}, return_to_position{}, player_damaged{};
 	f32 cooldown{}, range{}, velocity{}, time_elapsed{};
-	s32 previous_direction{}, charge_towards{};
-	f32 charge_angle{};
+	s32 previous_direction{};
+
+	//distance travelled by boss during charge attack
+	f32 distance_travelled{}, direction_magnitude{};
 
 	//original position when boss first starts the charge attack
 	AEVec2 original_position{};
 
 	//direction of boss's charge
 	AEVec2 direction{};
+	AEVec2 normalized_direction{};
 
 	//endpoint of boss's charge
 	AEVec2 endpoint{};

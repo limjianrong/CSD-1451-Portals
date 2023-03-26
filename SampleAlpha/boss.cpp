@@ -377,15 +377,13 @@ void boss_laser_beam_attack() {
 }
 
 void boss_charge_attack() {
-
 	//decrement timer for boss's charge cooldown
-
 	boss_charge.time_elapsed += AEFrameRateControllerGetFrameTime();
 	
-	//(boss_charge.time_elapsed >= boss_charge.cooldown)
-	//  && AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss_charge.range
 	//boss will charge towards the player when cooldown is reached and player is within range
-	if ((boss_charge.time_elapsed >= boss_charge.cooldown) && boss_charge.status == false) {
+	if ((boss_charge.time_elapsed >= boss_charge.cooldown) && boss_charge.status == false && 
+		AECalcDistPointToRect(&boss.center, &player.center, player.width, player.height) < boss_charge.range) {
+		
 		boss_charge.previous_direction = boss.direction;
 		boss.direction = STOP;
 		boss_charge.return_to_position = false;
@@ -395,82 +393,112 @@ void boss_charge_attack() {
 		//set vector for boss to eventually return to, as well as direction for boss to charge towards
 		AEVec2Set(&boss_charge.original_position, boss.x_pos, boss.y_pos);
 		AEVec2Sub(&boss_charge.direction, &player.center, &boss.center);
-		AEVec2Normalize(&boss_charge.direction, &boss_charge.direction);
+		boss_charge.direction_magnitude = AEVec2Length(&boss_charge.direction);
+		AEVec2Normalize(&boss_charge.normalized_direction, &boss_charge.direction);
+	}
 
+	if (boss_charge.status == true && boss_charge.return_to_position == false) {
+		boss.x_pos += boss_charge.normalized_direction.x * boss_charge.velocity;
+		boss.y_pos += boss_charge.normalized_direction.y * boss_charge.velocity;
+	}
+
+	
+	if (boss_charge.return_to_position == false) {
+		boss_charge.distance_travelled = sqrt((boss.x_pos - boss_charge.original_position.x) * (boss.x_pos - boss_charge.original_position.x)
+			+ (boss.y_pos - boss_charge.original_position.y) * (boss.y_pos - boss_charge.original_position.y));
+	}
+	else {
+		boss_charge.distance_travelled = sqrt((boss.x_pos - boss_charge.endpoint.x) * (boss.x_pos - boss_charge.endpoint.x)
+			+ (boss.y_pos - boss_charge.endpoint.y) * (boss.y_pos - boss_charge.endpoint.y));
+	}
+	if (boss_charge.distance_travelled>=boss_charge.direction_magnitude &&boss_charge.return_to_position==false) {
+		boss_charge.return_to_position = true;
+		boss_charge.distance_travelled = 0;
+	}
+
+	if (boss_charge.status == true && boss_charge.return_to_position == true) {
+		boss.x_pos -= boss_charge.normalized_direction.x * boss_charge.velocity;
+		boss.y_pos -= boss_charge.normalized_direction.y * boss_charge.velocity;
+
+		//if boss has returned to original position, reset all flags and time elapsed
+		if (boss_charge.distance_travelled >= boss_charge.direction_magnitude) {
+			boss_charge.status = false;
+			boss_charge.return_to_position = false;
+			boss_charge.time_elapsed = 0;
+			boss.direction = boss_charge.previous_direction;
+			boss_charge.direction_magnitude = 0;
+			boss_charge.distance_travelled = 0;
+			boss_charge.player_damaged = false;
+		}
+
+		if (AETestRectToRect(&player.center, player.width, player.height, &boss.center, boss.width, boss.height)) {
+			if (!boss_charge.player_damaged) {
+				--player.Hp;
+				boss_charge.player_damaged = true;
+			}
+		}
 		//get angle between boss and player (in radians)
 		//boss_charge.charge_angle = AEATan(abs(boss_charge.direction.y) / abs(boss_charge.direction.x));
 
 		//determine where the boss will charge towards
-		if (player.x < boss.x_pos && player.y > boss.y_pos) {
-			boss_charge.charge_towards = TOP_LEFT;
+		//if (player.x < boss.x_pos && player.y > boss.y_pos) {
+		//	boss_charge.charge_towards = TOP_LEFT;
 
-		}
-		else if (player.x < boss.x_pos && player.y < boss.y_pos) {
-			boss_charge.charge_towards = BTM_LEFT;
+		//}
+		//else if (player.x < boss.x_pos && player.y < boss.y_pos) {
+		//	boss_charge.charge_towards = BTM_LEFT;
 
-		}
-		else if (player.x > boss.x_pos && player.y > boss.y_pos) {
-			boss_charge.charge_towards = TOP_RIGHT;
-		}
+		//}
+		//else if (player.x > boss.x_pos && player.y > boss.y_pos) {
+		//	boss_charge.charge_towards = TOP_RIGHT;
+		//}
 
-		else if (player.x > boss.x_pos && player.y < boss.y_pos) {
-			boss_charge.charge_towards = BTM_RIGHT;
-		}
-	}
+		//else if (player.x > boss.x_pos && player.y < boss.y_pos) {
+		//	boss_charge.charge_towards = BTM_RIGHT;
+		//}
+	//if (boss_charge.charge_towards == TOP_LEFT && (boss.x_pos <= boss_charge.endpoint.x && boss.y_pos >= boss_charge.endpoint.y)) {
+	//	boss_charge.return_to_position = true;
+	//}
 
+	//else if (boss_charge.charge_towards == TOP_RIGHT && (boss.x_pos >= boss_charge.endpoint.x && boss.y_pos >= boss_charge.endpoint.y)) {
+	//	boss_charge.return_to_position = true;
+	//}
 
-	if (boss_charge.status == true && boss_charge.return_to_position == false) {
-		boss.x_pos += boss_charge.direction.x * boss_charge.velocity;
-		boss.y_pos += boss_charge.direction.y * boss_charge.velocity;
-	}
+	//else if (boss_charge.charge_towards == BTM_LEFT && (boss.x_pos <= boss_charge.endpoint.x && boss.y_pos <= boss_charge.endpoint.y)) {
+	//	boss_charge.return_to_position = true;
+	//}
 
-	if (boss_charge.charge_towards == TOP_LEFT && (boss.x_pos <= boss_charge.endpoint.x && boss.y_pos >= boss_charge.endpoint.y)) {
-		boss_charge.return_to_position = true;
-	}
+	//else if (boss_charge.charge_towards == BTM_RIGHT && (boss.x_pos >= boss_charge.endpoint.x && boss.y_pos <= boss_charge.endpoint.y)) {
+	//	boss_charge.return_to_position = true;
+	//}
 
-	else if (boss_charge.charge_towards == TOP_RIGHT && (boss.x_pos >= boss_charge.endpoint.x && boss.y_pos >= boss_charge.endpoint.y)) {
-		boss_charge.return_to_position = true;
-	}
+		//if (boss_charge.charge_towards == TOP_LEFT && boss.x_pos > boss_charge.original_position.x && boss.y_pos < boss_charge.original_position.y) {
+		//	boss_charge.status = false;
+		//	boss_charge.return_to_position = false;
+		//	boss_charge.time_elapsed = 0;
+		//	boss.direction = boss_charge.previous_direction;
+		//}
 
-	else if (boss_charge.charge_towards == BTM_LEFT && (boss.x_pos <= boss_charge.endpoint.x && boss.y_pos <= boss_charge.endpoint.y)) {
-		boss_charge.return_to_position = true;
-	}
+		//else if (boss_charge.charge_towards == BTM_LEFT && boss.x_pos > boss_charge.original_position.x && boss.y_pos > boss_charge.original_position.y) {
+		//	boss_charge.status = false;
+		//	boss_charge.return_to_position = false;
+		//	boss_charge.time_elapsed = 0;
+		//	boss.direction = boss_charge.previous_direction;
+		//}
 
-	else if (boss_charge.charge_towards == BTM_RIGHT && (boss.x_pos >= boss_charge.endpoint.x && boss.y_pos <= boss_charge.endpoint.y)) {
-		boss_charge.return_to_position = true;
-	}
+		//else if(boss_charge.charge_towards ==TOP_RIGHT&& boss.x_pos < boss_charge.original_position.x && boss.y_pos < boss_charge.original_position.y) {
+		//	boss_charge.status = false;
+		//	boss_charge.return_to_position = false;
+		//	boss_charge.time_elapsed = 0;
+		//	boss.direction = boss_charge.previous_direction;
+		//}
 
-	if (boss_charge.status == true && boss_charge.return_to_position == true) {
-		boss.x_pos -= boss_charge.direction.x * boss_charge.velocity;
-		boss.y_pos -= boss_charge.direction.y * boss_charge.velocity;
-
-		if (boss_charge.charge_towards == TOP_LEFT && boss.x_pos > boss_charge.original_position.x && boss.y_pos < boss_charge.original_position.y) {
-			boss_charge.status = false;
-			boss_charge.return_to_position = false;
-			boss_charge.time_elapsed = 0;
-			boss.direction = boss_charge.previous_direction;
-		}
-
-		else if (boss_charge.charge_towards == BTM_LEFT && boss.x_pos > boss_charge.original_position.x && boss.y_pos > boss_charge.original_position.y) {
-			boss_charge.status = false;
-			boss_charge.return_to_position = false;
-			boss_charge.time_elapsed = 0;
-			boss.direction = boss_charge.previous_direction;
-		}
-
-		else if(boss_charge.charge_towards ==TOP_RIGHT&& boss.x_pos < boss_charge.original_position.x && boss.y_pos < boss_charge.original_position.y) {
-			boss_charge.status = false;
-			boss_charge.return_to_position = false;
-			boss_charge.time_elapsed = 0;
-			boss.direction = boss_charge.previous_direction;
-		}
-
-		else if(boss_charge.charge_towards == BTM_RIGHT &&  boss.x_pos < boss_charge.original_position.x && boss.y_pos >boss_charge.original_position.y) {
-			boss_charge.status = false;
-			boss_charge.return_to_position = false;
-			boss_charge.time_elapsed = 0;
-			boss.direction = boss_charge.previous_direction;
-		}
+		//else if(boss_charge.charge_towards == BTM_RIGHT &&  boss.x_pos < boss_charge.original_position.x && boss.y_pos >boss_charge.original_position.y) {
+		//	boss_charge.status = false;
+		//	boss_charge.return_to_position = false;
+		//	boss_charge.time_elapsed = 0;
+		//	boss.direction = boss_charge.previous_direction;
+		//}
 	}
 	//if (boss_charge.status == true) {
 	//	//if player is top left of boss
