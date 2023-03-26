@@ -3,7 +3,7 @@
 \author 	Digipen, Tay Zhun Hang
 \par    	email: zhunhang.tay@digipen.edu
 \date   	12 February, 2023
-\brief
+\brief		
 
 Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
@@ -26,7 +26,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define MAX_DIAGONAL_UP 4
 #define MAX_DIAGONAL_DOWN 1
 #define MAX_ONE_TIME_USE 6
-#define MAX_VERTICAL_WALL 1
 #define MAX_SPIKES 1
 #define MAX_LEFT_RIGHT_SPIKES 2
 
