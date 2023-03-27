@@ -45,6 +45,7 @@ extern bool isPaused;
 
 bool damage_allowed{ TRUE };	// Enemy1
 
+f32 g_dt;
 
 
 void enemies_load() {
@@ -79,12 +80,12 @@ void enemies_init() {
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
-		enemy1[i].rotation				= PI;					// Enemy1's Rotation
-		enemy1[i].width					= ENEMY1_WIDTH;			// Enemy1's Width
-		enemy1[i].height				= ENEMY1_HEIGHT;		// Enemy1's Height
-		enemy1[i].Hp					= 5;					// Enemy1's Health
-		enemy1[i].status				= TRUE;					// TRUE for alive, FALSE for dead
-		enemy1[i].movementCounter		= 0.f;					// Enemy1's Movement Counter
+		enemy1[i].rotation = PI;					// Enemy1's Rotation
+		enemy1[i].width = ENEMY1_WIDTH;			// Enemy1's Width
+		enemy1[i].height = ENEMY1_HEIGHT;		// Enemy1's Height
+		enemy1[i].Hp = 5;					// Enemy1's Health
+		enemy1[i].status = TRUE;					// TRUE for alive, FALSE for dead
+		enemy1[i].movementCounter = 0.f;					// Enemy1's Movement Counter
 
 	}
 
@@ -99,23 +100,23 @@ void enemies_init() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
 		// ---- Enemy2 ----
-		enemy2[i].rotation				= PI;					// Enemy2's Rotation
-		enemy2[i].width					= ENEMY2_WIDTH;			// Enemy2's Width
-		enemy2[i].height				= ENEMY2_HEIGHT;		// Enemy2's Height
-		enemy2[i].range_x				= ENEMY2_WIDTH + 350;	// Enemy2's Horizonal range
-		enemy2[i].range_y				= ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
-		enemy2[i].Hp					= 5;					// Enemy2's Health
-		enemy2[i].status				= TRUE;					// TRUE for alive, FALSE for dead
+		enemy2[i].rotation = PI;					// Enemy2's Rotation
+		enemy2[i].width = ENEMY2_WIDTH;			// Enemy2's Width
+		enemy2[i].height = ENEMY2_HEIGHT;		// Enemy2's Height
+		enemy2[i].range_x = ENEMY2_WIDTH + 350;	// Enemy2's Horizontal range
+		enemy2[i].range_y = ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
+		enemy2[i].Hp = 5;					// Enemy2's Health
+		enemy2[i].status = TRUE;					// TRUE for alive, FALSE for dead
 		// ---- Bullet ----
-		bullet_enemy2[i].x				= enemy2[i].x;			// Bullet x position
-		bullet_enemy2[i].y				= enemy2[i].y;			// Bullet y position
-		bullet_enemy2[i].width			= 20.0f;				// Bullet width
-		bullet_enemy2[i].height			= 20.0f;				// Bullet height
-		bullet_enemy2[i].speed			= 5.0f;					// Bullet speed
-		bullet_enemy2[i].timer			= ENEMY2_TIMER;			// Bullet timer between each bullet
-		bullet_enemy2[i].isTimerActive	= FALSE;				// Indicator for timer activeness
-		bullet_enemy2[i].isTeleported	= FALSE;				// Indicator for teleporation
-		bullet_enemy2[i].isShooting		= FALSE;				// Indicator to check whether bullet is still shooting
+		bullet_enemy2[i].x = enemy2[i].x;			// Bullet x position
+		bullet_enemy2[i].y = enemy2[i].y;			// Bullet y position
+		bullet_enemy2[i].width = 20.0f;				// Bullet width
+		bullet_enemy2[i].height = 20.0f;				// Bullet height
+		bullet_enemy2[i].speed = 5.0f;					// Bullet speed
+		bullet_enemy2[i].timer = ENEMY2_TIMER;			// Bullet timer between each bullet
+		bullet_enemy2[i].isTimerActive = FALSE;				// Indicator for timer activeness
+		bullet_enemy2[i].isTeleported = FALSE;				// Indicator for teleporation
+		bullet_enemy2[i].isShooting = FALSE;				// Indicator to check whether bullet is still shooting
 	}
 
 
@@ -124,7 +125,7 @@ void enemies_init() {
 \brief
 	Draws enemy if enemy HP is more than 0 to its updated position from function enemy_update
 *******************************************************************************************************/
-void enemies_draw () {
+void enemies_draw() {
 
 	enemy1_draw();		// Draws all enemy1
 	enemy2_draw();		// Draws all enemy2
@@ -140,11 +141,14 @@ void enemies_draw () {
 \return
 	new enemy x position
 *******************************************************************************************************/
-void enemies_update () {
+void enemies_update() {
 
 	update_enemy1();		// Updates all enemy1
 
 	enemy2_update();		// Updates all enemy2
+
+	// Get Delta Time
+	g_dt = (f32)AEFrameRateControllerGetFrameTime();
 
 }
 
@@ -178,7 +182,8 @@ void enemy1_collision() {
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (damage_allowed) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
+			//if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
+			if (CollisionIntersection_RectRect(enemy1[i], player)) {
 				--player.Hp;
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;
@@ -200,13 +205,34 @@ void enemy1_collision() {
 	}
 }
 
+bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
+
+
+	// ----- AABB min max check -----
+	// Check if first object's max point is smaller than second object's min point on the x axis
+	if ((obj2.center.x + obj2.width / 2.f) < (obj1.center.x - obj1.width / 2.f))
+		return false;
+	// Check if first object's min point is larger than second object's max point on the x axis
+	if ((obj2.center.x - obj2.width / 2.f) > (obj1.center.x + obj1.width / 2.f))
+		return false;
+	// Check if first object's max point is smaller than second object's min point on the y axis
+	if ((obj2.center.y + obj2.height / 2.f) < (obj1.center.y - obj1.height / 2.f))
+		return false;
+	// Check if first object's min point is larger than second object's max point on the y axis
+	if ((obj2.center.y - obj2.height / 2.f) > (obj1.center.y + obj1.height / 2.f))
+		return false;
+
+	return true;
+
+}
+
 void enemy1_create(f32 x, f32 y, s32 index) {
 	enemy1[index].x = x;
 	enemy1[index].y = y;
 }
 
 void enemy1_draw() {
-	
+
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		// Draw enemies if alive
 		if (enemy1[i].Hp > 0 && enemy1[i].status == TRUE) {
@@ -227,18 +253,18 @@ void enemy1_draw() {
 }
 
 void update_enemy1() {
-	
+
 	if (!isPaused) {
 		for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-			
+
 			// total time that has passed since counter = 0 added into counter
 			enemy1[i].movementCounter += AEFrameRateControllerGetFrameTime();
-			
+
 			// resets counter = 0 once counter has collected 200 frames worth of seconds
 			if (enemy1[i].movementCounter > 200 * AEFrameRateControllerGetFrameTime()) enemy1[i].movementCounter = 0.f;
-			
+
 			// moves right when 100 < frames <= 200 
-			if (enemy1[i].movementCounter <= 200*AEFrameRateControllerGetFrameTime() && enemy1[i].movementCounter > 100 * AEFrameRateControllerGetFrameTime()) {
+			if (enemy1[i].movementCounter <= 200 * AEFrameRateControllerGetFrameTime() && enemy1[i].movementCounter > 100 * AEFrameRateControllerGetFrameTime()) {
 				enemy1[i].x += 1.0f;
 			}
 			// moves left when 0 < frames <= 100
@@ -261,7 +287,7 @@ void update_enemy1() {
 // ----------------------------------------------------------------------------------------  //
 //	----------------					 ENEMY 2							---------------  //
 // ----------------------------------------------------------------------------------------  // 
-void enemy2_create (f32 x, f32 y, s32 index) {
+void enemy2_create(f32 x, f32 y, s32 index) {
 	enemy2[index].x = x;
 	enemy2[index].y = y;
 	enemy2[index].status = TRUE;  // All alive at the start
@@ -279,7 +305,7 @@ void RenderEnemy(Enemy2_stats enemy)
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void enemy2_draw () {
+void enemy2_draw() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
 			//// ------  Enemy2  ------
@@ -311,7 +337,7 @@ void enemy2_draw () {
 	}
 }
 
-void enemy2_update () {
+void enemy2_update() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		// If enemy2 is not dead
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
@@ -385,7 +411,7 @@ void enemy2_update () {
 				bullet_enemy2[i].y = enemy2[i].y;			// Reset bullet y
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
-				
+
 				// --- Disable shooting when player out of range of Enemy2 ---
 				if (!(player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
 					player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y))) {

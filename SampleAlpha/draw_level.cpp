@@ -525,7 +525,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_SPIKES; i++) {
 		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 			if (damage_ok == TRUE) {
-				--player.Hp;
+				//--player.Hp;     // CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 				damage_ok = FALSE;
 			}
 			else if (damage_ok == FALSE) {
@@ -540,7 +540,7 @@ void move_update() {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				if (damage_ok == TRUE) {
-					--player.Hp;
+					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 					damage_ok = FALSE;
 				}
 				else if (damage_ok == FALSE) {
@@ -557,7 +557,7 @@ void move_update() {
 			leftrightspikes[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 				if (damage_ok == TRUE) {
-					--player.Hp;
+					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 					damage_ok = FALSE;
 				}
 				else if (damage_ok == FALSE) {
