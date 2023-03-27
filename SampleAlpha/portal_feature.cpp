@@ -125,16 +125,16 @@ void update_portal() {
 			portal_1.x += static_cast<s32>(player.x);
 			//offset, similar to cursor's y
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
+			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x);
 
-
-			if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-				portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-					
-			}
-			else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-				//portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
-				portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			}
+			//if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+			//	portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			//		
+			//}
+			//else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+			//	//portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+			//	portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			//}
 			
 
 			if (player.y > 0.0f) {
@@ -167,14 +167,14 @@ void update_portal() {
 			//offset portal_2's x
 			portal_2.x -= AEGetWindowWidth() / 2;
 			portal_2.x += static_cast<s32>(player.x);
+			portal_2.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - static_cast<s32>(player.x));
 
-
-			if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-				portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			}
-			else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-				portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			}
+			//if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+			//	portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			//}
+			//else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
+			//	portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
+			//}
 			
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
