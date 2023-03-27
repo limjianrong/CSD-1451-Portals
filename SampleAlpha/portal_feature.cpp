@@ -21,10 +21,10 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <string>
-
+#include <fstream>
 //portal dimensions
-float constexpr PORTAL_WIDTH{ 60.0f };
-float constexpr PORTAL_HEIGHT{ 60.0f };
+float PORTAL_WIDTH{};
+float PORTAL_HEIGHT{};
 
 //portal objects for teleporting player from one location to another
 portal portal_1, portal_2;
@@ -48,8 +48,10 @@ extern AEGfxVertexList* square_mesh;
 //used to print text to the screen
 extern s8 Albam_fontID;
 
-/**************common variables, not specific to either portal***********/
+/*************  Portal Cooldown and Max Range ***********/
 float portal_max_range, portal_cooldown, portal_timer{};
+std::ifstream portal_ifs{};
+
 
 //used to check if portal cooldown is to be decremented or not
 bool decrease_cooldown;
@@ -71,13 +73,23 @@ void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	AE_ASSERT(portal_range_picture); // check if texture is loaded
 	temp = AEGfxTextureLoad("Assets/card.png");
+	portal_ifs.open("Assets/textFiles/portal_stats.txt");
+	if (!portal_ifs) {
+		std::cout << "\nFailed to load portal_stats.txt";
+	}
+	std::string str{};
+	portal_ifs >> str >> PORTAL_WIDTH;
+	portal_ifs >> str >> PORTAL_HEIGHT;
+	portal_ifs >> str >> portal_max_range;
+
+	portal_ifs >> str >> portal_cooldown;
+	portal_ifs >> str >> portal_timer;
+	portal_ifs.close();
+
 }
 
 void portal_init() {
 	// Initialise
-	portal_max_range = 300.0f;
-	portal_cooldown = 50.0f;
-	portal_timer = 0.0f;
 	decrease_cooldown = true;
 	portal_1.created = false;
 	portal_2.created = false;
@@ -108,11 +120,11 @@ void update_portal() {
 		portal_2.created = false;
 		portal_1.draw_outline = false;
 	}
-
+	portal_timer += AEFrameRateControllerGetFrameTime();
 	//If player right clicked and the portal timer == 0, player can create a portal
 	//else, player must wait for portal timer to be decremented to 0 before he can create
 	//a portal
-	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer == 0.0f) {
+	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer >= portal_cooldown) {
 		//if the first portal has not been created, create it, assign cursor's x and y to become
 		//the portal's x and y 
 		if (portal_1.created == false) {
@@ -126,15 +138,6 @@ void update_portal() {
 			//offset, similar to cursor's y
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
 			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x);
-
-			//if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-			//	portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			//		
-			//}
-			//else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-			//	//portal_1.x -= player.x - (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
-			//	portal_1.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			//}
 			
 
 			if (player.y > 0.0f) {
@@ -168,13 +171,6 @@ void update_portal() {
 			portal_2.x -= AEGetWindowWidth() / 2;
 			portal_2.x += static_cast<s32>(player.x);
 			portal_2.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - static_cast<s32>(player.x));
-
-			//if (player.x < (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-			//	portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			//}
-			//else if (player.x > (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2) {
-			//	portal_2.x += (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x;
-			//}
 			
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
@@ -214,8 +210,8 @@ void update_portal() {
 			player.y = portal_2.center.y;
 			portal_1.created = false;
 			portal_2.created = false;
-			decrease_cooldown = true;
-			portal_timer = portal_cooldown;
+			//decrease_cooldown = true;
+			portal_timer = 0;
 
 			//set camera to follow player if the player teleports
 			if (player.x > 0) {
@@ -238,12 +234,12 @@ void update_portal() {
 	} 
 
 	//cooldown to limit the frequency of portal usage
-	if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
-		portal_timer--;
-		if (portal_timer == 0.0f) {
-			decrease_cooldown = false;
-		}
-	}
+	//if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
+	//	portal_timer--;
+	//	if (portal_timer == 0.0f) {
+	//		decrease_cooldown = false;
+	//	}
+	//}
 	portal_teleport_enemy();
 
 }//end of update_portal
@@ -327,10 +323,11 @@ void draw_portal() {
 	}
 
 	//print the portal cooldown to the screen
-	std::string timer_string = "portal timer: ";
-	AEGfxPrint(Albam_fontID, &timer_string[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
-	std::string portal_timer_counter = std::to_string(static_cast<int>(portal_timer));
-	AEGfxPrint(Albam_fontID, &portal_timer_counter[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
+	//std::string timer_string = "portal CD: ";
+	//AEGfxPrint(Albam_fontID, &timer_string[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
+	//f32 portal_cooldown_counter = 1.0f - static_cast<float>(portal_timer);
+	//std::string portal_cooldown_counter_string = std::to_string(AEClamp(portal_cooldown_counter, 0.0f, portal_cooldown_counter));
+	//AEGfxPrint(Albam_fontID, &portal_cooldown_counter_string[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void portal_teleport_enemy() {
