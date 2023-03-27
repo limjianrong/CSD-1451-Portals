@@ -3,10 +3,17 @@
 #include "AEEngine.h"
 
 // ---- Upgrade Card ----
-#define CARD_WIDTH 200.f			// Card width
-#define CARD_HEIGHT 300.f			// Card height
-#define CARD_ROTATION PI			// Card rotation
-#define MAX_UPGRADES 4				// Change this to max amount of upgrades
+static f32 CARD_WIDTH;					// Card width
+static f32 CARD_HEIGHT;					// Card height
+#define CARD_ROTATION PI				// Card rotation
+#define MAX_UPGRADES 4					// Change this to max amount of upgrades
+
+// ---- Upgrades ----
+#define SHIELD_ROTATION PI				// Shield rotation
+static s32 MAX_HP_INCREMENT;			// Increment for max hp upgrade
+static f32 SPEED_INCREMENT;				// Increment for speed upgrade
+static f32 PORTAL_RANGE_INCREMENT;		// Increment for portal range upgrade
+
 
 
 static enum card_type {
@@ -28,7 +35,6 @@ struct Card {
 
 struct Shield 
 {
-	f32 rotation;
 	AEVec2 center;
 	AEVec2 dimensions;		// x: Width, y: Height
 

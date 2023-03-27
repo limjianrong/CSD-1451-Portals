@@ -7,13 +7,11 @@
 #include "Utilities.hpp"			// For cursor coords, 
 #include "Upgrades.hpp"
 #include "GameState_Platformer.hpp"	// For isPaused
-
 #include "GameState_Mainmenu.hpp"	// For fontID
 
-
-#include <iostream>
-
-#include <stdlib.h>     // srand, rand
+#include <iostream>					// For std
+#include <fstream>					// For fileIO
+#include <stdlib.h>					// For srand, rand
 
 //#define DEBUG
 
@@ -22,7 +20,7 @@
 static bool isUpgradeTime{ FALSE };			// Boolean for storing upgradeTime
 static s32 selected;						// Variable to store selected card
 static AEVec2 left_card_center, middle_card_center, right_card_center;
-static s32 card1, card2, card3;
+static s32 left_card, middle_card, right_card;
 
 // ----- Pause Screen -----
 extern bool isPaused;
@@ -43,8 +41,10 @@ static AEMtx33 scale, rotate, translate, transform; // temp
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEVec2 origin;
 
-// Shield
+// --- Shield ---
 static bool isShieldActive;
+
+std::ifstream upgrades_ifs{};
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
@@ -63,23 +63,31 @@ void upgrades_load() {
 
 void upgrades_init() {
 
+	upgrades_ifs.open("Assets/textFiles/upgrades.txt");
+	if (!upgrades_ifs) {
+		std::cout << "\nFailed to open upgrades.txt";
+	}
+	std::string str{};
+	upgrades_ifs >> str >> CARD_WIDTH;
+	upgrades_ifs >> str >> CARD_HEIGHT;
+	upgrades_ifs >> str >> MAX_HP_INCREMENT;
+	upgrades_ifs >> str >> SPEED_INCREMENT;
+	upgrades_ifs >> str >> PORTAL_RANGE_INCREMENT;
+	upgrades_ifs.close();
+
 	// ---- Card type ----
 	upgrades[MAX_HP_card].type = MAX_HP_card;
 	upgrades[MOVEMENT_SPEED_card].type = MOVEMENT_SPEED_card;
 	upgrades[PORTAL_RANGE_card].type = PORTAL_RANGE_card;
 	upgrades[SHIELD_card].type = SHIELD_card;
-
-	card1 = card2 = card3 = NO_card;
-	selected = NO_card;
+	left_card = middle_card = right_card = selected = NO_card;
 
 	// --- Shield Upgrade ---
 	shield.center.x = player.x;					// Shield bubble x position
 	shield.center.y = player.y;					// Shield bubble y position
-	shield.rotation = PI;						// Shield bubble rotation
 	shield.dimensions.x = player.width + 20;	// Shield bubble width
 	shield.dimensions.y = player.height + 20;	// Shield bubble height
 	isShieldActive = FALSE;						// Disable shield
-
 }
 
 void upgrade_draw() {
@@ -93,9 +101,9 @@ void upgrade_draw() {
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
 
-		render_card(card1, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, 2.f);
-		render_card(card2, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, 2.f);
-		render_card(card3, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, 2.f);
+		render_card(left_card,	AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, 2.f);
+		render_card(middle_card,AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, 2.f);
+		render_card(right_card, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, 2.f);
 	}
 	if (isShieldActive) {
 		render_shield();
@@ -123,40 +131,40 @@ void upgrade_update() {
 	}
 
 	// Set card center for collision check
-	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&left_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&middle_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&right_card_center,	AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
 
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
-		player.justLeveledUp = FALSE;	// Reset bool
-		isUpgradeTime = TRUE;			// Enable UpgradeTime!!
-		//isPaused = TRUE;				// Pause game
+		player.justLeveledUp = FALSE;		// Reset bool
+		isUpgradeTime = TRUE;				// Enable UpgradeTime!!
+		//isPaused = TRUE;					// Pause game
 
 		// Initialize random seed:
 		srand(AEFrameRateControllerGetFrameCount());
 		// Generate random number between 0 and 3
-		card1 = rand() % 4;			// Card1 type
-		card2 = rand() % 4;			// Card2 type
-		card3 = rand() % 4;			// Card3 type
+		left_card	= rand() % 4;			// left card type
+		middle_card	= rand() % 4;			// middle card type
+		right_card	= rand() % 4;			// right card type
 	}
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
 
 		// Left card clicked
-		selected = AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card1 :
-			AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card2 :
-			AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card3 : NO_card;
+		selected = AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? left_card :
+			AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? middle_card :
+			AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? right_card : NO_card;
 
 		// Gives respective upgrades
 		if (selected != NO_card) {
 			switch (selected) {
-			case MAX_HP_card: player.Max_Hp += 1;
+			case MAX_HP_card: player.Max_Hp += MAX_HP_INCREMENT;
 				break;
-			case MOVEMENT_SPEED_card: player.Speed += 0.5;
+			case MOVEMENT_SPEED_card: player.Speed += SPEED_INCREMENT;
 				break;
-			case PORTAL_RANGE_card: portal_max_range += 50;
+			case PORTAL_RANGE_card: portal_max_range += PORTAL_RANGE_INCREMENT;
 				break;
 			case SHIELD_card:
 				// Enable shield
@@ -214,7 +222,7 @@ void render_shield() {
 	// Creates a shield
 	AEGfxSetTransparency(0.6f);
 	AEGfxTextureSet(shield.Texture, 0, 0);
-	drawMesh(shield.dimensions, shield.center, PI);
+	drawMesh(shield.dimensions, shield.center, SHIELD_ROTATION);
 }
 
 void render_card(s32 card, f32 transX, f32 offsetY)
