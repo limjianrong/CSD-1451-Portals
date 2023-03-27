@@ -506,7 +506,19 @@ void move_update() {
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
-			if (onetimeuse[i].timer >= 3) onetimeuse[i].flag = NOT_ACTIVE;
+			if (onetimeuse[i].timer >= 3) { 
+				if (onetimeuse[i].flag == ACTIVE) {
+					onetimeuse[i].flag = NOT_ACTIVE;
+					onetimeuse[i].timer = 0;
+				}
+			}
+		}
+		else if (onetimeuse[i].flag == NOT_ACTIVE) {
+			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
+			if (onetimeuse[i].timer >= 3) { 
+				onetimeuse[i].timer = 0; 
+				onetimeuse[i].flag = ACTIVE;
+			}
 		}
 	}
 
