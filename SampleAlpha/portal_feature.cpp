@@ -49,7 +49,7 @@ extern AEGfxVertexList* square_mesh;
 extern s8 Albam_fontID;
 
 /*************  Portal Cooldown and Max Range ***********/
-float portal_max_range, portal_cooldown, portal_timer{};
+float portal_max_range, portal_cooldown,portal_timer{};
 std::ifstream portal_ifs{};
 
 
@@ -120,7 +120,7 @@ void update_portal() {
 		portal_2.created = false;
 		portal_1.draw_outline = false;
 	}
-	portal_timer += AEFrameRateControllerGetFrameTime();
+	portal_timer += static_cast<float>(AEFrameRateControllerGetFrameTime());
 	//If player right clicked and the portal timer == 0, player can create a portal
 	//else, player must wait for portal timer to be decremented to 0 before he can create
 	//a portal
