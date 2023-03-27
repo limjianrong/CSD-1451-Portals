@@ -267,20 +267,33 @@ void enemy2_create (f32 x, f32 y, s32 index) {
 	enemy2[index].status = TRUE;  // All alive at the start
 }
 
+void RenderEnemy(Enemy2_stats enemy)
+{
+	AEMtx33Scale(&enemy.scale, enemy.width, enemy.height);
+	AEMtx33Rot(&enemy.rotate, enemy.rotation);
+	AEMtx33Trans(&enemy.translate, enemy.x, enemy.y);
+	AEMtx33Concat(&enemy.transform, &enemy.rotate, &enemy.scale);
+	AEMtx33Concat(&enemy.transform, &enemy.translate, &enemy.transform);
+	AEGfxSetTransform(enemy.transform.m);
+	AEGfxTextureSet(enemy.enemy2_fly1, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+}
+
 void enemy2_draw () {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
-			// ------  Enemy2  ------
-			AEMtx33Scale(&enemy2[i].scale, enemy2[i].width, enemy2[i].height);
-			AEMtx33Rot(&enemy2[i].rotate, enemy2[i].rotation);
-			AEMtx33Trans(&enemy2[i].translate, enemy2[i].x, enemy2[i].y);
-			AEMtx33Concat(&enemy2[i].transform, &enemy2[i].rotate, &enemy2[i].scale);
-			AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
-			AEGfxSetTransform(enemy2[i].transform.m);
-			AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			//// ------  Enemy2  ------
+			//AEMtx33Scale(&enemy2[i].scale, enemy2[i].width, enemy2[i].height);
+			//AEMtx33Rot(&enemy2[i].rotate, enemy2[i].rotation);
+			//AEMtx33Trans(&enemy2[i].translate, enemy2[i].x, enemy2[i].y);
+			//AEMtx33Concat(&enemy2[i].transform, &enemy2[i].rotate, &enemy2[i].scale);
+			//AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
+			//AEGfxSetTransform(enemy2[i].transform.m);
+			//AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
+			//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 			// Set vector
 			AEVec2Set(&enemy2[i].center, enemy2[i].x, enemy2[i].y);
+			RenderEnemy(enemy2[i]);
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
@@ -335,12 +348,11 @@ void enemy2_update () {
 						bullet_enemy2[i].isTeleported = FALSE;
 
 						// If player x within 100 units of enemy2
-						if (player.x >= (enemy2[i].x - 100) && player.x <= enemy2[i].x) {
+						if (player.x >= (enemy2[i].x - 100.f) && player.x <= enemy2[i].x) {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 						}
 					}
 				}
-
 			}
 			else { // No longer in range
 				// ---- Loops bullet ----
@@ -353,7 +365,6 @@ void enemy2_update () {
 					else {
 						// --- Disable shooting ---
 						bullet_enemy2[i].isShooting = FALSE;
-
 					}
 				}
 				else {

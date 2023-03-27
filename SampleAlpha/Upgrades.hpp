@@ -27,7 +27,9 @@ struct Card {
 	AEGfxTexture* Texture;
 };
 
-struct Shield {
+
+struct Shield 
+{
 	f32 x, y, rotation;
 	AEVec2 center;
 	f32 width, height;
@@ -36,6 +38,8 @@ struct Shield {
 	AEMtx33 scale, rotate, translate, transform; // TRS
 	AEGfxTexture* Texture;
 };
+
+void drawing_mesh(Shield& shield, Player_stats& player);
 
 void upgrades_load();
 void upgrades_init();
@@ -47,3 +51,4 @@ void upgrades_unload();
 
 void shield_upgrade_update();
 void shield_upgrade_draw();
+void render_card(s32 card, f32 transX, f32 offsetY);

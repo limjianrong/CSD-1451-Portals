@@ -55,6 +55,7 @@ extern f32 originX, originY;		// Center of screen, no matter where the camera mo
 
 // ----- Camera -----
 extern AEVec2 cameraPos;
+
 /*!**************************************************************************************************
 \brief
   In charge of loading platformer game
@@ -82,7 +83,6 @@ void GameStatePlatformerLoad(void) {
 	portal_load();				// Portal
 	upgrades_load();			// Upgrades
 	player_load();				// Player
-
 }
 /*!**************************************************************************************************
 \brief

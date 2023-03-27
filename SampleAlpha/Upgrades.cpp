@@ -15,6 +15,8 @@
 
 #include <stdlib.h>     // srand, rand
 
+//#define DEBUG
+
 
 // --- Upgrades ---
 static bool isUpgradeTime{ FALSE };	 // Boolean for storing upgradeTime
@@ -98,72 +100,9 @@ void upgrade_draw() {
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
 
-		// ------ Draw card1 ------
-		switch (card1) {
-		case MAX_HP_card:
-			AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
-			break;
-		case MOVEMENT_SPEED_card:
-			AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
-			break;
-		case PORTAL_RANGE_card:
-			AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
-			break;
-		case SHIELD_card:
-			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
-			break;
-		}
-		AEMtx33Scale(&scale, CARD_WIDTH, CARD_HEIGHT);
-		AEMtx33Rot(&rotate, CARD_ROTATION);
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-
-		// ------ Draw card2 ------
-		switch (card2) {
-		case MAX_HP_card:
-			AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
-			break;
-		case MOVEMENT_SPEED_card:
-			AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
-			break;
-		case PORTAL_RANGE_card:
-			AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
-			break;
-		case SHIELD_card:
-			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
-			break;
-		}
-		AEMtx33Trans(&translate, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// ------ Draw card3 ------
-		switch (card3) {
-		case MAX_HP_card:
-			AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
-			break;
-		case MOVEMENT_SPEED_card:
-			AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
-			break;
-		case PORTAL_RANGE_card:
-			AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
-			break;
-		case SHIELD_card:
-			AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
-			break;
-		}
-		AEMtx33Trans(&translate, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
+		render_card(card1, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, 2.f);
+		render_card(card2, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, 2.f);
+		render_card(card3, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, 2.f);
 	}
 	if (isShieldActive) {
 		shield_upgrade_draw();
@@ -191,9 +130,9 @@ void upgrade_update() {
 	}
 
 	// Set card center for collision check
-	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&left_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&middle_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&right_card_center,	AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
 
 	// ----- Open upgrade screen -----
@@ -209,50 +148,54 @@ void upgrade_update() {
 		card2 = rand() % 4;			// Card2 type
 		card3 = rand() % 4;			// Card3 type
 	}
+
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
 
 		// Left card clicked
-		if (AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
-			selected = card1;
-		}
-		// Middle card clicked
-		else if (AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
-			selected = card2;
-		}
-		// Right card clicked
-		else if (AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)) {
-			selected = card3;
-		}
-		else {
-			selected = NO_card;
-		}
+		selected =	AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)		?	card1 :
+					AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)	?	card2 :
+					AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)		?	card3 : NO_card;
 
+		// Gives respective upgrades
 		if (selected != NO_card) {
 			switch (selected) {
 			case MAX_HP_card: player.Max_Hp += 1;
-				std::cout << "Max HP: " << player.Max_Hp << std::endl;
 				break;
 			case MOVEMENT_SPEED_card: player.Speed += 0.5;
-				std::cout << "Speed: " << player.Speed << std::endl;
 				break;
 			case PORTAL_RANGE_card: portal_max_range += 50;
-				std::cout << "Portal range: " << portal_max_range << std::endl;
 				break;
-			case SHIELD_card: 
+			case SHIELD_card:
 				// Enable shield
 				if (!isShieldActive) {
 					isShieldActive = TRUE;
 				}
+				break;
+			}
+
+#ifdef DEBUG
+			switch (selected) {
+			case MAX_HP_card:
+				std::cout << "Max HP: " << player.Max_Hp << std::endl;
+				break;
+			case MOVEMENT_SPEED_card:
+				std::cout << "Speed: " << player.Speed << std::endl;
+				break;
+			case PORTAL_RANGE_card:
+				std::cout << "Portal range: " << portal_max_range << std::endl;
+				break;
+			case SHIELD_card:
 				std::cout << "Shield cd: " << isShieldActive << std::endl;
 				break;
 			}
+#endif // DEBUG
+
 		}
 		// ----- Close upgrade screen -----
 		isUpgradeTime = FALSE;
 	}
 
 	shield_upgrade_update();
-
 }
 
 
@@ -272,15 +215,28 @@ void shield_upgrade_update() {
 			isShieldActive = FALSE;
 		}
 	}
-
-
-
 }
 
 void shield_upgrade_draw() {
 
 	AEGfxSetTransparency(0.6f);
 	// Creates a shield size 70x70
+	
+	drawing_mesh(shield, player);
+
+	/*AEMtx33Scale(&shield.scale, player.width + 20, player.height + 20);
+	AEMtx33Rot(&shield.rotate, PI);
+	AEMtx33Trans(&shield.translate, shield.x, shield.y);
+	AEMtx33Concat(&shield.transform, &shield.rotate, &shield.scale);
+	AEMtx33Concat(&shield.transform, &shield.translate, &shield.transform);
+	AEGfxTextureSet(shield.Texture, 0, 0);
+	AEGfxSetTransform(shield.transform.m);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);*/
+
+}
+
+void drawing_mesh(Shield &shield, Player_stats &player) {
+
 	AEMtx33Scale(&shield.scale, player.width + 20, player.height + 20);
 	AEMtx33Rot(&shield.rotate, PI);
 	AEMtx33Trans(&shield.translate, shield.x, shield.y);
@@ -289,5 +245,30 @@ void shield_upgrade_draw() {
 	AEGfxTextureSet(shield.Texture, 0, 0);
 	AEGfxSetTransform(shield.transform.m);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+}
 
+void render_card(s32 card, f32 transX, f32 offsetY)
+{
+	// ------ Draw card1 ------
+	switch (card) {
+	case MAX_HP_card:
+		AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
+		break;
+	case MOVEMENT_SPEED_card:
+		AEGfxTextureSet(upgrades[MOVEMENT_SPEED_card].Texture, 0, 0);
+		break;
+	case PORTAL_RANGE_card:
+		AEGfxTextureSet(upgrades[PORTAL_RANGE_card].Texture, 0, 0);
+		break;
+	case SHIELD_card:
+		AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
+		break;
+	}
+	AEMtx33Scale(&scale, CARD_WIDTH, CARD_HEIGHT);
+	AEMtx33Rot(&rotate, CARD_ROTATION);
+	AEMtx33Trans(&translate, transX, AEGfxGetWinMinY() + AEGetWindowHeight() / offsetY);
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }

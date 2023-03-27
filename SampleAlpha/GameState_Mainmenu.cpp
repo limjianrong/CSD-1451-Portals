@@ -54,36 +54,6 @@ void GameStateMainmenuUpdate(void) {
 		}
 	}
 
-	//// ------ Start game button ------
-	//if (AEInputCheckReleased(AEVK_LBUTTON) && 
-	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 - WINDOWLENGTH_Y / 16 &&
-	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 15 + WINDOWLENGTH_Y / 16) {
-	//	gGameStateNext = GS_Platformer;
-	//}
-	//// ------ Tutorial button ------
-	//if (AEInputCheckReleased(AEVK_LBUTTON) &&
-	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 - WINDOWLENGTH_Y / 16 &&
-	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 19 + WINDOWLENGTH_Y / 16) {
-	//	//gGameStateNext = GS_Tutorial;
-	//	std::cout << "TUTORIAL NOT YET" << std::endl;
-	//}
-	//// ------ Settings button ------
-	//if (AEInputCheckReleased(AEVK_LBUTTON) &&
-	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 - WINDOWLENGTH_Y / 16 &&
-	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 23 + WINDOWLENGTH_Y / 16) {
-	//	gGameStateNext = GS_Settings;
-	//}
-	//// ------ Quit game button ------
-	//if (AEInputCheckReleased(AEVK_LBUTTON) && 
-	//	center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-	//	center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 - WINDOWLENGTH_Y / 16 &&
-	//	center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * 27 + WINDOWLENGTH_Y / 16) {
-	//	gGameStateNext = GS_QUIT;
-	//}
-
 
 }
 

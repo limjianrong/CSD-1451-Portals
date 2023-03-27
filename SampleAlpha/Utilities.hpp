@@ -20,11 +20,6 @@
 #define WINDOWLENGTH_X 1000
 #define WINDOWLENGTH_Y 600
 
-// Change to whatever X & Y length and game must still work
-//#define WINDOWLENGTH_X 2000
-//#define WINDOWLENGTH_Y 1200
-
-
 
 AEGfxVertexList* create_Square_Mesh();
 //AEVec2 get_cursor_center_position();
