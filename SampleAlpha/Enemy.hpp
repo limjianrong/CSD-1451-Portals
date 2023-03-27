@@ -22,6 +22,7 @@
 #pragma once
 
 #include "AEEngine.h"
+#include "Player.hpp"
 
 // ----- Enemy 1 -----
 #define ENEMY1_WIDTH 60.f			// Enemy1 width

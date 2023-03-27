@@ -49,7 +49,7 @@ extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
 extern AEVec2 center_cursor;			// Origin is CENTER of window
 extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 // ----- Window origin -----
-extern f32 originX, originY;			// Center of screen, no matter where the camera moves
+extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 
 AEVec2 cameraPos{ 0, 0 };
 float constexpr camera_buffer_range{ 200.0f };

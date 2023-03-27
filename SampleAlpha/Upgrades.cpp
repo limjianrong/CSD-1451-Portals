@@ -1,14 +1,14 @@
 
 #include "AEEngine.h"
-#include "Player.hpp"			// For player_stats
-#include "Enemy.hpp"			// For Enemy2 stats
-#include "boss.hpp"				// For Enemy2_bullet
-#include "portal_feature.hpp"	// For portal range
-#include "Utilities.hpp"		// For cursor coords, 
+#include "Player.hpp"				// For player_stats
+#include "Enemy.hpp"				// For Enemy2 stats
+#include "boss.hpp"					// For Enemy2_bullet
+#include "portal_feature.hpp"		// For portal range
+#include "Utilities.hpp"			// For cursor coords, 
 #include "Upgrades.hpp"
-#include "GameState_Platformer.hpp"	 // For isPaused
+#include "GameState_Platformer.hpp"	// For isPaused
 
-#include "GameState_Mainmenu.hpp"  // For fontID
+#include "GameState_Mainmenu.hpp"	// For fontID
 
 
 #include <iostream>
@@ -19,8 +19,8 @@
 
 
 // --- Upgrades ---
-static bool isUpgradeTime{ FALSE };	 // Boolean for storing upgradeTime
-static s32 selected;						 // Variable to store selected card
+static bool isUpgradeTime{ FALSE };			// Boolean for storing upgradeTime
+static s32 selected;						// Variable to store selected card
 static AEVec2 left_card_center, middle_card_center, right_card_center;
 static s32 card1, card2, card3;
 
@@ -41,7 +41,7 @@ Card upgrades[MAX_UPGRADES];
 // ----- Mesh & Texture -----
 static AEMtx33 scale, rotate, translate, transform; // temp
 extern AEGfxVertexList* square_mesh;	// Created square mesh
-extern f32 originX, originY;
+extern AEVec2 origin;
 
 // Shield
 static bool isShieldActive;
@@ -69,17 +69,16 @@ void upgrades_init() {
 	upgrades[PORTAL_RANGE_card].type = PORTAL_RANGE_card;
 	upgrades[SHIELD_card].type = SHIELD_card;
 
-
 	card1 = card2 = card3 = NO_card;
 	selected = NO_card;
 
 	// --- Shield Upgrade ---
-	shield.x = player.x;					// Shield bubble x position
-	shield.y = player.y;					// Shield bubble y position
-	shield.rotation = PI;					// Shield bubble rotation
-	shield.width = player.width + 20;		// Shield bubble height
-	shield.height = player.height + 20;		// Shield bubble width
-	isShieldActive = FALSE;					// Disable shield
+	shield.center.x = player.x;					// Shield bubble x position
+	shield.center.y = player.y;					// Shield bubble y position
+	shield.rotation = PI;						// Shield bubble rotation
+	shield.dimensions.x = player.width + 20;	// Shield bubble width
+	shield.dimensions.y = player.height + 20;	// Shield bubble height
+	isShieldActive = FALSE;						// Disable shield
 
 }
 
@@ -88,14 +87,8 @@ void upgrade_draw() {
 	if (isUpgradeTime) {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
-		AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, originX, originY);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxTextureSet(nullptr, 0, 0);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
 
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
@@ -105,7 +98,7 @@ void upgrade_draw() {
 		render_card(card3, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, 2.f);
 	}
 	if (isShieldActive) {
-		shield_upgrade_draw();
+		render_shield();
 	}
 }
 
@@ -130,9 +123,9 @@ void upgrade_update() {
 	}
 
 	// Set card center for collision check
-	AEVec2Set(&left_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&middle_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
-	AEVec2Set(&right_card_center,	AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&left_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&middle_card_center, AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
+	AEVec2Set(&right_card_center, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
 
 	// ----- Open upgrade screen -----
@@ -152,9 +145,9 @@ void upgrade_update() {
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && isUpgradeTime) {
 
 		// Left card clicked
-		selected =	AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)		?	card1 :
-					AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)	?	card2 :
-					AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f)		?	card3 : NO_card;
+		selected = AETestRectToRect(&left_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card1 :
+			AETestRectToRect(&middle_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card2 :
+			AETestRectToRect(&right_card_center, CARD_WIDTH, CARD_HEIGHT, &world_center_cursor, 0.1f, 0.1f) ? card3 : NO_card;
 
 		// Gives respective upgrades
 		if (selected != NO_card) {
@@ -195,17 +188,16 @@ void upgrade_update() {
 		isUpgradeTime = FALSE;
 	}
 
-	shield_upgrade_update();
+	shield_update();
 }
 
 
-void shield_upgrade_update() {
+void shield_update() {
 
 	// Shield follows player x & y
 	if (isShieldActive) {
-		shield.x = player.x;
-		shield.y = player.y;
-		AEVec2Set(&shield.center, shield.x, shield.y);
+		shield.center.x = player.x;
+		shield.center.y = player.y;
 	}
 
 	// ----- Disable shield when shot by Enemy2 -----
@@ -217,39 +209,17 @@ void shield_upgrade_update() {
 	}
 }
 
-void shield_upgrade_draw() {
+void render_shield() {
 
+	// Creates a shield
 	AEGfxSetTransparency(0.6f);
-	// Creates a shield size 70x70
-	
-	drawing_mesh(shield, player);
-
-	/*AEMtx33Scale(&shield.scale, player.width + 20, player.height + 20);
-	AEMtx33Rot(&shield.rotate, PI);
-	AEMtx33Trans(&shield.translate, shield.x, shield.y);
-	AEMtx33Concat(&shield.transform, &shield.rotate, &shield.scale);
-	AEMtx33Concat(&shield.transform, &shield.translate, &shield.transform);
 	AEGfxTextureSet(shield.Texture, 0, 0);
-	AEGfxSetTransform(shield.transform.m);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);*/
-
-}
-
-void drawing_mesh(Shield &shield, Player_stats &player) {
-
-	AEMtx33Scale(&shield.scale, player.width + 20, player.height + 20);
-	AEMtx33Rot(&shield.rotate, PI);
-	AEMtx33Trans(&shield.translate, shield.x, shield.y);
-	AEMtx33Concat(&shield.transform, &shield.rotate, &shield.scale);
-	AEMtx33Concat(&shield.transform, &shield.translate, &shield.transform);
-	AEGfxTextureSet(shield.Texture, 0, 0);
-	AEGfxSetTransform(shield.transform.m);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(shield.dimensions, shield.center, PI);
 }
 
 void render_card(s32 card, f32 transX, f32 offsetY)
 {
-	// ------ Draw card1 ------
+	// ------ Draw all cards ------
 	switch (card) {
 	case MAX_HP_card:
 		AEGfxTextureSet(upgrades[MAX_HP_card].Texture, 0, 0);
@@ -264,11 +234,6 @@ void render_card(s32 card, f32 transX, f32 offsetY)
 		AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 		break;
 	}
-	AEMtx33Scale(&scale, CARD_WIDTH, CARD_HEIGHT);
-	AEMtx33Rot(&rotate, CARD_ROTATION);
-	AEMtx33Trans(&translate, transX, AEGfxGetWinMinY() + AEGetWindowHeight() / offsetY);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxSetTransform(transform.m);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(AEVec2{ CARD_WIDTH, CARD_HEIGHT }, AEVec2{ transX, AEGfxGetWinMinY() + AEGetWindowHeight() / offsetY }, CARD_ROTATION);
+
 }

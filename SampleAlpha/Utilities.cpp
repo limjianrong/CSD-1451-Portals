@@ -23,7 +23,8 @@ AEVec2 cursor;					// Origin at TOP LEFT corner of window
 AEVec2 center_cursor;			// Origin is CENTER of window
 AEVec2 world_center_cursor;		// Origin is CENTER of window
 // --- Window ---
-f32 originX, originY;			// Center of screen, no matter where the camera moves
+AEVec2 origin;					// Center of screen, no matter where the camera moves
+//f32 originX, originY;			// Center of screen, no matter where the camera moves
 
 /*!**************************************************************************************************
 \brief
@@ -90,6 +91,22 @@ void variables_update() {
 
 
 	// --------- Gets CENTER origin of constantly moving screen ---------
-	originX = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
-	originY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
+	/*originX = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
+	originY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;*/
+
+	origin.x = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
+	origin.y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
+}
+
+void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
+{
+	AEMtx33 transform, Scale, Rot, Trans;
+
+	AEMtx33Scale(&Scale, scale.x, scale.y);
+	AEMtx33Rot(&Rot, rot);
+	AEMtx33Trans(&Trans, trans.x, trans.y);
+	AEMtx33Concat(&transform, &Rot, &Scale);
+	AEMtx33Concat(&transform, &Trans, &transform);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }

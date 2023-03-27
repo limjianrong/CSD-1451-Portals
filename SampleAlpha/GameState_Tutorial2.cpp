@@ -15,7 +15,7 @@ static AEGfxTexture* assets[asset3_count];
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
-extern f32 originX, originY; // center coordinates of screen
+extern AEVec2 origin; // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
 extern Boss boss;
 
@@ -73,7 +73,7 @@ void GameStateTutorial2Draw(void) {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);

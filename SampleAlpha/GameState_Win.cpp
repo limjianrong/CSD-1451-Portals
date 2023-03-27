@@ -13,7 +13,7 @@ static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; //text font
-extern f32 originX, originY; // screen center coordinates
+extern AEVec2 origin;		 // screen center coordinates
 extern AEVec2 center_cursor; // cursor coordinates
 
 void GameStateWinLoad() {
@@ -53,7 +53,7 @@ void GameStateWinDraw() {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
@@ -64,7 +64,7 @@ void GameStateWinDraw() {
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
 		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // button scale
-		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x = center, start counting y from bottom of screen
+		AEMtx33Trans(&translate, origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x = center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);

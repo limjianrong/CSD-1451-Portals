@@ -15,7 +15,7 @@ static AEGfxTexture* assets2[asset2_count];
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
-extern f32 originX, originY; // center coordinates of screen
+extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
 // button positions
 f32 buttonX, buttonY;
@@ -46,14 +46,14 @@ void GameStateTutorialLoad(void) {
 	mesh_load();
 }
 void GameStateTutorialInit(void) {
-	buttonX = originX - WINDOWLENGTH_X / 4; //length 1/3 od x screen
-	buttonY = originY - WINDOWLENGTH_Y / 2.5; //heoght 1/8 of y screen
+	buttonX = origin.x - WINDOWLENGTH_X / 4; //length 1/3 od x screen
+	buttonY = origin.y - WINDOWLENGTH_Y / 2.5; //heoght 1/8 of y screen
 
-	assetX = originX - WINDOWLENGTH_X / 3;
-	assetY = originY + WINDOWLENGTH_Y / 3;
+	assetX = origin.x - WINDOWLENGTH_X / 3;
+	assetY = origin.y + WINDOWLENGTH_Y / 3;
 
-	asset2X = originX - WINDOWLENGTH_X / 6;
-	asset2Y = originY;
+	asset2X = origin.x - WINDOWLENGTH_X / 6;
+	asset2Y = origin.y;
 
 	//asset_scale[_player] = { player.width, player.height };
 	//asset_scale[portals] = { 40.f, 40.f };
@@ -85,7 +85,7 @@ void GameStateTutorialDraw(void) {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);

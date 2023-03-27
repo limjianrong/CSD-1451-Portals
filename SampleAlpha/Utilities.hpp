@@ -22,6 +22,7 @@
 
 
 AEGfxVertexList* create_Square_Mesh();
+void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot);
 //AEVec2 get_cursor_center_position();
 void mesh_load();
 void variables_update();

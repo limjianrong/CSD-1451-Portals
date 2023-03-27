@@ -19,7 +19,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 AEGfxTexture* logo;
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
-extern f32 originX, originY; 
+extern AEVec2 origin;
 f32 transparancy;
 f64 timer;
 
@@ -50,7 +50,7 @@ void GameStateSplashscreenDraw(void) {
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);

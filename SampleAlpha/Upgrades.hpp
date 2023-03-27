@@ -19,27 +19,22 @@ static enum card_type {
 
 struct Card {
 	s32 type;
-	f32 x, y;
 	AEVec2 center;
 
 	// ---- Draw ----
-	AEMtx33 scale, rotate, translate, transform; // TRS
 	AEGfxTexture* Texture;
 };
 
 
 struct Shield 
 {
-	f32 x, y, rotation;
+	f32 rotation;
 	AEVec2 center;
-	f32 width, height;
+	AEVec2 dimensions;		// x: Width, y: Height
 
 	// ---- Draw ----
-	AEMtx33 scale, rotate, translate, transform; // TRS
 	AEGfxTexture* Texture;
 };
-
-void drawing_mesh(Shield& shield, Player_stats& player);
 
 void upgrades_load();
 void upgrades_init();
@@ -49,6 +44,6 @@ void upgrades_free();
 void upgrades_unload();
 
 
-void shield_upgrade_update();
-void shield_upgrade_draw();
+void shield_update();
+void render_shield();
 void render_card(s32 card, f32 transX, f32 offsetY);

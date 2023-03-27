@@ -13,7 +13,7 @@ AEGfxTexture* volume_bar, * volume_button;
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
-extern f32 originX, originY; // center coordinates of screen
+extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
 
 // --- Settings variables ---
@@ -39,14 +39,14 @@ void GameStateSettingsLoad(void) {
 
 void GameStateSettingsInit(void) {
 	// initialize volume button coordinates and scale
-	vbutton.x = originX;
-	vbutton.y = originY + 150.f;
+	vbutton.x = origin.x;
+	vbutton.y = origin.y + 150.f;
 	buttonscalex = WINDOWLENGTH_X / 27.f;
 	buttonscaley = WINDOWLENGTH_Y / 18.f;
 
 	// initialize volume bar coordinates and scale
-	vbar.x = originX;
-	vbar.y = originY + 150.f;
+	vbar.x = origin.x;
+	vbar.y = origin.y + 150.f;
 	barscalex = WINDOWLENGTH_X / 2.f;
 	barscaley = WINDOWLENGTH_Y / 80.f;
 }
@@ -104,7 +104,7 @@ void GameStateSettingsDraw(void) {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
@@ -115,7 +115,7 @@ void GameStateSettingsDraw(void) {
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 19; i += 4) {
 		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3.f, WINDOWLENGTH_Y / 8.f); // scale of button
-		AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i); // x = screen center, start counting y from bottom of screen
+		AEMtx33Trans(&translate, origin.x, origin.y + WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i); // x = screen center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);

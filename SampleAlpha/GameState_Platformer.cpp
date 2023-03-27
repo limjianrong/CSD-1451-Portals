@@ -51,7 +51,7 @@ extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
 extern AEVec2 center_cursor;			// Origin is CENTER of window
 extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 // ----- Window origin -----
-extern f32 originX, originY;		// Center of screen, no matter where the camera moves
+extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 
 // ----- Camera -----
 extern AEVec2 cameraPos;
@@ -161,7 +161,7 @@ void GameStatePlatformerDraw(void) {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
@@ -194,7 +194,7 @@ void GameStatePlatformerDraw(void) {
 		AEGfxSetTransparency(0.55f);
 		AEMtx33Scale(&scale, WINDOWLENGTH_X+200, WINDOWLENGTH_Y+200);
 		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, originX, originY);
+		AEMtx33Trans(&translate, origin.x, origin.y);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxTextureSet(nullptr, 0, 0);
@@ -216,7 +216,7 @@ void GameStatePlatformerDraw(void) {
 		for (int i = 9; i <= 15; i+=2) {
 			AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 12);
 			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, originX, originY + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i);
+			AEMtx33Trans(&translate, origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i);
 			AEMtx33Concat(&transform, &rotate, &scale);
 			AEMtx33Concat(&transform, &translate, &transform);
 			AEGfxSetTransform(transform.m);

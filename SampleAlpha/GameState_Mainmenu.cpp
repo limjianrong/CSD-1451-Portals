@@ -21,7 +21,7 @@ extern AEVec2 center_cursor;		 // Origin is CENTER of window
 extern AEVec2 world_center_cursor;  // Origin is CENTER of window
 
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
-extern f32 originX, originY; // origin (0,0) is in middle of screen, no matter where the camera moves
+extern AEVec2 origin; // origin (0,0) is in middle of screen, no matter where the camera moves
 
 void GameStateMainmenuLoad(void) {
 	// Texture load
@@ -66,7 +66,7 @@ void GameStateMainmenuDraw(void) {
 
 	// ------- Background -------
 	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, originX, originY);
+	AEMtx33Trans(&translate, origin.x, origin.y);
 	AEMtx33Rot(&rotate, PI);
 	AEMtx33Concat(&transform, &rotate, &scale);
 	AEMtx33Concat(&transform, &translate, &transform);
@@ -77,7 +77,7 @@ void GameStateMainmenuDraw(void) {
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 27 ; i+=4) {
 		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scaling it up
-		AEMtx33Trans(&translate, originX, originY+ WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x=0, start counting y from bottom edge of screen
+		AEMtx33Trans(&translate, origin.x, origin.y+ WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x=0, start counting y from bottom edge of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
