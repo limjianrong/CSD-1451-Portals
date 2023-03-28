@@ -42,7 +42,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEVec2 origin;
 
 // --- Shield ---
-static bool isShieldActive;
+bool isShieldActive;
 
 std::ifstream upgrades_ifs{};
 

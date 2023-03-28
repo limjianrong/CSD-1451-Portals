@@ -39,13 +39,14 @@ extern Player_stats player;
 Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
 Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
+extern bool isShieldActive;
 
 // ----- Pause Menu -----
 extern bool isPaused;
 
 bool damage_allowed{ TRUE };	// Enemy1
 
-f32 g_dt;
+//f32 g_dt;
 
 
 void enemies_load() {
@@ -71,8 +72,8 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	enemy1_create(600, 90, 0);
-	//enemy1_create(-300, 90, 0);
+	//enemy1_create(600, 90, 0);
+	enemy1_create(-300, 90, 0);
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 
@@ -148,7 +149,7 @@ void enemies_update() {
 	enemy2_update();		// Updates all enemy2
 
 	// Get Delta Time
-	g_dt = (f32)AEFrameRateControllerGetFrameTime();
+	//g_dt = (f32)AEFrameRateControllerGetFrameTime();
 
 }
 
@@ -184,7 +185,12 @@ void enemy1_collision() {
 			// decreases 1 player hp whenever player and enemy1 collide
 			//if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
 			if (CollisionIntersection_RectRect(enemy1[i], player)) {
-				--player.Hp;
+				if (isShieldActive) {
+					isShieldActive = FALSE;
+				}
+				else {
+					--player.Hp;
+				}
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;
 			}
@@ -293,30 +299,10 @@ void enemy2_create(f32 x, f32 y, s32 index) {
 	enemy2[index].status = TRUE;  // All alive at the start
 }
 
-void RenderEnemy(Enemy2_stats enemy)
-{
-	AEMtx33Scale(&enemy.scale, enemy.width, enemy.height);
-	AEMtx33Rot(&enemy.rotate, enemy.rotation);
-	AEMtx33Trans(&enemy.translate, enemy.x, enemy.y);
-	AEMtx33Concat(&enemy.transform, &enemy.rotate, &enemy.scale);
-	AEMtx33Concat(&enemy.transform, &enemy.translate, &enemy.transform);
-	AEGfxSetTransform(enemy.transform.m);
-	AEGfxTextureSet(enemy.enemy2_fly1, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-}
-
 void enemy2_draw() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
-			//// ------  Enemy2  ------
-			//AEMtx33Scale(&enemy2[i].scale, enemy2[i].width, enemy2[i].height);
-			//AEMtx33Rot(&enemy2[i].rotate, enemy2[i].rotation);
-			//AEMtx33Trans(&enemy2[i].translate, enemy2[i].x, enemy2[i].y);
-			//AEMtx33Concat(&enemy2[i].transform, &enemy2[i].rotate, &enemy2[i].scale);
-			//AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
-			//AEGfxSetTransform(enemy2[i].transform.m);
-			//AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
-			//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			// ------  Enemy2  ------
 			// Set vector
 			AEVec2Set(&enemy2[i].center, enemy2[i].x, enemy2[i].y);
 			RenderEnemy(enemy2[i]);
@@ -417,7 +403,13 @@ void enemy2_update() {
 					player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y))) {
 					bullet_enemy2[i].isShooting = FALSE;
 				}
-				--player.Hp;
+
+				if (isShieldActive) {
+					isShieldActive = FALSE;
+				}
+				else {
+					--player.Hp;
+				}
 			}
 
 			// ----- Bullet collision with enemy2 -----
@@ -458,4 +450,16 @@ void enemy2_update() {
 			enemy2[i].status = FALSE;
 		}
 	}
+}
+
+void RenderEnemy(Enemy2_stats enemy)
+{
+	AEMtx33Scale(&enemy.scale, enemy.width, enemy.height);
+	AEMtx33Rot(&enemy.rotate, enemy.rotation);
+	AEMtx33Trans(&enemy.translate, enemy.x, enemy.y);
+	AEMtx33Concat(&enemy.transform, &enemy.rotate, &enemy.scale);
+	AEMtx33Concat(&enemy.transform, &enemy.translate, &enemy.transform);
+	AEGfxSetTransform(enemy.transform.m);
+	AEGfxTextureSet(enemy.enemy2_fly1, 0, 0);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
