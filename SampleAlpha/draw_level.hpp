@@ -12,7 +12,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #pragma once
 #include "Player.hpp"
 #include "Utilities.hpp"
-#include <vector>
 
 //==== Platform Parameter ====
 #define BLOCK_WIDTH 50.0f
@@ -34,9 +33,9 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 enum Pos { OG, MOVED };
 enum Flag {	ACTIVE,	NOT_ACTIVE };
 
-//---------------------------------------
+//--------------------------------------
 // Struct for drawing blocks
-// --------------------------------------
+//--------------------------------------
 struct Block {
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
 	s32 length;
@@ -72,7 +71,7 @@ void one_time_use_create(s32 len, f32 x, f32 y, s32 index);
 void spikes_create(s32 len, f32 x, f32 y, s32 index);
 void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index);
 
-
+// ===== Draw functions for the different platforms =====
 void blocks_draw();
 void spikes_draw();
 void leftright_blocks_draw();
@@ -81,5 +80,7 @@ void diag_up_blocks_draw();
 void diag_down_blocks_draw();
 void one_time_use_blocks_draw();
 void left_right_spikes_draw();
+
+// ===== Logics for the different type of functions =====
 void move_update();
 void platform_collision(s32 cnt, f32 x, f32 y);

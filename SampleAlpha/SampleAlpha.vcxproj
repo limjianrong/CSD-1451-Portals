@@ -105,6 +105,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Enemy3.cpp" />
     <ClCompile Include="GameStateList.hpp" />
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="GameState_Credits.cpp" />
     <ClCompile Include="GameState_Lose.cpp" />
     <ClCompile Include="GameState_Splashscreen.cpp" />
     <ClCompile Include="GameState_Tutorial.cpp" />
@@ -126,6 +127,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="Enemy3.hpp" />
     <ClInclude Include="GameStateManager.hpp" />
+    <ClInclude Include="GameState_Credits.hpp" />
     <ClInclude Include="GameState_Lose.hpp" />
     <ClInclude Include="GameState_Mainmenu.hpp" />
     <ClInclude Include="GameState_Platformer.hpp" />

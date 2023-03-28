@@ -31,6 +31,7 @@ void GameStateSplashscreenLoad(void) {
 void GameStateSplashscreenInit(void) {
 	timer = 0;
 	transparancy = 1.0f;
+	AEGfxSetBackgroundColor(0, 0, 0);
 }
 
 void GameStateSplashscreenUpdate(void) {
