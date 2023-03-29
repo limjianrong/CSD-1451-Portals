@@ -22,7 +22,7 @@ struct Boss{
 struct Laser_beam{
 	int status{};
 	f32 x{}, y{};
-	f32 width{}, height{}, cooldown{}, duration{};
+	f32 width{}, height{}, cooldown{}, duration{}, buffer_duration{};
 	f32 max_duration{};
 	f32 time_elapsed{};
 	bool damaged_player{};
@@ -31,6 +31,9 @@ struct Laser_beam{
 	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, rotate{}, matrix{};
 	AEGfxTexture* picture{};
+	AEGfxTexture* warning_pic{};
+	f32 warning_pic_width{}, warning_pic_height{};
+	AEMtx33 warning_pic_scale{}, warning_pic_translate{}, warning_pic_matrix{};
 
 };
 
@@ -68,6 +71,12 @@ struct Boss_charge {
 	AEVec2 endpoint{};
 
 };
+
+struct Boss_teleport {
+	f32 cooldown{}, time_elapsed{};
+	AEVec2 location{};
+
+};
 // ---- Main Functions ----
 void boss_load();
 void boss_init();
@@ -78,7 +87,10 @@ void boss_unload();
 
 
 void boss_movement();
+void boss_movement_teleport();
 void bullet_update();
 void bullet_draw();
 void boss_laser_beam_attack();
 void boss_charge_attack();
+void draw_laser_beam();
+void draw_laser_beam_warning();

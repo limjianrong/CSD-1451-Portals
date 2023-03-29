@@ -18,12 +18,13 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <cstdlib>
 extern Player_stats player;
 Boss boss;
 Bullet bullet;
 Laser_beam laser_beam;
 Boss_charge boss_charge;
-
+Boss_teleport boss_teleport;
 static bool isRunning = FALSE;
 // ----- Normalization -----
 f32 adj, opp, angle;
@@ -39,6 +40,7 @@ void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
+	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
 
 	// Bullet texture
 	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
@@ -84,6 +86,12 @@ void boss_init () {
 	bullet.isTeleported = FALSE;				// Indicator for teleporation
 	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
 
+	laser_beam.buffer_duration = 2.0f;
+	laser_beam.warning_pic_width = 50.0f;
+	laser_beam.warning_pic_height = 50.0f;
+
+
+	boss_teleport.cooldown = 8.0f;
 	
 }
 
@@ -97,16 +105,10 @@ void boss_draw() {
 
 
 		// -------------  Draw Attack 1 (Laser beam)   ---------------
-		if (laser_beam.status == TRUE) {
-			AEGfxTextureSet(laser_beam.picture, 0.0f, 0.0f);
-			AEGfxSetTransform(laser_beam.matrix.m);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-		}
+		draw_laser_beam();
 
 		// -------------  Attack 2 (Bullet)   ---------------
 		bullet_draw();
-
-		// -------------  Attack 3 (Dash)   ---------------
 
 	}
 	else {  // --- Boss dead ---
@@ -120,15 +122,16 @@ void boss_draw() {
 	AEGfxSetTransform(boss.matrix.m);
 	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	draw_laser_beam_warning();
 }
 
 void boss_update() {
 
 	if (boss.Hp > 0) {
-
+		
 		//boss movement(Up and Down for now)
 		boss_movement();
-
+		boss_movement_teleport();
 		//boss attack #1
 		boss_laser_beam_attack();
 
@@ -153,6 +156,7 @@ void boss_unload() {
 	AEGfxTextureUnload(boss.standTex);
 	AEGfxTextureUnload(boss.deadTex);
 	AEGfxTextureUnload(laser_beam.picture);
+	AEGfxTextureUnload(laser_beam.warning_pic);
 }
 
 void boss_movement() {
@@ -193,6 +197,22 @@ void boss_movement() {
 	AEVec2Set(&boss.center, boss.x_pos, boss.y_pos);
 }
 
+void boss_movement_teleport() {
+	if (boss.Hp <= 3) {
+		boss_teleport.time_elapsed += AEFrameRateControllerGetFrameTime();
+		if (boss_teleport.time_elapsed >= boss_teleport.cooldown && boss_charge.status == false) {
+			boss_teleport.location.x = rand() % AEGetWindowWidth() + AEGfxGetWinMinX();
+			boss_teleport.location.y = rand() % AEGetWindowHeight() + AEGfxGetWinMinY();
+			while (AETestRectToRect(&boss_teleport.location, boss.width, boss.height, &player.center, player.width, player.height)) {
+				boss_teleport.location.x = rand() % AEGetWindowWidth() + AEGfxGetWinMinX();
+				boss_teleport.location.y = rand() % AEGetWindowHeight() + AEGfxGetWinMinY();
+			}
+			boss.x_pos = boss_teleport.location.x;
+			boss.y_pos = boss_teleport.location.y;
+			boss_teleport.time_elapsed = 0;
+		}
+	}
+}
 // ------------------------ ATTACK #2 ------------------------------ //
 void bullet_update() {
 
@@ -326,6 +346,21 @@ void bullet_update() {
 	}*/
 }
 
+void draw_laser_beam() {
+	if (laser_beam.status == TRUE) {
+		AEGfxTextureSet(laser_beam.picture, 0.0f, 0.0f);
+		AEGfxSetTransform(laser_beam.matrix.m);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	}
+}
+
+void draw_laser_beam_warning() {
+	if (laser_beam.time_elapsed >= laser_beam.buffer_duration && laser_beam.status == false) {
+		AEGfxTextureSet(laser_beam.warning_pic, 0.0f, 0.0f);
+		AEGfxSetTransform(laser_beam.warning_pic_matrix.m);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	}
+}
 void bullet_draw() {
 
 	// ---- Loops bullet ----
@@ -351,6 +386,12 @@ void bullet_draw() {
 void boss_laser_beam_attack() {
 
 	laser_beam.time_elapsed += static_cast<f32>(AEFrameRateControllerGetFrameTime());
+
+	//update transformation matrix for laser beam warning picture
+	AEMtx33Scale(&laser_beam.warning_pic_scale, laser_beam.warning_pic_width, laser_beam.warning_pic_height);
+	AEMtx33Trans(&laser_beam.warning_pic_translate, boss.x_pos, boss.y_pos);
+	AEMtx33Concat(&laser_beam.warning_pic_matrix, &laser_beam.warning_pic_translate, &laser_beam.warning_pic_scale);
+
 	if(laser_beam.time_elapsed >= laser_beam.cooldown && boss_charge.status==false){
 		
 		laser_beam.status = TRUE;
@@ -408,12 +449,14 @@ void boss_charge_attack() {
 		AEVec2Normalize(&boss_charge.normalized_direction, &boss_charge.direction);
 	}
 
+	//if boss is charging forward(1st phase of the attack)
 	if (boss_charge.status == true && boss_charge.return_to_position == false) {
 		boss.x_pos += boss_charge.normalized_direction.x * boss_charge.velocity;
 		boss.y_pos += boss_charge.normalized_direction.y * boss_charge.velocity;
 	}
 
-	
+	//determine the distance that the boss needs to charge, based on whether it is charging to the player, or charging
+	//back to its original position
 	if (boss_charge.return_to_position == false) {
 		boss_charge.distance_travelled = sqrt((boss.x_pos - boss_charge.original_position.x) * (boss.x_pos - boss_charge.original_position.x)
 			+ (boss.y_pos - boss_charge.original_position.y) * (boss.y_pos - boss_charge.original_position.y));
@@ -422,11 +465,15 @@ void boss_charge_attack() {
 		boss_charge.distance_travelled = sqrt((boss.x_pos - boss_charge.endpoint.x) * (boss.x_pos - boss_charge.endpoint.x)
 			+ (boss.y_pos - boss_charge.endpoint.y) * (boss.y_pos - boss_charge.endpoint.y));
 	}
+
+	//if distance travelled is more than distance needed to be travelled, and boss is charging forward
+	//make the boss now start charging back to its original position(2nd phase of the attack)
 	if (boss_charge.distance_travelled>=boss_charge.direction_magnitude &&boss_charge.return_to_position==false) {
 		boss_charge.return_to_position = true;
 		boss_charge.distance_travelled = 0;
 	}
 
+	//make the boss charge back to the original position when it first started the charge attack
 	if (boss_charge.status == true && boss_charge.return_to_position == true) {
 		boss.x_pos -= boss_charge.normalized_direction.x * boss_charge.velocity;
 		boss.y_pos -= boss_charge.normalized_direction.y * boss_charge.velocity;
@@ -442,6 +489,7 @@ void boss_charge_attack() {
 			boss_charge.player_damaged = false;
 		}
 
+		//check if boss collided with the player during the charge, limit attack to only damage the player once per attack
 		if (AETestRectToRect(&player.center, player.width, player.height, &boss.center, boss.width, boss.height)) {
 			if (!boss_charge.player_damaged) {
 				--player.Hp;

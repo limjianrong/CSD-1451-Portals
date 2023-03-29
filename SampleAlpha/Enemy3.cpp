@@ -247,7 +247,7 @@ void enemy3_unload() {
 
 void enemy3_collision() {
 	AEVec2 player_vec{ player.x , player.y };
-	
+
 		if (damage_allowed3) {
 			// decreases 1 player hp whenever player and enemy1 collide
 			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, player.width/10, player.height/10)) {
