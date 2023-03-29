@@ -17,7 +17,6 @@
 #include "boss.hpp"
 //#include "weapon_fire.hpp"
 #include <iostream> 
-#include <cstdlib> //for absolute value, abs()
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include <string>
@@ -54,11 +53,9 @@ float portal_max_range, portal_cooldown,portal_timer{};
 std::ifstream portal_ifs{};
 
 
-//used to check if portal cooldown is to be decremented or not
-bool decrease_cooldown;
-
 //texture used by both portals
 AEGfxTexture* portal_range_picture;
+AEGfxTexture* portal_range_on_cooldown_picture;
 
 //texture for cards that are drawn when choosing upgrade
 AEGfxTexture* temp; // TEMP
@@ -72,7 +69,13 @@ AEGfxTexture* temp; // TEMP
 *******************************************************************************************************/
 void portal_load() {
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
-	AE_ASSERT(portal_range_picture); // check if texture is loaded
+	if (!portal_range_picture) {
+		std::cout << "portal_range.png not loaded";
+	}
+	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
+	if (!portal_range_on_cooldown_picture) {
+		std::cout << "portal_range_on_cooldown.png not loaded";
+	}
 	temp = AEGfxTextureLoad("Assets/card.png");
 	portal_ifs.open("Assets/textFiles/portal_stats.txt");
 	if (!portal_ifs) {
@@ -91,9 +94,11 @@ void portal_load() {
 
 void portal_init() {
 	// Initialise
-	decrease_cooldown = true;
+
 	portal_1.created = false;
 	portal_2.created = false;
+	portal_1.draw_outline = false;
+
 }
 
 /*!**************************************************************************************************
@@ -135,15 +140,11 @@ void update_portal() {
 			//cursor's x is based on screen coordinates, must offset it to convert to
 			//world coordinates in the game itself
 			portal_1.x -= AEGetWindowWidth() / 2;
-			portal_1.x += static_cast<s32>(player.x);
-			//offset, similar to cursor's y
-
-			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x);
+			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2);
 			
 
 			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			portal_1.y += static_cast<s32>(player.y);
-			portal_1.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2 - player.y);
+			portal_1.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2);
 			
 			
 			//set a vector to the 1st portal's center
@@ -171,16 +172,12 @@ void update_portal() {
 
 			//offset portal_2's x
 			portal_2.x -= AEGetWindowWidth() / 2;
-			portal_2.x += static_cast<s32>(player.x);
-			portal_2.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - static_cast<s32>(player.x));
+			portal_2.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2);
 			
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			//if (player.y > 0.0f) {
-			//	portal_2.y += static_cast<s32>(player.y);
-			//}
-			portal_2.y += static_cast<s32>(player.y);
-			portal_2.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2 - player.y);
+			portal_2.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2);
+
 			//set vector to portal_2's center
 			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 			
@@ -236,13 +233,6 @@ void update_portal() {
 		check_bullet_collide_with_portal();
 	} 
 
-	//cooldown to limit the frequency of portal usage
-	//if (decrease_cooldown == true && portal_timer > 0.0f && isPaused == false) {
-	//	portal_timer--;
-	//	if (portal_timer == 0.0f) {
-	//		decrease_cooldown = false;
-	//	}
-	//}
 	portal_teleport_enemy();
 
 }//end of update_portal
@@ -269,7 +259,12 @@ void portal_range() {
 	AEMtx33Concat(&portal_range_mtx, &portal_range_mtx, &portal_range_scale_mtx);
 
 	//draw the maximum portal range
-	AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
+	if (portal_timer >= portal_cooldown) {
+		AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
+	}
+	else {
+		AEGfxTextureSet(portal_range_on_cooldown_picture, 0.0f, 0.0f);
+	}
 	AEGfxSetTransform(portal_range_mtx.m);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
@@ -361,5 +356,6 @@ void portal_free() {
 void portal_unload() {
 	// Texture unload
 	AEGfxTextureUnload(portal_range_picture);
+	AEGfxTextureUnload(portal_range_on_cooldown_picture);
 	AEGfxTextureUnload(temp);
 }

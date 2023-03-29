@@ -33,38 +33,35 @@ void camera_update() {
 
 	//if free moving camera is false, camera will follow the player's movement
 	if (camera.free_moving == false) {
+
+		//player is moving and has reached the right buffer range of the camera
 		if (AEGfxGetWinMaxX() - player.x <= camera.buffer_range && AEInputCheckCurr(AEVK_D)) {
 			camera.x += 5 * player.Speed;
 		}
+
+		//player is not moving but still reached the right buffer range of the camera
+		//this is because the moving platform is also moving the player
 		else if (AEGfxGetWinMaxX() - player.x <= camera.buffer_range) {
 			camera.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 		}
 
+		//player is moving and has reached the left buffer range of the camera
 		if (player.x - AEGfxGetWinMinX() <= camera.buffer_range && AEInputCheckCurr(AEVK_A)) {
 			camera.x -= 5 * player.Speed;
 		}
+
+		//player is not moving but still reached the left buffer range of the camera
+		//this is because the moving platform is also moving the player
 		else if (player.x - AEGfxGetWinMinX() <= camera.buffer_range && camera.x >= 0) {
 			camera.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 		}
-
-		//if (player.x > AEGfxGetWinMaxX()) {
-		//	camera.x = player.x;
-		//}
-		//else if (player.x < AEGfxGetWinMinX()) {
-		//	if (player.x < 0) {
-		//		camera.x = 0;
-		//	}
-		//	else {
-		//		camera.x = player.x;
-		//	}
-		//}
 
 		//camera will always follow player's y if player.y is +ve
 		if (player.y > 0) {
 			camera.y = player.y;
 		}
 
-		//if player.y is -ve, camera.y stays fixed at 0
+		//lowest y value of camera.y is 0
 		else if (player.y < 0) {
 			camera.y = 0;
 		}
