@@ -11,7 +11,6 @@ void camera_init() {
 	camera.x = 0;
 	camera.y = 0; // Reset camera
 	camera.free_moving = false;
-	camera.speed = 30.0f;
 	camera.buffer_range = portal_max_range;
 }
 void camera_update() {
@@ -75,15 +74,15 @@ void camera_update() {
 	//mainly used for level designing/debugging purposes
 	if (camera.free_moving == true) {
 		if (AEInputCheckCurr(AEVK_I))
-			camera.y += camera.speed;
+			camera.y += camera.free_moving_speed;
 
 		if (AEInputCheckCurr(AEVK_K))
-			camera.y -= camera.speed;
+			camera.y -= camera.free_moving_speed;
 
 		if (AEInputCheckCurr(AEVK_J))
-			camera.x -= camera.speed;
+			camera.x -= camera.free_moving_speed;
 
 		if (AEInputCheckCurr(AEVK_L))
-			camera.x += camera.speed;
+			camera.x += camera.free_moving_speed;
 	}
 }
