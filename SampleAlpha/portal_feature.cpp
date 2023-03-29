@@ -22,6 +22,7 @@
 #include "Enemy.hpp"
 #include <string>
 #include <fstream>
+#include "camera.hpp"
 //portal dimensions
 float PORTAL_WIDTH{};
 float PORTAL_HEIGHT{};
@@ -39,7 +40,7 @@ extern Bullet bullet_enemy2[MAX_ENEMIES_2];
 
 //used to check portal collision with player
 extern Player_stats player;
-extern AEVec2 cameraPos;
+extern Camera camera;
 //used to check if game is paused
 extern bool isPaused;
 
@@ -136,13 +137,14 @@ void update_portal() {
 			portal_1.x -= AEGetWindowWidth() / 2;
 			portal_1.x += static_cast<s32>(player.x);
 			//offset, similar to cursor's y
-			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
+
 			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - player.x);
 			
 
-			if (player.y > 0.0f) {
-				portal_1.y += static_cast<s32>(player.y);
-			}
+			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
+			portal_1.y += static_cast<s32>(player.y);
+			portal_1.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2 - player.y);
+			
 			
 			//set a vector to the 1st portal's center
 			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
@@ -174,10 +176,11 @@ void update_portal() {
 			
 			//offset portal_2.y by windowheight()/2
 			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			if (player.y > 0.0f) {
-				portal_2.y += static_cast<s32>(player.y);
-			}
-
+			//if (player.y > 0.0f) {
+			//	portal_2.y += static_cast<s32>(player.y);
+			//}
+			portal_2.y += static_cast<s32>(player.y);
+			portal_2.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2 - player.y);
 			//set vector to portal_2's center
 			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
 			
@@ -215,17 +218,17 @@ void update_portal() {
 
 			//set camera to follow player if the player teleports
 			if (player.x > 0) {
-				cameraPos.x = player.x;
+				camera.x = player.x;
 			}
 			else {
-				cameraPos.x = 0;
+				camera.x = 0;
 			}
 
 			if (player.y < 0) {
-				cameraPos.y = 0;
+				camera.y = 0;
 			}
 			else {
-				cameraPos.y = player.y;
+				camera.y = player.y;
 			}
 		}
 

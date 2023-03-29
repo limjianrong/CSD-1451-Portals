@@ -27,9 +27,13 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Enemy3.hpp"
 #include "boss.hpp"
 
+// ----- Camera ------
+#include "camera.hpp"
+
 // ----- Others -----
 #include "Utilities.hpp"
 #include "draw_level.hpp"
+
 
 //#include <iostream>
 
@@ -54,7 +58,7 @@ extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 
 // ----- Camera -----
-extern AEVec2 cameraPos;
+extern Camera camera;
 
 /*!**************************************************************************************************
 \brief
@@ -89,6 +93,7 @@ void GameStatePlatformerLoad(void) {
   Initialise all objects being used for platformer game
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
+
 	player_init();				// Player
 	draw_level_init();			// Level
 	enemies_init();				// Enemy1 & Enemy2
@@ -96,6 +101,8 @@ void GameStatePlatformerInit(void) {
 	boss_init();				// Boss
 	portal_init();				// Portal
 	upgrades_init();			// Upgrades
+	camera_init();				//camera, must be initialized after portal_init as some values from
+								//portal_init are used
 }
 /*!**************************************************************************************************
 \brief
@@ -139,13 +146,10 @@ void GameStatePlatformerUpdate(void) {
 		upgrade_update();			// Upgrade
 		player_update();			// Player
 		update_portal();			// Upgrade
-		
+		camera_update();
 		// Lose condition, changes to lose state
 		if (player.Lives == 0) gGameStateNext = GS_Lose;
 	}
-
-
-
 }
 /*!**************************************************************************************************
 \brief
@@ -235,7 +239,7 @@ void GameStatePlatformerDraw(void) {
 		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.18f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.21f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.90f, 1, 1, 1);
 	}
-	AEGfxSetCamPosition(cameraPos.x, cameraPos.y);
+	AEGfxSetCamPosition(camera.x, camera.y);
 
 }
 /*!**************************************************************************************************

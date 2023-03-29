@@ -263,7 +263,7 @@ void bullet_update() {
 		// ---- Loops bullet ----
 		//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
-
+			
 			// ----- Movement of bullet from boss to player -----
 			if (player.y <= boss.y_pos) bullet.y += normalized_vector.y;
 			else if (player.y >= boss.y_pos) bullet.y -= normalized_vector.y;

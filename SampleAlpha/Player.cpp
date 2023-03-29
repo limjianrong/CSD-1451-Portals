@@ -20,6 +20,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Enemy3.hpp"
 #include <string>
 #include <fstream>
+#include "camera.hpp"
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
@@ -40,9 +41,7 @@ s8* level, * XP, * Hp;
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
-bool free_moving_camera{};
-float camera_speed{};
-// ----- Camera -----
+
 extern bool isPaused;
 // ----- Cursor positions -----
 extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
@@ -51,8 +50,9 @@ extern AEVec2 world_center_cursor;		// Origin is CENTER of window
 // ----- Window origin -----
 extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 
-AEVec2 cameraPos{ 0, 0 };
-float constexpr camera_buffer_range{ 200.0f };
+// ----- Camera -----
+extern Camera camera;
+
 // ----- Enemy -----
 //extern Enemy1_stats enemy1_a, enemy1_b;
 
@@ -81,6 +81,7 @@ void player_load() {
 	player_ifs >> str >> player.initial_pos_x;		// Player's initial X position
 	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
 	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
+
 	player_ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
 	player_ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
 	player_ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
@@ -123,7 +124,7 @@ void player_init() {
 	//player.XP				= player.XP_RESET;			// Player's XP
 	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
-
+	
 	player.x				= player.initial_pos_x;		// Player's initial X position
 	player.y				= player.initial_pos_y;		// Player's initial Y position
 	player.rotation			= 0.f;						// Player's Rotation
@@ -133,7 +134,7 @@ void player_init() {
 	player.Speed			= 1;						// Player's Movement Speed
 	player.Level			= 0;						// Player's Level
 	player.XP				= 0;						// Player's XP
-	player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
+	player.justLeveledUp	= FALSE;				// Indicator to show player levelling up
 
 
 	player.Lives_height		= 50.0f;
@@ -141,11 +142,7 @@ void player_init() {
 	//player.Lives_x = 0;
 	//player.Lives_y = 0;
 
-	// -------- Camera --------
-	cameraPos.x = 0;
-	cameraPos.y = 0; // Reset camera
-	free_moving_camera = false;
-	camera_speed = 30.0f;
+
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
 		checkpoint[i].check = FALSE;					// Disable all checkpoints
@@ -273,18 +270,12 @@ void player_update() {
 	if (AEInputCheckCurr(AEVK_D)) {
 		player.x += 5 * player.Speed;
 		num_of_Dpressed++;
-		if (player.x > ((AEGfxGetWinMinX() + AEGfxGetWinMaxX())/2 + camera_buffer_range) && free_moving_camera == false) {
-			cameraPos.x += 5 * player.Speed;
-		}
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
 		player.x -= 5 * player.Speed;
 		num_of_Apressed++;
-		if (player.x < ((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2 - camera_buffer_range) && free_moving_camera == false) {
-			cameraPos.x -= 5 * player.Speed;
-		}
 	}
 
 	// --------  Player's level & XP   ----------
@@ -327,76 +318,8 @@ void player_update() {
 	player_collision();
 	enemy3_collision();
 
-	// -------------  Camera   ---------------
-	//AEGfxSetCamPosition(cameraX, cameraY);
 
 
-	if (AEInputCheckTriggered(AEVK_B)) {
-		free_moving_camera = !free_moving_camera;
-		//if previous camera state was free_moving(for level-design), and B was pressed
-		//switch back to camera state that is used for playing, now the camera goes back
-		//to following the player
-		if (!free_moving_camera) {
-			cameraPos.x = player.x;
-			cameraPos.y = player.y;
-		}
-	}
-
-	if(free_moving_camera == false){
-		//check player input for camera reset
-		if (AEInputCheckTriggered(AEVK_G)) {
-			if (player.x < 0) {
-				cameraPos.x = 0;
-			}
-			else {
-				cameraPos.x = player.x;
-			}
-			if (player.y < 0) {
-				cameraPos.y = 0;
-			}
-			else {
-				cameraPos.y = player.y;
-			}
-		}
-
-		if (player.x > AEGfxGetWinMaxX()) {
-			cameraPos.x = player.x;
-		}
-
-		else if (player.x < AEGfxGetWinMinX()) {
-			if (player.x < 0) {
-				cameraPos.x = 0;
-			}
-			else {
-				cameraPos.x = player.x;
-			}
-		}
-
-		//camera will always follow player's y if player.y is +ve
-		if (player.y > 0) {
-			cameraPos.y = player.y;
-		}
-
-		//if player.y is -ve, camera.y stays fixed at 0
-		else if (player.y < 0) {
-			cameraPos.y = 0;
-		}
-
-	}
-	//controls for free moving camera, used for debugging/level design purposes
-	if (free_moving_camera == true) {
-		if (AEInputCheckCurr(AEVK_I))
-			cameraPos.y += camera_speed;
-
-		if (AEInputCheckCurr(AEVK_K))
-			cameraPos.y -= camera_speed;
-
-		if (AEInputCheckCurr(AEVK_J))
-			cameraPos.x -= camera_speed;
-
-		if (AEInputCheckCurr(AEVK_L))
-			cameraPos.x += camera_speed;
-	}
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -454,12 +377,12 @@ void player_collision() {
 			}
 		}
 		if (player.x > 0) {
-			cameraPos.x = player.x;
+			camera.x = player.x;
 		}
 		else {
-			cameraPos.x = 0;
+			camera.x = 0;
 		}
-		cameraPos.y = player.y;
+		camera.y = player.y;
 	}
 }
 

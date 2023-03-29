@@ -100,6 +100,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="boss.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="draw_level.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy3.cpp" />
@@ -123,6 +124,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="boss.hpp" />
+    <ClInclude Include="camera.hpp" />
     <ClInclude Include="draw_level.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="Enemy3.hpp" />

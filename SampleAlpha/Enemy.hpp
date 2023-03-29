@@ -39,31 +39,31 @@
 
 // ------- Enemy types -------
 struct Enemy1_stats {
-	f32 x{}, y{}, rotation;
-	f32 width, height;
-	s32 Hp;
-	f64 movementCounter;
-	bool status; // TRUE for alive, FALSE for dead
-	AEVec2 center;
+	f32 x{}, y{}, rotation{};
+	f32 width{}, height{};
+	s32 Hp{};
+	f64 movementCounter{};
+	bool status{}; // TRUE for alive, FALSE for dead
+	AEVec2 center{};
 
 	// ---- Draw ----
-	AEMtx33 scale, rotate, translate, transform; // TRS
-	AEGfxTexture* texture;
+	AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
+	AEGfxTexture* texture{};
 
 };
 
 struct Enemy2_stats {
-	f32 x{}, y{}, rotation;
-	f32 width, height;
-	f32 range_x, range_y;
-	f64 movingTime;
-	s32 Hp;
-	bool status; // TRUE for alive, FALSE for dead
-	AEVec2 center;
+	f32 x{}, y{}, rotation{};
+	f32 width{}, height{};
+	f32 range_x{}, range_y{};
+	f64 movingTime{};
+	s32 Hp{};
+	bool status{}; // TRUE for alive, FALSE for dead
+	AEVec2 center{};
 
 	// ---- Draw ----
-	AEMtx33 scale, rotate, translate, transform; // TRS
-	AEGfxTexture* enemy2_fly1, * enemy2_fly2, * enemy2_dead, * bullet;
+	AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
+	AEGfxTexture* enemy2_fly1{}, * enemy2_fly2{}, * enemy2_dead{}, * bullet{};
 };
 
 // ------- Enemy1 -------

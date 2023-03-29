@@ -416,7 +416,9 @@ void move_update() {
 	for (s32 i = 0; i < MAX_LEFT_RIGHT; i++) {
 		if (leftright[i].pos == OG) {
 			leftright[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) { 
+				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed; 
+			}
 			if (leftright[i].x >= leftright[i].end_x) {
 				leftright[i].pos = MOVED;
 			}
@@ -424,7 +426,10 @@ void move_update() {
 
 		if (leftright[i].pos == MOVED) {
 			leftright[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+
+				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed; 
+			}
 			if (leftright[i].x <= leftright[i].start_x) {
 				leftright[i].pos = OG;
 			}
