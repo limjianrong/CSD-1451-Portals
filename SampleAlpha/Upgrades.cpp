@@ -13,9 +13,6 @@
 #include <fstream>					// For fileIO
 #include <stdlib.h>					// For srand, rand
 
-//#define DEBUG
-
-
 // --- Upgrades ---
 static bool isUpgradeTime{ FALSE };			// Boolean for storing upgradeTime
 static s32 selected;						// Variable to store selected card

@@ -54,7 +54,8 @@ extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 extern Camera camera;
 
 // ----- Enemy -----
-//extern Enemy1_stats enemy1_a, enemy1_b;
+extern Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
+extern Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 
 //---------File IO-------
 std::ifstream player_ifs{};
@@ -77,34 +78,25 @@ void player_load() {
 	// -------- Player --------
 	std::string str{};
 	player_ifs >> str >> player.width;				// Player's width
-	player_ifs >> str >> player.height;			// Player's height
+	player_ifs >> str >> player.height;				// Player's height
 	player_ifs >> str >> player.initial_pos_x;		// Player's initial X position
 	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
 	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
 
-	player_ifs >> str >> player.XP_TILL_10;		// 40 XP to level up for lvls 0-10
-	player_ifs >> str >> player.XP_TILL_20;		// 100 XP to level up for lvls 10-20
-	player_ifs >> str >> player.XP_TILL_30;		// 160 XP to level up for lvls 20-30
+	player_ifs >> str >> player.XP_TILL_10;			// 40 XP to level up for lvls 0-10
+	player_ifs >> str >> player.XP_TILL_20;			// 100 XP to level up for lvls 10-20
+	player_ifs >> str >> player.XP_TILL_30;			// 160 XP to level up for lvls 20-30
 	player_ifs >> str >> player.XP_RESET;			// Reset XP to 0
-	//ifs >> str >> player.rotation;			// Player's Rotation
-	//ifs >> str >> player.Max_Hp;			// Player's Maximum Health
-	//ifs >> str >> player.Hp;				// Player's Maximum Health
-	//ifs >> str >> player.Max_Hp_Reset;		// Player's Maximum Health
-	//ifs >> str >> player.Lives_Reset;		// Player's Lives
-	//ifs >> str >> player.Speed_Reset;		// Player's Movement Speed
-	//ifs >> str >> player.Level_Reset;		// Player's Level
-	//ifs >> str >> player.XP_RESET;			// Player's XP
-	//ifs >> str >> player.justLeveledUp;		// Indicator to show player levelling up
 
-	/*rotation 0
-	Max_Hp 5
-	Hp 5
-	Max_Hp_Reset 5
-	Lives_Reset 2
-	Speed_Reset 1
-	Level_Reset 0
-	XP_Reset 0
-	justLeveledUp 0*/
+	player_ifs >> str >> player.rotation;			// Player's Rotation
+	player_ifs >> str >> player.Max_Hp;				// Player's Maximum Health
+	player_ifs >> str >> player.Hp;					// Player's Maximum Health
+	player_ifs >> str >> player.Max_Hp_Reset;		// Player's Maximum Health Reset
+	player_ifs >> str >> player.Lives_Reset;		// Player's Lives Reset
+	player_ifs >> str >> player.Speed_Reset;		// Player's Movement Speed Reset
+	player_ifs >> str >> player.Level_Reset;		// Player's Level Reset
+	player_ifs >> str >> player.XP_RESET;			// Player's XP Reset
+	player_ifs >> str >> player.justLeveledUp;		// Starting indicator to show player levelling up
 
 	player_ifs.close();
 
@@ -113,33 +105,22 @@ void player_load() {
 void player_init() {
 
 
-	//player.x				= player.initial_pos_x;		// Player's initial X position
-	//player.y				= player.initial_pos_y;		// Player's initial Y position
-	////player.rotation			= 0.f;					// Player's Rotation
-	//player.Hp				= player.Max_Hp_Reset;		// Player's Health
-	//player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
-	//player.Lives			= player.Lives_Reset;		// Player's Lives
-	//player.Speed			= player.Speed_Reset;		// Player's Movement Speed
-	//player.Level			= player.Level_Reset;		// Player's Level
-	//player.XP				= player.XP_RESET;			// Player's XP
-	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
-
-	
 	player.x				= player.initial_pos_x;		// Player's initial X position
 	player.y				= player.initial_pos_y;		// Player's initial Y position
-	player.rotation			= 0.f;						// Player's Rotation
-	player.Max_Hp			= 5;						// Player's Maximum Health
-	player.Hp				= player.Max_Hp;			// Player's Health
-	player.Lives			= 3;						// Player's Lives
-	player.Speed			= 1;						// Player's Movement Speed
-	player.Level			= 0;						// Player's Level
-	player.XP				= 0;						// Player's XP
-	player.justLeveledUp	= FALSE;				// Indicator to show player levelling up
+	//player.rotation			= 0.f;					// Player's Rotation
+	player.Hp				= player.Max_Hp_Reset;		// Player's Health
+	player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
+	player.Lives			= player.Lives_Reset;		// Player's Lives
+	player.Speed			= player.Speed_Reset;		// Player's Movement Speed
+	player.Level			= player.Level_Reset;		// Player's Level
+	player.XP				= player.XP_RESET;			// Player's XP
+	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 
 
-	player.Lives_height		= 50.0f;
-	player.Lives_width		= 50.0f;
-	//player.Lives_x = 0;
+	player.Lives_dimensions.x = 50.f;
+	player.Lives_dimensions.y = 50.f;
+
+	//player.Lives_pos.x = 0;
 	//player.Lives_y = 0;
 
 
@@ -194,39 +175,62 @@ void player_draw() {
 	AEGfxPrint(Albam_fontID, &lives_counter_string[0], -0.70f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);*/
 
 	// --- 1st Life ---
-	AEMtx33Scale(&player.scale, player.Lives_width, player.Lives_height);
-	AEMtx33Rot(&player.rotate, PI);
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 25.0f);
-	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
-	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
-	AEGfxSetTransform(player.transform.m);
 	if (player.Lives >= 1)
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
 	else
 		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
 
 	// --- 2nd Life ---
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 25.0f);
-	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
-	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
-	AEGfxSetTransform(player.transform.m);
 	if (player.Lives >= 2)
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
 	else
 		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
 
 	// --- 3rd Life ---
-	AEMtx33Trans(&player.translate, AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 25.0f);
-	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
-	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
-	AEGfxSetTransform(player.transform.m);
 	if (player.Lives >= 3)
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
 	else
 		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
+
+
+	// -------- Drawing out HP bar ----------
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetTintColor(0, 0, 0, 1.f);
+	drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ player.center.x, player.center.y + player.height }, PI);
+
+	f32 health_percentage = ((float)player.Hp / (float)player.Max_Hp) * 100.f;
+	/*if (health_percentage >= 60.f) {
+		AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+	}
+	else if (health_percentage >= 40.f) {
+		AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+	}
+	else {
+		AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
+	}*/
+	if (health_percentage >= 80.f) {
+		AEGfxSetTintColor(255, 255, 255, 1.f);
+	}
+	else if (health_percentage >= 40.f) {
+		AEGfxSetTintColor(255, 255, 0, 1.f);
+	}
+	else {
+		AEGfxSetTintColor(255, 0, 0, 1.f);
+	}
+	drawMesh(AEVec2{ (float)player.Hp / (float)player.Max_Hp * 80.f , 15.f }, AEVec2{ (float)player.center.x - (((float)player.Max_Hp - (float)player.Hp) / (float)player.Max_Hp * 40.f), player.center.y + player.height }, PI);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+
+#ifdef DEBUG 
+	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
+		if (CollisionIntersection_RectRect(enemy1[i], player)) {
+			std::cout << "Health percentage: " << health_percentage << std::endl;
+		}
+	}
+#endif // DEBUG
 
 	// -------- Printing out Hp ----------
 	std::string hp_string = "Hp: ";

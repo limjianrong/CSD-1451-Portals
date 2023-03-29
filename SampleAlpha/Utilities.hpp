@@ -15,14 +15,20 @@
 *****************************************************************************************************/
 #pragma once
 #include "AEEngine.h"
+#include "Enemy.hpp"
+#include "Player.hpp"
 
 // Custom window size
 #define WINDOWLENGTH_X 1000
 #define WINDOWLENGTH_Y 600
 
+//#define DEBUG		// DEBUG unit testing (Uncomment to debug)
 
 AEGfxVertexList* create_Square_Mesh();
 void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot);
 //AEVec2 get_cursor_center_position();
 void mesh_load();
 void variables_update();
+
+// Collision between enemy1 & player
+bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);

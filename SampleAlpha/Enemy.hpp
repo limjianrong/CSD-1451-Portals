@@ -78,9 +78,6 @@ void enemy2_draw();
 void enemy2_update();
 void RenderEnemy(Enemy2_stats enemy);
 
-
-bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);
-
 // ------- Main functions -------
 void enemies_load();
 void enemies_init();

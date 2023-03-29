@@ -20,31 +20,27 @@ void player_unload();
 void player_collision();
 
 
-// -----  Player's levelling requirements  -------
-//#define PLAYER_NEEDED_XP_TILL_10 40
-//#define PLAYER_NEEDED_XP_TILL_20 100
-//#define PLAYER_NEEDED_XP_TILL_30 160
-//#define PLAYER_XP_RESET			 0
-
 // --------------  Initialise player  ----------------
 struct Player_stats {
-	s32 initial_pos_x{}; //initial start point of player
-	s32 initial_pos_y{}; //initial start point of player
+	s32 initial_pos_x, initial_pos_y; //initial start point of player
+
+	// -----  Player's levelling requirements  -------
 	s32 XP_TILL_10, XP_TILL_20, XP_TILL_30, XP_RESET;
 	s32 highest_level; //highest level a player can level up to
 
 	f32 x, y, rotation;
-	AEVec2 center{ 0,0 }; // same as .x & .y
+	AEVec2 center; // same as .x & .y
 	f32 width, height;
 
 	// ----- Player's attributes -----
 	s32 Max_Hp, Max_Hp_Reset, Hp, Lives, Lives_Reset;
-	f32 Lives_width, Lives_height, Lives_x, Lives_y;
+	
+	AEVec2 Lives_dimensions, Lives_pos;
 	f32 Speed, Speed_Reset;
 	s32 Level, Level_Reset, XP, requiredXP;
 	bool justLeveledUp;
 
-	AEVec2 bottom_hotspot{};
+	AEVec2 bottom_hotspot;
 	// ----- Transformation & Texture -----
 	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex;

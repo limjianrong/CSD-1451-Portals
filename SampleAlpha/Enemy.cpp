@@ -211,27 +211,6 @@ void enemy1_collision() {
 	}
 }
 
-bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
-
-
-	// ----- AABB min max check -----
-	// Check if first object's max point is smaller than second object's min point on the x axis
-	if ((obj2.center.x + obj2.width / 2.f) < (obj1.center.x - obj1.width / 2.f))
-		return false;
-	// Check if first object's min point is larger than second object's max point on the x axis
-	if ((obj2.center.x - obj2.width / 2.f) > (obj1.center.x + obj1.width / 2.f))
-		return false;
-	// Check if first object's max point is smaller than second object's min point on the y axis
-	if ((obj2.center.y + obj2.height / 2.f) < (obj1.center.y - obj1.height / 2.f))
-		return false;
-	// Check if first object's min point is larger than second object's max point on the y axis
-	if ((obj2.center.y - obj2.height / 2.f) > (obj1.center.y + obj1.height / 2.f))
-		return false;
-
-	return true;
-
-}
-
 void enemy1_create(f32 x, f32 y, s32 index) {
 	enemy1[index].x = x;
 	enemy1[index].y = y;
