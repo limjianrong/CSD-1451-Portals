@@ -61,12 +61,12 @@ extern Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 std::ifstream player_ifs{};
 
 void player_load() {
-	player.player_standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
-	player.player_left1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_left.png");
-	player.player_left2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_left.png");
-	player.player_right1Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk1_right.png");
-	player.player_right2Tex = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_walk2_right.png");
-	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/cactus.png");
+	player.player_standTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	player.player_left1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	player.player_left2Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	player.player_right1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	player.player_right2Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/other/flagGreen_up.png");
 
 	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
 	//player.fullLivesTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Items/platformPack_item017.png");

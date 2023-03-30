@@ -27,6 +27,7 @@ struct portal {
 	AEMtx33 scale_matrix{};
 	bool created{};
 	bool draw_outline{};
+	AEGfxTexture* picture{};
 }; 
 
 

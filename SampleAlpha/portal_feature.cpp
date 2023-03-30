@@ -81,6 +81,8 @@ void portal_load() {
 	if (!portal_ifs) {
 		std::cout << "\nFailed to load portal_stats.txt";
 	}
+
+	portal_1.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
 	std::string str{};
 	portal_ifs >> str >> PORTAL_WIDTH;
 	portal_ifs >> str >> PORTAL_HEIGHT;
@@ -304,7 +306,7 @@ void draw_portal() {
 
 		//draw the portal outline
 		AEGfxSetTransform(portal_1.matrix.m);
-		AEGfxTextureSet(temp, 0.0f, 0.0f);
+		AEGfxTextureSet(portal_1.picture, 0.0f, 0.0f);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
@@ -312,7 +314,7 @@ void draw_portal() {
 		//portal_2 has been created, meaning that the portal_1 has also been created
 		//draw portal 1
 		AEGfxSetTransform(portal_1.matrix.m);
-		AEGfxTextureSet(temp, 0.0f, 0.0f);
+		AEGfxTextureSet(portal_1.picture, 0.0f, 0.0f);
 		AEGfxMeshDraw((square_mesh), AE_GFX_MDM_TRIANGLES);
 
 		//draw portal 2
@@ -358,4 +360,6 @@ void portal_unload() {
 	AEGfxTextureUnload(portal_range_picture);
 	AEGfxTextureUnload(portal_range_on_cooldown_picture);
 	AEGfxTextureUnload(temp);
+	AEGfxTextureUnload(portal_1.picture);
+
 }

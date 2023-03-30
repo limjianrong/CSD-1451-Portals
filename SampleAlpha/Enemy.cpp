@@ -59,7 +59,7 @@ void enemies_load() {
 		enemy2[i].enemy2_fly2 = AEGfxTextureLoad("Assets/bat_fly.png");
 		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/bat_dead.png");
 	}
-	enemy2[0].bullet = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	enemy2[0].bullet = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/blueGem.png");
 }
 
 /*!**************************************************************************************************

@@ -52,6 +52,12 @@ struct Block {
 	AEGfxTexture* texture;
 };
 
+struct Door {
+	f32 x{}, y{};
+	f32 width{}, height{};
+	AEGfxTexture* picture;
+	AEMtx33 scale{}, translate{}, final{};
+};
 
 // ===== Main Functions =====
 void draw_level_load();
@@ -80,6 +86,7 @@ void diag_up_blocks_draw();
 void diag_down_blocks_draw();
 void one_time_use_blocks_draw();
 void left_right_spikes_draw();
+void door_draw();
 
 // ===== Logics for the different type of functions =====
 void move_update();

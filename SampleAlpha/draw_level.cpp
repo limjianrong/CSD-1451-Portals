@@ -22,6 +22,8 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 Block normal[MAX_NORMAL], leftright[MAX_LEFT_RIGHT], updown[MAX_UP_DOWN], diagonalup[MAX_DIAGONAL_UP],
 diagonaldown[MAX_DIAGONAL_DOWN], onetimeuse[MAX_ONE_TIME_USE],floorspikes[MAX_SPIKES], leftrightspikes[MAX_LEFT_RIGHT_SPIKES];
+
+Door door;
 extern Player_stats player;
 extern Enemy1_stats enemy1[MAX_ENEMIES_1];
 bool damage_ok{ TRUE };
@@ -34,9 +36,10 @@ AEMtx33 scale, rotate, translate, transform; // TRS
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
 void draw_level_load() {
-	platform_text = AEGfxTextureLoad("Assets/grassMid.png");
-	onetime_text = AEGfxTextureLoad("Assets/onetime_platform.png");
-	spike_text = AEGfxTextureLoad("Assets/jumperpack/PNG/Environment/spikes_top.png");
+	platform_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile001.png");
+	onetime_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile013.png");
+	spike_text = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Other/spikesHigh.png");
+	door.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile049.png");
 
 }
 
@@ -100,6 +103,10 @@ void draw_level_init() {
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		onetimeuse[i].flag = ACTIVE;
 	}
+	door.x = 8150;
+	door.y = 550;
+	door.width = 50;
+	door.height = 100;
 }
 
 void draw_level_draw() {
@@ -111,7 +118,7 @@ void draw_level_draw() {
 	diag_up_blocks_draw();
 	diag_down_blocks_draw();
 	one_time_use_blocks_draw();
-
+	door_draw();
 }
 
 void normal_blocks_create(s32 len, f32 x, f32 y, s32 index) {
@@ -194,6 +201,7 @@ void draw_level_unload() {
 	AEGfxTextureUnload(platform_text);
 	AEGfxTextureUnload(spike_text);
 	AEGfxTextureUnload(onetime_text);
+	AEGfxTextureUnload(door.picture);
 }
 
 //-------------------- Parameters --------------------
@@ -409,6 +417,15 @@ void left_right_spikes_draw() {
 		}
 		AEVec2Set(&leftrightspikes[i].center, (BLOCK_WIDTH * leftrightspikes[i].length) / 2 + leftrightspikes[i].x, leftrightspikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
+}
+
+void door_draw() {
+	AEMtx33Scale(&door.scale, door.width, door.height);
+	AEMtx33Trans(&door.translate, door.x, door.y);
+	AEMtx33Concat(&door.final, &door.translate, &door.scale);
+	AEGfxSetTransform(door.final.m);
+	AEGfxTextureSet(door.picture, 0.0f, 0.0f);
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void move_update() {
