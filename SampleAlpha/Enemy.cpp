@@ -72,7 +72,8 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	enemy1_create(600, 90, 0);
+	//enemy1_create(600, 90, 0);
+	enemy1_create(-300, 90, 0);
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 
@@ -84,9 +85,9 @@ void enemies_init() {
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
-		enemy1[i].rotation = PI;					// Enemy1's Rotation
-		enemy1[i].width = ENEMY1_WIDTH;				// Enemy1's Width
-		enemy1[i].height = ENEMY1_HEIGHT;			// Enemy1's Height
+		//enemy1[i].rotation = PI;					// Enemy1's Rotation
+		enemy1[i].dimensions.x = ENEMY1_WIDTH;				// Enemy1's Width
+		enemy1[i].dimensions.y = ENEMY1_HEIGHT;			// Enemy1's Height
 		enemy1[i].Hp = 5;							// Enemy1's Health
 		enemy1[i].Max_Hp = 5;						// Enemy1's Max Health
 		enemy1[i].status = TRUE;					// TRUE for alive, FALSE for dead
@@ -105,17 +106,16 @@ void enemies_init() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
 		// ---- Enemy2 ----
-		enemy2[i].rotation = PI;					// Enemy2's Rotation
-		enemy2[i].width = ENEMY2_WIDTH;				// Enemy2's Width
-		enemy2[i].height = ENEMY2_HEIGHT;			// Enemy2's Height
+		enemy2[i].dimensions.x = ENEMY2_WIDTH;				// Enemy2's Width
+		enemy2[i].dimensions.y = ENEMY2_HEIGHT;			// Enemy2's Height
 		enemy2[i].range_x = ENEMY2_WIDTH + 350;		// Enemy2's Horizontal range
 		enemy2[i].range_y = ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
 		enemy2[i].Hp = 5;							// Enemy2's Health
 		enemy2[i].Max_Hp = 5;						// Enemy2's Max Health
 		enemy2[i].status = TRUE;					// TRUE for alive, FALSE for dead
 		// ---- Bullet ----
-		bullet_enemy2[i].x = enemy2[i].x;			// Bullet x position
-		bullet_enemy2[i].y = enemy2[i].y;			// Bullet y position
+		bullet_enemy2[i].x = enemy2[i].center.x;	// Bullet x position
+		bullet_enemy2[i].y = enemy2[i].center.y;	// Bullet y position
 		bullet_enemy2[i].width = 20.0f;				// Bullet width
 		bullet_enemy2[i].height = 20.0f;			// Bullet height
 		bullet_enemy2[i].speed = 5.0f;				// Bullet speed
@@ -209,7 +209,7 @@ void enemy1_collision() {
 		}
 
 		// bottom of screen
-		if (enemy1[i].y < -WINDOWLENGTH_Y / 2.f + enemy1[i].height / 2.f) {
+		if (enemy1[i].center.y < -WINDOWLENGTH_Y / 2.f + enemy1[i].dimensions.y / 2.f) {
 			//enemy1[i].status = FALSE;
 			enemy1[i].Hp = 0;
 		}
@@ -217,8 +217,8 @@ void enemy1_collision() {
 }
 
 void enemy1_create(f32 x, f32 y, s32 index) {
-	enemy1[index].x = x;
-	enemy1[index].y = y;
+	enemy1[index].center.x = x;
+	enemy1[index].center.y = y;
 }
 
 void enemy1_draw() {
@@ -229,37 +229,12 @@ void enemy1_draw() {
 
 			// ----- Draw enemy -----
 			AEGfxTextureSet(enemy1[i].texture, 0, 0);
-			drawMesh(AEVec2{ enemy1[i].width, enemy1[i].height }, enemy1[i].center, enemy1[i].rotation);
+			drawMesh(AEVec2{ enemy1[i].dimensions.x, enemy1[i].dimensions.y }, enemy1[i].center, PI);
 			// Set vector
-			AEVec2Set(&enemy1[i].center, enemy1[i].x, enemy1[i].y);
+			AEVec2Set(&enemy1[i].center, enemy1[i].center.x, enemy1[i].center.y);
 
 			// ----- Draw enemy HP bar -----
-			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-			AEGfxSetTintColor(0, 0, 0, 1.f);
-			drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ enemy1[i].center.x, enemy1[i].center.y + enemy1[i].height }, PI);
-
-			f32 health_percentage = ((float)enemy1[i].Hp / (float)enemy1[i].Max_Hp) * 100.f;
-			/*if (health_percentage >= 60.f) {
-				AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
-			}
-			else if (health_percentage >= 40.f) {
-				AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
-			}
-			else {
-				AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
-			}*/
-			if (health_percentage >= 80.f) {
-				AEGfxSetTintColor(0, 255, 0, 1.f);
-			}
-			else if (health_percentage >= 40.f) {
-				AEGfxSetTintColor(255, 255, 0, 1.f);
-			}
-			else {
-				AEGfxSetTintColor(255, 0, 0, 1.f);
-			}
-			drawMesh(AEVec2{ (float)enemy1[i].Hp / (float)enemy1[i].Max_Hp * 80.f , 15.f }, AEVec2{ (float)enemy1[i].center.x - (((float)enemy1[i].Max_Hp - (float)enemy1[i].Hp) / (float)enemy1[i].Max_Hp * 40.f), enemy1[i].center.y + enemy1[i].height }, PI);
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			Render_HealthBar(static_cast<Enemy&>(enemy1[i]));
 
 		}
 	}
@@ -278,11 +253,11 @@ void update_enemy1() {
 
 			// moves right when 100 < frames <= 200 
 			if (enemy1[i].movementCounter <= 200 * AEFrameRateControllerGetFrameTime() && enemy1[i].movementCounter > 100 * AEFrameRateControllerGetFrameTime()) {
-				enemy1[i].x += 1.0f;
+				enemy1[i].center.x += 1.0f;
 			}
 			// moves left when 0 < frames <= 100
 			else if (enemy1[i].movementCounter <= 100 * AEFrameRateControllerGetFrameTime()) {
-				enemy1[i].x -= 1.0f;
+				enemy1[i].center.x -= 1.0f;
 			}
 
 			// ------- XP for player -------
@@ -301,8 +276,8 @@ void update_enemy1() {
 //	----------------					 ENEMY 2							---------------  //
 // ----------------------------------------------------------------------------------------  // 
 void enemy2_create(f32 x, f32 y, s32 index) {
-	enemy2[index].x = x;
-	enemy2[index].y = y;
+	enemy2[index].center.x = x;
+	enemy2[index].center.y = y;
 	enemy2[index].status = TRUE;  // All alive at the start
 }
 
@@ -311,15 +286,18 @@ void enemy2_draw() {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
 			// ------  Enemy2  ------
 			// Set vector
-			AEVec2Set(&enemy2[i].center, enemy2[i].x, enemy2[i].y);
+			AEVec2Set(&enemy2[i].center, enemy2[i].center.x, enemy2[i].center.y);
 			RenderEnemy(enemy2[i]);
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
-			if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].x) {
+			if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].center.x) {
 				AEGfxTextureSet(enemy2[0].bullet, 0, 0);
 				drawMesh(AEVec2{ bullet_enemy2[i].width, bullet_enemy2[i].height }, bullet_enemy2[i].center, PI);
 			}
+
+			// ----- Draw enemy HP bar -----
+			Render_HealthBar(static_cast<Enemy&>(enemy2[i]));
 		}
 	}
 }
@@ -337,31 +315,31 @@ void enemy2_update() {
 				// Reset movingTime to 0 when 4 is reached (Get 0-4)
 				if (enemy2[i].movingTime > 4) enemy2[i].movingTime = 0.f;
 
-				if (enemy2[i].movingTime <= 2) enemy2[i].y += 1.0f;		// Move up
-				else enemy2[i].y -= 1.0f;								// Move down
+				if (enemy2[i].movingTime <= 2) enemy2[i].center.y += 1.0f;		// Move up
+				else enemy2[i].center.y -= 1.0f;								// Move down
 			}
 
 			// ----- Enemy2 bullet -----
 			// If player is within enemy2 range (350x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
-			if (player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
-				player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y)) {
+			if (player.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.x <= enemy2[i].center.x &&
+				player.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.y <= (enemy2[i].center.y + enemy2[i].range_y)) {
 				// --- Enable shooting ---
 				bullet_enemy2[i].isShooting = TRUE;
 
 				// If timer is over
 				if (bullet_enemy2[i].isTimerActive == FALSE) {
 					// ----- Movement of bullet from enemy2 -----
-					if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
+					if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x)) {
 						bullet_enemy2[i].x -= 5;
 					}
 					else {
 						// --- Resets bullet ---
-						bullet_enemy2[i].x = enemy2[i].x;
-						bullet_enemy2[i].y = enemy2[i].y;
+						bullet_enemy2[i].x = enemy2[i].center.x;
+						bullet_enemy2[i].y = enemy2[i].center.y;
 						bullet_enemy2[i].isTeleported = FALSE;
 
 						// If player x within 100 units of enemy2
-						if (player.x >= (enemy2[i].x - 100.f) && player.x <= enemy2[i].x) {
+						if (player.x >= (enemy2[i].center.x - 100.f) && player.x <= enemy2[i].center.x) {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 						}
 					}
@@ -372,7 +350,7 @@ void enemy2_update() {
 				if (bullet_enemy2[i].isShooting) {
 
 					// ----- Movement of bullet from enemy2 -----
-					if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x)) {
+					if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x)) {
 						bullet_enemy2[i].x -= 5;
 					}
 					else {
@@ -385,8 +363,8 @@ void enemy2_update() {
 					bullet_enemy2[i].isShooting = FALSE;
 
 					// --- Resets bullet ---
-					bullet_enemy2[i].x = enemy2[i].x;
-					bullet_enemy2[i].y = enemy2[i].y;
+					bullet_enemy2[i].x = enemy2[i].center.x;
+					bullet_enemy2[i].y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
 
 				}
@@ -394,14 +372,14 @@ void enemy2_update() {
 			// ----- Bullet collision with player -----
 			AEVec2Set(&bullet_enemy2[i].center, bullet_enemy2[i].x, bullet_enemy2[i].y);
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
-				bullet_enemy2[i].x = enemy2[i].x;			// Reset bullet x
-				bullet_enemy2[i].y = enemy2[i].y;			// Reset bullet y
+				bullet_enemy2[i].x = enemy2[i].center.x;			// Reset bullet x
+				bullet_enemy2[i].y = enemy2[i].center.y;			// Reset bullet y
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 
 				// --- Disable shooting when player out of range of Enemy2 ---
-				if (!(player.x >= (enemy2[i].x - enemy2[i].range_x) && player.x <= enemy2[i].x &&
-					player.y >= (enemy2[i].y - enemy2[i].range_y) && player.y <= (enemy2[i].y + enemy2[i].range_y))) {
+				if (!(player.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.x <= enemy2[i].center.x &&
+					player.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.y <= (enemy2[i].center.y + enemy2[i].range_y))) {
 					bullet_enemy2[i].isShooting = FALSE;
 				}
 
@@ -414,9 +392,9 @@ void enemy2_update() {
 			}
 
 			// ----- Bullet collision with enemy2 -----
-			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy2[i].center, enemy2[i].width, enemy2[i].height) && bullet_enemy2[i].isTeleported) {
-				bullet_enemy2[i].x = enemy2[i].x;
-				bullet_enemy2[i].y = enemy2[i].y;
+			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y) && bullet_enemy2[i].isTeleported) {
+				bullet_enemy2[i].x = enemy2[i].center.x;
+				bullet_enemy2[i].y = enemy2[i].center.y;
 				bullet_enemy2[i].isTeleported = FALSE;
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
@@ -425,9 +403,9 @@ void enemy2_update() {
 
 			// ----- Bullet collision with enemy1 -----
 			for (s32 j = 0; j < MAX_ENEMIES_1; ++j) {
-				if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy1[j].center, enemy1[j].width, enemy1[j].height) && enemy1[j].status) {
-					bullet_enemy2[i].x = enemy2[i].x;
-					bullet_enemy2[i].y = enemy2[i].y;
+				if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy1[j].center, enemy1[j].dimensions.x, enemy1[j].dimensions.y) && enemy1[j].status) {
+					bullet_enemy2[i].x = enemy2[i].center.x;
+					bullet_enemy2[i].y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
 					bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
@@ -455,12 +433,45 @@ void enemy2_update() {
 
 void RenderEnemy(Enemy2_stats enemy)
 {
-	AEMtx33Scale(&enemy.scale, enemy.width, enemy.height);
-	AEMtx33Rot(&enemy.rotate, enemy.rotation);
-	AEMtx33Trans(&enemy.translate, enemy.x, enemy.y);
+	AEMtx33Scale(&enemy.scale, enemy.dimensions.x, enemy.dimensions.y);
+	AEMtx33Rot(&enemy.rotate, PI);
+	AEMtx33Trans(&enemy.translate, enemy.center.x, enemy.center.y);
 	AEMtx33Concat(&enemy.transform, &enemy.rotate, &enemy.scale);
 	AEMtx33Concat(&enemy.transform, &enemy.translate, &enemy.transform);
 	AEGfxSetTransform(enemy.transform.m);
 	AEGfxTextureSet(enemy.enemy2_fly1, 0, 0);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+}
+
+void Render_HealthBar(Enemy& obj1) {
+
+	// Draw enemies if alive
+	if (obj1.Hp > 0 && obj1.status == TRUE) {
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetTintColor(0, 0, 0, 1.f);
+		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ obj1.center.x, obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+
+		f32 health_percentage = ((float)obj1.Hp / (float)obj1.Max_Hp) * 100.f;
+		/*if (health_percentage >= 80.f) {
+			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+		}
+		else if (health_percentage >= 40.f) {
+			AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+		}
+		else {
+			AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
+		}*/
+		if (health_percentage >= 80.f) {
+			AEGfxSetTintColor(0, 255, 0, 1.f);
+		}
+		else if (health_percentage >= 40.f) {
+			AEGfxSetTintColor(255, 255, 0, 1.f);
+		}
+		else {
+			AEGfxSetTintColor(255, 0, 0, 1.f);
+		}
+		drawMesh(AEVec2{ (float)obj1.Hp / (float)obj1.Max_Hp * 80.f , 15.f }, AEVec2{ (float)obj1.center.x - (((float)obj1.Max_Hp - (float)obj1.Hp) / (float)obj1.Max_Hp * 40.f), obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	}
 }

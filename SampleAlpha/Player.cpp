@@ -261,6 +261,8 @@ void player_draw() {
 	}*/
 }
 
+
+
 void player_update() {
 	// --------  Setting player's position into a vector --------
 	AEVec2Set(&player.center, player.x, player.y);

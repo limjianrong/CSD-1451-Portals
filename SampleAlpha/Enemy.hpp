@@ -37,33 +37,44 @@
 #define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
 #define MAX_ENEMIES_2 5				// Change this for total number of enemy2
 
-// ------- Enemy types -------
-struct Enemy1_stats {
-	f32 x, y, rotation;
-	f32 width, height;
+// ------- Enemy base attributes -------
+struct Enemy {
+	//f32 x, y, rotation;
+	//f32 width, height;
 	s32 Hp, Max_Hp;
-	f64 movementCounter;
-	bool status; // TRUE for alive, FALSE for dead
-	AEVec2 center;
-
-	// ---- Draw ----
-	//AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
-	AEGfxTexture* texture{};
+	bool status;		// TRUE for alive, FALSE for dead
+	AEVec2 center;		// x & y
+	AEVec2 dimensions;	// width & height
 
 };
 
-struct Enemy2_stats {
-	f32 x, y, rotation;
-	f32 width, height;
+// ------- Enemy specific attributes -------
+struct Enemy1_stats : Enemy {
+	//f32 x, y, rotation;
+	//f32 width, height;
+	//s32 Hp, Max_Hp;
+	f64 movementCounter;
+	//bool status; // TRUE for alive, FALSE for dead
+	//AEVec2 center;
+
+	// ---- Draw ----
+	//AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
+	AEGfxTexture* texture;
+
+};
+
+struct Enemy2_stats : Enemy {
+	//f32 x, y, rotation;
+	//f32 width, height;
 	f32 range_x, range_y;
 	f64 movingTime;
-	s32 Hp, Max_Hp;
-	bool status; // TRUE for alive, FALSE for dead
-	AEVec2 center;
+	//s32 Hp, Max_Hp;
+	//bool status; // TRUE for alive, FALSE for dead
+	//AEVec2 center;
 
 	// ---- Draw ----
 	AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
-	AEGfxTexture* enemy2_fly1{}, * enemy2_fly2{}, * enemy2_dead{}, * bullet{};
+	AEGfxTexture* enemy2_fly1, * enemy2_fly2, * enemy2_dead, * bullet;
 };
 
 // ------- Enemy1 -------
@@ -72,11 +83,15 @@ void enemy1_draw();
 //void enemy1_collision(Enemy1_stats enemy1);
 void update_enemy1();
 
+
 // ------- Enemy2 -------
 void enemy2_create(f32 x, f32 y, s32 index);
 void enemy2_draw();
 void enemy2_update();
 void RenderEnemy(Enemy2_stats enemy);
+
+
+void Render_HealthBar(Enemy& obj1);
 
 // ------- Main functions -------
 void enemies_load();

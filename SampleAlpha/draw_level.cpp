@@ -180,7 +180,7 @@ void draw_level_update() {
 	player.y -= GRAVITY;
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-		enemy1[i].y -= GRAVITY;
+		enemy1[i].center.y -= GRAVITY;
 	}
 	move_update();
 }
@@ -592,11 +592,11 @@ void platform_collision(s32 cnt, f32 x, f32 y) {
 	// Enemy1 collision
 	for (s32 j = 0; j < MAX_ENEMIES_1; ++j) {
 		for (f32 i = 0; i < cnt; i++) {
-			if ((enemy1[j].y <= BLOCK_HEIGHT + y + enemy1[j].height / 2) &&
-				(enemy1[j].y >= y + enemy1[j].height / 2) &&
-				(enemy1[j].x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - enemy1[j].width / 2) &&
-				(enemy1[j].x >= x + BLOCK_WIDTH / 2 - enemy1[j].width / 2))
-				enemy1[j].y = BLOCK_HEIGHT + y + enemy1[j].height / 2;
+			if ((enemy1[j].center.y <= BLOCK_HEIGHT + y + enemy1[j].dimensions.y / 2) &&
+				(enemy1[j].center.y >= y + enemy1[j].dimensions.y / 2) &&
+				(enemy1[j].center.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - enemy1[j].dimensions.x / 2) &&
+				(enemy1[j].center.x >= x + BLOCK_WIDTH / 2 - enemy1[j].dimensions.x / 2))
+				enemy1[j].center.y = BLOCK_HEIGHT + y + enemy1[j].dimensions.y / 2;
 		}
 	}
 }

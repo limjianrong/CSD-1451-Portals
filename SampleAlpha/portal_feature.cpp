@@ -330,18 +330,18 @@ void draw_portal() {
 
 void portal_teleport_enemy() {
 	//portal teleport enemy1
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->width, enemy1->height) && portal_2.created == true) {
-		enemy1->x = static_cast<f32>(portal_2.x);
-		enemy1->y = static_cast<f32>(portal_2.y);
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y) && portal_2.created == true) {
+		enemy1->center.x = static_cast<f32>(portal_2.x);
+		enemy1->center.y = static_cast<f32>(portal_2.y);
 		portal_1.created = false;
 		portal_2.created = false;
 		portal_1.draw_outline = false;
 	}
 
 	//portal teleport enemy2
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->width, enemy2->height) && portal_2.created == true) {
-		enemy2->x = static_cast<f32>(portal_2.x);
-		enemy2->y = static_cast<f32>(portal_2.y);
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y) && portal_2.created == true) {
+		enemy2->center.x = static_cast<f32>(portal_2.x);
+		enemy2->center.y = static_cast<f32>(portal_2.y);
 		portal_1.created = false;
 		portal_2.created = false;
 		portal_1.draw_outline = false;
