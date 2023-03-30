@@ -23,6 +23,7 @@
 
 #include "AEEngine.h"
 #include "Player.hpp"
+#include "Utilities.hpp"
 
 // ----- Enemy 1 -----
 #define ENEMY1_WIDTH 60.f			// Enemy1 width
@@ -37,14 +38,16 @@
 #define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
 #define MAX_ENEMIES_2 5				// Change this for total number of enemy2
 
-struct GameObjects {
-
-	s32 Hp, Max_Hp, Max_Hp_Reset;
-	bool status;		// TRUE for alive, FALSE for dead
-	AEVec2 center;		// x & y
-	AEVec2 dimensions;	// width & height
-
-};
+//struct GameObjects {
+//
+//	s32 Hp, Max_Hp, Max_Hp_Reset;
+//	bool status;		// TRUE for alive, FALSE for dead
+//	AEVec2 center;		// x & y
+//	AEVec2 dimensions;	// width & height
+//
+//	//void RenderObject(GameObjects& obj);
+//	//void Render_HealthBar(GameObjects& obj1);
+//};
 
 // ------- Enemy specific attributes -------
 struct Enemy1_stats : GameObjects {
@@ -80,8 +83,8 @@ void enemy2_update();
 
 
 // --- Rendering ---
-void RenderObject(GameObjects& obj);
-void Render_HealthBar(GameObjects& obj1);
+//void RenderObject(GameObjects& obj);
+//void Render_HealthBar(GameObjects& obj1);
 
 // ------- Main functions -------
 void enemies_load();

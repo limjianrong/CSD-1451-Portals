@@ -15,8 +15,6 @@
 *****************************************************************************************************/
 #pragma once
 #include "AEEngine.h"
-#include "Player.hpp"
-#include "Enemy.hpp"
 
 // Custom window size
 #define WINDOWLENGTH_X 1280
@@ -24,14 +22,16 @@
 
 //#define DEBUG		// DEBUG unit testing (Uncomment to debug)
 
-//struct GameObjects {
-//
-//	s32 Hp, Max_Hp, Max_Hp_Reset;
-//	bool status;		// TRUE for alive, FALSE for dead
-//	AEVec2 center;		// x & y
-//	AEVec2 dimensions;	// width & height
-//
-//};
+struct GameObjects {
+
+	s32 Hp, Max_Hp, Max_Hp_Reset;
+	bool status;		// TRUE for alive, FALSE for dead
+	AEVec2 center;		// x & y
+	AEVec2 dimensions;	// width & height
+
+	void RenderObject();
+	void Render_HealthBar();
+};
 
 AEGfxVertexList* create_Square_Mesh();
 void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot);
@@ -39,8 +39,8 @@ void mesh_load();
 void variables_update();
 
 // Collision between enemy1 & player
-bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);
+//bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);
 
-//// --- Rendering ---
+// --- Rendering ---
 //void RenderObject(GameObjects& obj);
 //void Render_HealthBar(GameObjects& obj1);

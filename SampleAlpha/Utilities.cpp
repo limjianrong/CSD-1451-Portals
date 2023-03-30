@@ -111,41 +111,72 @@ void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
-bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
+//bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
+//
+//	// ----- AABB min max check -----
+//	// Check if first object's max point is smaller than second object's min point on the x axis
+//	if ((obj2.center.x + obj2.width / 2.f) < (obj1.center.x - obj1.dimensions.x / 2.f))
+//		return false;
+//	// Check if first object's min point is larger than second object's max point on the x axis
+//	if ((obj2.center.x - obj2.width / 2.f) > (obj1.center.x + obj1.dimensions.x / 2.f))
+//		return false;
+//	// Check if first object's max point is smaller than second object's min point on the y axis
+//	if ((obj2.center.y + obj2.height / 2.f) < (obj1.center.y - obj1.dimensions.y / 2.f))
+//		return false;
+//	// Check if first object's min point is larger than second object's max point on the y axis
+//	if ((obj2.center.y - obj2.height / 2.f) > (obj1.center.y + obj1.dimensions.y / 2.f))
+//		return false;
+//
+//	return true;
+//
+//}
 
-	// ----- AABB min max check -----
-	// Check if first object's max point is smaller than second object's min point on the x axis
-	if ((obj2.center.x + obj2.width / 2.f) < (obj1.center.x - obj1.dimensions.x / 2.f))
-		return false;
-	// Check if first object's min point is larger than second object's max point on the x axis
-	if ((obj2.center.x - obj2.width / 2.f) > (obj1.center.x + obj1.dimensions.x / 2.f))
-		return false;
-	// Check if first object's max point is smaller than second object's min point on the y axis
-	if ((obj2.center.y + obj2.height / 2.f) < (obj1.center.y - obj1.dimensions.y / 2.f))
-		return false;
-	// Check if first object's min point is larger than second object's max point on the y axis
-	if ((obj2.center.y - obj2.height / 2.f) > (obj1.center.y + obj1.dimensions.y / 2.f))
-		return false;
+void GameObjects::RenderObject() {
 
-	return true;
-
+	drawMesh(dimensions, center, PI);
+	//drawMesh(obj.dimensions, obj.center, PI);
 }
 
-void RenderObject(GameObjects& obj) {
+void GameObjects::Render_HealthBar() {
 
-	drawMesh(obj.dimensions, obj.center, PI);
-}
+	//// Draw enemies if alive
+	//if (obj1.Hp > 0 && obj1.status == TRUE) {
+	//	AEGfxTextureSet(NULL, 0, 0);
+	//	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//	AEGfxSetTintColor(0, 0, 0, 1.f);
+	//	drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ obj1.center.x, obj1.center.y + obj1.dimensions.y / 2.f }, PI);
 
-void Render_HealthBar(GameObjects& obj1) {
+	//	f32 health_percentage = ((float)obj1.Hp / (float)obj1.Max_Hp) * 100.f;
+	//	/*if (health_percentage >= 80.f) {
+	//		AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+	//	}
+	//	else if (health_percentage >= 40.f) {
+	//		AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+	//	}
+	//	else {
+	//		AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
+	//	}*/
+	//	if (health_percentage >= 80.f) {
+	//		AEGfxSetTintColor(0, 255, 0, 1.f);
+	//	}
+	//	else if (health_percentage >= 40.f) {
+	//		AEGfxSetTintColor(255, 255, 0, 1.f);
+	//	}
+	//	else {
+	//		AEGfxSetTintColor(255, 0, 0, 1.f);
+	//	}
+	//	drawMesh(AEVec2{ (float)obj1.Hp / (float)obj1.Max_Hp * 80.f , 15.f }, AEVec2{ (float)obj1.center.x - (((float)obj1.Max_Hp - (float)obj1.Hp) / (float)obj1.Max_Hp * 40.f), obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+	//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	//}
 
 	// Draw enemies if alive
-	if (obj1.Hp > 0 && obj1.status == TRUE) {
+	if (Hp > 0 && status == TRUE) {
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetTintColor(0, 0, 0, 1.f);
-		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ obj1.center.x, obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f }, PI);
 
-		f32 health_percentage = ((float)obj1.Hp / (float)obj1.Max_Hp) * 100.f;
+		f32 health_percentage = ((float)Hp / (float)Max_Hp) * 100.f;
 		/*if (health_percentage >= 80.f) {
 			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
 		}
@@ -164,7 +195,7 @@ void Render_HealthBar(GameObjects& obj1) {
 		else {
 			AEGfxSetTintColor(255, 0, 0, 1.f);
 		}
-		drawMesh(AEVec2{ (float)obj1.Hp / (float)obj1.Max_Hp * 80.f , 15.f }, AEVec2{ (float)obj1.center.x - (((float)obj1.Max_Hp - (float)obj1.Hp) / (float)obj1.Max_Hp * 40.f), obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * 80.f , 15.f }, AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * 40.f), center.y + dimensions.y / 2.f }, PI);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }

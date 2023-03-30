@@ -183,8 +183,8 @@ void enemy1_collision() {
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (damage_allowed) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			//if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
-			if (CollisionIntersection_RectRect(enemy1[i], player)) {
+			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
+			//if (CollisionIntersection_RectRect(enemy1[i], player)) {
 				if (isShieldActive) {
 					isShieldActive = FALSE;
 				}
@@ -229,8 +229,8 @@ void enemy1_draw() {
 			AEVec2Set(&enemy1[i].center, enemy1[i].center.x, enemy1[i].center.y);
 
 			// ----- Draw enemy HP bar -----
-			Render_HealthBar(static_cast<GameObjects&>(enemy1[i]));
-
+			//GameObjects::Render_HealthBar(static_cast<GameObjects&>(enemy1[i]));
+			GameObjects::Render_HealthBar(enemy1[i]);
 		}
 	}
 }
@@ -281,7 +281,8 @@ void enemy2_draw() {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
 			// ------  Rendering  ------
 			AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
-			RenderObject(static_cast<GameObjects&>(enemy2[i]));
+			//RenderObject(static_cast<GameObjects&>(enemy2[i]));
+			GameObjects::RenderObject(enemy2[i]);
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
@@ -291,7 +292,7 @@ void enemy2_draw() {
 			}
 
 			// ----- Draw enemy HP bar -----
-			Render_HealthBar(static_cast<GameObjects&>(enemy2[i]));
+			//Render_HealthBar(static_cast<GameObjects&>(enemy2[i]));
 		}
 	}
 }
