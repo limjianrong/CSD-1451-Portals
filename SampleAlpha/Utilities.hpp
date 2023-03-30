@@ -20,7 +20,7 @@
 
 // Custom window size
 #define WINDOWLENGTH_X 1280
-#define WINDOWLENGTH_Y 720
+#define WINDOWLENGTH_Y 730
 
 //#define DEBUG		// DEBUG unit testing (Uncomment to debug)
 
