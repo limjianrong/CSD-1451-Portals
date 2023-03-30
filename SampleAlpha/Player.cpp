@@ -308,6 +308,7 @@ void player_update() {
 	if (player.Hp <= 0) {
 		player.Lives--;
 		player.Hp = player.Max_Hp;
+		respawn_player();
 	}
 
 	// ---------  Firing of bullets   -----------
@@ -369,27 +370,31 @@ void player_collision() {
 	if (player.y < -WINDOWLENGTH_Y / 2.f + player.height / 2.f) {
 		--player.Lives;
 		player.Hp = player.Max_Hp;
+		respawn_player();
+	}
+}
 
-		// ---------  Set player's position to latest checkpoint  ---------
-		for (s32 i = NUM_OF_CHECKPOINT-1; i >= 0; i--) {
-			if (checkpoint[i].check) {
-				player.x = checkpoint[i].x1 + 50;
-				player.y = checkpoint[i].y1;
-				break;
-			}
-			else {
-				player.x = player.initial_pos_x;
-				player.y = player.initial_pos_y;
-			}
-		}
-		if (player.x > 0) {
-			camera.x = player.x;
+void respawn_player() {
+
+	// ---------  Set player's position to latest checkpoint  ---------
+	for (s32 i = NUM_OF_CHECKPOINT - 1; i >= 0; i--) {
+		if (checkpoint[i].check) {
+			player.x = checkpoint[i].x1 + 50;
+			player.y = checkpoint[i].y1;
+			break;
 		}
 		else {
-			camera.x = 0;
+			player.x = player.initial_pos_x;
+			player.y = player.initial_pos_y;
 		}
-		camera.y = player.y;
 	}
+	if (player.x > 0) {
+		camera.x = player.x;
+	}
+	else {
+		camera.x = 0;
+	}
+	camera.y = player.y;
 }
 
 void checkpoint_create(f32 x, f32 y, s32 index) {

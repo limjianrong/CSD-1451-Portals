@@ -1,6 +1,6 @@
 /*!**************************************************************************************************
 \file     Enemy.cpp
-\author   Lee Zhi Yee & Lin ZhaoZhi
+\author   Lin ZhaoZhi
 \par      DP email: zhiyee.l@digipen.edu
 \par      Course: CSD 1451
 \par      Software Engineering Project 2
@@ -45,8 +45,6 @@ extern bool isShieldActive;
 extern bool isPaused;
 
 bool damage_allowed{ TRUE };	// Enemy1
-
-//f32 g_dt;
 
 
 void enemies_load() {
@@ -106,8 +104,8 @@ void enemies_init() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
 		// ---- Enemy2 ----
-		enemy2[i].dimensions.x = ENEMY2_WIDTH;				// Enemy2's Width
-		enemy2[i].dimensions.y = ENEMY2_HEIGHT;			// Enemy2's Height
+		enemy2[i].dimensions.x = ENEMY2_WIDTH;		// Enemy2's Width
+		enemy2[i].dimensions.y = ENEMY2_HEIGHT;		// Enemy2's Height
 		enemy2[i].range_x = ENEMY2_WIDTH + 350;		// Enemy2's Horizontal range
 		enemy2[i].range_y = ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
 		enemy2[i].Hp = 5;							// Enemy2's Health
@@ -152,9 +150,6 @@ void enemies_update() {
 	update_enemy1();		// Updates all enemy1
 
 	enemy2_update();		// Updates all enemy2
-
-	// Get Delta Time
-	//g_dt = (f32)AEFrameRateControllerGetFrameTime();
 
 }
 
@@ -234,7 +229,7 @@ void enemy1_draw() {
 			AEVec2Set(&enemy1[i].center, enemy1[i].center.x, enemy1[i].center.y);
 
 			// ----- Draw enemy HP bar -----
-			Render_HealthBar(static_cast<Enemy&>(enemy1[i]));
+			Render_HealthBar(static_cast<GameObjects&>(enemy1[i]));
 
 		}
 	}
@@ -284,10 +279,9 @@ void enemy2_create(f32 x, f32 y, s32 index) {
 void enemy2_draw() {
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
-			// ------  Enemy2  ------
-			// Set vector
-			AEVec2Set(&enemy2[i].center, enemy2[i].center.x, enemy2[i].center.y);
-			RenderEnemy(enemy2[i]);
+			// ------  Rendering  ------
+			AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
+			RenderObject(static_cast<GameObjects&>(enemy2[i]));
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
@@ -297,7 +291,7 @@ void enemy2_draw() {
 			}
 
 			// ----- Draw enemy HP bar -----
-			Render_HealthBar(static_cast<Enemy&>(enemy2[i]));
+			Render_HealthBar(static_cast<GameObjects&>(enemy2[i]));
 		}
 	}
 }
@@ -428,50 +422,5 @@ void enemy2_update() {
 			player.XP += static_cast<s32>(ENEMY2_DROPPED_XP);
 			enemy2[i].status = FALSE;
 		}
-	}
-}
-
-void RenderEnemy(Enemy2_stats enemy)
-{
-	AEMtx33Scale(&enemy.scale, enemy.dimensions.x, enemy.dimensions.y);
-	AEMtx33Rot(&enemy.rotate, PI);
-	AEMtx33Trans(&enemy.translate, enemy.center.x, enemy.center.y);
-	AEMtx33Concat(&enemy.transform, &enemy.rotate, &enemy.scale);
-	AEMtx33Concat(&enemy.transform, &enemy.translate, &enemy.transform);
-	AEGfxSetTransform(enemy.transform.m);
-	AEGfxTextureSet(enemy.enemy2_fly1, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-}
-
-void Render_HealthBar(Enemy& obj1) {
-
-	// Draw enemies if alive
-	if (obj1.Hp > 0 && obj1.status == TRUE) {
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetTintColor(0, 0, 0, 1.f);
-		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ obj1.center.x, obj1.center.y + obj1.dimensions.y / 2.f }, PI);
-
-		f32 health_percentage = ((float)obj1.Hp / (float)obj1.Max_Hp) * 100.f;
-		/*if (health_percentage >= 80.f) {
-			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
-		}
-		else if (health_percentage >= 40.f) {
-			AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
-		}
-		else {
-			AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
-		}*/
-		if (health_percentage >= 80.f) {
-			AEGfxSetTintColor(0, 255, 0, 1.f);
-		}
-		else if (health_percentage >= 40.f) {
-			AEGfxSetTintColor(255, 255, 0, 1.f);
-		}
-		else {
-			AEGfxSetTintColor(255, 0, 0, 1.f);
-		}
-		drawMesh(AEVec2{ (float)obj1.Hp / (float)obj1.Max_Hp * 80.f , 15.f }, AEVec2{ (float)obj1.center.x - (((float)obj1.Max_Hp - (float)obj1.Hp) / (float)obj1.Max_Hp * 40.f), obj1.center.y + obj1.dimensions.y / 2.f }, PI);
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }

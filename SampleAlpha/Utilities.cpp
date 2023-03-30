@@ -130,3 +130,41 @@ bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
 	return true;
 
 }
+
+void RenderObject(GameObjects& obj) {
+
+	drawMesh(obj.dimensions, obj.center, PI);
+}
+
+void Render_HealthBar(GameObjects& obj1) {
+
+	// Draw enemies if alive
+	if (obj1.Hp > 0 && obj1.status == TRUE) {
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetTintColor(0, 0, 0, 1.f);
+		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ obj1.center.x, obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+
+		f32 health_percentage = ((float)obj1.Hp / (float)obj1.Max_Hp) * 100.f;
+		/*if (health_percentage >= 80.f) {
+			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+		}
+		else if (health_percentage >= 40.f) {
+			AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+		}
+		else {
+			AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
+		}*/
+		if (health_percentage >= 80.f) {
+			AEGfxSetTintColor(0, 255, 0, 1.f);
+		}
+		else if (health_percentage >= 40.f) {
+			AEGfxSetTintColor(255, 255, 0, 1.f);
+		}
+		else {
+			AEGfxSetTintColor(255, 0, 0, 1.f);
+		}
+		drawMesh(AEVec2{ (float)obj1.Hp / (float)obj1.Max_Hp * 80.f , 15.f }, AEVec2{ (float)obj1.center.x - (((float)obj1.Max_Hp - (float)obj1.Hp) / (float)obj1.Max_Hp * 40.f), obj1.center.y + obj1.dimensions.y / 2.f }, PI);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	}
+}

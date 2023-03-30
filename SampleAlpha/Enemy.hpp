@@ -1,6 +1,6 @@
 /*!**************************************************************************************************
 \file     Enemy.hpp
-\author   Lee Zhi Yee
+\author   Lin ZhaoZhi
 \par      DP email: zhiyee.l@digipen.edu
 \par      Course: CSD 1451
 \par      Software Engineering Project 2
@@ -37,11 +37,9 @@
 #define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
 #define MAX_ENEMIES_2 5				// Change this for total number of enemy2
 
-// ------- Enemy base attributes -------
-struct Enemy {
-	//f32 x, y, rotation;
-	//f32 width, height;
-	s32 Hp, Max_Hp;
+struct GameObjects {
+
+	s32 Hp, Max_Hp, Max_Hp_Reset;
 	bool status;		// TRUE for alive, FALSE for dead
 	AEVec2 center;		// x & y
 	AEVec2 dimensions;	// width & height
@@ -49,28 +47,19 @@ struct Enemy {
 };
 
 // ------- Enemy specific attributes -------
-struct Enemy1_stats : Enemy {
-	//f32 x, y, rotation;
-	//f32 width, height;
-	//s32 Hp, Max_Hp;
+struct Enemy1_stats : GameObjects {
+
 	f64 movementCounter;
-	//bool status; // TRUE for alive, FALSE for dead
-	//AEVec2 center;
 
 	// ---- Draw ----
-	//AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
 	AEGfxTexture* texture;
 
 };
 
-struct Enemy2_stats : Enemy {
-	//f32 x, y, rotation;
-	//f32 width, height;
+struct Enemy2_stats : GameObjects {
+
 	f32 range_x, range_y;
 	f64 movingTime;
-	//s32 Hp, Max_Hp;
-	//bool status; // TRUE for alive, FALSE for dead
-	//AEVec2 center;
 
 	// ---- Draw ----
 	AEMtx33 scale{}, rotate{}, translate{}, transform{}; // TRS
@@ -88,10 +77,11 @@ void update_enemy1();
 void enemy2_create(f32 x, f32 y, s32 index);
 void enemy2_draw();
 void enemy2_update();
-void RenderEnemy(Enemy2_stats enemy);
 
 
-void Render_HealthBar(Enemy& obj1);
+// --- Rendering ---
+void RenderObject(GameObjects& obj);
+void Render_HealthBar(GameObjects& obj1);
 
 // ------- Main functions -------
 void enemies_load();

@@ -17,6 +17,7 @@ void player_update();
 void player_unload();
 
 
+void respawn_player();
 void player_collision();
 
 
@@ -33,11 +34,13 @@ struct Player_stats {
 	f32 width, height;
 
 	// ----- Player's attributes -----
-	s32 Max_Hp, Max_Hp_Reset, Hp, Lives, Lives_Reset;
-	
-	AEVec2 Lives_dimensions, Lives_pos;
+	s32 Lives, Lives_Reset;
+
+	s32 Hp, Max_Hp, Max_Hp_Reset;
+
 	f32 Speed, Speed_Reset;
 	s32 Level, Level_Reset, XP, requiredXP;
+	AEVec2 Lives_dimensions, Lives_pos;
 	bool justLeveledUp;
 
 	AEVec2 bottom_hotspot;
