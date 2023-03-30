@@ -72,21 +72,25 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	//enemy1_create(600, 90, 0);
-	enemy1_create(-300, 90, 0);
+	enemy1_create(600, 90, 0);
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 
-	//enemy1_create(200, 100, 2);
+#ifdef DEBUG
+	enemy1_create(-300, 90, 0);
+	enemy2_create(-200, 90, 0);
+#endif // DEBUG
+
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
 		enemy1[i].rotation = PI;					// Enemy1's Rotation
-		enemy1[i].width = ENEMY1_WIDTH;			// Enemy1's Width
-		enemy1[i].height = ENEMY1_HEIGHT;		// Enemy1's Height
-		enemy1[i].Hp = 5;					// Enemy1's Health
+		enemy1[i].width = ENEMY1_WIDTH;				// Enemy1's Width
+		enemy1[i].height = ENEMY1_HEIGHT;			// Enemy1's Height
+		enemy1[i].Hp = 5;							// Enemy1's Health
+		enemy1[i].Max_Hp = 5;						// Enemy1's Max Health
 		enemy1[i].status = TRUE;					// TRUE for alive, FALSE for dead
-		enemy1[i].movementCounter = 0.f;					// Enemy1's Movement Counter
+		enemy1[i].movementCounter = 0.f;			// Enemy1's Movement Counter
 
 	}
 
@@ -102,22 +106,23 @@ void enemies_init() {
 
 		// ---- Enemy2 ----
 		enemy2[i].rotation = PI;					// Enemy2's Rotation
-		enemy2[i].width = ENEMY2_WIDTH;			// Enemy2's Width
-		enemy2[i].height = ENEMY2_HEIGHT;		// Enemy2's Height
-		enemy2[i].range_x = ENEMY2_WIDTH + 350;	// Enemy2's Horizontal range
+		enemy2[i].width = ENEMY2_WIDTH;				// Enemy2's Width
+		enemy2[i].height = ENEMY2_HEIGHT;			// Enemy2's Height
+		enemy2[i].range_x = ENEMY2_WIDTH + 350;		// Enemy2's Horizontal range
 		enemy2[i].range_y = ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
-		enemy2[i].Hp = 5;					// Enemy2's Health
+		enemy2[i].Hp = 5;							// Enemy2's Health
+		enemy2[i].Max_Hp = 5;						// Enemy2's Max Health
 		enemy2[i].status = TRUE;					// TRUE for alive, FALSE for dead
 		// ---- Bullet ----
 		bullet_enemy2[i].x = enemy2[i].x;			// Bullet x position
 		bullet_enemy2[i].y = enemy2[i].y;			// Bullet y position
 		bullet_enemy2[i].width = 20.0f;				// Bullet width
-		bullet_enemy2[i].height = 20.0f;				// Bullet height
-		bullet_enemy2[i].speed = 5.0f;					// Bullet speed
-		bullet_enemy2[i].timer = ENEMY2_TIMER;			// Bullet timer between each bullet
-		bullet_enemy2[i].isTimerActive = FALSE;				// Indicator for timer activeness
-		bullet_enemy2[i].isTeleported = FALSE;				// Indicator for teleporation
-		bullet_enemy2[i].isShooting = FALSE;				// Indicator to check whether bullet is still shooting
+		bullet_enemy2[i].height = 20.0f;			// Bullet height
+		bullet_enemy2[i].speed = 5.0f;				// Bullet speed
+		bullet_enemy2[i].timer = ENEMY2_TIMER;		// Bullet timer between each bullet
+		bullet_enemy2[i].isTimerActive = FALSE;		// Indicator for timer activeness
+		bullet_enemy2[i].isTeleported = FALSE;		// Indicator for teleporation
+		bullet_enemy2[i].isShooting = FALSE;		// Indicator to check whether bullet is still shooting
 	}
 
 
@@ -222,16 +227,39 @@ void enemy1_draw() {
 		// Draw enemies if alive
 		if (enemy1[i].Hp > 0 && enemy1[i].status == TRUE) {
 
-			AEMtx33Scale(&enemy1[i].scale, enemy1[i].width, enemy1[i].height);
-			AEMtx33Rot(&enemy1[i].rotate, enemy1[i].rotation);
-			AEMtx33Trans(&enemy1[i].translate, enemy1[i].x, enemy1[i].y);
-			AEMtx33Concat(&enemy1[i].transform, &enemy1[i].rotate, &enemy1[i].scale);
-			AEMtx33Concat(&enemy1[i].transform, &enemy1[i].translate, &enemy1[i].transform);
-			AEGfxSetTransform(enemy1[i].transform.m);
+			// ----- Draw enemy -----
 			AEGfxTextureSet(enemy1[i].texture, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			drawMesh(AEVec2{ enemy1[i].width, enemy1[i].height }, enemy1[i].center, enemy1[i].rotation);
 			// Set vector
 			AEVec2Set(&enemy1[i].center, enemy1[i].x, enemy1[i].y);
+
+			// ----- Draw enemy HP bar -----
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetTintColor(0, 0, 0, 1.f);
+			drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ enemy1[i].center.x, enemy1[i].center.y + enemy1[i].height }, PI);
+
+			f32 health_percentage = ((float)enemy1[i].Hp / (float)enemy1[i].Max_Hp) * 100.f;
+			/*if (health_percentage >= 60.f) {
+				AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+			}
+			else if (health_percentage >= 40.f) {
+				AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+			}
+			else {
+				AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
+			}*/
+			if (health_percentage >= 80.f) {
+				AEGfxSetTintColor(0, 255, 0, 1.f);
+			}
+			else if (health_percentage >= 40.f) {
+				AEGfxSetTintColor(255, 255, 0, 1.f);
+			}
+			else {
+				AEGfxSetTintColor(255, 0, 0, 1.f);
+			}
+			drawMesh(AEVec2{ (float)enemy1[i].Hp / (float)enemy1[i].Max_Hp * 80.f , 15.f }, AEVec2{ (float)enemy1[i].center.x - (((float)enemy1[i].Max_Hp - (float)enemy1[i].Hp) / (float)enemy1[i].Max_Hp * 40.f), enemy1[i].center.y + enemy1[i].height }, PI);
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
 		}
 	}
@@ -289,14 +317,8 @@ void enemy2_draw() {
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
 			if (bullet_enemy2[i].x >= (enemy2[i].x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].x) {
-				AEMtx33Scale(&enemy2[i].scale, bullet_enemy2[i].width, bullet_enemy2[i].height); // scaling it up
-				AEMtx33Trans(&enemy2[i].translate, bullet_enemy2[i].x, bullet_enemy2[i].y); // shifts along x & y axis
-				AEMtx33Rot(&enemy2[i].rotate, PI); // rotation
-				AEMtx33Concat(&enemy2[i].transform, &enemy2[i].rotate, &enemy2[i].scale);
-				AEMtx33Concat(&enemy2[i].transform, &enemy2[i].translate, &enemy2[i].transform);
-				AEGfxSetTransform(enemy2[i].transform.m);
 				AEGfxTextureSet(enemy2[0].bullet, 0, 0);
-				AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+				drawMesh(AEVec2{ bullet_enemy2[i].width, bullet_enemy2[i].height }, bullet_enemy2[i].center, PI);
 			}
 		}
 	}

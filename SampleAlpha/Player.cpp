@@ -213,7 +213,7 @@ void player_draw() {
 		AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
 	}*/
 	if (health_percentage >= 80.f) {
-		AEGfxSetTintColor(255, 255, 255, 1.f);
+		AEGfxSetTintColor(0, 255, 0, 1.f);
 	}
 	else if (health_percentage >= 40.f) {
 		AEGfxSetTintColor(255, 255, 0, 1.f);
