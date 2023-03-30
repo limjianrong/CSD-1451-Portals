@@ -148,7 +148,6 @@ void enemies_draw() {
 void enemies_update() {
 
 	update_enemy1();		// Updates all enemy1
-
 	enemy2_update();		// Updates all enemy2
 
 }
@@ -224,13 +223,10 @@ void enemy1_draw() {
 
 			// ----- Draw enemy -----
 			AEGfxTextureSet(enemy1[i].texture, 0, 0);
-			drawMesh(AEVec2{ enemy1[i].dimensions.x, enemy1[i].dimensions.y }, enemy1[i].center, PI);
-			// Set vector
-			AEVec2Set(&enemy1[i].center, enemy1[i].center.x, enemy1[i].center.y);
+			enemy1[i].GameObjects::RenderObject();
 
 			// ----- Draw enemy HP bar -----
-			//GameObjects::Render_HealthBar(static_cast<GameObjects&>(enemy1[i]));
-			GameObjects::Render_HealthBar(enemy1[i]);
+			enemy1[i].GameObjects::Render_HealthBar();
 		}
 	}
 }
@@ -281,8 +277,7 @@ void enemy2_draw() {
 		if (enemy2[i].Hp > 0 && enemy2[i].status == TRUE) {
 			// ------  Rendering  ------
 			AEGfxTextureSet(enemy2[i].enemy2_fly1, 0, 0);
-			//RenderObject(static_cast<GameObjects&>(enemy2[i]));
-			GameObjects::RenderObject(enemy2[i]);
+			enemy2[i].GameObjects::RenderObject();
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
@@ -292,7 +287,7 @@ void enemy2_draw() {
 			}
 
 			// ----- Draw enemy HP bar -----
-			//Render_HealthBar(static_cast<GameObjects&>(enemy2[i]));
+			enemy2[i].Render_HealthBar();
 		}
 	}
 }
