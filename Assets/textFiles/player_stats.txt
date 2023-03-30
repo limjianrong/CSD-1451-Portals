@@ -7,7 +7,6 @@ XP_TILL_10 40
 XP_TILL_20 100
 XP_TILL_30 160
 XP_RESET 0
-rotation 0
 Max_Hp 5
 Hp 5
 Max_Hp_Reset 5

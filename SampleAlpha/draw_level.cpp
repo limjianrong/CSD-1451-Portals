@@ -177,7 +177,7 @@ void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32
 }
 
 void draw_level_update() {
-	player.y -= GRAVITY;
+	player.center.y -= GRAVITY;
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		enemy1[i].center.y -= GRAVITY;
@@ -416,8 +416,8 @@ void move_update() {
 	for (s32 i = 0; i < MAX_LEFT_RIGHT; i++) {
 		if (leftright[i].pos == OG) {
 			leftright[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) { 
-				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed; 
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (leftright[i].x >= leftright[i].end_x) {
 				leftright[i].pos = MOVED;
@@ -426,9 +426,9 @@ void move_update() {
 
 		if (leftright[i].pos == MOVED) {
 			leftright[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftright[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 
-				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed; 
+				player.center.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (leftright[i].x <= leftright[i].start_x) {
 				leftright[i].pos = OG;
@@ -439,8 +439,8 @@ void move_update() {
 	for (s32 i = 0; i < MAX_UP_DOWN; i++) {
 		if (updown[i].pos == OG) {
 			updown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
-				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (updown[i].y >= updown[i].end_y) {
 				updown[i].pos = MOVED;
@@ -449,7 +449,7 @@ void move_update() {
 
 		if (updown[i].pos == MOVED) {
 			updown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&updown[i].center, BLOCK_WIDTH * updown[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) player.center.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (updown[i].y <= updown[i].start_y) {
 				updown[i].pos = OG;
 			}
@@ -460,9 +460,9 @@ void move_update() {
 		if (diagonalup[i].pos == OG) {
 			diagonalup[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
-				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+				player.center.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (diagonalup[i].y >= diagonalup[i].end_y) { //&& diagup1.x >= diagup1.end_x
 				diagonalup[i].pos = MOVED;
@@ -472,9 +472,9 @@ void move_update() {
 		if (diagonalup[i].pos == MOVED) {
 			diagonalup[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonalup[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
-				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&diagonalup[i].center, BLOCK_WIDTH * diagonalup[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+				player.center.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (diagonalup[i].y <= diagonalup[i].start_y) {
 				diagonalup[i].pos = OG;
@@ -486,9 +486,9 @@ void move_update() {
 		if (diagonaldown[i].pos == OG) {
 			diagonaldown[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
-				player.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				player.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+				player.center.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 				}
 			if (diagonaldown[i].y <= diagonaldown[i].end_y) {//&& diagdown1.x >= diagdown1.end_x
 				diagonaldown[i].pos = MOVED;
@@ -498,9 +498,9 @@ void move_update() {
 		if (diagonaldown[i].pos == MOVED) {
 			diagonaldown[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			diagonaldown[i].y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
-				player.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-				player.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			if (AETestRectToRect(&diagonaldown[i].center, BLOCK_WIDTH * diagonaldown[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+				player.center.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+				player.center.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			}
 			if (diagonaldown[i].y >= diagonaldown[i].start_y) {
 				diagonaldown[i].pos = OG;
@@ -509,7 +509,7 @@ void move_update() {
 	}
 
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
-		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 			if (onetimeuse[i].timer >= 3) { 
 				if (onetimeuse[i].flag == ACTIVE) {
@@ -528,7 +528,7 @@ void move_update() {
 	}
 
 	for (s32 i = 0; i < MAX_SPIKES; i++) {
-		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 			if (damage_ok == TRUE) {
 				//--player.Hp;     // CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 				damage_ok = FALSE;
@@ -543,7 +543,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_LEFT_RIGHT_SPIKES; i++) {
 		if (leftrightspikes[i].pos == OG) {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 				if (damage_ok == TRUE) {
 					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 					damage_ok = FALSE;
@@ -560,7 +560,7 @@ void move_update() {
 
 		if (leftrightspikes[i].pos == MOVED) {
 			leftrightspikes[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.width, player.height)) {
+			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 				if (damage_ok == TRUE) {
 					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
 					damage_ok = FALSE;
@@ -582,11 +582,11 @@ void move_update() {
 void platform_collision(s32 cnt, f32 x, f32 y) {
 	// Player collision
 	for (f32 i = 0; i < cnt; i++) {
-		if ((player.y <= BLOCK_HEIGHT + y + player.height / 2) &&
-			(player.y >= y + player.height / 2) &&
-			(player.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.width / 2) &&
-			(player.x >= x + BLOCK_WIDTH / 2 - player.width / 2))
-			player.y = BLOCK_HEIGHT + y + player.height / 2;
+		if ((player.center.y <= BLOCK_HEIGHT + y + player.dimensions.y / 2) &&
+			(player.center.y >= y + player.dimensions.y / 2) &&
+			(player.center.x <= BLOCK_WIDTH / 2 + BLOCK_WIDTH * cnt + x - player.dimensions.x / 2) &&
+			(player.center.x >= x + BLOCK_WIDTH / 2 - player.dimensions.x / 2))
+			player.center.y = BLOCK_HEIGHT + y + player.dimensions.y / 2;
 	}
 
 	// Enemy1 collision

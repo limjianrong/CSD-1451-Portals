@@ -206,26 +206,26 @@ void update_portal() {
 		//check if player is colliding with 1st portal, if collided, teleport player to the position of the 2nd portal
 		// stop drawing both portals and set a cooldown before the player can create portals again
 		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &player.center, 50.0f, 50.0f)) {
-			player.x = portal_2.center.x;
-			player.y = portal_2.center.y;
+			player.center.x = portal_2.center.x;
+			player.center.y = portal_2.center.y;
 			portal_1.created = false;
 			portal_2.created = false;
 			//decrease_cooldown = true;
 			portal_timer = 0;
 
 			//set camera to follow player if the player teleports
-			if (player.x > 0) {
-				camera.x = player.x;
+			if (player.center.x > 0) {
+				camera.x = player.center.x;
 			}
 			else {
 				camera.x = 0;
 			}
 
-			if (player.y < 0) {
+			if (player.center.x < 0) {
 				camera.y = 0;
 			}
 			else {
-				camera.y = player.y;
+				camera.y = player.center.y;
 			}
 		}
 
@@ -255,7 +255,7 @@ void portal_range() {
 	AEMtx33 portal_range_mtx{};
 	//set transformation matrix of circle that shows the portals maximum range
 	AEMtx33Scale(&portal_range_scale_mtx, portal_max_range*2, portal_max_range*2);
-	AEMtx33Trans(&portal_range_mtx, player.x, player.y);
+	AEMtx33Trans(&portal_range_mtx, player.center.x, player.center.y);
 	AEMtx33Concat(&portal_range_mtx, &portal_range_mtx, &portal_range_scale_mtx);
 
 	//draw the maximum portal range

@@ -10,6 +10,8 @@ Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
 #pragma once
+#include "Utilities.hpp"
+
 void player_load();
 void player_init();
 void player_draw();
@@ -22,24 +24,18 @@ void player_collision();
 
 
 // --------------  Initialise player  ----------------
-struct Player_stats {
+struct Player_stats : GameObjects {
 	s32 initial_pos_x, initial_pos_y; //initial start point of player
 
 	// -----  Player's levelling requirements  -------
 	s32 XP_TILL_10, XP_TILL_20, XP_TILL_30, XP_RESET;
-	s32 highest_level; //highest level a player can level up to
-
-	f32 x, y, rotation;
-	AEVec2 center; // same as .x & .y
-	f32 width, height;
+	s32 highest_level; // Highest level a player can level up to
 
 	// ----- Player's attributes -----
 	s32 Lives, Lives_Reset;
-
-	s32 Hp, Max_Hp, Max_Hp_Reset;
-
 	f32 Speed, Speed_Reset;
 	s32 Level, Level_Reset, XP, requiredXP;
+
 	AEVec2 Lives_dimensions, Lives_pos;
 	bool justLeveledUp;
 

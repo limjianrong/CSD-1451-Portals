@@ -80,10 +80,10 @@ void upgrades_init() {
 	left_card = middle_card = right_card = selected = NO_card;
 
 	// --- Shield Upgrade ---
-	shield.center.x = player.x;					// Shield bubble x position
-	shield.center.y = player.y;					// Shield bubble y position
-	shield.dimensions.x = player.width + 20;	// Shield bubble width
-	shield.dimensions.y = player.height + 20;	// Shield bubble height
+	shield.center.x = player.center.x;					// Shield bubble x position
+	shield.center.y = player.center.y;					// Shield bubble y position
+	shield.dimensions.x = player.dimensions.x + 20;	// Shield bubble width
+	shield.dimensions.y = player.dimensions.y + 20;	// Shield bubble height
 	isShieldActive = FALSE;						// Disable shield
 }
 
@@ -201,14 +201,14 @@ void shield_update() {
 
 	// Shield follows player x & y
 	if (isShieldActive) {
-		shield.center.x = player.x;
-		shield.center.y = player.y;
+		shield.center.x = player.center.x;
+		shield.center.y = player.center.y;
 	}
 
 	// ----- Disable shield when shot by Enemy2 -----
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		// ----- Bullet collision with enemy2 -----
-		if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
+		if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.dimensions.x, player.dimensions.y)) {
 			isShieldActive = FALSE;
 		}
 	}

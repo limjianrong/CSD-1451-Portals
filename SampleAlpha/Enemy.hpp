@@ -22,7 +22,6 @@
 #pragma once
 
 #include "AEEngine.h"
-#include "Player.hpp"
 #include "Utilities.hpp"
 
 // ----- Enemy 1 -----
@@ -73,7 +72,7 @@ struct Enemy2_stats : GameObjects {
 void enemy1_create(f32 x, f32 y, s32 index);
 void enemy1_draw();
 //void enemy1_collision(Enemy1_stats enemy1);
-void update_enemy1();
+void enemy1_update();
 
 
 // ------- Enemy2 -------

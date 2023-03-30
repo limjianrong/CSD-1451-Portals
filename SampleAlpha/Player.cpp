@@ -77,8 +77,8 @@ void player_load() {
 	}
 	// -------- Player --------
 	std::string str{};
-	player_ifs >> str >> player.width;				// Player's width
-	player_ifs >> str >> player.height;				// Player's height
+	player_ifs >> str >> player.dimensions.x;				// Player's width
+	player_ifs >> str >> player.dimensions.y;				// Player's height
 	player_ifs >> str >> player.initial_pos_x;		// Player's initial X position
 	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
 	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
@@ -88,7 +88,6 @@ void player_load() {
 	player_ifs >> str >> player.XP_TILL_30;			// 160 XP to level up for lvls 20-30
 	player_ifs >> str >> player.XP_RESET;			// Reset XP to 0
 
-	player_ifs >> str >> player.rotation;			// Player's Rotation
 	player_ifs >> str >> player.Max_Hp;				// Player's Maximum Health
 	player_ifs >> str >> player.Hp;					// Player's Maximum Health
 	player_ifs >> str >> player.Max_Hp_Reset;		// Player's Maximum Health Reset
@@ -105,9 +104,8 @@ void player_load() {
 void player_init() {
 
 
-	player.x				= player.initial_pos_x;		// Player's initial X position
-	player.y				= player.initial_pos_y;		// Player's initial Y position
-	//player.rotation			= 0.f;					// Player's Rotation
+	player.center.x			= player.initial_pos_x;		// Player's initial X position
+	player.center.y			= player.initial_pos_y;		// Player's initial Y position
 	player.Hp				= player.Max_Hp_Reset;		// Player's Health
 	player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
 	player.Lives			= player.Lives_Reset;		// Player's Lives
@@ -115,7 +113,7 @@ void player_init() {
 	player.Level			= player.Level_Reset;		// Player's Level
 	player.XP				= player.XP_RESET;			// Player's XP
 	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
-
+	player.status			= TRUE;
 
 	player.Lives_dimensions.x = 50.f;
 	player.Lives_dimensions.y = 50.f;
@@ -139,11 +137,11 @@ void player_draw() {
 	
 	// ---------------- Player ----------------
 	// Creates a player size 50x50
-	AEMtx33Scale(&player.scale, player.width, player.height);
+	AEMtx33Scale(&player.scale, player.dimensions.x, player.dimensions.y);
 	// Rotate player
 	AEMtx33Rot(&player.rotate, PI);
 	// Move player when A / D keys pressed
-	AEMtx33Trans(&player.translate, player.x, player.y);
+	AEMtx33Trans(&player.translate, player.center.x, player.center.y);
 	// Concat the matrices (TRS)
 	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
 	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
@@ -168,12 +166,6 @@ void player_draw() {
 	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Printing out no. of lives --------
-
-	/*std::string lives_string = "Lives: ";
-	AEGfxPrint(Albam_fontID, &lives_string[0], -1.0f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
-	std::string lives_counter_string = std::to_string(player.Lives);
-	AEGfxPrint(Albam_fontID, &lives_counter_string[0], -0.70f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);*/
-
 	// --- 1st Life ---
 	if (player.Lives >= 1)
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
@@ -197,32 +189,7 @@ void player_draw() {
 
 
 	// -------- Drawing out HP bar ----------
-	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetTintColor(0, 0, 0, 1.f);
-	drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ player.center.x, player.center.y + player.height }, PI);
-
-	f32 health_percentage = ((float)player.Hp / (float)player.Max_Hp) * 100.f;
-	/*if (health_percentage >= 60.f) {
-		AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
-	}
-	else if (health_percentage >= 40.f) {
-		AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
-	}
-	else {
-		AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
-	}*/
-	if (health_percentage >= 80.f) {
-		AEGfxSetTintColor(0, 255, 0, 1.f);
-	}
-	else if (health_percentage >= 40.f) {
-		AEGfxSetTintColor(255, 255, 0, 1.f);
-	}
-	else {
-		AEGfxSetTintColor(255, 0, 0, 1.f);
-	}
-	drawMesh(AEVec2{ (float)player.Hp / (float)player.Max_Hp * 80.f , 15.f }, AEVec2{ (float)player.center.x - (((float)player.Max_Hp - (float)player.Hp) / (float)player.Max_Hp * 40.f), player.center.y + player.height }, PI);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	player.GameObjects::Render_HealthBar();
 
 #ifdef DEBUG 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
@@ -230,13 +197,13 @@ void player_draw() {
 			std::cout << "Health percentage: " << health_percentage << std::endl;
 		}
 	}
-#endif // DEBUG
 
 	// -------- Printing out Hp ----------
 	std::string hp_string = "Hp: ";
 	AEGfxPrint(Albam_fontID, &hp_string[0], -0.05f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
 	std::string hp_counter_string = std::to_string(player.Hp);
 	AEGfxPrint(Albam_fontID, &hp_counter_string[0], 0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
+#endif // DEBUG
 
 	// --- Printing Level ---
 	std::string level_string = "Level: ";
@@ -265,7 +232,7 @@ void player_draw() {
 
 void player_update() {
 	// --------  Setting player's position into a vector --------
-	AEVec2Set(&player.center, player.x, player.y);
+	AEVec2Set(&player.center, player.center.x, player.center.y);
 	if (AEInputCheckCurr(AEVK_J)) {
 		player.Max_Hp = 10;						// Player's Maximum Health
 		player.Hp = player.Max_Hp;			// Player's Health
@@ -274,13 +241,13 @@ void player_update() {
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {
-		player.x += 5 * player.Speed;
+		player.center.x += 5 * player.Speed;
 		num_of_Dpressed++;
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
-		player.x -= 5 * player.Speed;
+		player.center.x -= 5 * player.Speed;
 		num_of_Apressed++;
 	}
 
@@ -330,8 +297,8 @@ void player_update() {
 
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
-		if (player.x >= checkpoint[i].x1 && player.x <= checkpoint[i].x2 &&
-			player.y >= checkpoint[i].y1 && player.y <= checkpoint[i].y2) {
+		if (player.center.x >= checkpoint[i].x1 && player.center.x <= checkpoint[i].x2 &&
+			player.center.y >= checkpoint[i].y1 && player.center.y <= checkpoint[i].y2) {
 			checkpoint[i].check = TRUE;
 			//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
 		}
@@ -357,17 +324,17 @@ void player_collision() {
 
 
 	// left of screen
-	if (player.x < -WINDOWLENGTH_X / 2.f + player.width / 2.f)
-		player.x = -WINDOWLENGTH_X / 2.f + player.width / 2.f;
+	if (player.center.x < -WINDOWLENGTH_X / 2.f + player.dimensions.x / 2.f)
+		player.center.x = -WINDOWLENGTH_X / 2.f + player.dimensions.x / 2.f;
 
 	// right of screen ---- CURRENTLY NO LIMIT ----
 
 	// top of screen
-	if (player.y > (WINDOWLENGTH_Y / 2.f - player.height / 2.f) * 10)
-		player.y = (WINDOWLENGTH_Y / 2.f - player.height / 2.f) * 10;
+	if (player.center.y > (WINDOWLENGTH_Y / 2.f - player.dimensions.y / 2.f) * 10)
+		player.center.y = (WINDOWLENGTH_Y / 2.f - player.dimensions.y / 2.f) * 10;
 
 	// bottom of screen
-	if (player.y < -WINDOWLENGTH_Y / 2.f + player.height / 2.f) {
+	if (player.center.y < -WINDOWLENGTH_Y / 2.f + player.dimensions.y / 2.f) {
 		--player.Lives;
 		player.Hp = player.Max_Hp;
 		respawn_player();
@@ -379,27 +346,27 @@ void respawn_player() {
 	// ---------  Set player's position to latest checkpoint  ---------
 	for (s32 i = NUM_OF_CHECKPOINT - 1; i >= 0; i--) {
 		if (checkpoint[i].check) {
-			player.x = checkpoint[i].x1 + 50;
-			player.y = checkpoint[i].y1;
+			player.center.x = checkpoint[i].x1 + 50;
+			player.center.y = checkpoint[i].y1;
 			break;
 		}
 		else {
-			player.x = player.initial_pos_x;
-			player.y = player.initial_pos_y;
+			player.center.x = player.initial_pos_x;
+			player.center.y = player.initial_pos_y;
 		}
 	}
-	if (player.x > 0) {
-		camera.x = player.x;
+	if (player.center.x > 0) {
+		camera.x = player.center.x;
 	}
 	else {
 		camera.x = 0;
 	}
-	camera.y = player.y;
+	camera.y = player.center.y;
 }
 
 void checkpoint_create(f32 x, f32 y, s32 index) {
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; ++i) {
-		AEMtx33Scale(&checkpoint[i].scale, player.width * 2, player.height * 2);
+		AEMtx33Scale(&checkpoint[i].scale, player.dimensions.x * 2, player.dimensions.y * 2);
 		AEMtx33Rot(&checkpoint[i].rotate, PI);
 		AEMtx33Trans(&checkpoint[i].translate, x, y);
 		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].rotate, &checkpoint[i].scale);

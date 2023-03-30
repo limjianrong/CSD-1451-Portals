@@ -134,7 +134,6 @@ void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
 void GameObjects::RenderObject() {
 
 	drawMesh(dimensions, center, PI);
-	//drawMesh(obj.dimensions, obj.center, PI);
 }
 
 void GameObjects::Render_HealthBar() {
@@ -144,7 +143,7 @@ void GameObjects::Render_HealthBar() {
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetTintColor(0, 0, 0, 1.f);
-		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f }, PI);
+		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f + 10.f }, PI);
 
 		f32 health_percentage = ((float)Hp / (float)Max_Hp) * 100.f;
 		/*if (health_percentage >= 80.f) {
@@ -165,7 +164,8 @@ void GameObjects::Render_HealthBar() {
 		else {
 			AEGfxSetTintColor(255, 0, 0, 1.f);
 		}
-		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * 80.f , 15.f }, AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * 40.f), center.y + dimensions.y / 2.f }, PI);
+		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * 80.f , 15.f }, 
+				 AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * 40.f), center.y + dimensions.y / 2.f + 10.f}, PI);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }

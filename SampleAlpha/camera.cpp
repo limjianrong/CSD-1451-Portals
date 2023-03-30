@@ -26,8 +26,8 @@ void camera_update() {
 		//switch back to camera state that is used for playing, now the camera goes back
 		//to following the player
 		if (camera.free_moving) {
-			camera.x = player.x;
-			camera.y = player.y;
+			camera.x = player.center.x;
+			camera.y = player.center.y;
 		}
 	}
 
@@ -35,34 +35,34 @@ void camera_update() {
 	if (camera.free_moving == false) {
 
 		//player is moving and has reached the right buffer range of the camera
-		if (AEGfxGetWinMaxX() - player.x <= camera.buffer_range && AEInputCheckCurr(AEVK_D)) {
+		if (AEGfxGetWinMaxX() - player.center.x <= camera.buffer_range && AEInputCheckCurr(AEVK_D)) {
 			camera.x += 5 * player.Speed;
 		}
 
 		//player is not moving but still reached the right buffer range of the camera
 		//this is because the moving platform is also moving the player
-		else if (AEGfxGetWinMaxX() - player.x <= camera.buffer_range) {
+		else if (AEGfxGetWinMaxX() - player.center.x <= camera.buffer_range) {
 			camera.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 		}
 
 		//player is moving and has reached the left buffer range of the camera
-		if (player.x - AEGfxGetWinMinX() <= camera.buffer_range && AEInputCheckCurr(AEVK_A)) {
+		if (player.center.x - AEGfxGetWinMinX() <= camera.buffer_range && AEInputCheckCurr(AEVK_A)) {
 			camera.x -= 5 * player.Speed;
 		}
 
 		//player is not moving but still reached the left buffer range of the camera
 		//this is because the moving platform is also moving the player
-		else if (player.x - AEGfxGetWinMinX() <= camera.buffer_range && camera.x >= 0) {
+		else if (player.center.x - AEGfxGetWinMinX() <= camera.buffer_range && camera.x >= 0) {
 			camera.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 		}
 
 		//camera will always follow player's y if player.y is +ve
-		if (player.y > 0) {
-			camera.y = player.y;
+		if (player.center.y > 0) {
+			camera.y = player.center.y;
 		}
 
 		//lowest y value of camera.y is 0
-		else if (player.y < 0) {
+		else if (player.center.y < 0) {
 			camera.y = 0;
 		}
 

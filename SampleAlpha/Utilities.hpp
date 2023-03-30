@@ -29,6 +29,7 @@ struct GameObjects {
 	AEVec2 center;		// x & y
 	AEVec2 dimensions;	// width & height
 
+	// --- Rendering ---
 	void RenderObject();
 	void Render_HealthBar();
 };
@@ -40,7 +41,3 @@ void variables_update();
 
 // Collision between enemy1 & player
 //bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);
-
-// --- Rendering ---
-//void RenderObject(GameObjects& obj);
-//void Render_HealthBar(GameObjects& obj1);

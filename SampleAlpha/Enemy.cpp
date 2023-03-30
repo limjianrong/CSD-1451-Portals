@@ -26,7 +26,6 @@
 #include "Enemy.hpp"
 #include "Utilities.hpp"
 #include "boss.hpp"
-//#include "weapon_fire.hpp"
 #include "GameState_Platformer.hpp"
 
 #include <iostream>
@@ -75,17 +74,12 @@ void enemies_init() {
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 
-#ifdef DEBUG
-	enemy1_create(-300, 90, 0);
-	enemy2_create(-200, 90, 0);
-#endif // DEBUG
-
 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 
 		//enemy1[i].rotation = PI;					// Enemy1's Rotation
-		enemy1[i].dimensions.x = ENEMY1_WIDTH;				// Enemy1's Width
-		enemy1[i].dimensions.y = ENEMY1_HEIGHT;			// Enemy1's Height
+		enemy1[i].dimensions.x = ENEMY1_WIDTH;		// Enemy1's Width
+		enemy1[i].dimensions.y = ENEMY1_HEIGHT;		// Enemy1's Height
 		enemy1[i].Hp = 5;							// Enemy1's Health
 		enemy1[i].Max_Hp = 5;						// Enemy1's Max Health
 		enemy1[i].status = TRUE;					// TRUE for alive, FALSE for dead
@@ -147,7 +141,7 @@ void enemies_draw() {
 *******************************************************************************************************/
 void enemies_update() {
 
-	update_enemy1();		// Updates all enemy1
+	enemy1_update();		// Updates all enemy1
 	enemy2_update();		// Updates all enemy2
 
 }
@@ -176,14 +170,13 @@ void enemies_unload() {
 // ----------------------------------------------------------------------------------------  //
 //	----------------					 ENEMY 1							---------------  //
 // ----------------------------------------------------------------------------------------  // 
-
 void enemy1_collision() {
-	AEVec2 player_vec{ player.x , player.y };
+	AEVec2 player_vec{ player.center.x , player.center.y };
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
 		if (damage_allowed) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.width, player.height)) {
-			//if (CollisionIntersection_RectRect(enemy1[i], player)) {
+			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.dimensions.x, player.dimensions.y)) {
+				//if (CollisionIntersection_RectRect(enemy1[i], player)) {
 				if (isShieldActive) {
 					isShieldActive = FALSE;
 				}
@@ -204,7 +197,6 @@ void enemy1_collision() {
 
 		// bottom of screen
 		if (enemy1[i].center.y < -WINDOWLENGTH_Y / 2.f + enemy1[i].dimensions.y / 2.f) {
-			//enemy1[i].status = FALSE;
 			enemy1[i].Hp = 0;
 		}
 	}
@@ -231,7 +223,7 @@ void enemy1_draw() {
 	}
 }
 
-void update_enemy1() {
+void enemy1_update() {
 
 	if (!isPaused) {
 		for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
@@ -287,7 +279,7 @@ void enemy2_draw() {
 			}
 
 			// ----- Draw enemy HP bar -----
-			enemy2[i].Render_HealthBar();
+			enemy2[i].GameObjects::Render_HealthBar();
 		}
 	}
 }
@@ -311,8 +303,8 @@ void enemy2_update() {
 
 			// ----- Enemy2 bullet -----
 			// If player is within enemy2 range (350x500 FOR NOW) (ONLY WHEN PLAYER IS IN FRONT OF ENEMY2)
-			if (player.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.x <= enemy2[i].center.x &&
-				player.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.y <= (enemy2[i].center.y + enemy2[i].range_y)) {
+			if (player.center.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.center.x <= enemy2[i].center.x &&
+				player.center.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.center.y <= (enemy2[i].center.y + enemy2[i].range_y)) {
 				// --- Enable shooting ---
 				bullet_enemy2[i].isShooting = TRUE;
 
@@ -329,7 +321,7 @@ void enemy2_update() {
 						bullet_enemy2[i].isTeleported = FALSE;
 
 						// If player x within 100 units of enemy2
-						if (player.x >= (enemy2[i].center.x - 100.f) && player.x <= enemy2[i].center.x) {
+						if (player.center.x >= (enemy2[i].center.x - 100.f) && player.center.x <= enemy2[i].center.x) {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 						}
 					}
@@ -361,15 +353,15 @@ void enemy2_update() {
 			}
 			// ----- Bullet collision with player -----
 			AEVec2Set(&bullet_enemy2[i].center, bullet_enemy2[i].x, bullet_enemy2[i].y);
-			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.width, player.height)) {
+			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.dimensions.x, player.dimensions.y)) {
 				bullet_enemy2[i].x = enemy2[i].center.x;			// Reset bullet x
 				bullet_enemy2[i].y = enemy2[i].center.y;			// Reset bullet y
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 
 				// --- Disable shooting when player out of range of Enemy2 ---
-				if (!(player.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.x <= enemy2[i].center.x &&
-					player.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.y <= (enemy2[i].center.y + enemy2[i].range_y))) {
+				if (!(player.center.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.center.x <= enemy2[i].center.x &&
+					player.center.y >= (enemy2[i].center.y - enemy2[i].range_y) && player.center.y <= (enemy2[i].center.y + enemy2[i].range_y))) {
 					bullet_enemy2[i].isShooting = FALSE;
 				}
 
