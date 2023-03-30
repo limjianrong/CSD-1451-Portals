@@ -27,8 +27,8 @@ void GameStateMainmenuLoad(void) {
 	// Texture load
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
-	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
-
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
+	
 	mesh_load();
 	
 }
@@ -76,13 +76,13 @@ void GameStateMainmenuDraw(void) {
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = 15; i <= 27 ; i+=4) {
-		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3, WINDOWLENGTH_Y / 8); // scaling it up
+		AEMtx33Scale(&scale, WINDOWLENGTH_X / 4, WINDOWLENGTH_Y / 8); // scaling it up
 		AEMtx33Trans(&translate, origin.x, origin.y+ WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i); // x=0, start counting y from bottom edge of screen
 		AEMtx33Rot(&rotate, PI); // rotation
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
-		if (center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+		if (center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
 			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
@@ -92,10 +92,10 @@ void GameStateMainmenuDraw(void) {
 
 	// ------ Texts ------
 	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.55, 0.4, 3.0F, 1, 1, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.25, -0.05, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.19, -0.3, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.19, -0.56, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.24, -0.83, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.20, -0.05, 1.0f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.14, -0.3, 1.0f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.14, -0.56, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.18, -0.83, 0.95F, 1, 1, 1);
 }
 void GameStateMainmenuFree() {
 	

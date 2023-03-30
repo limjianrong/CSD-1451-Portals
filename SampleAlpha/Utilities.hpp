@@ -19,8 +19,8 @@
 #include "Player.hpp"
 
 // Custom window size
-#define WINDOWLENGTH_X 1000
-#define WINDOWLENGTH_Y 600
+#define WINDOWLENGTH_X 1280
+#define WINDOWLENGTH_Y 720
 
 //#define DEBUG		// DEBUG unit testing (Uncomment to debug)
 
