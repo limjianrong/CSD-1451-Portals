@@ -21,6 +21,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <string>
 #include <fstream>
 #include "camera.hpp"
+#include "Audio.hpp"
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
@@ -99,6 +100,8 @@ void player_load() {
 
 	player_ifs.close();
 
+
+	audio_load();
 }
 
 void player_init() {
@@ -231,6 +234,7 @@ void player_draw() {
 
 
 void player_update() {
+
 	// --------  Setting player's position into a vector --------
 	AEVec2Set(&player.center, player.center.x, player.center.y);
 	if (AEInputCheckCurr(AEVK_J)) {
@@ -253,10 +257,12 @@ void player_update() {
 
 	// --------  Player's level & XP   ----------
 	// 40xp to level up for lvls 0-10 (1 enemy = 20xp)
-	if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
+	//if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
+	if (player.XP == 20 && player.Level >= 0 && player.Level <= 10) {
 		player.Level++;
 		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
+		//audio_update();
 	}
 	// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
 	else if (player.XP == player.XP_TILL_20 && player.Level >= 10 && player.Level <= 20) {
