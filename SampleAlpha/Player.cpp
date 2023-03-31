@@ -114,8 +114,8 @@ void player_load() {
 void player_init() {
 
 
-	player.center.x			= player.initial_pos_x;		// Player's initial X position
-	player.center.y			= player.initial_pos_y;		// Player's initial Y position
+	player.center.x			= static_cast<f32>(player.initial_pos_x);		// Player's initial X position
+	player.center.y			= static_cast<f32>(player.initial_pos_y);		// Player's initial Y position
 	player.Hp				= player.Max_Hp_Reset;		// Player's Health
 	player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
 	player.Lives			= player.Lives_Reset;		// Player's Lives
@@ -341,8 +341,8 @@ void respawn_player() {
 			break;
 		}
 		else {
-			player.center.x = player.initial_pos_x;
-			player.center.y = player.initial_pos_y;
+			player.center.x = static_cast<f32>(player.initial_pos_x);
+			player.center.y = static_cast<f32>(player.initial_pos_y);
 		}
 	}
 	if (player.center.x > 0) {
