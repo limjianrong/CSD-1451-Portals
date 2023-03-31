@@ -251,7 +251,7 @@ void enemy3_collision() {
 		if (damage_allowed3) {
 			// decreases 1 player hp whenever player and enemy1 collide
 			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, player.dimensions.x/10, player.dimensions.y/10)) {
-				//--player.Hp;
+				--player.Hp;
 				// disables damage temporarily once collided
 				damage_allowed3 = FALSE;
 			}

@@ -25,80 +25,103 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "camera.hpp"
-#include <iostream>
+#include <iostream> //for std::cout if files are not opened
+#include "limits.h" //for INT_MAX
 struct portal {
 	
+	//position of portal
 	s32 x{}, y{};
+
+	//center of portal
 	AEVec2 center{};
+
+	//transformation matrices
 	AEMtx33 scale_matrix{}, translation_matrix, final_matrix{};
+
+	//active or in-active flag
 	bool active{};
+
+	//flag to draw outline of portal
 	bool draw_outline{};
+
+	//texture for portal
 	AEGfxTexture* picture{};
 }; 
 
 
 
+
+/*!**************************************************************************************************
+\brief
+  loads the assets needed for the portal as well as the cards used for player upgrades.
+  opens a text file file and initializes the values for portal dimensions, max range, cooldown by reading
+  from a text file
+*******************************************************************************************************/
 void portal_load();
+
+/*!**************************************************************************************************
+\brief
+	initialize active flags of portal objects to be false
+*******************************************************************************************************/
 void portal_init();
 
 
 /*!**************************************************************************************************
 \brief
-  draws 2 portals once the positions of both portals are valid. location of both portals are determined by right
-  click. If the location of a portal is too far from the player, the cursor'x and y will not be assigned to the
-  portal's x and y. The player will have to right click again, the first right click determines the coordinate
-  of the first portal, and the second right click determines the coordinate of the second portal.
-
-\param[in] playerx
-  x coordinate of the player's position
-
-\param[in] playery
-  y coordinate of the player's position
+  update_portal checks for player input and creates a portal if the player input is valid(within a certain distance
+  from the player). If there is invalid input when creating a portal, all portals created at that point will be
+  resetted.
 *******************************************************************************************************/
 void update_portal();
+
+//function to draw both portals, draw the outline of portal 1, update and draw the portal maximum range
+void draw_portal();
+
+//free portal objects
 void portal_free();
+
+//unloads the loaded textures
 void portal_unload();
+
+//function to create a portal, function is called when there is a right click input from player
+void create_portal(portal& portal);
+
+//function to update the transformation matrices of portals that have been created, function is called
+//when there is a valid right click from player and a portal's active flag is set to true
+void update_portal_matrices(portal& portal);
+
+//checks if player has collided with portal
+void check_portal_player_collision();
+
+//teleports the player and sets the camera to follow the player
+void teleport_player(const AEVec2& portal_center);
+
+//function to check if enemy/boss bullets are colliding with the portal
+void check_portal_bullet_collision();
+
+//check if enemy has collided with portal
+void check_portal_enemy_collision();
+
+//resets the portals, function is called whenever a game object is teleported
+void reset_portals();
+
 
 /*!**************************************************************************************************
 \brief
   draws a circle around the player to show the player the furthest point that he can place a portal at.
-  Not fully implemented yet.
-
-\param[in] playerx
-  x coordinate of the player's position
-
-\param[in] playery
-  y coordinate of the player's position
 *******************************************************************************************************/
 void draw_portal_range();
 
-
-void check_portal_bullet_collision();
-
-void draw_portal();
-void check_portal_enemy_collision();
-void teleport_player(const AEVec2& portal_center);
-void reset_portals();
-void update_portal_matrices(portal& portal);
-void create_portal(portal& portal);
-void check_portal_player_collision();
-
-
-//function template used for objects that are inherited
-template<typename T1, typename T2=portal>
-void teleport_inherited_object(T1& gameObject, T2& portal) {
-	gameObject->center.x = static_cast<f32>(portal.x);
-	gameObject->center.y = static_cast<f32>(portal.y);
-	reset_portals();
-}
-
-//function template used for non-inherited objects
-template<typename T1, typename T2=portal>
+//function template used for teleporting objects
+template <typename T1, typename T2 = portal>
 void teleport_object(T1& gameObject, T2& portal) {
+	//set gameObject position to be the same position as the portal passed as input parameter
 	gameObject.center.x = static_cast<f32>(portal.x);
 	gameObject.center.y = static_cast<f32>(portal.y);
 	reset_portals();
 }
+
+
 
 
 

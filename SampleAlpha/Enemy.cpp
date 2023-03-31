@@ -182,7 +182,7 @@ void enemy1_collision() {
 					isShieldActive = FALSE;
 				}
 				else {
-					//--player.Hp;
+					--player.Hp;
 				}
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;
@@ -370,7 +370,7 @@ void enemy2_update() {
 					isShieldActive = FALSE;
 				}
 				else {
-					//--player.Hp;
+					--player.Hp;
 				}
 			}
 
