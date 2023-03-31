@@ -328,7 +328,6 @@ void player_unload() {
 
 void player_collision() {
 
-
 	// left of screen
 	if (player.center.x < -WINDOWLENGTH_X / 2.f + player.dimensions.x / 2.f)
 		player.center.x = -WINDOWLENGTH_X / 2.f + player.dimensions.x / 2.f;

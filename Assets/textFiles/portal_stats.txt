@@ -2,4 +2,3 @@ portal_width 60
 portal_height 60
 portal_max_range 300
 portal_cooldown 1.0
-portal_timer 1.0

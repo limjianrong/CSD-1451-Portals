@@ -122,7 +122,7 @@ void boss_draw() {
 	AEGfxSetTransform(boss.matrix.m);
 	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-	draw_laser_beam_warning();
+	//draw_laser_beam_warning();
 }
 
 void boss_update() {

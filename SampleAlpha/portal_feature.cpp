@@ -10,18 +10,9 @@
   This source file implements the functions used to initialize, draw the portal and the
   portal's valid selection area.
 ==================================================================================*/
-#include "AEEngine.h"
-#include "Utilities.hpp"
-#include <cmath> //for square root function
+
 #include "portal_feature.hpp"
-#include "boss.hpp"
-//#include "weapon_fire.hpp"
-#include <iostream> 
-#include "Player.hpp"
-#include "Enemy.hpp"
-#include <string>
-#include <fstream>
-#include "camera.hpp"
+
 //portal dimensions
 float PORTAL_WIDTH{};
 float PORTAL_HEIGHT{};
@@ -50,254 +41,194 @@ extern s8 Albam_fontID;
 
 /*************  Portal Cooldown and Max Range ***********/
 float portal_max_range, portal_cooldown,portal_timer{};
-std::ifstream portal_ifs{};
 
+//file stream to initialize portal data members
+std::ifstream portal_ifs{};
 
 //texture used by both portals
 AEGfxTexture* portal_range_picture;
 AEGfxTexture* portal_range_on_cooldown_picture;
 
 //texture for cards that are drawn when choosing upgrade
-AEGfxTexture* temp; // TEMP
+AEGfxTexture* card_pic; // card picture for player upgrades
 /***********************************************************************/
 
 
 /*!**************************************************************************************************
 \brief
-  draws a square mesh using 2 triangle meshes and assigns them to portal_1.mesh and portal_2.mesh.
-  portal_1's mesh is green in color and portal_2's mesh is red in color.
+  loads the assets needed for the portal as well as the cards used for player upgrades.
+  opens a text file file and initializes the values for portal dimensions, max range, cooldown by reading
+  from a text file
 *******************************************************************************************************/
 void portal_load() {
+	//load picture for portal
+	portal_1.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
+	if (!portal_1.picture) {
+		std::cout << "\nFailed to load platformPack_tile023.png.txt";
+	}
+
+	//load picture for portal max range
 	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	if (!portal_range_picture) {
 		std::cout << "portal_range.png not loaded";
 	}
+
+	//load picture to be shown when portal is on cooldown
 	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
 	if (!portal_range_on_cooldown_picture) {
 		std::cout << "portal_range_on_cooldown.png not loaded";
 	}
-	temp = AEGfxTextureLoad("Assets/card.png");
+
+	//load picture for cards used for player upgrades
+	card_pic = AEGfxTextureLoad("Assets/card.png");
+	if (!card_pic) {
+		std::cout << "\nFailed to load card.png";
+	}
+
+	//read values from text file
 	portal_ifs.open("Assets/textFiles/portal_stats.txt");
 	if (!portal_ifs) {
 		std::cout << "\nFailed to load portal_stats.txt";
 	}
 
-	portal_1.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
 	std::string str{};
 	portal_ifs >> str >> PORTAL_WIDTH;
 	portal_ifs >> str >> PORTAL_HEIGHT;
 	portal_ifs >> str >> portal_max_range;
-
 	portal_ifs >> str >> portal_cooldown;
-	portal_ifs >> str >> portal_timer;
 	portal_ifs.close();
+} //end of portal_load
 
-}
 
+//initialize some portal object data members to be false
 void portal_init() {
-	// Initialise
 
-	portal_1.created = false;
-	portal_2.created = false;
+	portal_1.active = false;
+	portal_2.active = false;
 	portal_1.draw_outline = false;
-
-}
+} //end of portal_init
 
 /*!**************************************************************************************************
 \brief
-  draws 2 portals once the positions of both portals are valid. location of both portals are determined by right
-  click. If the location of a portal is too far from the player, the cursor'x and y will not be assigned to the
-  portal's x and y. The player will have to right click again, the first right click determines the coordinate
-  of the first portal, and the second right click determines the coordinate of the second portal.
-
-
-\param[in] PlayerCenter
-  Takes in a pointer to the player's center, if cursor is too far from player's center, player has to right click
-  a valid location.
-
-\param[in] player.x
-  x coordinate of the player's position
-
-\param[in] player.y
-  y coordinate of the player's position
+  update_portal checks for player input and creates a portal if the player input is valid(within a certain distance
+  from the player). If there is invalid input when creating a portal, all portals created at that point will be
+  resetted.
 *******************************************************************************************************/
 void update_portal() {
-	//check for player input, 'F' resets portal creation, player must create 2 portals again
+
+	//check for player input, key 'F' resets portal creation, player must create 2 portals again
 	if (AEInputCheckTriggered(AEVK_F)) {
-		portal_1.created = false;
-		portal_2.created = false;
-		portal_1.draw_outline = false;
+		reset_portals();
 	}
+
+	//portal cooldown
 	portal_timer += static_cast<float>(AEFrameRateControllerGetFrameTime());
-	//If player right clicked and the portal timer == 0, player can create a portal
-	//else, player must wait for portal timer to be decremented to 0 before he can create
-	//a portal
+
+	//player right click to create a portal to teleport from 
 	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer >= portal_cooldown) {
-		//if the first portal has not been created, create it, assign cursor's x and y to become
-		//the portal's x and y 
-		if (portal_1.created == false) {
-			portal_1.created = true;
-			AEInputGetCursorPosition(&(portal_1.x), &(portal_1.y));
 
-			//cursor's x is based on screen coordinates, must offset it to convert to
-			//world coordinates in the game itself
-			portal_1.x -= AEGetWindowWidth() / 2;
-			portal_1.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2);
-			
-
-			portal_1.y = AEGetWindowHeight() / 2 - portal_1.y;
-			portal_1.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2);
-			
-			
-			//set a vector to the 1st portal's center
-			AEVec2Set(&(portal_1.center), static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-
-			//if right click is too far from the player, input is invalid, player must create a portal again
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_1.center)) > portal_max_range) {
-				portal_1.created = false;
-				portal_2.created = false;
-				portal_1.draw_outline = false;
+		//if the first portal is not active, set it to be active, assign cursor's x and y to become
+		//the portal 1's x and y position
+		if (!portal_1.active) {
+			create_portal(portal_1);
+			//if portal_1 is too far from the player, input is invalid, player must create a portal again
+			if ((AEVec2Distance(&player.center, &portal_1.center)) > portal_max_range) {
+				reset_portals();
 			}
 			else {
-				//update transformation matrix of the first portal
-				AEMtx33Scale(&portal_1.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
-				AEMtx33Trans(&portal_1.matrix, static_cast<f32>(portal_1.x), static_cast<f32>(portal_1.y));
-				AEMtx33Concat(&portal_1.matrix, &portal_1.matrix, &portal_1.scale_matrix);
-				//else, player's right click input is valid, set a token to draw an outline of where the 1st portal will appear
+				//update transformation matrix of the portal 1
+				update_portal_matrices(portal_1);
+				// player's right click input is valid, draw an outline to show the player where portal 1 will appear
 				portal_1.draw_outline = TRUE;
 			}
 		}
 
-		//if first right click is valid, and there is a second right click, assign the cursor's x and y to portal_2's x and y
-		else if (portal_1.created == true) {
-			AEInputGetCursorPosition(&(portal_2.x), &(portal_2.y));
+		//if right click and portal 1 is already active, set portal 2 to be active, assign cursor's x and y to become
+		//the portal 2's x and y position
+		else if (portal_1.active) {
 
-			//offset portal_2's x
-			portal_2.x -= AEGetWindowWidth() / 2;
-			portal_2.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2);
-			
-			//offset portal_2.y by windowheight()/2
-			portal_2.y = AEGetWindowHeight() / 2 - portal_2.y;
-			portal_2.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2);
-
-			//set vector to portal_2's center
-			AEVec2Set(&(portal_2.center), static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
-			
-
-			portal_2.created = TRUE;
+			create_portal(portal_2);
 			//if right click is too far from player, reset the creation for both portals
-			if (sqrt(AEVec2SquareDistance(&player.center, &portal_2.center)) > portal_max_range) {
-				portal_1.created = false;
-				portal_2.created = false;
-				portal_1.draw_outline = false;
-			}		
+			if ((AEVec2Distance(&player.center, &portal_2.center)) > portal_max_range) {
+				reset_portals();
+			}
+
+			//portal 2 input is valid, update transformation matrices of portal 2
+			else {
+				update_portal_matrices(portal_2);
+			}
 		}
 	}
 	
-	//if portal_2.created==true, it means that portal_1 and 2 inputs are valid, both portals can now be drawn
-	if (portal_2.created == true) {
-		//stop drawing the outline for the 1st portal(which does not teleport anything) and draw both portals instead
+	//if portal 2 is active, it means that portal 1 and 2 inputs are valid
+	//check for collision between portal and game objects
+	if (portal_2.active) {
+
+		//stop drawing the outline for the 1st portal and draw both portals instead
 		portal_1.draw_outline = false;
 
-		//update the transformation matrix for 2nd portal
-		AEMtx33Scale(&portal_2.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
-		AEMtx33Trans(&portal_2.matrix, static_cast<f32>(portal_2.x), static_cast<f32>(portal_2.y));
-		AEMtx33Concat(&portal_2.matrix, &portal_2.matrix, &portal_2.scale_matrix);
+		//check if player is colliding with portal 1 or portal 2
+		check_portal_player_collision();
+		//function that checks if enemy/boss bullets are colliding with the portal and teleport bullets if there is collision
+		check_portal_bullet_collision();
 
-
-		//check if player is colliding with 1st portal, if collided, teleport player to the position of the 2nd portal
-		// stop drawing both portals and set a cooldown before the player can create portals again
-		if (AETestRectToRect(&(portal_1.center), 60.0f, 60.0f, &player.center, 50.0f, 50.0f)) {
-			player.center.x = portal_2.center.x;
-			player.center.y = portal_2.center.y;
-			portal_1.created = false;
-			portal_2.created = false;
-			//decrease_cooldown = true;
-			portal_timer = 0;
-
-			//set camera to follow player if the player teleports
-			if (player.center.x > 0) {
-				camera.x = player.center.x;
-			}
-			else {
-				camera.x = 0;
-			}
-
-			if (player.center.x < 0) {
-				camera.y = 0;
-			}
-			else {
-				camera.y = player.center.y;
-			}
-		}
-
-		//function that checks if enemy/boss bullets are colliding with the portal
-		check_bullet_collide_with_portal();
+		//function that checks if enemies are colliding with the portal
+		check_portal_enemy_collision();
 	} 
-
-	portal_teleport_enemy();
-
 }//end of update_portal
 
 
 /*!**************************************************************************************************
 \brief
   draws a circle around the player to show the player the furthest range that he can place a portal at.
-  If the player clicks a point outside of this circle, the click will be invalid and a portal will not be
-  created.
-
-\param[in] player.x
-  x coordinate of the player's position
-
-\param[in] player.y
-  y coordinate of the player's position
+  If the player clicks a point outside of this circle, the click will be invalid and all active portals
+  will be resetted to become not active
 *******************************************************************************************************/
-void portal_range() {
+void draw_portal_range() {
 	AEMtx33 portal_range_scale_mtx{};
 	AEMtx33 portal_range_mtx{};
-	//set transformation matrix of circle that shows the portals maximum range
+	//set transformation matrix to show the portal maximum range
 	AEMtx33Scale(&portal_range_scale_mtx, portal_max_range*2, portal_max_range*2);
 	AEMtx33Trans(&portal_range_mtx, player.center.x, player.center.y);
 	AEMtx33Concat(&portal_range_mtx, &portal_range_mtx, &portal_range_scale_mtx);
 
-	//draw the maximum portal range
+	//draw the maximum portal range, if the portal teleportation is on cooldown,
+	//use a different texture
 	if (portal_timer >= portal_cooldown) {
 		AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
 	}
 	else {
 		AEGfxTextureSet(portal_range_on_cooldown_picture, 0.0f, 0.0f);
 	}
+
+	//set transform and draw the maximum range
 	AEGfxSetTransform(portal_range_mtx.m);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
 //function to check if enemy/boss bullets are colliding with the portal
-void check_bullet_collide_with_portal() {
-	//if boss bullet collided with portal, teleport the bullet, destroy the portal after teleporting
+void check_portal_bullet_collision() {
+	//if boss bullet collided with portal, teleport the bullet, portal will be resetted after teleporting a bullet
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
 		bullet.isTeleported = true;
 		bullet.x = static_cast<f32>(portal_2.x);
 		bullet.y = static_cast<f32>(portal_2.y);
-		portal_1.created = false;
-		portal_2.created = false;
-		portal_1.draw_outline = false;
+		reset_portals();
 	}
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		//check if bullet_enemy2 collided with portal, teleport the bullet, destroy the portal after teleporting
+		//check if bullet_enemy2 collided with portal, teleport the bullet, portal will be resetted after teleporting a bullet
 		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
 			bullet_enemy2[i].isTeleported = true;
 			bullet_enemy2[i].x = static_cast<f32>(portal_2.x);
 			bullet_enemy2[i].y = static_cast<f32>(portal_2.y);
-			portal_1.created = false;
-			portal_2.created = false;
-			portal_1.draw_outline = false;
+			reset_portals();
 		}
 	}
 }
 
 //function to draw both portals, draw the outline of 1st portal(but cannot teleport anything), update and draw the portal maximum range
 void draw_portal() {
-	portal_range();
+	draw_portal_range();
 	//
 	if (portal_1.draw_outline == true) {
 		//to show that the outline of the 1st portal is different from the actual 1st portal, we can
@@ -305,52 +236,105 @@ void draw_portal() {
 		AEGfxSetTransparency(0.5f);
 
 		//draw the portal outline
-		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxSetTransform(portal_1.final_matrix.m);
 		AEGfxTextureSet(portal_1.picture, 0.0f, 0.0f);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
-	if (portal_2.created == true) {
+	if (portal_2.active == true) {
 		//portal_2 has been created, meaning that the portal_1 has also been created
 		//draw portal 1
-		AEGfxSetTransform(portal_1.matrix.m);
+		AEGfxSetTransform(portal_1.final_matrix.m);
 		AEGfxTextureSet(portal_1.picture, 0.0f, 0.0f);
 		AEGfxMeshDraw((square_mesh), AE_GFX_MDM_TRIANGLES);
 
 		//draw portal 2
-		AEGfxSetTransform(portal_2.matrix.m);
+		AEGfxSetTransform(portal_2.final_matrix.m);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	//print the portal cooldown to the screen
-	//std::string timer_string = "portal CD: ";
-	//AEGfxPrint(Albam_fontID, &timer_string[0],-1.0f, 0.40f, 1, 0.0f, 0.0f, 0.0f);
-	//f32 portal_cooldown_counter = 1.0f - static_cast<float>(portal_timer);
-	//std::string portal_cooldown_counter_string = std::to_string(AEClamp(portal_cooldown_counter, 0.0f, portal_cooldown_counter));
-	//AEGfxPrint(Albam_fontID, &portal_cooldown_counter_string[0], -0.40f, 0.40f, 1.0f, 0.0f, 0.0f, 0.0f);
+
 }
 
-void portal_teleport_enemy() {
+void check_portal_enemy_collision() {
 	//portal teleport enemy1
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y) && portal_2.created == true) {
-		enemy1->center.x = static_cast<f32>(portal_2.x);
-		enemy1->center.y = static_cast<f32>(portal_2.y);
-		portal_1.created = false;
-		portal_2.created = false;
-		portal_1.draw_outline = false;
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y)) {
+		teleport_object(enemy1, portal_2);
+	}
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y)) {
+		teleport_object(enemy1, portal_1);
 	}
 
 	//portal teleport enemy2
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y) && portal_2.created == true) {
-		enemy2->center.x = static_cast<f32>(portal_2.x);
-		enemy2->center.y = static_cast<f32>(portal_2.y);
-		portal_1.created = false;
-		portal_2.created = false;
-		portal_1.draw_outline = false;
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y)) {
+		teleport_object(enemy2, portal_2);
+	}
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y)) {
+		teleport_object(enemy2, portal_1);
 	}
 
 }
 
+void teleport_player(const AEVec2& portal_center) {
+	player.center.x = portal_center.x;
+	player.center.y = portal_center.y;
+
+	//decrease_cooldown = true;
+	portal_timer = 0;
+
+	//set camera to follow player if the player teleports
+	if (player.center.x > 0) {
+		camera.x = player.center.x;
+	}
+	else {
+		camera.x = 0;
+	}
+
+	if (player.center.x < 0) {
+		camera.y = 0;
+	}
+	else {
+		camera.y = player.center.y;
+	}
+	reset_portals();
+}
+
+void reset_portals() {
+	portal_1.active = false;
+	portal_2.active = false;
+	portal_1.draw_outline = false;
+}
+
+void update_portal_matrices(portal& portal) {
+	AEMtx33Scale(&portal.scale_matrix, PORTAL_WIDTH, PORTAL_HEIGHT);
+	AEMtx33Trans(&portal.translation_matrix, static_cast<f32>(portal.x), static_cast<f32>(portal.y));
+	AEMtx33Concat(&portal.final_matrix, &portal.translation_matrix, &portal.scale_matrix);
+}
+
+void create_portal(portal& portal) {
+	portal.active = true;
+	AEInputGetCursorPosition(&(portal.x), &(portal.y));
+
+	//cursor's x is based on screen coordinates, must offset it to convert to
+	//world coordinates in the game itself
+	portal.x -= AEGetWindowWidth() / 2;
+	portal.x += static_cast<s32>((AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2);
+
+	portal.y = AEGetWindowHeight() / 2 - portal.y;
+	portal.y += static_cast<s32>((AEGfxGetWinMinY() + AEGfxGetWinMaxY()) / 2);
+
+	//set a vector to the portal 1's center
+	AEVec2Set(&(portal.center), static_cast<f32>(portal.x), static_cast<f32>(portal.y));
+}
+
+void check_portal_player_collision() {
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &player.center, player.dimensions.x, player.dimensions.y)) {
+		teleport_player(portal_2.center);
+	}
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &player.center, player.dimensions.x, player.dimensions.y)) {
+		teleport_player(portal_1.center);
+	}
+}
 void portal_free() {
 
 }
@@ -359,7 +343,7 @@ void portal_unload() {
 	// Texture unload
 	AEGfxTextureUnload(portal_range_picture);
 	AEGfxTextureUnload(portal_range_on_cooldown_picture);
-	AEGfxTextureUnload(temp);
+	AEGfxTextureUnload(card_pic);
 	AEGfxTextureUnload(portal_1.picture);
 
 }

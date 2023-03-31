@@ -50,14 +50,14 @@ void enemies_load() {
 
 	// ---- Enemy1 Texture ----
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
-		enemy1[i].texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeMan_stand.png");
+		enemy1[i].texture = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
 	}
 
 	// ---- Enemy2 Texture ----
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		enemy2[i].enemy2_fly1 = AEGfxTextureLoad("Assets/bat.png");
-		enemy2[i].enemy2_fly2 = AEGfxTextureLoad("Assets/bat_fly.png");
-		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/bat_dead.png");
+		enemy2[i].enemy2_fly1 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
+		enemy2[i].enemy2_fly2 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
+		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
 	}
 	enemy2[0].bullet = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/blueGem.png");
 }
@@ -94,6 +94,7 @@ void enemies_init() {
 	enemy2_create(3800, 925, 2);
 	enemy2_create(3700, 250, 3);
 	enemy2_create(3700, 300, 4);
+	//enemy2_create(600, 50, 4); //DO NOT REMOVE, JR NEED FOR 10SEC VIDEO
 
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
@@ -181,7 +182,7 @@ void enemy1_collision() {
 					isShieldActive = FALSE;
 				}
 				else {
-					--player.Hp;
+					//--player.Hp;
 				}
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;
@@ -369,7 +370,7 @@ void enemy2_update() {
 					isShieldActive = FALSE;
 				}
 				else {
-					--player.Hp;
+					//--player.Hp;
 				}
 			}
 

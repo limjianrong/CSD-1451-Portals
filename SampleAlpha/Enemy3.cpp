@@ -26,7 +26,7 @@ extern Player_stats player;
 extern bool isPaused;
 
 void enemy3_load() {
-	enemy3 = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/wingMan3.png");
+	enemy3 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0053.png");
 
 	enemy3_warning = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 }
@@ -250,8 +250,8 @@ void enemy3_collision() {
 
 		if (damage_allowed3) {
 			// decreases 1 player hp whenever player and enemy1 collide
-			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, player.dimensions.x /10, player.dimensions.y /10)) {
-				--player.Hp;
+			if (AETestRectToRect(&enemy3_a.center, ENEMY3_WIDTH/10, ENEMY3_HEIGHT/10, &player_vec, player.dimensions.x/10, player.dimensions.y/10)) {
+				//--player.Hp;
 				// disables damage temporarily once collided
 				damage_allowed3 = FALSE;
 			}

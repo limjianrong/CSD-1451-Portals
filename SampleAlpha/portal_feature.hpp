@@ -17,15 +17,21 @@
 	  draws a portal and checks if the player has collided with the portal
 ==================================================================================*/
 #pragma once
-
-
+#include <string>
+#include <fstream>
+#include "AEEngine.h"
+#include "Utilities.hpp"
+#include "boss.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "camera.hpp"
+#include <iostream>
 struct portal {
 	
 	s32 x{}, y{};
 	AEVec2 center{};
-	AEMtx33 matrix{};
-	AEMtx33 scale_matrix{};
-	bool created{};
+	AEMtx33 scale_matrix{}, translation_matrix, final_matrix{};
+	bool active{};
 	bool draw_outline{};
 	AEGfxTexture* picture{};
 }; 
@@ -64,10 +70,22 @@ void portal_unload();
 \param[in] playery
   y coordinate of the player's position
 *******************************************************************************************************/
-void portal_range();
+void draw_portal_range();
 
 
-void check_bullet_collide_with_portal();
+void check_portal_bullet_collision();
 
 void draw_portal();
-void portal_teleport_enemy();
+void check_portal_enemy_collision();
+void teleport_player(const AEVec2& portal_center);
+void reset_portals();
+void update_portal_matrices(portal& portal);
+void create_portal(portal& portal);
+void check_portal_player_collision();
+
+template<typename T1, typename T2=portal>
+void teleport_object(T1& gameObject, T2& portal) {
+	gameObject->center.x = static_cast<f32>(portal.x);
+	gameObject->center.y = static_cast<f32>(portal.y);
+	reset_portals();
+}

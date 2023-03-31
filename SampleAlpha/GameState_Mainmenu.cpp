@@ -87,15 +87,15 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	}
 
 	// ------ Texts ------
-	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.55, 0.4, 3.0F, 1, 1, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.20, -0.05, 1.0f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.14, -0.3, 1.0f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.14, -0.56, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.18, -0.83, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.45, 0.0, 3.0F, 1, 1, 0);
+	//AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.20, -0.05, 1.0f, 1, 1, 1);
+	//AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.14, -0.3, 1.0f, 1, 1, 1);
+	//AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.14, -0.56, 0.95F, 1, 1, 1);
+	//AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.18, -0.83, 0.95F, 1, 1, 1);
 }
 void GameStateMainmenuFree() {
 	
