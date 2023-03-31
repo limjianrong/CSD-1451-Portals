@@ -48,7 +48,7 @@
     <ClCompile Include="GameState_Mainmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameState_Settings.cpp">
+    <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="boss.cpp">
@@ -113,7 +113,7 @@
     <ClInclude Include="GameState_Mainmenu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameState_Settings.hpp">
+    <ClInclude Include="Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="boss.hpp">

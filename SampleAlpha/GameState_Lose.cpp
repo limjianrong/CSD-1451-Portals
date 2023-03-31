@@ -2,7 +2,7 @@
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "Utilities.hpp"
-#include "GameState_Settings.hpp"
+#include "Settings.hpp"
 #include "GameState_Lose.hpp"
 #include "GameState_Mainmenu.hpp"
 
@@ -78,9 +78,9 @@ void GameStateLoseDraw() {
 	}
 
 	// ------ Texts ------
-	AEGfxPrint(Albam_fontID, (s8*)"YOU LOSE", -0.65, 0.4, 3.0F, 1, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"Restart", -0.17, -0.05, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Main Menu", -0.21, -0.3, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"YOU LOSE", -0.65f, 0.4f, 3.0F, 1.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Restart", -0.17f, -0.05f, 0.95F, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Main Menu", -0.21f, -0.3f, 0.95F, 1.0f, 1.0f, 1.0f);
 }
 
 void GameStateLoseFree() {

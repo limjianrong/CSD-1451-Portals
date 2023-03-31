@@ -20,6 +20,8 @@
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
 #include "GameState_Mainmenu.hpp"
+#include "Settings.hpp"
+
 #include "GameState_Win.hpp"
 #include "GameState_Lose.hpp"
 #include "GameState_Tutorial.hpp"

@@ -136,20 +136,20 @@ void GameStateTutorialDraw(void) {
 	// ------ Texts ------
 
 	// ----- Buttons -----
-	AEGfxPrint(Albam_fontID, (s8*)"Main Menu", -0.7, -0.83, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Next", 0.39, -0.83, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Main Menu", -0.7f, -0.83f, 0.95F, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Next", 0.39f, -0.83f, 0.95F, 1.0f, 1.0f, 1.0f);
 	
 	// ----- Player -----
-	AEGfxPrint(Albam_fontID, (s8*)"A for left", -0.8, 0.43, 0.75F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"D for right", -0.81, 0.28, 0.75F, 0, 0, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"A for left", -0.8f, 0.43f, 0.75f, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"D for right", -0.81f, 0.28f, 0.75f, 0.0f, 0.0f, 0.0f);
 
 	// ----- Portal -----
-	AEGfxPrint(Albam_fontID, (s8*)"Mouse right-click", -0.25, 0.43, 0.75F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"to create portals", -0.28, 0.28, 0.75F, 0, 0, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"Mouse right-click", -0.25f, 0.43f, 0.75F, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"to create portals", -0.28f, 0.28f, 0.75F, 0.0f, 0.0f, 0.0f);
 
 	// ----- Portal Range -----
-	AEGfxPrint(Albam_fontID, (s8*)"Portal creation", 0.43, 0.43, 0.75F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"range", 0.55, 0.28, 0.75F, 0, 0, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"Portal creation", 0.43f, 0.43f, 0.75F, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"range", 0.55f, 0.28f, 0.75F, 0.0f, 0.0f, 0.0f);
 
 	// ----- Enemy 1 -----
 	AEGfxPrint(Albam_fontID, (s8*)"Avoid contact with", -0.67, -0.25, 0.75F, 0, 0, 0);

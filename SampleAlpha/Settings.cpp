@@ -2,7 +2,7 @@
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "Utilities.hpp"
-#include "GameState_Settings.hpp"
+#include "Settings.hpp"
 
 
 // --- Mesh ---
