@@ -83,9 +83,22 @@ void update_portal_matrices(portal& portal);
 void create_portal(portal& portal);
 void check_portal_player_collision();
 
+
+//function template used for objects that are inherited
 template<typename T1, typename T2=portal>
-void teleport_object(T1& gameObject, T2& portal) {
+void teleport_inherited_object(T1& gameObject, T2& portal) {
 	gameObject->center.x = static_cast<f32>(portal.x);
 	gameObject->center.y = static_cast<f32>(portal.y);
 	reset_portals();
 }
+
+//function template used for non-inherited objects
+template<typename T1, typename T2=portal>
+void teleport_object(T1& gameObject, T2& portal) {
+	gameObject.center.x = static_cast<f32>(portal.x);
+	gameObject.center.y = static_cast<f32>(portal.y);
+	reset_portals();
+}
+
+
+

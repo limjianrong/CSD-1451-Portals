@@ -55,9 +55,9 @@ void enemies_load() {
 
 	// ---- Enemy2 Texture ----
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		enemy2[i].enemy2_fly1 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
-		enemy2[i].enemy2_fly2 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
-		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
+		enemy2[i].enemy2_fly1 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0051.png");
+		enemy2[i].enemy2_fly2 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0051.png");
+		enemy2[i].enemy2_dead = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0051.png");
 	}
 	enemy2[0].bullet = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/blueGem.png");
 }

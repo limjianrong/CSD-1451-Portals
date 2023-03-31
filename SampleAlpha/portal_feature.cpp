@@ -211,17 +211,24 @@ void check_portal_bullet_collision() {
 	//if boss bullet collided with portal, teleport the bullet, portal will be resetted after teleporting a bullet
 	if (AETestRectToRect(&portal_1.center,PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center,bullet.width, bullet.height)) {
 		bullet.isTeleported = true;
-		bullet.x = static_cast<f32>(portal_2.x);
-		bullet.y = static_cast<f32>(portal_2.y);
-		reset_portals();
+		teleport_object(bullet, portal_2);
+	}
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)) {
+		bullet.isTeleported = true;
+		teleport_object(bullet, portal_1);
 	}
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		//check if bullet_enemy2 collided with portal, teleport the bullet, portal will be resetted after teleporting a bullet
 		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
 			bullet_enemy2[i].isTeleported = true;
-			bullet_enemy2[i].x = static_cast<f32>(portal_2.x);
-			bullet_enemy2[i].y = static_cast<f32>(portal_2.y);
-			reset_portals();
+			//bullet_enemy2[i].x = static_cast<f32>(portal_2.x);
+			//bullet_enemy2[i].y = static_cast<f32>(portal_2.y);
+			//reset_portals();
+			teleport_object(bullet_enemy2[i], portal_2);
+		}
+		else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
+			bullet_enemy2[i].isTeleported = true;
+			teleport_object(bullet_enemy2[i], portal_1);
 		}
 	}
 }
@@ -230,7 +237,7 @@ void check_portal_bullet_collision() {
 void draw_portal() {
 	draw_portal_range();
 	//
-	if (portal_1.draw_outline == true) {
+	if (portal_1.draw_outline) {
 		//to show that the outline of the 1st portal is different from the actual 1st portal, we can
 		//draw the outline to be more transparent than the actual portal
 		AEGfxSetTransparency(0.5f);
@@ -241,7 +248,7 @@ void draw_portal() {
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(1.0f);
 	}
-	if (portal_2.active == true) {
+	if (portal_2.active) {
 		//portal_2 has been created, meaning that the portal_1 has also been created
 		//draw portal 1
 		AEGfxSetTransform(portal_1.final_matrix.m);
@@ -259,18 +266,18 @@ void draw_portal() {
 void check_portal_enemy_collision() {
 	//portal teleport enemy1
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y)) {
-		teleport_object(enemy1, portal_2);
+		teleport_inherited_object(enemy1, portal_2);
 	}
 	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1->center, enemy1->dimensions.x, enemy1->dimensions.y)) {
-		teleport_object(enemy1, portal_1);
+		teleport_inherited_object(enemy1, portal_1);
 	}
 
 	//portal teleport enemy2
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y)) {
-		teleport_object(enemy2, portal_2);
+		teleport_inherited_object(enemy2, portal_2);
 	}
 	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2->center, enemy2->dimensions.x, enemy2->dimensions.y)) {
-		teleport_object(enemy2, portal_1);
+		teleport_inherited_object(enemy2, portal_1);
 	}
 
 }
