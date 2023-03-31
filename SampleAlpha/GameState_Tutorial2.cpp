@@ -32,7 +32,7 @@ void GameStateTutorial2Load(void) {
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	// background
-	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
 	// enemy 3
 	assets[enemy3] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/wingMan3.png");
 	// enemy 3 warning symbol

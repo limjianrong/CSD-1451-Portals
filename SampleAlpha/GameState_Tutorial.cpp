@@ -31,7 +31,7 @@ void GameStateTutorialLoad(void) {
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	// background
-	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
 	// player
 	assets[_player] = AEGfxTextureLoad("Assets/jumperpack/PNG/Players/bunny1_stand.png");
 	// portals
