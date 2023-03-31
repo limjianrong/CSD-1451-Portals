@@ -107,8 +107,8 @@ void enemies_init() {
 		enemy2[i].Max_Hp = 5;						// Enemy2's Max Health
 		enemy2[i].status = TRUE;					// TRUE for alive, FALSE for dead
 		// ---- Bullet ----
-		bullet_enemy2[i].x = enemy2[i].center.x;	// Bullet x position
-		bullet_enemy2[i].y = enemy2[i].center.y;	// Bullet y position
+		bullet_enemy2[i].center.x = enemy2[i].center.x;	// Bullet x position
+		bullet_enemy2[i].center.y = enemy2[i].center.y;	// Bullet y position
 		bullet_enemy2[i].width = 20.0f;				// Bullet width
 		bullet_enemy2[i].height = 20.0f;			// Bullet height
 		bullet_enemy2[i].speed = 5.0f;				// Bullet speed
@@ -274,7 +274,7 @@ void enemy2_draw() {
 
 			// ------  Enemy2 bullets ------
 			// If player is within range & left of enemy2
-			if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x) && bullet_enemy2[i].x < enemy2[i].center.x) {
+			if (bullet_enemy2[i].center.x >= (enemy2[i].center.x - enemy2[i].range_x) && bullet_enemy2[i].center.x < enemy2[i].center.x) {
 				AEGfxTextureSet(enemy2[0].bullet, 0, 0);
 				drawMesh(AEVec2{ bullet_enemy2[i].width, bullet_enemy2[i].height }, bullet_enemy2[i].center, PI);
 			}
@@ -312,13 +312,13 @@ void enemy2_update() {
 				// If timer is over
 				if (bullet_enemy2[i].isTimerActive == FALSE) {
 					// ----- Movement of bullet from enemy2 -----
-					if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x)) {
-						bullet_enemy2[i].x -= 5;
+					if (bullet_enemy2[i].center.x >= (enemy2[i].center.x - enemy2[i].range_x)) {
+						bullet_enemy2[i].center.x -= 5;
 					}
 					else {
 						// --- Resets bullet ---
-						bullet_enemy2[i].x = enemy2[i].center.x;
-						bullet_enemy2[i].y = enemy2[i].center.y;
+						bullet_enemy2[i].center.x = enemy2[i].center.x;
+						bullet_enemy2[i].center.y = enemy2[i].center.y;
 						bullet_enemy2[i].isTeleported = FALSE;
 
 						// If player x within 100 units of enemy2
@@ -333,8 +333,8 @@ void enemy2_update() {
 				if (bullet_enemy2[i].isShooting) {
 
 					// ----- Movement of bullet from enemy2 -----
-					if (bullet_enemy2[i].x >= (enemy2[i].center.x - enemy2[i].range_x)) {
-						bullet_enemy2[i].x -= 5;
+					if (bullet_enemy2[i].center.x >= (enemy2[i].center.x - enemy2[i].range_x)) {
+						bullet_enemy2[i].center.x -= 5;
 					}
 					else {
 						// --- Disable shooting ---
@@ -346,17 +346,17 @@ void enemy2_update() {
 					bullet_enemy2[i].isShooting = FALSE;
 
 					// --- Resets bullet ---
-					bullet_enemy2[i].x = enemy2[i].center.x;
-					bullet_enemy2[i].y = enemy2[i].center.y;
+					bullet_enemy2[i].center.x = enemy2[i].center.x;
+					bullet_enemy2[i].center.y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
 
 				}
 			}
 			// ----- Bullet collision with player -----
-			AEVec2Set(&bullet_enemy2[i].center, bullet_enemy2[i].x, bullet_enemy2[i].y);
+			AEVec2Set(&bullet_enemy2[i].center, bullet_enemy2[i].center.x, bullet_enemy2[i].center.y);
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.dimensions.x, player.dimensions.y)) {
-				bullet_enemy2[i].x = enemy2[i].center.x;			// Reset bullet x
-				bullet_enemy2[i].y = enemy2[i].center.y;			// Reset bullet y
+				bullet_enemy2[i].center.x = enemy2[i].center.x;			// Reset bullet x
+				bullet_enemy2[i].center.y = enemy2[i].center.y;			// Reset bullet y
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 
@@ -376,8 +376,8 @@ void enemy2_update() {
 
 			// ----- Bullet collision with enemy2 -----
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y) && bullet_enemy2[i].isTeleported) {
-				bullet_enemy2[i].x = enemy2[i].center.x;
-				bullet_enemy2[i].y = enemy2[i].center.y;
+				bullet_enemy2[i].center.x = enemy2[i].center.x;
+				bullet_enemy2[i].center.y = enemy2[i].center.y;
 				bullet_enemy2[i].isTeleported = FALSE;
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
@@ -387,8 +387,8 @@ void enemy2_update() {
 			// ----- Bullet collision with enemy1 -----
 			for (s32 j = 0; j < MAX_ENEMIES_1; ++j) {
 				if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy1[j].center, enemy1[j].dimensions.x, enemy1[j].dimensions.y) && enemy1[j].status) {
-					bullet_enemy2[i].x = enemy2[i].center.x;
-					bullet_enemy2[i].y = enemy2[i].center.y;
+					bullet_enemy2[i].center.x = enemy2[i].center.x;
+					bullet_enemy2[i].center.y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
 					bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 

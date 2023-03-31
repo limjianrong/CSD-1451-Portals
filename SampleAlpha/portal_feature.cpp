@@ -336,14 +336,14 @@ void check_portal_enemy_collision() {
 	//portal teleport enemy2, iterate through array of enemy2
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		//enemy2 collide with portal 1
-		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
-			teleport_object(enemy2[i], portal_2);
-		}
+		//if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
+		//	teleport_object(enemy2[i], portal_2);
+		//}
 
-		//enemy2 collide with portal 2
-		else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
-			teleport_object(enemy2[i], portal_1);
-		}
+		////enemy2 collide with portal 2
+		//else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
+		//	teleport_object(enemy2[i], portal_1);
+		//}
 	}
 }
 
