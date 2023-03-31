@@ -12,13 +12,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #pragma once
 #include "Utilities.hpp"
 
+#define FIXED_MOVEMENT 5
+
 void player_load();
 void player_init();
 void player_draw();
 void player_update();
 void player_unload();
 
-
+void Render_Lives(s32 currLife, f32 offsetX);
 void respawn_player();
 void player_collision();
 
@@ -41,9 +43,11 @@ struct Player_stats : GameObjects {
 
 	AEVec2 bottom_hotspot;
 	// ----- Transformation & Texture -----
-	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* player_right1Tex, * player_right2Tex, * player_left1Tex, * player_left2Tex, * player_standTex;
 	AEGfxTexture* fullLivesTex, * emptyLivesTex;
+
+	// ----- Audio -----
+	AEAudio walkAudio, levelUpAudio;
 };
 
 // --------------  Checkpoints  ----------------
@@ -54,6 +58,9 @@ struct Checkpoint {
 	// ----- Transformation & Texture -----
 	AEMtx33 scale, rotate, translate, transform;
 	AEGfxTexture* checkpointTex;
+
+	// ----- Audio -----
+	AEAudio checkpointAudio;
 };
 #define NUM_OF_CHECKPOINT 5
 void checkpoint_create(f32 x, f32 y, s32 index);

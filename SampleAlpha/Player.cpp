@@ -21,7 +21,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <string>
 #include <fstream>
 #include "camera.hpp"
-#include "Audio.hpp"
+//#include "Audio.hpp"
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
@@ -40,6 +40,8 @@ s8* lives_counter; // temp counter (Replacing with hearts?)
 s8* level, * XP, * Hp;
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
+// --- Audio ---
+extern AEAudioGroup soundGroup;
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
@@ -100,8 +102,12 @@ void player_load() {
 
 	player_ifs.close();
 
+	// ----- Audio -----
+	checkpoint[0].checkpointAudio = AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
 
-	audio_load();
+	player.walkAudio = AEAudioLoadSound("Assets/AUDIO/Player walk.flac");
+	player.levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player levelup.wav");
+
 }
 
 void player_init() {
@@ -139,17 +145,6 @@ void player_draw() {
 
 	
 	// ---------------- Player ----------------
-	// Creates a player size 50x50
-	AEMtx33Scale(&player.scale, player.dimensions.x, player.dimensions.y);
-	// Rotate player
-	AEMtx33Rot(&player.rotate, PI);
-	// Move player when A / D keys pressed
-	AEMtx33Trans(&player.translate, player.center.x, player.center.y);
-	// Concat the matrices (TRS)
-	AEMtx33Concat(&player.transform, &player.rotate, &player.scale);
-	AEMtx33Concat(&player.transform, &player.translate, &player.transform);
-	// Choose the transform to use
-	AEGfxSetTransform(player.transform.m);
 	if (AEInputCheckCurr(AEVK_D)) {
 		if ((num_of_Dpressed % 9) <= 4) AEGfxTextureSet(player.player_left1Tex, 0, 0);
 		else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player.player_left2Tex, 0, 0);
@@ -159,7 +154,7 @@ void player_draw() {
 		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
 	} 
 	else AEGfxTextureSet(player.player_standTex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(player.dimensions, player.center, PI);
 
 	// -------------- Checkpoint --------------
 	checkpoint_create(1000, 450, 0);// y+100
@@ -169,26 +164,9 @@ void player_draw() {
 	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Printing out no. of lives --------
-	// --- 1st Life ---
-	if (player.Lives >= 1)
-		AEGfxTextureSet(player.fullLivesTex, 0, 0);
-	else
-		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 30.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
-
-	// --- 2nd Life ---
-	if (player.Lives >= 2)
-		AEGfxTextureSet(player.fullLivesTex, 0, 0);
-	else
-		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 90.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
-
-	// --- 3rd Life ---
-	if (player.Lives >= 3)
-		AEGfxTextureSet(player.fullLivesTex, 0, 0);
-	else
-		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + 150.0f, AEGfxGetWinMaxY() - 25.0f }, PI);
+	Render_Lives(1, 30.f);		// 1st life
+	Render_Lives(2, 90.f);		// 2nd life
+	Render_Lives(3, 150.f);		// 3rd life
 
 
 	// -------- Drawing out HP bar ----------
@@ -231,12 +209,9 @@ void player_draw() {
 	}*/
 }
 
-
-
 void player_update() {
 
-	// --------  Setting player's position into a vector --------
-	AEVec2Set(&player.center, player.center.x, player.center.y);
+	// TEMP
 	if (AEInputCheckCurr(AEVK_J)) {
 		player.Max_Hp = 10;						// Player's Maximum Health
 		player.Hp = player.Max_Hp;			// Player's Health
@@ -245,13 +220,13 @@ void player_update() {
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {
-		player.center.x += 5 * player.Speed;
+		player.center.x += FIXED_MOVEMENT * player.Speed;
 		num_of_Dpressed++;
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
-		player.center.x -= 5 * player.Speed;
+		player.center.x -= FIXED_MOVEMENT * player.Speed;
 		num_of_Apressed++;
 	}
 
@@ -262,7 +237,6 @@ void player_update() {
 		player.Level++;
 		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
-		//audio_update();
 	}
 	// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
 	else if (player.XP == player.XP_TILL_20 && player.Level >= 10 && player.Level <= 20) {
@@ -324,6 +298,15 @@ void player_unload() {
 	AEGfxTextureUnload(player.fullLivesTex);
 	AEGfxTextureUnload(player.emptyLivesTex);
 
+}
+
+void Render_Lives(s32 currLife, f32 offsetX) {
+	// --- 1st Life ---
+	if (player.Lives >= currLife)
+		AEGfxTextureSet(player.fullLivesTex, 0, 0);
+	else
+		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + offsetX, AEGfxGetWinMaxY() - 25.0f }, PI);
 }
 
 void player_collision() {

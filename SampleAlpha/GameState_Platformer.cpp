@@ -60,6 +60,9 @@ extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 // ----- Camera -----
 extern Camera camera;
 
+// ----- Audio -----
+//AEAudioGroup soundGroup;
+
 /*!**************************************************************************************************
 \brief
   In charge of loading platformer game
@@ -111,6 +114,8 @@ void GameStatePlatformerInit(void) {
 void GameStatePlatformerUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
+	AEAudioUpdate();	 // Updates AEAudio module
+	//soundGroup = AEAudioCreateGroup();
 
 	if (isPaused) {
 

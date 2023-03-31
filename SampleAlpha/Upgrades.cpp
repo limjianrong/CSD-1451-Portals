@@ -132,7 +132,15 @@ void upgrade_update() {
 	AEVec2Set(&middle_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 	AEVec2Set(&right_card_center,	AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
-
+	//std::cout << player.justLeveledUp << std::endl;
+	/*bool temp = FALSE;
+	if (AEInputCheckReleased(AEVK_LBUTTON)) {
+		temp = TRUE;
+	}
+	if (temp) {
+		AEAudioPlay(player.levelUpAudio, soundGroup, 1.f, 1.f, 0);
+		temp = FALSE;
+	}*/
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
 		player.justLeveledUp = FALSE;		// Reset bool

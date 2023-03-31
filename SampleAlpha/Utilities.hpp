@@ -21,6 +21,7 @@
 #define WINDOWLENGTH_Y 730
 
 //#define DEBUG		// DEBUG unit testing (Uncomment to debug)
+extern AEAudioGroup soundGroup;
 
 struct GameObjects {
 
@@ -32,6 +33,7 @@ struct GameObjects {
 	// --- Rendering ---
 	void RenderObject();
 	void Render_HealthBar();
+
 };
 
 AEGfxVertexList* create_Square_Mesh();

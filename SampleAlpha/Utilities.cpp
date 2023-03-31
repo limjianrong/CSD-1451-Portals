@@ -25,6 +25,7 @@ AEVec2 world_center_cursor;		// Origin is CENTER of window
 // --- Window ---
 AEVec2 origin;					// Center of screen, no matter where the camera moves
 //f32 originX, originY;			// Center of screen, no matter where the camera moves
+AEAudioGroup soundGroup;
 
 /*!**************************************************************************************************
 \brief
@@ -96,6 +97,8 @@ void variables_update() {
 
 	origin.x = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
 	origin.y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
+
+	soundGroup = AEAudioCreateGroup();
 }
 
 void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
