@@ -20,7 +20,6 @@
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"
 #include "GameState_Mainmenu.hpp"
-#include "GameState_Settings.hpp"
 #include "GameState_Win.hpp"
 #include "GameState_Lose.hpp"
 #include "GameState_Tutorial.hpp"
@@ -90,14 +89,6 @@ void GameStateMgrUpdate()
 			GameStateDraw = GameStatePlatformerDraw;
 			GameStateFree = GameStatePlatformerFree;
 			GameStateUnload = GameStatePlatformerUnload;
-			break;
-		case GS_Settings: // Settings Menu
-			GameStateLoad = GameStateSettingsLoad;
-			GameStateInit = GameStateSettingsInit;
-			GameStateUpdate = GameStateSettingsUpdate;
-			GameStateDraw = GameStateSettingsDraw;
-			GameStateFree = GameStateSettingsFree;
-			GameStateUnload = GameStateSettingsUnload;
 			break;
 		case GS_Win:
 			GameStateLoad = GameStateWinLoad;

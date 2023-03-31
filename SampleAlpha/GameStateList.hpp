@@ -23,7 +23,6 @@ enum
 	// list of all game states 
 	GS_MainMenu = 0,
 	GS_Platformer,
-	GS_Settings,
 	GS_Tutorial,
 	GS_Tutorial2,
 	GS_Win,

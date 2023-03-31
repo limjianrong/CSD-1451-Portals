@@ -33,6 +33,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // ----- Others -----
 #include "Utilities.hpp"
 #include "draw_level.hpp"
+#include "GameState_Settings.hpp"
 
 
 //#include <iostream>
@@ -49,6 +50,7 @@ extern Player_stats player;		// player stats
 
 // ----- Game states -----
 bool isPaused;
+bool isSettings{ FALSE };
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
@@ -90,7 +92,7 @@ void GameStatePlatformerLoad(void) {
 	portal_load();				// Portal
 	upgrades_load();			// Upgrades
 	player_load();				// Player
-	
+	GameStateSettingsLoad();
 }
 /*!**************************************************************************************************
 \brief
@@ -106,9 +108,8 @@ void GameStatePlatformerInit(void) {
 	portal_init();				// Portal
 	upgrades_init();			// Upgrades
 	camera_init();				//camera, must be initialized after portal_init as some values from
-							//portal_init are used
-	
-	
+								//portal_init are used
+	GameStateSettingsInit();
 }
 /*!**************************************************************************************************
 \brief
@@ -120,7 +121,7 @@ void GameStatePlatformerUpdate(void) {
 	AEAudioUpdate();	 // Updates AEAudio module
 	//soundGroup = AEAudioCreateGroup();
 
-	if (isPaused) {
+	if (isPaused && (isSettings == FALSE)) {
 
 		// --------- Collision ---------
 		for (s32 i = 9; i <= 15; i += 2) {
@@ -135,8 +136,9 @@ void GameStatePlatformerUpdate(void) {
 					gGameStateNext = GS_RESTART;	// Restart button
 				}
 				else if (i == 13) {
-					gGameStateNext = GS_Settings;	// Settings button
-					isPaused = FALSE;				// Resume game
+					//GameStateSettingsUpdate();	// Settings button
+					//isPaused = FALSE;				// Resume game
+					isSettings = TRUE;
 				}
 				else if (i == 15) {
 					gGameStateNext = GS_MainMenu;	// Main menu button
@@ -144,6 +146,8 @@ void GameStatePlatformerUpdate(void) {
 				}
 			}
 		}
+
+	
 	}
 
 	else {
@@ -248,6 +252,17 @@ void GameStatePlatformerDraw(void) {
 		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.12f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.13f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.155f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+
+		if (isSettings == TRUE) {
+			GameStateSettingsDraw();
+			GameStateSettingsUpdate();
+			if (AEInputCheckReleased(AEVK_LBUTTON) &&
+				center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
+				isSettings = FALSE;
+			}
+		}
 	}
 	AEGfxSetCamPosition(camera.x, camera.y);
 
@@ -272,6 +287,7 @@ void GameStatePlatformerUnload(void) {
 	portal_unload();			// Portal
 	upgrades_unload();			// Upgrades
 	player_unload();			// Player
+	GameStateSettingsUnload();
 
 
 	// Texture unload

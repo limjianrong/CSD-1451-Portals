@@ -1,5 +1,6 @@
 #include "AEEngine.h"
 #include "GameState_Mainmenu.hpp"
+#include "GameState_Settings.hpp"
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
@@ -23,6 +24,9 @@ extern AEVec2 world_center_cursor;  // Origin is CENTER of window
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
 extern AEVec2 origin; // origin (0,0) is in middle of screen, no matter where the camera moves
 
+// Settings Menu 
+bool is_Settings{ FALSE }; // if TRUE, screen is currently showing settings menu
+
 void GameStateMainmenuLoad(void) {
 	// Texture load
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
@@ -30,27 +34,34 @@ void GameStateMainmenuLoad(void) {
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
 	
 	mesh_load();
+
+	GameStateSettingsLoad();
 	
 }
 
 void GameStateMainmenuInit(void) {
-	
+	GameStateSettingsInit();
 
 }
 
 void GameStateMainmenuUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
-	
-	for (s32 i = 15; i <= 27; i += 4) {
-		if (AEInputCheckReleased(AEVK_LBUTTON) &&
-			center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
-			center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
-			center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16) {
-			if (i == 15) gGameStateNext = GS_Platformer;
-			else if (i == 19) gGameStateNext = GS_Tutorial;
-			else if (i == 23) gGameStateNext = GS_Settings;
-			else if (i == 27) gGameStateNext = GS_QUIT;
+	if (is_Settings == FALSE) // Settings menu buttons & Main Menu buttons located
+								// in same location, so collision should carry out main menu functions when is_Settings disabled
+								// and settings functions when is_Settings enabled
+	{
+		for (s32 i = 15; i <= 27; i += 4) {
+			if (AEInputCheckReleased(AEVK_LBUTTON) &&
+				center_cursor.x >= -WINDOWLENGTH_X / 6 && center_cursor.x <= WINDOWLENGTH_X / 6 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i - WINDOWLENGTH_Y / 16 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 30 * i + WINDOWLENGTH_Y / 16) {
+				if (i == 15) gGameStateNext = GS_Platformer;
+				else if (i == 19) gGameStateNext = GS_Tutorial;
+				else if (i == 23) is_Settings = TRUE;
+				else if (i == 27) gGameStateNext = GS_QUIT;	
+
+			}
 		}
 	}
 
@@ -96,13 +107,24 @@ void GameStateMainmenuDraw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.14, -0.3, 1.0f, 1, 1, 1);
 	AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.14, -0.56, 0.95F, 1, 1, 1);
 	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.18, -0.83, 0.95F, 1, 1, 1);
+
+	if (is_Settings == TRUE) {
+		GameStateSettingsDraw();
+		GameStateSettingsUpdate();
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
+			center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
+			center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
+			is_Settings = FALSE;
+		}
+	}
 }
 void GameStateMainmenuFree() {
 	
 }
 
 void GameStateMainmenuUnload(void) {
-
+	GameStateSettingsUnload();
 	
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);

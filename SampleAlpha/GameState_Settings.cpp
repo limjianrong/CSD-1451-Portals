@@ -15,6 +15,7 @@ extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
 extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
+extern bool isSettings;
 
 // --- Settings variables ---
 bool fullscreen = { false }; 
@@ -65,7 +66,7 @@ void GameStateSettingsUpdate(void) {
 
 		AESysToggleFullScreen(fullscreen);
 	}
-
+	/*
 	// if prev game state was main menu, return to main menu
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
 		center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
@@ -74,14 +75,15 @@ void GameStateSettingsUpdate(void) {
 		gGameStatePrev == GS_MainMenu) {
 		gGameStateNext = GS_MainMenu;
 	}
-
+	*/
 	// if prev game state was game level, return to game level
 	if (AEInputCheckReleased(AEVK_LBUTTON) &&
 		center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
 		center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 - WINDOWLENGTH_Y / 16.f &&
-		center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 + WINDOWLENGTH_Y / 16.f &&
-		gGameStatePrev == GS_Platformer) {
-		gGameStateNext = GS_Platformer;
+		center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 19 + WINDOWLENGTH_Y / 16.f) {
+		//isSettings = FALSE; 
+		//gGameStateNext = GS_Platformer;
+		//GameStateSettingsUnload();
 	}
 
 	// if cursor held down onto and released from volume bar, new volume button located at cursor x location upon release
@@ -113,7 +115,7 @@ void GameStateSettingsDraw(void) {
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 	// ------- Drawing of mesh + Setting texture -------
-	for (int i = 15; i <= 19; i += 4) {
+	for (int i = 15; i <= 27; i += 12) {
 		AEMtx33Scale(&scale, WINDOWLENGTH_X / 3.f, WINDOWLENGTH_Y / 8.f); // scale of button
 		AEMtx33Trans(&translate, origin.x, origin.y + WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * i); // x = screen center, start counting y from bottom of screen
 		AEMtx33Rot(&rotate, PI); // rotation
@@ -173,8 +175,8 @@ void GameStateSettingsUnload(void) {
 	AEGfxTextureUnload(volume_button);
 
 	// Mesh free
-	AEGfxMeshFree(square_mesh);
+	//AEGfxMeshFree(square_mesh);
 
 	// Informing the system about the loop's end
-	AESysFrameEnd();
+	//AESysFrameEnd();
 }
