@@ -173,43 +173,23 @@ void boss_unload() {
 	AEGfxTextureUnload(laser_beam.warning_pic);
 }
 
+//function for boss to move up and down
 void boss_movement() {
 
 	//boss movement up, boss movement will be relative to the player's y position
 	if (boss.direction == UP) {
 
 		boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
-		//player y > 0, check if boss has reached the top of the screen
-		if (player.center.y >= 0) {
-			if (boss.y_pos + (boss.height / 2) - (player.center.y) > static_cast<f32>(AEGetWindowHeight() / 2)) {
-				boss.direction = DOWN;
-			}
-		}
-
-		//another case where player y <0, if boss has reached the top of the screen, change direction
-		else if (player.center.y < 0) {
-			if (boss.y_pos + (boss.height / 2) > static_cast<f32>(AEGetWindowHeight() / 2)) {
-				boss.direction = DOWN;
-			}
+		if (boss.y_pos + (boss.height) / 2 >= AEGfxGetWinMaxY()) {
+			boss.direction = DOWN;
 		}
 	}
 
 	//boss movement down, also relative to player's y position
 	if (boss.direction == DOWN) {
 		boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
-
-		//player y > 0, check if boss has reached the bottom of the screen
-		if (player.center.y >= 0) {
-			if (boss.y_pos - (boss.height / 2) - (player.center.y) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
-				boss.direction = UP;
-			}
-		}
-
-		//player y < 0, check if boss has reached the bottom of the screen
-		else if (player.center.y < 0) {
-			if (boss.y_pos - (boss.height / 2) < static_cast<f32>(-AEGetWindowHeight() / 2)) {
-				boss.direction = UP;
-			}
+		if (boss.y_pos - (boss.height) / 2 <= AEGfxGetWinMinY()) {
+			boss.direction = UP;
 		}
 	}
 	//set a vector to the boss center
@@ -220,7 +200,7 @@ void boss_movement() {
 void boss_movement_teleport() {
 	if (boss.Hp <= 3) {
 		//increment time elapsed
-		boss_teleport.time_elapsed += AEFrameRateControllerGetFrameTime();
+		boss_teleport.time_elapsed += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
 		//if time elapsed >= teleport cooldown and boss is not charging towards player
 		if (boss_teleport.time_elapsed >= boss_teleport.cooldown && boss_charge.active == false) {

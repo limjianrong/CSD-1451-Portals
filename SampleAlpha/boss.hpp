@@ -104,11 +104,13 @@ struct Boss_charge {
 	//the previous charge attack
 	f32 cooldown{}, range{}, velocity{}, time_elapsed{};
 
-	//direction of the boss prior to its charge attack
-	s32 previous_direction{};
-
 	//distance travelled by boss during charge attack
 	f32 distance_travelled{}, direction_magnitude{};
+
+	//direction of the boss prior to its charge attack
+	
+	s32 previous_direction{};
+
 
 	//original position when boss first starts the charge attack
 	AEVec2 original_position{};
@@ -131,11 +133,23 @@ struct Boss_teleport {
 	AEVec2 location{};
 };
 // ---- Main Functions ----
+
+//loads the assets used by the boss
 void boss_load();
+
+//initializes some variables used by the boss
 void boss_init();
+
+//draws the boss
 void boss_draw();
+
+//updates boss movement and boss attacks
 void boss_update();
+
+//frees any objects related to the boss
 void boss_free();
+
+//unloads assets used by the boss
 void boss_unload();
 
 //boss movement
@@ -161,5 +175,3 @@ void draw_laser_beam_warning();
 
 //draws the boss bullets
 void bullet_draw();
-
-
