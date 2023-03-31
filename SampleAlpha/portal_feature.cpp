@@ -283,8 +283,8 @@ void teleport_player(const AEVec2& portal) {
 	camera.y = player.center.y;
 	
 	//lowest value of camera x and y is 0
-	camera.x = AEClamp(camera.x, 0, INT_MAX);
-	camera.y = AEClamp(camera.y, 0, INT_MAX);
+	camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
+	camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 }
 
 //function to check if enemy/boss bullets are colliding with the portal

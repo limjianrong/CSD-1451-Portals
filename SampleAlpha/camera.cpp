@@ -1,11 +1,25 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					camera.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lim Jian Rong (jianrong.lim@digipen.edu)
+* Secondary Authors:	-
+*
+* Brief:
+  This source file implements the functions used for updating the position of the camera
+  that is used to follow the player, as well as for the free moving camera mode.
+==================================================================================*/
+
 #include "camera.hpp"
 #include "Player.hpp"
 
-
-extern float portal_max_range; //maximum range that a player can teleport
+extern float portal_max_range; //maximum range that a player can place a portal
 extern float moveSpeed; //for camera to follow player when player is on platform
 extern Player_stats player;
 Camera camera;
+
+//initializes the position of the camera and its mode, as well as its buffer range
 void camera_init() {
 	// -------- Camera --------
 	camera.x = 0;
@@ -13,9 +27,11 @@ void camera_init() {
 	camera.free_moving = false;
 	camera.buffer_range = portal_max_range;
 }
+
+//updates position of the camera and whether or not it is free moving
 void camera_update() {
 	
-	//check if player has upgraded portal range, if upgraded, then camera buffer range must be updated as well
+	//check if player has upgraded the maximum portal range, if upgraded, then camera buffer range must be updated as well
 	camera.buffer_range = portal_max_range;
 
 	//check for player input to toggle free moving camera
@@ -56,29 +72,29 @@ void camera_update() {
 			camera.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 		}
 
-		//camera will always follow player's y if player.y is +ve
-		if (player.center.y > 0) {
-			camera.y = player.center.y;
-		}
-
-		//lowest y value of camera.y is 0
-		else if (player.center.y < 0) {
-			camera.y = 0;
-		}
-
+		//coordinate of camera should not go below (0,0) as there is no level design implemented
+		//below AEGfxGetWinMinX and AEGfxGetWinMinY when camera.x and camera.y = 0.
+		camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
+		camera.y = player.center.y;
+		camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 	}
 	//if free moving camera is true, can freely pan left/right to see the level design
 	//mainly used for level designing/debugging purposes
 	if (camera.free_moving == true) {
+
+		//if key 'I' is pressed, camera pans upwards
 		if (AEInputCheckCurr(AEVK_I))
 			camera.y += camera.free_moving_speed;
 
+		//if key 'K' is pressed, camera pans downwards
 		if (AEInputCheckCurr(AEVK_K))
 			camera.y -= camera.free_moving_speed;
 
+		//if key 'J' is pressed, camera to the left
 		if (AEInputCheckCurr(AEVK_J))
 			camera.x -= camera.free_moving_speed;
 
+		//if key 'L' is pressed, camera to the right
 		if (AEInputCheckCurr(AEVK_L))
 			camera.x += camera.free_moving_speed;
 	}
