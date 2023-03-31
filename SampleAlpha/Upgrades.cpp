@@ -145,7 +145,7 @@ void upgrade_update() {
 	if (player.justLeveledUp) {
 		
 		// Audio upon levelling up
-		AEAudioPlay(levelUpAudio, soundGroup, 1.f, 1.f, 0);
+		AEAudioPlay(levelUpAudio, soundGroup, 0.5f, 1.f, 0);
 
 		player.justLeveledUp = FALSE;		// Reset bool
 		isUpgradeTime = TRUE;				// Enable UpgradeTime!!
@@ -183,7 +183,7 @@ void upgrade_update() {
 				break;
 			}
 			// Audio upon choosing an upgrade
-			AEAudioPlay(receivedUpgradeAudio, soundGroup, 1.f, 1.f, 0);
+			AEAudioPlay(receivedUpgradeAudio, soundGroup, 0.5f, 1.f, 0);
 #ifdef DEBUG
 			switch (selected) {
 			case MAX_HP_card:

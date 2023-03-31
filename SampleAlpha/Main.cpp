@@ -85,6 +85,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			AESysFrameStart();	// Call start of frame rate controller
 			AEInputUpdate();	// Call event handler
+			AEAudioUpdate();	// Updates AEAudio module
 			GameStateUpdate();	// Update current state's object instances
 			GameStateDraw();	// Draw current state's object instances
 			AESysFrameEnd();	// Call end of frame rate controller

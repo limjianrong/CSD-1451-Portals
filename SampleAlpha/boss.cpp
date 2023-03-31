@@ -128,7 +128,7 @@ void boss_update() {
 	}
 	else {
 		// --- Boss' death audio ---
-		AEAudioPlay(deathAudio, soundGroup, 1.f, 1.f, 0);
+		AEAudioPlay(deathAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 }
 
@@ -240,7 +240,7 @@ void boss_laser_beam_attack() {
 	if (laser_beam.time_elapsed >= laser_beam.cooldown && boss_charge.active == false) {
 
 		// Laser attack #3 audio
-		AEAudioPlay(laserAudio, soundGroup, 0.25f, 1.f, 0);
+		AEAudioPlay(laserAudio, soundGroup, 0.2f, 1.f, 0);
 
 		//set token to draw the laser beam
 		laser_beam.active = TRUE;
@@ -393,7 +393,7 @@ void bullet_update() {
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--boss.Hp;
 		// --- Boss' damage audio ---
-		AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
+		AEAudioPlay(damageAudio, soundGroup, 0.5f, 1.f, 0);
 
 		// --- Bullet audio ---
 		//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);

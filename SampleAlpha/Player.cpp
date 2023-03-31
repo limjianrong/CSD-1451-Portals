@@ -47,7 +47,7 @@ s8* level, * XP, * Hp;
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 // --- Audio ---
-extern AEAudio checkpointAudio, walkAudio, playerDeathAudio, playerDamageAudio;
+extern AEAudio checkpointAudio, walkAudio, playerDeathAudio;
 extern AEAudioGroup soundGroup;
 static bool isPlayingAudio = FALSE;
 
@@ -94,9 +94,9 @@ void player_load() {
 	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
 	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
 
-	player_ifs >> str >> player.XP_TILL_10;			// 40 XP to level up for lvls 0-10
-	player_ifs >> str >> player.XP_TILL_20;			// 100 XP to level up for lvls 10-20
-	player_ifs >> str >> player.XP_TILL_30;			// 160 XP to level up for lvls 20-30
+	player_ifs >> str >> player.XP_TILL_SYSTEM1;	// Currently requires 40 XP to level up for lvls 0-5
+	player_ifs >> str >> player.XP_TILL_SYSTEM2;	// Currently requires 60 XP to level up for lvls 5-10
+	player_ifs >> str >> player.XP_TILL_SYSTEM3;	// Currently requires 80 XP to level up for lvls 10-15
 	player_ifs >> str >> player.XP_RESET;			// Reset XP to 0
 
 	player_ifs >> str >> player.Max_Hp;				// Player's Maximum Health
@@ -155,12 +155,14 @@ void player_draw() {
 	
 	// ---------------- Player ----------------
 	if (AEInputCheckCurr(AEVK_D)) {
-		if ((num_of_Dpressed % 9) <= 4) AEGfxTextureSet(player.player_left1Tex, 0, 0);
-		else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player.player_left2Tex, 0, 0);
+		if ((num_of_Dpressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_left1Tex, 0, 0);
+		else AEGfxTextureSet(player.player_left2Tex, 0, 0);
+		//else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player.player_left2Tex, 0, 0);
 	}
 	else if (AEInputCheckCurr(AEVK_A)) {
-		if ((num_of_Apressed % 9) <= 4) AEGfxTextureSet(player.player_right1Tex, 0, 0);
-		else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
+		if ((num_of_Apressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_right1Tex, 0, 0);
+		else AEGfxTextureSet(player.player_right2Tex, 0, 0);
+		//else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
 	} 
 	else AEGfxTextureSet(player.player_standTex, 0, 0);
 	drawMesh(player.dimensions, player.center, PI);
@@ -232,41 +234,53 @@ void player_update() {
 
 		player.center.x += FIXED_MOVEMENT * player.Speed;
 		num_of_Dpressed++;
-		//player.rotation -= 0.1f;
+		
+		// Player movement audio
+		if ((num_of_Dpressed % max_AudioDelay) <= 0) AEAudioPlay(walkAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
 
 		player.center.x -= FIXED_MOVEMENT * player.Speed;
 		num_of_Apressed++;
+
+		// Player movement audio
+		if ((num_of_Apressed % max_AudioDelay) <= 0) AEAudioPlay(walkAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 
 	// --------  Player's level & XP   ----------
 	// 40xp to level up for lvls 0-10 (1 enemy = 20xp)
 	//if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
-	if (player.XP == 20 && player.Level >= 0 && player.Level <= 10) {
-		player.Level++;
-		player.XP = player.XP_RESET;
-		player.justLeveledUp = TRUE;
-	}
-	// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
-	else if (player.XP == player.XP_TILL_20 && player.Level >= 10 && player.Level <= 20) {
-		player.Level++;
-		player.XP = player.XP_RESET;
-		player.justLeveledUp = TRUE;
-	}
-	// 160xp to level up for lvls 20-30 (1 enemy = 20xp)
-	else if (player.XP == player.XP_TILL_30 && player.Level >= 20 && player.Level <= 30) {
-		player.Level++;
-		player.XP = player.XP_RESET;
-		player.justLeveledUp = TRUE;
-	}
+	//if (player.XP == 20 && player.Level >= LEVEL_SYSTEM_0 && player.Level <= LEVEL_SYSTEM_1) {
+	//	player.Level++;
+	//	player.XP = player.XP_RESET;
+	//	player.justLeveledUp = TRUE;
+	//}
+	//// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
+	//else if (player.XP == player.XP_TILL_20 && player.Level >= LEVEL_SYSTEM_1 && player.Level <= LEVEL_SYSTEM_2) {
+	//	player.Level++;
+	//	player.XP = player.XP_RESET;
+	//	player.justLeveledUp = TRUE;
+	//}
+	//// 160xp to level up for lvls 20-30 (1 enemy = 20xp)
+	//else if (player.XP == player.XP_TILL_30 && player.Level >= LEVEL_SYSTEM_2 && player.Level <= LEVEL_SYSTEM_3) {
+	//	player.Level++;
+	//	player.XP = player.XP_RESET;
+	//	player.justLeveledUp = TRUE;
+	//}
+	level_xp_system_update(player.XP_TILL_SYSTEM1, LEVEL_SYSTEM_0, LEVEL_SYSTEM_1);
+	level_xp_system_update(player.XP_TILL_SYSTEM2, LEVEL_SYSTEM_1, LEVEL_SYSTEM_2);
+	level_xp_system_update(player.XP_TILL_SYSTEM3, LEVEL_SYSTEM_2, LEVEL_SYSTEM_3);
+
 
 	// --------    Player Hp & Lives   -----------
 	if (player.Hp <= 0) {
 		player.Lives--;
 		player.Hp = player.Max_Hp;
 		respawn_player();
+
+		// Player's death sfx
+		AEAudioPlay(playerDeathAudio, soundGroup, 0.75f, 1.f, 0);
 	}
 	if (player.Lives <= 0) {
 		gGameStateNext = GS_Lose;
@@ -293,16 +307,25 @@ void player_update() {
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
 		if (player.center.x >= checkpoint[i].x1 && player.center.x <= checkpoint[i].x2 &&
 			player.center.y >= checkpoint[i].y1 && player.center.y <= checkpoint[i].y2) {
-			checkpoint[i].check = TRUE;
-			//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
-			isPlayingAudio = TRUE;
-			if (isPlayingAudio) {
+
+			if (checkpoint[i].check == FALSE) {
+				checkpoint[i].check = TRUE;
+				//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
+				
 				// Checkpoint audio
-				//AEAudioPlay(checkpointAudio, soundGroup, 0.5f, 1.f, 0);
-				isPlayingAudio = FALSE;
+				AEAudioPlay(checkpointAudio, soundGroup, 1.f, 1.f, 0);
 			}
 		}
 
+	}
+}
+
+void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange) {
+
+	if (player.XP == requiredXP && player.Level >= levelSystem_LowerRange && player.Level <= levelSystem_HigherRange) {
+		player.Level++;
+		player.XP = player.XP_RESET;
+		player.justLeveledUp = TRUE;
 	}
 }
 

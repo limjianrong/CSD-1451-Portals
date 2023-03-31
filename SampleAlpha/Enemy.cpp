@@ -187,6 +187,9 @@ void enemy1_collision() {
 				}
 				else {
 					--player.Hp;
+
+					// Player's taking damage sfx
+					AEAudioPlay(playerDamageAudio, soundGroup, 0.25f, 1.f, 0);
 				}
 				// disables damage temporarily once collided
 				damage_allowed = FALSE;
@@ -385,8 +388,9 @@ void enemy2_update() {
 				}
 				else {
 					--player.Hp;
-					// Upon taking damage
-					AEAudioPlay(playerDamageAudio, soundGroup, 1.f, 1.f, 0);
+
+					// Player's taking damage sfx
+					AEAudioPlay(playerDamageAudio, soundGroup, 0.25f, 1.f, 0);
 				}
 			}
 

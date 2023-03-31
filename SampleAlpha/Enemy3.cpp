@@ -26,8 +26,8 @@ extern Player_stats player;
 extern bool isPaused;
 
 // ----- Audio -----
-//extern AEAudio zoomAudio;
-//extern AEAudioGroup soundGroup;
+extern AEAudio zoomAudio, playerDamageAudio;
+extern AEAudioGroup soundGroup;
 //static bool isGoingToZoom;
 
 void enemy3_load() {
@@ -54,14 +54,18 @@ void draw_enemy3() {
 	//draws enemy3 if alive
 	if (enemy3_a.Hp > 0 && enemy3_a_Dead == FALSE) {
 		
-		AEMtx33Scale(&scale, ENEMY3_WIDTH, ENEMY3_HEIGHT);
+		/*AEMtx33Scale(&scale, ENEMY3_WIDTH, ENEMY3_HEIGHT);
 		AEMtx33Rot(&rotate, PI);
 		AEMtx33Trans(&translate, enemy3_a.x, enemy3_a.y);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
 		AEGfxTextureSet(enemy3, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);*/
+
+		AEGfxTextureSet(enemy3, 0, 0);
+		drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, enemy3_a.center, PI);
+
 		// set center vector
 		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
@@ -73,14 +77,17 @@ void draw_enemy3() {
 			&& going_left) {
 			
 
-			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (player.center.x + WINDOWLENGTH_X/2.f) - WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at right edge of screen
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+			//AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
+			//AEMtx33Rot(&rotate, PI);
+			//AEMtx33Trans(&translate, (player.center.x + WINDOWLENGTH_X/2.f) - WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at right edge of screen
+			//AEMtx33Concat(&transform, &rotate, &scale);
+			//AEMtx33Concat(&transform, &translate, &transform);
+			//AEGfxSetTransform(transform.m);
+			//AEGfxTextureSet(enemy3_warning, 0, 0);
+			//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ (player.center.x + WINDOWLENGTH_X / 2.f) - WARNING_WIDTH / 2.f, enemy3_a.y }, PI); // warning label drawn at right edge of screen
 		}
 				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f) +player.center.x) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f)-900.f+player.center.x)
@@ -89,14 +96,17 @@ void draw_enemy3() {
 			// enemy 3 currently heading right
 			&& !going_left ) {
 			
-			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (player.center.x +( - WINDOWLENGTH_X / 2.f)) + WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at left edge of screen
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+			//AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
+			//AEMtx33Rot(&rotate, PI);
+			//AEMtx33Trans(&translate, (player.center.x +( - WINDOWLENGTH_X / 2.f)) + WARNING_WIDTH/2.f, enemy3_a.y); // warning label drawn at left edge of screen
+			//AEMtx33Concat(&transform, &rotate, &scale);
+			//AEMtx33Concat(&transform, &translate, &transform);
+			//AEGfxSetTransform(transform.m);
+			//AEGfxTextureSet(enemy3_warning, 0, 0);
+			//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ (player.center.x + (-WINDOWLENGTH_X / 2.f)) + WARNING_WIDTH / 2.f, enemy3_a.y }, PI); // warning label drawn at left edge of screen
 		}
 				// right edge of screen < enemy 3 x position < right edge of screen + 900.f
 		else if ((enemy3_a.x > (WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f) && (enemy3_a.x < (WINDOWLENGTH_X / 2.f + ENEMY3_WIDTH / 2.f) + 900.f)) 
@@ -104,14 +114,17 @@ void draw_enemy3() {
 			&& player.center.x <= 0
 			// enemy 3 currentlty heading left
 			&& going_left) {
-			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2.f) - WARNING_WIDTH / 2.f, enemy3_a.y); // warning label drawn at right edge of screen
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+			//AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
+			//AEMtx33Rot(&rotate, PI);
+			//AEMtx33Trans(&translate, (WINDOWLENGTH_X / 2.f) - WARNING_WIDTH / 2.f, enemy3_a.y); // warning label drawn at right edge of screen
+			//AEMtx33Concat(&transform, &rotate, &scale);
+			//AEMtx33Concat(&transform, &translate, &transform);
+			//AEGfxSetTransform(transform.m);
+			//AEGfxTextureSet(enemy3_warning, 0, 0);
+			//AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ (WINDOWLENGTH_X / 2.f) - WARNING_WIDTH / 2.f, enemy3_a.y }, PI); // warning label drawn at right edge of screen
 		}
 				// left edge of screen - 900.f < enemy 3 x position < left edge of screen
 		else if ((enemy3_a.x < ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f)) && (enemy3_a.x > ((-WINDOWLENGTH_X / 2.f) - ENEMY3_WIDTH/2.f) - 900.f)
@@ -120,14 +133,8 @@ void draw_enemy3() {
 			// enemy 3 currenly heading right
 			&& !going_left) {
 			
-			AEMtx33Scale(&scale, WARNING_WIDTH, WARNING_HEIGHT);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, (-WINDOWLENGTH_X / 2.f) + WARNING_WIDTH / 2.f, enemy3_a.y); // warning label drawn at left edge of screen
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ (-WINDOWLENGTH_X / 2.f) + WARNING_WIDTH / 2.f, enemy3_a.y }, PI); // warning label drawn at left edge of screen
 		}
 
 		
@@ -259,6 +266,9 @@ void enemy3_collision() {
 				--player.Hp;
 				// disables damage temporarily once collided
 				damage_allowed3 = FALSE;
+
+				// Player's taking damage sfx
+				AEAudioPlay(playerDamageAudio, soundGroup, 0.25f, 1.f, 0);
 			}
 		}
 

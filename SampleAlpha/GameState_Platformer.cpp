@@ -63,8 +63,10 @@ extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 // ----- Camera -----
 extern Camera camera;
 
-// ----- Audio -----
-//AEAudioGroup soundGroup;
+// --- Audio ---
+extern AEAudio buttonClickedAudio, buttonHoverAudio;
+extern AEAudioGroup soundGroup;
+static bool isPressed1, isPressed2, isPressed3, isPressed4;
 
 /*!**************************************************************************************************
 \brief
@@ -121,30 +123,41 @@ void GameStatePlatformerInit(void) {
 void GameStatePlatformerUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
-	AEAudioUpdate();	 // Updates AEAudio module
 
 	if (isPaused && (isSettings == FALSE)) {
 
 		// --------- Collision ---------
 		for (s32 i = 9; i <= 15; i += 2) {
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
-				center_cursor.x >= -WINDOWLENGTH_X / 8 && center_cursor.x <= WINDOWLENGTH_X / 8 &&
+				center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
 				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24) {
 				if (i == 9) {
 					isPaused = FALSE;				// Resume button
+
+					// Audio once button is pressed
+					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 				else if (i == 11) {
 					gGameStateNext = GS_RESTART;	// Restart button
+
+					// Audio once button is pressed
+					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 				else if (i == 13) {
 					//GameStateSettingsUpdate();	// Settings button
 					//isPaused = FALSE;				// Resume game
 					isSettings = TRUE;
+
+					// Audio once button is pressed
+					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 				else if (i == 15) {
 					gGameStateNext = GS_MainMenu;	// Main menu button
 					isPaused = FALSE;				// Resume game
+
+					// Audio once button is pressed
+					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 			}
 		}
@@ -178,21 +191,14 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	// ------- Background -------
-	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, origin.x, origin.y);
-	AEMtx33Rot(&rotate, PI);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxSetTransform(transform.m);
-	AEGfxTextureSet(background_layer1Tex, 0, 0);
+	AEGfxTextureSet(background_layer1Tex, 0, 0);						// Layer 1
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	AEGfxTextureSet(background_layer2Tex, 0, 0);						// Layer 2
+	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(background_layer3Tex, 0, 0);						// Layer 3
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
-	AEGfxTextureSet(background_layer2Tex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-	AEGfxTextureSet(background_layer3Tex, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
+	// ------- Draw Functions -------
 	draw_level_draw();		// Level
 	enemies_draw();			// Enemy1 & Enemy2
 	draw_enemy3();			// Enemy3
@@ -210,30 +216,90 @@ void GameStatePlatformerDraw(void) {
 	if (isPaused) {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
-		AEMtx33Scale(&scale, WINDOWLENGTH_X+200, WINDOWLENGTH_Y+200);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, origin.x, origin.y);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxTextureSet(nullptr, 0, 0);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-		
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+
 		// --------- Buttons ---------
 		AEGfxSetTransparency(1.0f);
 		for (int i = 9; i <= 15; i+=2) {
-			AEMtx33Scale(&scale, WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12);
-			AEMtx33Rot(&rotate, PI);
-			AEMtx33Trans(&translate, origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i);
-			AEMtx33Concat(&transform, &rotate, &scale);
-			AEMtx33Concat(&transform, &translate, &transform);
-			AEGfxSetTransform(transform.m);
+
 			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24)
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24) {
+				
 				AEGfxTextureSet(buttonPressed, 0, 0);
-			else AEGfxTextureSet(buttonNotPressed, 0, 0);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+				//if (isPressed == FALSE) {
+				//	isPressed = TRUE;
+				//	std::cout << "THERE IS SOUND HERE" << std::endl;
+				//	// Hovering over button sfx
+				//	//AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				//}
+			}
+			else {
+				//isPressed = FALSE;
+				AEGfxTextureSet(buttonNotPressed, 0, 0);
+			}
+			drawMesh(AEVec2{ WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12 }, AEVec2 { origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i }, PI);
+
+			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
+
+				if (isPressed1 == FALSE) {
+					isPressed1 = TRUE;
+					// Hovering over button sfx
+					AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				}
+			}
+			else {
+				isPressed1 = FALSE;
+			}
+
+			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
+
+				if (isPressed2 == FALSE) {
+					isPressed2 = TRUE;
+					// Hovering over button sfx
+					AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				}
+			}
+			else {
+				isPressed2 = FALSE;
+			}
+
+			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
+
+				if (isPressed3 == FALSE) {
+					isPressed3 = TRUE;
+					// Hovering over button sfx
+					AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				}
+			}
+			else {
+				isPressed3 = FALSE;
+			}
+
+			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
+
+				if (isPressed4 == FALSE) {
+					isPressed4 = TRUE;
+					// Hovering over button sfx
+					AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				}
+			}
+			else {
+				isPressed4 = FALSE;
+			}
+
+
+		
 		}
 
 		// --------- Texts ---------
@@ -257,6 +323,7 @@ void GameStatePlatformerDraw(void) {
 	AEGfxSetCamPosition(camera.x, camera.y);
 
 }
+
 /*!**************************************************************************************************
 \brief
   Free all objects

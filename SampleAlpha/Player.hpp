@@ -14,12 +14,22 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 #define FIXED_MOVEMENT 5
 
+#define max_Dpresses 9
+#define range_Dpresses 4
+#define max_AudioDelay 19
+
+#define LEVEL_SYSTEM_0 0
+#define LEVEL_SYSTEM_1 5
+#define LEVEL_SYSTEM_2 10
+#define LEVEL_SYSTEM_3 15
+
 void player_load();
 void player_init();
 void player_draw();
 void player_update();
 void player_unload();
 
+void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange);
 void Render_Lives(s32 currLife, f32 offsetX);
 void respawn_player();
 void player_collision();
@@ -30,7 +40,7 @@ struct Player_stats : GameObjects {
 	s32 initial_pos_x, initial_pos_y; //initial start point of player
 
 	// -----  Player's levelling requirements  -------
-	s32 XP_TILL_10, XP_TILL_20, XP_TILL_30, XP_RESET;
+	s32 XP_TILL_SYSTEM1, XP_TILL_SYSTEM2, XP_TILL_SYSTEM3, XP_RESET;
 	s32 highest_level; // Highest level a player can level up to
 
 	// ----- Player's attributes -----
