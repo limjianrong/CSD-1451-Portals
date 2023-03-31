@@ -12,7 +12,6 @@
 ==================================================================================*/
 
 #include "camera.hpp"
-#include "Player.hpp"
 
 extern float portal_max_range; //maximum range that a player can place a portal
 extern float moveSpeed; //for camera to follow player when player is on platform
@@ -52,7 +51,7 @@ void camera_update() {
 
 		//player is moving and has reached the right buffer range of the camera
 		if (AEGfxGetWinMaxX() - player.center.x <= camera.buffer_range && AEInputCheckCurr(AEVK_D)) {
-			camera.x += 5 * player.Speed;
+			camera.x += FIXED_MOVEMENT * player.Speed;
 		}
 
 		//player is not moving but still reached the right buffer range of the camera
@@ -63,7 +62,7 @@ void camera_update() {
 
 		//player is moving and has reached the left buffer range of the camera
 		if (player.center.x - AEGfxGetWinMinX() <= camera.buffer_range && AEInputCheckCurr(AEVK_A)) {
-			camera.x -= 5 * player.Speed;
+			camera.x -= FIXED_MOVEMENT * player.Speed;
 		}
 
 		//player is not moving but still reached the left buffer range of the camera
