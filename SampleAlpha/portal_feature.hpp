@@ -1,26 +1,20 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File: portal_feature.hpp
-* Course: CSD1451
-* Group Name: Apparate
-* Primary Author: Lim Jian Rong (jianrong.lim@digipen.edu)
+* File:				portal_feature.hpp
+* Course:			CSD1451
+* Group Name:		Apparate
+* Primary Author:	Lim Jian Rong (jianrong.lim@digipen.edu)
 * Secondary Authors: -
 *
 * Brief:
-  This source file implements the functions used for the game's portal feature
-
-  The functions include:
-  - portal_load
-	  creates a square mesh for the portal
-
-  - draw_portal
-	  draws a portal and checks if the player has collided with the portal
+  This source file implements the functions declarations used for the game's portal feature,
+  such as creating a portal, checking for collision between portal and game objects,
+  drawing of portal
 ==================================================================================*/
 #pragma once
 #include <string>
-#include <fstream>
+#include <fstream> //file IO
 #include "AEEngine.h"
-#include "Utilities.hpp"
 #include "boss.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
@@ -48,9 +42,6 @@ struct portal {
 	AEGfxTexture* picture{};
 }; 
 
-
-
-
 /*!**************************************************************************************************
 \brief
   loads the assets needed for the portal as well as the cards used for player upgrades.
@@ -59,10 +50,8 @@ struct portal {
 *******************************************************************************************************/
 void portal_load();
 
-/*!**************************************************************************************************
-\brief
-	initialize active flags of portal objects to be false
-*******************************************************************************************************/
+
+//initialize active flags of portal objects to be false
 void portal_init();
 
 
@@ -106,10 +95,8 @@ void check_portal_enemy_collision();
 void reset_portals();
 
 
-/*!**************************************************************************************************
-\brief
-  draws a circle around the player to show the player the furthest point that he can place a portal at.
-*******************************************************************************************************/
+
+ //draws a circle around the player to show the player the furthest point that he can place a portal at.
 void draw_portal_range();
 
 //function template used for teleporting objects
@@ -120,8 +107,3 @@ void teleport_object(T1& gameObject, T2& portal) {
 	gameObject.center.y = static_cast<f32>(portal.y);
 	reset_portals();
 }
-
-
-
-
-

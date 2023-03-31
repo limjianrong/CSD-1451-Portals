@@ -1,9 +1,9 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File: portal_feature.cpp
-* Course: CSD1451
-* Group Name: Apparate
-* Primary Author: Lim Jian Rong (jianrong.lim@digipen.edu)
+* File:				portal_feature.cpp
+* Course:			CSD1451
+* Group Name:		Apparate
+* Primary Author:	Lim Jian Rong (jianrong.lim@digipen.edu)
 * Secondary Authors: -
 *
 * Brief: 
@@ -41,7 +41,7 @@ extern AEGfxVertexList* square_mesh;
 extern s8 Albam_fontID;
 
 /*************  Portal Cooldown and Max Range ***********/
-float portal_max_range, portal_cooldown,portal_timer{};
+float portal_max_range, portal_cooldown,portal_time_elapsed{};
 
 //file stream to initialize portal data members
 std::ifstream portal_ifs{};
@@ -126,10 +126,10 @@ void update_portal() {
 	}
 
 	//portal cooldown
-	portal_timer += static_cast<float>(AEFrameRateControllerGetFrameTime());
+	portal_time_elapsed += static_cast<float>(AEFrameRateControllerGetFrameTime());
 
 	//player right click to create a portal to teleport from 
-	if (AEInputCheckTriggered(VK_RBUTTON) && portal_timer >= portal_cooldown) {
+	if (AEInputCheckTriggered(VK_RBUTTON) && portal_time_elapsed >= portal_cooldown) {
 
 		//if the first portal is not active, set it to be active, assign cursor's x and y to become
 		//the portal 1's x and y position
@@ -275,7 +275,7 @@ void teleport_player(const AEVec2& portal) {
 	teleport_object(player, portal);
 
 	//reset the time elapsed since previous teleport
-	portal_timer = 0;
+	portal_time_elapsed = 0;
 
 	//set camera to follow player if the player teleports
 
@@ -332,19 +332,6 @@ void check_portal_enemy_collision() {
 			teleport_object(enemy1[i], portal_1);
 		}
 	}
-
-	//portal teleport enemy2, iterate through array of enemy2
-	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
-		//enemy2 collide with portal 1
-		//if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
-		//	teleport_object(enemy2[i], portal_2);
-		//}
-
-		////enemy2 collide with portal 2
-		//else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy2[i].center, enemy2[i].dimensions.x, enemy2[i].dimensions.y)) {
-		//	teleport_object(enemy2[i], portal_1);
-		//}
-	}
 }
 
 //resets the portals, function is called whenever a game object is teleported
@@ -373,7 +360,7 @@ void draw_portal_range() {
 
 	//draw the maximum portal range, if the portal teleportation is on cooldown,
 	//use a different texture
-	if (portal_timer >= portal_cooldown) {
+	if (portal_time_elapsed >= portal_cooldown) {
 		AEGfxTextureSet(portal_range_picture, 0.0f, 0.0f);
 	}
 	else {
@@ -384,20 +371,3 @@ void draw_portal_range() {
 	AEGfxSetTransform(portal_range_mtx.m);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
