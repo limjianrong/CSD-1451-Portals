@@ -1,6 +1,6 @@
 #include "AEEngine.h"
 #include "GameState_Mainmenu.hpp"
-#include "GameState_Settings.hpp"
+#include "Settings.hpp"
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"

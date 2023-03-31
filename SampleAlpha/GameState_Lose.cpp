@@ -5,6 +5,7 @@
 #include "Settings.hpp"
 #include "GameState_Lose.hpp"
 #include "GameState_Mainmenu.hpp"
+#include "Player.hpp"
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
@@ -15,6 +16,11 @@ extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin; // screen center coordinates
 extern AEVec2 center_cursor; // cursor coordinates
 extern s8 Albam_fontID; // text font
+extern Player_stats player;
+
+// --- Audio ---
+extern AEAudio defeatAudio;
+extern AEAudioGroup soundGroup;
 
 
 void GameStateLoseLoad() {
@@ -32,6 +38,9 @@ void GameStateLoseInit() {
 void GameStateLoseUpdate() {
 	// get cursor position
 	variables_update();
+
+	// Defeated audio
+	AEAudioPlay(defeatAudio, soundGroup, 0.25f, 1.f, 0);
 
 	// if respective buttons clicked, go to their game states
 	for (s32 i = 15; i <= 19; i += 4) {

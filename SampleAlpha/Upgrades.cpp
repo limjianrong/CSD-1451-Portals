@@ -48,8 +48,8 @@ extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
 extern AEVec2 center_cursor;		 // Origin is CENTER of window
 extern AEVec2 world_center_cursor;   // Origin is CENTER of window
 
-AEAudio levelUpAudio;
-AEAudioGroup soundGroup;
+extern AEAudio cardAudio, levelUpAudio, receivedUpgradeAudio;
+extern AEAudioGroup soundGroup;
 
 
 void upgrades_load() {
@@ -60,7 +60,7 @@ void upgrades_load() {
 
 	shield.Texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
 
-	levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player levelup.mp3");
+	//levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player_LevelUp.mp3");
 	
 }
 
@@ -88,11 +88,11 @@ void upgrades_init() {
 	// --- Shield Upgrade ---
 	shield.center.x = player.center.x;					// Shield bubble x position
 	shield.center.y = player.center.y;					// Shield bubble y position
-	shield.dimensions.x = player.dimensions.x + 20;	// Shield bubble width
-	shield.dimensions.y = player.dimensions.y + 20;	// Shield bubble height
-	isShieldActive = FALSE;						// Disable shield
+	shield.dimensions.x = player.dimensions.x + 20;		// Shield bubble width
+	shield.dimensions.y = player.dimensions.y + 20;		// Shield bubble height
+	isShieldActive = FALSE;								// Disable shield
 
-	soundGroup = AEAudioCreateGroup();
+	//soundGroup = AEAudioCreateGroup();
 	
 }
 
@@ -141,23 +141,12 @@ void upgrade_update() {
 	AEVec2Set(&middle_card_center,	AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 	AEVec2Set(&right_card_center,	AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, AEGfxGetWinMinY() + AEGetWindowHeight() / 2.0f);
 
-	//std::cout << player.justLeveledUp << std::endl;
-	/*bool temp = FALSE;
-	if (AEInputCheckReleased(AEVK_LBUTTON)) {
-		temp = TRUE;
-	}
-	if (temp) {
-		AEAudioPlay(player.levelUpAudio, soundGroup, 1.f, 1.f, 0);
-		temp = FALSE;
-	}*/
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
 		
+		// Audio upon levelling up
 		AEAudioPlay(levelUpAudio, soundGroup, 1.f, 1.f, 0);
-		
 
-		//AEAudioPlay(player.levelUpAudio, soundGroup, 1.f, 1.f, 0);
-		std::cout << player.justLeveledUp << std::endl;
 		player.justLeveledUp = FALSE;		// Reset bool
 		isUpgradeTime = TRUE;				// Enable UpgradeTime!!
 		//isPaused = TRUE;					// Pause game
@@ -193,7 +182,8 @@ void upgrade_update() {
 				}
 				break;
 			}
-
+			// Audio upon choosing an upgrade
+			AEAudioPlay(receivedUpgradeAudio, soundGroup, 1.f, 1.f, 0);
 #ifdef DEBUG
 			switch (selected) {
 			case MAX_HP_card:

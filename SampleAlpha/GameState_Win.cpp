@@ -16,6 +16,10 @@ extern s8 Albam_fontID; //text font
 extern AEVec2 origin;		 // screen center coordinates
 extern AEVec2 center_cursor; // cursor coordinates
 
+// --- Audio ---
+extern AEAudio victoryAudio;
+extern AEAudioGroup soundGroup;
+
 void GameStateWinLoad() {
 
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
@@ -32,6 +36,9 @@ void GameStateWinInit() {
 void GameStateWinUpdate() {
 	// get cursor position
 	variables_update();
+
+	// Victory audio
+	AEAudioPlay(victoryAudio, soundGroup, 0.25f, 1.f, 0);
 
 	// if respective buttons clicked, go to their game states
 	for (s32 i = 15; i <= 19; i += 4) {

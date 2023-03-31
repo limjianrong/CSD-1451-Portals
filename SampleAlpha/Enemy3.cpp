@@ -25,6 +25,11 @@ extern Player_stats player;
 // ----- Pause Menu -----
 extern bool isPaused;
 
+// ----- Audio -----
+//extern AEAudio zoomAudio;
+//extern AEAudioGroup soundGroup;
+//static bool isGoingToZoom;
+
 void enemy3_load() {
 	enemy3 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0053.png");
 
@@ -203,12 +208,12 @@ void enemy3_update(Player_stats* player) {
 				// left edge, player x > initial screen center x
 				|| (enemy3_a.x < -WINDOWLENGTH_X / 2.f - ENEMY3_WIDTH / 2.f - 900.f + player->center.x && player->center.x > 0)) {
 				Enemy3_a->y = player->center.y;
+
 			}
 
 		Enemy3_a->x -= 10.f;
 			going_left = true;
 		}
-		
 
 	}
 

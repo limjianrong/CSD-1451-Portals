@@ -19,16 +19,20 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "draw_level.hpp"
 #include "Enemy.hpp"
 #include "Enemy3.hpp"
-#include <string>
-#include <fstream>
 #include "camera.hpp"
 //#include "Audio.hpp"
 // for fontID
 #include "GameState_Mainmenu.hpp"
 
+// for gameStates
+#include "GameStateList.hpp"
+#include "GameStateManager.hpp"
+
 // for isPaused
 #include "GameState_Platformer.hpp"
 
+#include <string>
+#include <fstream>
 #include <iostream>
 
 Player_stats player;
@@ -41,8 +45,11 @@ s8* lives_counter; // temp counter (Replacing with hearts?)
 s8* level, * XP, * Hp;
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
+
 // --- Audio ---
+extern AEAudio checkpointAudio, walkAudio, playerDeathAudio, playerDamageAudio;
 extern AEAudioGroup soundGroup;
+static bool isPlayingAudio = FALSE;
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
 
@@ -222,12 +229,14 @@ void player_update() {
 	// ---------  Player's movement   -----------
 	// D key pressed
 	if (AEInputCheckCurr(AEVK_D)) {
+
 		player.center.x += FIXED_MOVEMENT * player.Speed;
 		num_of_Dpressed++;
 		//player.rotation -= 0.1f;
 	}
 	// A key pressed
 	else if (AEInputCheckCurr(AEVK_A)) {
+
 		player.center.x -= FIXED_MOVEMENT * player.Speed;
 		num_of_Apressed++;
 	}
@@ -259,6 +268,9 @@ void player_update() {
 		player.Hp = player.Max_Hp;
 		respawn_player();
 	}
+	if (player.Lives <= 0) {
+		gGameStateNext = GS_Lose;
+	}
 
 	// ---------  Firing of bullets   -----------
 	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
@@ -283,7 +295,14 @@ void player_update() {
 			player.center.y >= checkpoint[i].y1 && player.center.y <= checkpoint[i].y2) {
 			checkpoint[i].check = TRUE;
 			//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
+			isPlayingAudio = TRUE;
+			if (isPlayingAudio) {
+				// Checkpoint audio
+				//AEAudioPlay(checkpointAudio, soundGroup, 0.5f, 1.f, 0);
+				isPlayingAudio = FALSE;
+			}
 		}
+
 	}
 }
 

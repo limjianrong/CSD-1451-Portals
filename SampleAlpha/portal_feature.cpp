@@ -40,6 +40,11 @@ extern AEGfxVertexList* square_mesh;
 //used to print text to the screen
 extern s8 Albam_fontID;
 
+// ----- Audio -----
+extern AEAudio portalAudio;
+extern AEAudioGroup soundGroup;
+
+
 /*************  Portal Cooldown and Max Range ***********/
 float portal_max_range, portal_cooldown,portal_time_elapsed{};
 
@@ -184,7 +189,7 @@ void update_portal() {
 //function to draw both portals, draw the outline of portal 1, update and draw the portal maximum range
 void draw_portal() {
 	draw_portal_range();
-	//
+	
 	if (portal_1.draw_outline) {
 		//to show that the outline of the 1st portal is different from the actual 1st portal, we can
 		//draw the outline to be more transparent than the actual portal
@@ -259,10 +264,16 @@ void check_portal_player_collision() {
 	//if player collide with portal 1
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &player.center, player.dimensions.x, player.dimensions.y)) {
 		teleport_player(portal_2.center);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 	//if player collide with portal 2
 	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &player.center, player.dimensions.x, player.dimensions.y)) {
 		teleport_player(portal_1.center);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 }
 
@@ -293,11 +304,17 @@ void check_portal_bullet_collision() {
 	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)) {
 		bullet.isTeleported = true;
 		teleport_object(bullet, portal_2);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 	//if boss bullet collide with portal 2
 	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)) {
 		bullet.isTeleported = true;
 		teleport_object(bullet, portal_1);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 
 	//iterate through array of bullet_enemy2
@@ -309,11 +326,17 @@ void check_portal_bullet_collision() {
 			//bullet_enemy2[i].y = static_cast<f32>(portal_2.y);
 			//reset_portals();
 			teleport_object(bullet_enemy2[i], portal_2);
+
+			// Portal teleportation sound
+			AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 		}
 		//check if bullet collided with portal 2
 		else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height)) {
 			bullet_enemy2[i].isTeleported = true;
 			teleport_object(bullet_enemy2[i], portal_1);
+
+			// Portal teleportation sound
+			AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 		}
 	}
 }
@@ -325,11 +348,17 @@ void check_portal_enemy_collision() {
 		//enemy1 collide with portal 1
 		if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1[i].center, enemy1[i].dimensions.x, enemy1[i].dimensions.y)) {
 			teleport_object(enemy1[i], portal_2);
+
+			// Portal teleportation sound
+			AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 		}
 
 		//enemy1 collide with portal 2
 		else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy1[i].center, enemy1[i].dimensions.x, enemy1[i].dimensions.y)) {
 			teleport_object(enemy1[i], portal_1);
+
+			// Portal teleportation sound
+			AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 		}
 	}
 }

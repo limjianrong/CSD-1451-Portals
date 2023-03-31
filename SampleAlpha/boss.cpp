@@ -28,25 +28,29 @@ AEVec2 normalized_vector; // direction vector from player to cursor
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
+// --- Audio ---
+extern AEAudio laserAudio, damageAudio, deathAudio, bulletAudio;
+extern AEAudioGroup soundGroup;
+
 std::ifstream boss_ifs{}; //file stream to load boss stats from
 
 //load the assets used by the boss
 void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 	if (!boss.standTex) {
-		std::cout << "\nFaield to load flyMan_fly.png";
+		std::cout << "\nFailed to load flyMan_fly.png";
 	}
 	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
 	if (!boss.deadTex) {
-		std::cout << "\nFaield to load spikeBall_2.png";
+		std::cout << "\nFailed to load spikeBall_2.png";
 	}
 	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
 	if (!laser_beam.picture) {
-		std::cout << "\nFaield to load laser_beam_picture.png";
+		std::cout << "\nFailed to load laser_beam_picture.png";
 	}
 	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
 	if (laser_beam.warning_pic) {
-		std::cout << "\nFaield to load laser_warning.png";
+		std::cout << "\nFailed to load laser_warning.png";
 	}
 
 	// Bullet texture
@@ -122,6 +126,10 @@ void boss_update() {
 		//boss attack #3
 		boss_charge_attack();
 	}
+	else {
+		// --- Boss' death audio ---
+		AEAudioPlay(deathAudio, soundGroup, 1.f, 1.f, 0);
+	}
 }
 
 
@@ -143,12 +151,8 @@ void boss_draw() {
 
 	}
 	else {  // --- Boss dead ---
-		AEMtx33Scale(&boss.scale, boss.width, boss.height);
-		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
-		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-		AEGfxSetTransform(boss.matrix.m);
 		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		drawMesh(AEVec2{ boss.width, boss.height }, boss.center, PI);
 	}
 	AEGfxSetTransform(boss.matrix.m);
 	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
@@ -235,6 +239,9 @@ void boss_laser_beam_attack() {
 	//laser beam will not occur when boss attack #3 (boss charge attack) is active
 	if (laser_beam.time_elapsed >= laser_beam.cooldown && boss_charge.active == false) {
 
+		// Laser attack #3 audio
+		AEAudioPlay(laserAudio, soundGroup, 0.25f, 1.f, 0);
+
 		//set token to draw the laser beam
 		laser_beam.active = TRUE;
 		//increment the duration that the laser beam has been firing for
@@ -284,20 +291,16 @@ void bullet_update() {
 	// ----------  Boss  ----------
 	if (player.center.y <= boss.y_pos) {			// Player below boss
 		opp = player.center.y - boss.y_pos;
-		//direction_y = DOWN;
 	}
 	else if (player.center.y >= boss.y_pos) {		// Player above boss
 		opp = boss.y_pos - player.center.y;
-		//direction_y = UP;
 	}
 
 	if (player.center.x >= boss.x_pos) {			// Player right of boss
 		adj = player.center.x - boss.x_pos;
-		//direction_x = RIGHT;
 	}
 	else if (player.center.x <= boss.x_pos) {		// Player left of boss
 		adj = boss.x_pos - player.center.x;
-		//direction_x = LEFT;
 	}
 
 	// ---- Normalization ----
@@ -310,7 +313,7 @@ void bullet_update() {
 	dist_boss2player = sqrt((boss.x_pos - player.center.x) * (boss.x_pos - player.center.x) + (boss.y_pos - player.center.y) * (boss.y_pos - player.center.y));
 
 
-	// If player is within boss range (300x500 FOR NOW)
+	// If player is within boss range
 	if (player.center.x >= (boss.x_pos - boss.range_x) && player.center.x <= (boss.x_pos + boss.range_x) &&
 		player.center.y >= (boss.y_pos - boss.range_y) && player.center.y <= (boss.y_pos + boss.range_y)) {
 
@@ -330,7 +333,6 @@ void bullet_update() {
 				else if (player.center.x <= boss.x_pos) bullet.x -= normalized_vector.x;
 			}
 			else {
-
 				// --- Resets bullet ---
 				bullet.x = boss.x_pos;
 				bullet.y = boss.y_pos;
@@ -340,6 +342,9 @@ void bullet_update() {
 				if (player.center.x >= (boss.x_pos - 100) && player.center.x <= boss.x_pos) {
 					bullet.isTimerActive = TRUE;		// Enable bullet delay
 				}
+
+				// --- Bullet audio ---
+				//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 			}
 		}
 	}
@@ -356,13 +361,15 @@ void bullet_update() {
 			else if (player.center.x <= boss.x_pos) bullet.x -= normalized_vector.x;
 		}
 		else {
-
 			// --- Disable shooting ---
 			isRunning = FALSE;
 			// --- Resets bullet ---
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
 			bullet.isTeleported = FALSE;
+
+			// --- Bullet audio ---
+			//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 		}
 	}
 
@@ -373,6 +380,9 @@ void bullet_update() {
 		bullet.y = boss.y_pos;				// Reset bullet y
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		//--player.Hp;
+
+		// --- Bullet audio ---
+		//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 
 	// ----- Bullet collision with boss -----
@@ -382,6 +392,11 @@ void bullet_update() {
 		bullet.isTeleported = FALSE;
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--boss.Hp;
+		// --- Boss' damage audio ---
+		AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
+
+		// --- Bullet audio ---
+		//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 
 	// ----- Resets bullet timer (Delay inbetween bullets) -----

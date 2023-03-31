@@ -33,7 +33,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 // ----- Others -----
 #include "Utilities.hpp"
 #include "draw_level.hpp"
-#include "GameState_Settings.hpp"
+#include "Settings.hpp"
+#include "Audio.hpp"
 
 
 //#include <iostream>
@@ -83,6 +84,7 @@ void GameStatePlatformerLoad(void) {
 
 	// --- Loads mesh ---
 	mesh_load();
+	audio_load();
 
 	// --- Loads different functions ---
 	draw_level_load();			// Level
@@ -100,6 +102,7 @@ void GameStatePlatformerLoad(void) {
 *******************************************************************************************************/
 void GameStatePlatformerInit(void) {
 
+	audio_init();
 	player_init();				// Player
 	draw_level_init();			// Level
 	enemies_init();				// Enemy1 & Enemy2
@@ -119,7 +122,6 @@ void GameStatePlatformerUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
 	AEAudioUpdate();	 // Updates AEAudio module
-	//soundGroup = AEAudioCreateGroup();
 
 	if (isPaused && (isSettings == FALSE)) {
 
@@ -161,8 +163,6 @@ void GameStatePlatformerUpdate(void) {
 		player_update();			// Player
 		update_portal();			// Upgrade
 		camera_update();
-		// Lose condition, changes to lose state
-		if (player.Lives == 0) gGameStateNext = GS_Lose;
 	}
 }
 /*!**************************************************************************************************
@@ -218,16 +218,6 @@ void GameStatePlatformerDraw(void) {
 		AEGfxTextureSet(nullptr, 0, 0);
 		AEGfxSetTransform(transform.m);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-
-		// --------- Window in middle of screen ---------
-		/*AEGfxSetTransparency(1.0f);
-		AEMtx33Scale(&scale, WINDOWLENGTH_X/3, WINDOWLENGTH_Y/2);
-		AEMtx33Rot(&rotate, PI);
-		AEMtx33Trans(&translate, originX, originY -WINDOWLENGTH_Y/10);
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
-		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);*/
 		
 		// --------- Buttons ---------
 		AEGfxSetTransparency(1.0f);

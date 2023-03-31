@@ -45,6 +45,10 @@ extern bool isPaused;
 
 bool damage_allowed{ TRUE };	// Enemy1
 
+// ----- Audio -----
+extern AEAudio damageAudio, deathAudio, bulletAudio, playerDamageAudio;
+extern AEAudioGroup soundGroup;
+
 
 void enemies_load() {
 
@@ -248,6 +252,9 @@ void enemy1_update() {
 			if (enemy1[i].Hp <= 0 && enemy1[i].status == TRUE) {
 				player.XP += static_cast<s32>(ENEMY1_DROPPED_XP);
 				enemy1[i].status = FALSE;
+
+				// Audio upon death
+				AEAudioPlay(deathAudio, soundGroup, 1.f, 1.f, 0);
 			}
 
 		}
@@ -321,6 +328,9 @@ void enemy2_update() {
 						bullet_enemy2[i].center.y = enemy2[i].center.y;
 						bullet_enemy2[i].isTeleported = FALSE;
 
+						// Bullet's audio
+						//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
+
 						// If player x within 100 units of enemy2
 						if (player.center.x >= (enemy2[i].center.x - 100.f) && player.center.x <= enemy2[i].center.x) {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
@@ -350,6 +360,8 @@ void enemy2_update() {
 					bullet_enemy2[i].center.y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
 
+					// Bullet's audio
+					//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 				}
 			}
 			// ----- Bullet collision with player -----
@@ -357,8 +369,10 @@ void enemy2_update() {
 			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.dimensions.x, player.dimensions.y)) {
 				bullet_enemy2[i].center.x = enemy2[i].center.x;			// Reset bullet x
 				bullet_enemy2[i].center.y = enemy2[i].center.y;			// Reset bullet y
-				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+				bullet_enemy2[i].isTimerActive = TRUE;					// Enable bullet delay
 
+				// Bullet's audio
+				//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 
 				// --- Disable shooting when player out of range of Enemy2 ---
 				if (!(player.center.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.center.x <= enemy2[i].center.x &&
@@ -371,6 +385,8 @@ void enemy2_update() {
 				}
 				else {
 					--player.Hp;
+					// Upon taking damage
+					AEAudioPlay(playerDamageAudio, soundGroup, 1.f, 1.f, 0);
 				}
 			}
 
@@ -382,6 +398,11 @@ void enemy2_update() {
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 				--enemy2[i].Hp;
+
+				// Bullet's audio
+				//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
+				// Upon taking damage
+				AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
 			}
 
 			// ----- Bullet collision with enemy1 -----
@@ -393,6 +414,11 @@ void enemy2_update() {
 					bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 					--enemy1[j].Hp;
+
+					// Bullet's audio
+					//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
+					// Upon taking damage
+					AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
 				}
 			}
 
@@ -410,6 +436,9 @@ void enemy2_update() {
 		if (enemy2[i].Hp <= 0 && enemy2[i].status == TRUE) {
 			player.XP += static_cast<s32>(ENEMY2_DROPPED_XP);
 			enemy2[i].status = FALSE;
+
+			// Audio upon death
+			AEAudioPlay(deathAudio, soundGroup, 1.f, 1.f, 0);
 		}
 	}
 }
