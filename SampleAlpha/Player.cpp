@@ -9,6 +9,7 @@ Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
+
 #include "AEEngine.h"
 
 #include "Player.hpp"
@@ -129,6 +130,7 @@ void player_init() {
 
 	//player.Lives_pos.x = 0;
 	//player.Lives_y = 0;
+
 
 
 	// -------- Checkpoint --------
