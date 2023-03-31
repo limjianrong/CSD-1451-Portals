@@ -90,6 +90,7 @@ void GameStatePlatformerLoad(void) {
 	portal_load();				// Portal
 	upgrades_load();			// Upgrades
 	player_load();				// Player
+	
 }
 /*!**************************************************************************************************
 \brief
@@ -105,7 +106,9 @@ void GameStatePlatformerInit(void) {
 	portal_init();				// Portal
 	upgrades_init();			// Upgrades
 	camera_init();				//camera, must be initialized after portal_init as some values from
-								//portal_init are used
+							//portal_init are used
+	
+	
 }
 /*!**************************************************************************************************
 \brief
@@ -144,6 +147,8 @@ void GameStatePlatformerUpdate(void) {
 	}
 
 	else {
+		
+
 		draw_level_update();		// Level
 		enemies_update();			// Enemy1 & Enemy2
 		enemy3_update(&player);		// Enemy3

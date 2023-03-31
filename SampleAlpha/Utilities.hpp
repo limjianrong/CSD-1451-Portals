@@ -21,7 +21,7 @@
 #define WINDOWLENGTH_Y 730
 
 //#define DEBUG		// DEBUG unit testing (Uncomment to debug)
-extern AEAudioGroup soundGroup;
+//extern AEAudioGroup soundGroup;
 
 struct GameObjects {
 

@@ -48,6 +48,9 @@ extern AEVec2 cursor;				 // Origin at TOP LEFT corner of window
 extern AEVec2 center_cursor;		 // Origin is CENTER of window
 extern AEVec2 world_center_cursor;   // Origin is CENTER of window
 
+AEAudio levelUpAudio;
+AEAudioGroup soundGroup;
+
 
 void upgrades_load() {
 	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
@@ -56,6 +59,9 @@ void upgrades_load() {
 	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
 
 	shield.Texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
+
+	levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player levelup.mp3");
+	
 }
 
 void upgrades_init() {
@@ -85,6 +91,9 @@ void upgrades_init() {
 	shield.dimensions.x = player.dimensions.x + 20;	// Shield bubble width
 	shield.dimensions.y = player.dimensions.y + 20;	// Shield bubble height
 	isShieldActive = FALSE;						// Disable shield
+
+	soundGroup = AEAudioCreateGroup();
+	
 }
 
 void upgrade_draw() {
@@ -143,10 +152,16 @@ void upgrade_update() {
 	}*/
 	// ----- Open upgrade screen -----
 	if (player.justLeveledUp) {
+		
+		AEAudioPlay(levelUpAudio, soundGroup, 1.f, 1.f, 0);
+		
+
+		//AEAudioPlay(player.levelUpAudio, soundGroup, 1.f, 1.f, 0);
+		std::cout << player.justLeveledUp << std::endl;
 		player.justLeveledUp = FALSE;		// Reset bool
 		isUpgradeTime = TRUE;				// Enable UpgradeTime!!
 		//isPaused = TRUE;					// Pause game
-
+		
 		// Initialize random seed:
 		srand(AEFrameRateControllerGetFrameCount());
 		// Generate random number between 0 and 3

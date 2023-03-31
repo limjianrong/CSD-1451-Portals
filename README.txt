@@ -1,3 +1,11 @@
+=--==--==--==--==--==--==--==--==--==--==--==--==--==--=
+|			Team members:				 |
+|	Lin ZhaoZhi		- z.lin@digipen.edu		 |
+|	Lim Jian Rong	- jianrong.lim@digipen.edu	 |
+|	Lee Zhi Yee		- zhiyee.l@digipen.edu		 |
+|	Tay Zhun Hang  	- zhunhang.tay@digipen.edu	 |
+=--==--==--==--==--==--==--==--==--==--==--==--==--==--=
+
 How to play:
 Player reach the end flag while killing all monsters on his journey there. 
 JUMPING is not allowed, only use portals to get to the endpoint!
@@ -11,11 +19,13 @@ D key - Player moves right
 F key - Resets the creation of portals
 G key - Center the camera onto the player
 P key - Pauses the game
+
 B key - toggle free moving camera(for debugging/level designing)
 I key - make the free moving camera shift up
 K key - make the free moving camera shift down
 J key - make the free moving camera shift left
 L key - make the free moving camera shift right
+Q key - grant the player 1 free upgrade without levelling up the player (dev tool)
 ESC key - Exits the game
 
 Mouse input

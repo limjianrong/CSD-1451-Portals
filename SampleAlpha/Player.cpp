@@ -104,10 +104,10 @@ void player_load() {
 	player_ifs.close();
 
 	// ----- Audio -----
-	checkpoint[0].checkpointAudio = AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
+	//checkpoint[0].checkpointAudio = AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
 
-	player.walkAudio = AEAudioLoadSound("Assets/AUDIO/Player walk.flac");
-	player.levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player levelup.wav");
+	//player.walkAudio = AEAudioLoadSound("Assets/AUDIO/Player walk.flac");
+	
 
 }
 
