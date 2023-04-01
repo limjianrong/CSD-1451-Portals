@@ -337,9 +337,6 @@ void enemy2_update() {
 						bullet_enemy2[i].center.y = enemy2[i].center.y;
 						bullet_enemy2[i].isTeleported = FALSE;
 
-						//// Bullet's audio
-						//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
-
 						// If player x within 100 units of enemy2
 						if (player.center.x >= (enemy2[i].center.x - 100.f) && player.center.x <= enemy2[i].center.x) {
 							bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay

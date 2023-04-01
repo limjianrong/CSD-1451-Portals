@@ -48,6 +48,16 @@ AEGfxVertexList* create_Square_Mesh() {
 		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
 		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
 		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+
+	/*AEGfxTriAdd(
+		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 1.0f,
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 0.0f);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0xFFC3209E, 1.0f, 1.0f,
+		0.5f, 0.5f, 0xFFC3209E, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 0.0f);*/
+
 	// Saving the mesh (list of triangles) in pMesh
 	create_mesh = AEGfxMeshEnd();
 	return create_mesh;

@@ -50,14 +50,10 @@ void GameStateSplashscreenDraw(void) {
 	AEGfxSetTransparency(transparancy);
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
-	AEMtx33Trans(&translate, origin.x, origin.y);
-	AEMtx33Rot(&rotate, PI);
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-	AEGfxSetTransform(transform.m);
+
 	AEGfxTextureSet(logo, 0, 0);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+
 }
 void GameStateSplashscreenFree(void) {
 
