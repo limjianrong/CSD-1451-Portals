@@ -185,7 +185,7 @@ void boss_movement() {
 
 	//boss movement up, boss movement will be relative to the player's y position
 	if (boss.direction == UP) {
-
+		//if top most edge of the boss is same height as the top of the screen, change direction to move down
 		boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
 		if (boss.y_pos + (boss.height) / 2 >= AEGfxGetWinMaxY()) {
 			boss.direction = DOWN;
@@ -194,6 +194,7 @@ void boss_movement() {
 
 	//boss movement down, also relative to player's y position
 	if (boss.direction == DOWN) {
+		//if bottom most edge of boss is same height as the bottom of the screen, change direction to move up
 		boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
 		if (boss.y_pos - (boss.height) / 2 <= AEGfxGetWinMinY()) {
 			boss.direction = UP;
