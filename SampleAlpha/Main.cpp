@@ -91,7 +91,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			AESysFrameEnd();	// Call end of frame rate controller
 
 			// check if forcing the application to quit
-			if ((AESysDoesWindowExist() == false) || AEInputCheckTriggered(AEVK_ESCAPE))
+			if ((AESysDoesWindowExist() == false) || (AEInputCheckTriggered(AEVK_ESCAPE) && AEInputCheckCurr(AEVK_LCTRL)))
 				gGameStateNext = GS_QUIT;
 		}
 
