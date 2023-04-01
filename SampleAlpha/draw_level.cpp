@@ -67,9 +67,9 @@ void draw_level_init() {
 	normal_blocks_create(7, 6900, 300, 14);
 
 	// normal platforms for boss fight
-	normal_blocks_create(16, 7400, 450, 15); 
-	normal_blocks_create(8, 7300, 200, 16);
-	normal_blocks_create(7, 7800, 650, 17);
+	normal_blocks_create(20, 7600, 450, 15); 
+	normal_blocks_create(7, 7300, 200, 16);
+	normal_blocks_create(7, 7300, 625, 17);
 
 	// platform that move left and right for top route
 	leftright_create(4, -150, -100, -150, 200, 0);
@@ -112,7 +112,7 @@ void draw_level_init() {
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		onetimeuse[i].flag = ACTIVE;
 	}
-	door.x = 8150;
+	door.x = 8550;
 	door.y = 550;
 	door.width = 50;
 	door.height = 100;
