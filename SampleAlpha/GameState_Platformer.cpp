@@ -253,9 +253,11 @@ void GameStatePlatformerDraw(void) {
 			}
 			drawMesh(AEVec2{ WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12 }, AEVec2 { origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i }, PI);
 
-			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) {
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) 
+				&& isSettings == FALSE)																	
+			{
 
 				if (isPressed1 == FALSE) {
 					isPressed1 = TRUE;
@@ -267,9 +269,11 @@ void GameStatePlatformerDraw(void) {
 				isPressed1 = FALSE;
 			}
 
-			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24) {
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24)
+				&& isSettings == FALSE) 
+			{
 
 				if (isPressed2 == FALSE) {
 					isPressed2 = TRUE;
@@ -281,9 +285,11 @@ void GameStatePlatformerDraw(void) {
 				isPressed2 = FALSE;
 			}
 
-			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) {
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) 
+				&& isSettings == FALSE) 
+			{
 
 				if (isPressed3 == FALSE) {
 					isPressed3 = TRUE;
@@ -295,9 +301,11 @@ void GameStatePlatformerDraw(void) {
 				isPressed3 = FALSE;
 			}
 
-			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
+			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) {
+				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) 
+				&& isSettings == FALSE)
+			{
 
 				if (isPressed4 == FALSE) {
 					isPressed4 = TRUE;
@@ -323,6 +331,8 @@ void GameStatePlatformerDraw(void) {
 		if (isSettings == TRUE) {
 			settings_draw();	// Draw menu to screen
 			settings_update();	// Update collision within menu
+
+			// if "Back" button pressed, exit settings menu
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
 				center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
