@@ -24,31 +24,36 @@ extern AEVec2 world_center_cursor;  // Origin is CENTER of window
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
 extern AEVec2 origin; // origin (0,0) is in middle of screen, no matter where the camera moves
 
-// Settings Menu 
+// ---- Settings Menu ---- 
 bool is_Settings{ FALSE }; // if TRUE, screen is currently showing settings menu
 
 void GameStateMainmenuLoad(void) {
+
 	// Texture load
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
 	
-	mesh_load();
+	// Settings texture load
+	settings_load();
 
-	GameStateSettingsLoad();
+	mesh_load();
 	
 }
 
 void GameStateMainmenuInit(void) {
-	GameStateSettingsInit();
+
+	// Initialize settings menu variables
+	settings_init();
 
 }
 
 void GameStateMainmenuUpdate(void) {
 
-	variables_update();  // Updating all global variables commonly used is utmost priority
-	if (is_Settings == FALSE) // Settings menu buttons & Main Menu buttons located
-								// in same location, so collision should carry out main menu functions when is_Settings disabled
+	variables_update();			// Updating all global variables commonly used is utmost priority
+
+	if (is_Settings == FALSE)	// Settings menu buttons & Main Menu buttons located
+								// in same locations, so collision should carry out main menu functions when is_Settings disabled
 								// and settings functions when is_Settings enabled
 	{
 		for (s32 i = 15; i <= 27; i += 4) {
@@ -109,8 +114,8 @@ void GameStateMainmenuDraw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.18, -0.83, 0.95F, 1, 1, 1);
 
 	if (is_Settings == TRUE) {
-		GameStateSettingsDraw();
-		GameStateSettingsUpdate();
+		settings_draw();	// Draws menu to screen
+		settings_update();	// Updates collision within menu
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
 			center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
 			center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
@@ -124,7 +129,8 @@ void GameStateMainmenuFree() {
 }
 
 void GameStateMainmenuUnload(void) {
-	GameStateSettingsUnload();
+	// Settings Texture unload
+	settings_unload(); 
 	
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);

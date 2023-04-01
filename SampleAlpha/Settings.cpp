@@ -23,7 +23,7 @@ AEVec2 vbutton, vbar; // vector for volume button & bar coordinates
 float buttonscalex, buttonscaley; // x and y scale of volume button
 float barscalex, barscaley; // x and y scale of volume bar
 
-void GameStateSettingsLoad(void) {
+void settings_load(void) {
 
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
@@ -38,7 +38,7 @@ void GameStateSettingsLoad(void) {
 }
 
 
-void GameStateSettingsInit(void) {
+void settings_init(void) {
 	// initialize volume button coordinates and scale
 	vbutton.x = origin.x;
 	vbutton.y = origin.y + 150.f;
@@ -52,7 +52,7 @@ void GameStateSettingsInit(void) {
 	barscaley = WINDOWLENGTH_Y / 80.f;
 }
 
-void GameStateSettingsUpdate(void) {
+void settings_update(void) {
 
 	// get cursor coordinates
 	variables_update();
@@ -98,7 +98,7 @@ void GameStateSettingsUpdate(void) {
 	
 }
 
-void GameStateSettingsDraw(void) {
+void settings_draw(void) {
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
@@ -156,11 +156,11 @@ void GameStateSettingsDraw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Back", (f32) - 0.1, (f32) - 0.3, (f32)0.95F, (f32)1, (f32)1, (f32)1);
 
 }
-void GameStateSettingsFree() {
+void settings_free() {
 
 }
 
-void GameStateSettingsUnload(void) {
+void settings_unload(void) {
 
 	//// FontID unload
 	//AEGfxDestroyFont(Albam_fontID);
