@@ -293,11 +293,11 @@ void GameStateMainmenuDraw(void) {
 	// ------ Texts ------
 	float first_text = (origin.y + button_startY - (button_Yunit * first_multiple) - menu_button_scaleY / 2) / WINDOWLENGTH_Y;
 	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.4, 0.15, 3.0F, 1, 1, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"Start Game", -0.12, (origin.y + button_startY - (button_Yunit * first_multiple) - menu_button_scaleY/2)/WINDOWLENGTH_Y , 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Tutorial", -0.09, first_text - 0.21f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Settings", -0.09, first_text - 0.41f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Credits", -0.085, first_text - 0.62f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.11, first_text - 0.82f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"START GAME", -0.125, (origin.y + button_startY - (button_Yunit * first_multiple) - menu_button_scaleY/2)/WINDOWLENGTH_Y , 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"TUTORIAL", -0.097, first_text - 0.21f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.097, first_text - 0.41f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"CREDITS", -0.085, first_text - 0.62f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.82f, 0.75f, 1, 1, 1);
 
 	if (is_Settings == TRUE) {
 		settings_draw();	// Draws menu to screen
@@ -339,8 +339,8 @@ void GameStateMainmenuDraw(void) {
 			AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
 			AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f , 0.75f, 0, 0, 0);
 
-			AEGfxPrint(Albam_fontID, (s8*)"Back", -0.055, first_text - 0.41f, 0.75f, 1, 1, 1);
-			AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.11, first_text - 0.62f, 0.75f, 1, 1, 1);
+			AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.055, first_text - 0.41f, 0.75f, 1, 1, 1);
+			AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.62f, 0.75f, 1, 1, 1);
 		}
 	}
 }

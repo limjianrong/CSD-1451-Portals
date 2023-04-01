@@ -36,6 +36,16 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "Settings.hpp"
 #include "Audio.hpp"
 
+// ---- Drawing Variables ----
+extern float menu_button_scaleX;		// Width of menu button
+extern float menu_button_scaleY;	// Height of menu button
+extern float button_leftEdge;		// X coordinate of left edge of menu button
+extern float button_rightEdge;		// X coordinate of right edge of menu button
+extern float button_startY;			// Buttons drawn top down from this value above origin.y
+float p_button_Yunit{ WINDOWLENGTH_Y / 20 };			// Buttons' y-coordinates are separated by multiples of this unit
+int p_first_multiple{ 9 };							// First multiple of button_Yunit
+int p_multiple_increment{ 2 };						// Increment of multiples of button_Yunit
+extern int button_count;								// 5 menu buttons
 
 //#include <iostream>
 
@@ -66,7 +76,13 @@ extern Camera camera;
 // --- Audio ---
 extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
 extern AEAudioGroup soundGroup, musicGroup;
-static bool isPressed1, isPressed2, isPressed3, isPressed4;
+static bool isPressed1, isPressed2, isPressed3, isPressed4, isPressed5;
+
+// --- Quit Confirmation ---
+bool p_isQuitting;
+extern float quit_scaleX;
+extern float quit_scaleY;
+AEGfxTexture* p_quitWindow;
 
 /*!**************************************************************************************************
 \brief
@@ -83,6 +99,7 @@ void GameStatePlatformerLoad(void) {
 	background_layer1Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_background.png");
 	background_layer2Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_tiles.png");
 	background_layer3Tex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Backgrounds/set2_hills.png");
+	p_quitWindow = AEGfxTextureLoad("Assets/card.png");
 
 	// --- Loads mesh ---
 	mesh_load();
@@ -130,18 +147,19 @@ void GameStatePlatformerUpdate(void) {
 	if (isPaused && (isSettings == FALSE)) {
 
 		// --------- Collision ---------
-		for (s32 i = 9; i <= 15; i += 2) {
+		for (s32 i = p_first_multiple; i <= p_first_multiple + p_multiple_increment*(button_count-1); i += p_multiple_increment) {
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
-				center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24) {
-				if (i == 9) {
+				center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - p_button_Yunit * i - menu_button_scaleY/2 &&
+				center_cursor.y <= button_startY - p_button_Yunit * i + menu_button_scaleY/2
+				&& p_isQuitting == FALSE) {
+				if (i == p_first_multiple) {
 					isPaused = FALSE;				// Resume button
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
-				else if (i == 11) {
+				else if (i == p_first_multiple + (p_multiple_increment*1)) {
 					gGameStateNext = GS_RESTART;	// Restart button
 
 					// Audio once button is pressed
@@ -150,7 +168,7 @@ void GameStatePlatformerUpdate(void) {
 					AEAudioStopGroup(soundGroup);
 					AEAudioStopGroup(musicGroup);
 				}
-				else if (i == 13) {
+				else if (i == p_first_multiple + (p_multiple_increment * 2)) {
 					//GameStateSettingsUpdate();	// Settings button
 					//isPaused = FALSE;				// Resume game
 					isSettings = TRUE;
@@ -159,21 +177,57 @@ void GameStatePlatformerUpdate(void) {
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 
 				}
-				else if (i == 15) {
-					gGameStateNext = GS_MainMenu;	// Main menu button
+				else if (i == p_first_multiple + (p_multiple_increment * 3)) {
+					gGameStateNext = GS_Tutorial;	// Main menu button
 					isPaused = FALSE;				// Resume game
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+	
+				}
+				else if (i == p_first_multiple + (p_multiple_increment * 4)) {
+					p_isQuitting = TRUE;
+
 					// Stop all audio
 					AEAudioStopGroup(soundGroup);
 					AEAudioStopGroup(musicGroup);
+					// Audio once button is pressed
+					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+				}
+
+			}
+
+		}
+
+		if (p_isQuitting == TRUE) {
+			for (int i = p_first_multiple + p_multiple_increment * 2; i <= p_first_multiple + (p_multiple_increment * (button_count - 2)); i += p_multiple_increment) {
+				if (AEInputCheckReleased(AEVK_LBUTTON) &&
+					isSettings == FALSE &&
+					(center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+						center_cursor.y >= button_startY - p_button_Yunit * i - menu_button_scaleY / 2 &&
+						center_cursor.y <= button_startY - p_button_Yunit * i + menu_button_scaleY / 2)) {
+
+
+					if (i == p_first_multiple + p_multiple_increment * 2) {
+						p_isQuitting = FALSE;
+
+						AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
+						// Audio once button is pressed
+						AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					}
+					else if (i == p_first_multiple + p_multiple_increment * 3) {
+						gGameStateNext = GS_MainMenu;
+						// Audio once button is pressed
+						AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					}
 				}
 			}
 		}
 
-	
 	}
+
+	
+	
 
 	else {
 		
@@ -232,11 +286,13 @@ void GameStatePlatformerDraw(void) {
 
 		// --------- Buttons ---------
 		AEGfxSetTransparency(1.0f);
-		for (int i = 9; i <= 15; i+=2) {
-
-			if (center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i + WINDOWLENGTH_Y / 24) {
+		for (s32 i = p_first_multiple; i <= p_first_multiple + p_multiple_increment * (button_count - 1); i += p_multiple_increment) {
+			
+			if (center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - p_button_Yunit * i - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - p_button_Yunit * i + menu_button_scaleY / 2
+				&& isSettings == FALSE
+				&& p_isQuitting == FALSE) {
 				
 				AEGfxTextureSet(buttonPressed, 0, 0);
 
@@ -253,10 +309,12 @@ void GameStatePlatformerDraw(void) {
 			}
 			drawMesh(AEVec2{ WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12 }, AEVec2 { origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i }, PI);
 
-			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 + WINDOWLENGTH_Y / 24) 
-				&& isSettings == FALSE)																	
+			// 1st button from top
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - (p_button_Yunit * p_first_multiple) + menu_button_scaleY / 2)
+				&& isSettings == FALSE
+				&& p_isQuitting == FALSE)
 			{
 
 				if (isPressed1 == FALSE) {
@@ -269,10 +327,12 @@ void GameStatePlatformerDraw(void) {
 				isPressed1 = FALSE;
 			}
 
-			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 + WINDOWLENGTH_Y / 24)
-				&& isSettings == FALSE) 
+			// 2nd button from top
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 1))) - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 1))) + menu_button_scaleY / 2)
+				&& isSettings == FALSE
+				&& p_isQuitting == FALSE)
 			{
 
 				if (isPressed2 == FALSE) {
@@ -285,10 +345,11 @@ void GameStatePlatformerDraw(void) {
 				isPressed2 = FALSE;
 			}
 
-			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 + WINDOWLENGTH_Y / 24) 
-				&& isSettings == FALSE) 
+			// 3rd button from top
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 2))) - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 2))) + menu_button_scaleY / 2)
+				&& isSettings == FALSE)
 			{
 
 				if (isPressed3 == FALSE) {
@@ -301,9 +362,10 @@ void GameStatePlatformerDraw(void) {
 				isPressed3 = FALSE;
 			}
 
-			if ((center_cursor.x >= -WINDOWLENGTH_X / 10 && center_cursor.x <= WINDOWLENGTH_X / 10 &&
-				center_cursor.y >= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 24 &&
-				center_cursor.y <= WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 + WINDOWLENGTH_Y / 24) 
+			// 4th button from top
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 3))) - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 3))) + menu_button_scaleY / 2)
 				&& isSettings == FALSE)
 			{
 
@@ -317,16 +379,34 @@ void GameStatePlatformerDraw(void) {
 				isPressed4 = FALSE;
 			}
 
+			// 5th button from top
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 4))) - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 4))) + menu_button_scaleY / 2)
+				&& isSettings == FALSE
+				&& p_isQuitting == FALSE)
+			{
+
+				if (isPressed5 == FALSE) {
+					isPressed5 = TRUE;
+					// Hovering over button sfx
+					AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+				}
+			}
+			else {
+				isPressed5 = FALSE;
+			}
 
 		
 		}
 
 		// --------- Texts ---------
 		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.27f, 0.55f, 2.0f, 1, 1, 0);
-		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.11f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
-		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.12f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
-		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.13f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
-		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.155f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.09f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.1f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.11f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"TUTORIAL", -0.11f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
+		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.12f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 17 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 
 		if (isSettings == TRUE) {
 			settings_draw();	// Draw menu to screen
@@ -338,6 +418,43 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
 				center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
 				isSettings = FALSE;
+			}
+		}
+
+		if (p_isQuitting == TRUE) {
+			// --------- Make whole screen translucent ---------
+			AEGfxSetTransparency(0.55f);
+			AEGfxTextureSet(nullptr, 0, 0);
+			drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+
+			AEGfxSetTransparency(1.f);
+
+			AEGfxTextureSet(p_quitWindow, 0, 0);
+			drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, PI);
+
+			for (int i = p_first_multiple + p_multiple_increment * 2; i <= p_first_multiple + (p_multiple_increment * (button_count - 2)); i += p_multiple_increment) {
+
+				if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+					center_cursor.y >= button_startY - p_button_Yunit * i - menu_button_scaleY / 2 &&
+					center_cursor.y <= button_startY - p_button_Yunit * i + menu_button_scaleY / 2)
+					&& isSettings == FALSE)
+					AEGfxTextureSet(buttonPressed, 0, 0);
+
+				else AEGfxTextureSet(buttonNotPressed, 0, 0);
+
+				drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - p_button_Yunit * i }, PI);
+
+				float first_text = (origin.y + button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2) / WINDOWLENGTH_Y;
+
+				AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"All progress", -0.11, first_text + 0.15f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"will be lost.", -0.115, first_text, 0.75f, 0, 0, 0);
+
+
+				AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.059, first_text - 0.32f, 0.75f, 1, 1, 1);
+				AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.53f, 0.75f, 1, 1, 1);
 			}
 		}
 	}
