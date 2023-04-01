@@ -1,14 +1,13 @@
-/******************************************************************************//*!
-\file		GameState_Splashscreen.cpp
-\author 	Digipen, Tay Zhun Hang
-\par    	email: zhunhang.tay@digipen.edu
-\date   	26 March, 2023
-\brief		
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameState_Splashscreen.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
+*
+* Brief:
+  This source file implements the functions used for the splash screen.
+==================================================================================*/
 #include "AEEngine.h"
 #include "GameState_Mainmenu.hpp"
 #include "GameStateManager.hpp"
@@ -20,8 +19,8 @@ AEGfxTexture* logo;
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
-f32 transparancy;
-f64 timer;
+static f32 transparancy;
+static f64 timer;
 
 void GameStateSplashscreenLoad(void) {
 	mesh_load();
@@ -40,7 +39,8 @@ void GameStateSplashscreenUpdate(void) {
 
 	if (timer >= 2) {
 		transparancy -= 0.1f;
-		if(transparancy < 0.f) gGameStateNext = GS_MainMenu;
+		if (transparancy < 0.f) gGameStateNext = GS_MainMenu;
+		//if (transparancy < 0.f) gGameStateNext = GS_Credits;
 	}
 
 }

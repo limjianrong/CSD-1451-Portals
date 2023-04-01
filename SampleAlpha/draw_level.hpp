@@ -1,16 +1,18 @@
-/******************************************************************************//*!
-\file		draw_level.hpp
-\author 	Digipen, Tay Zhun Hang
-\par    	email: zhunhang.tay@digipen.edu
-\date   	12 February, 2023
-\brief		
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					draw_level.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
+*
+* Brief:
+  This header file declares the functions used for the level design of the game. It
+  also includes the source code for the logic of different platforms types.
+==================================================================================*/
 #pragma once
+#include "AEEngine.h"
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include "Utilities.hpp"
 
 //==== Platform Parameter ====

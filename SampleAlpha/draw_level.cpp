@@ -1,20 +1,15 @@
-/******************************************************************************//*!
-\file		draw_level.cpp
-\author 	Digipen, Tay Zhun Hang
-\par    	email: zhunhang.tay@digipen.edu
-\date   	12 February, 2023
-\brief
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
-#include "AEEngine.h"
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					draw_level.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
+*
+* Brief:
+  This source file implements the functions used for the level design of the game. It
+  also includes the source code for the logic of different platforms types.
+==================================================================================*/
 #include "draw_level.hpp"
-
-#include "Player.hpp"
-#include "Enemy.hpp"
-#include <iostream>
 
 AEGfxTexture* platform_text, * spike_text, *onetime_text;
 
@@ -547,7 +542,7 @@ void move_update() {
 	for (s32 i = 0; i < MAX_SPIKES; i++) {
 		if (AETestRectToRect(&floorspikes[i].center, BLOCK_WIDTH * floorspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 			if (damage_ok == TRUE) {
-				//--player.Hp;     // CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
+				--player.Hp;
 				damage_ok = FALSE;
 			}
 			else if (damage_ok == FALSE) {
@@ -562,7 +557,7 @@ void move_update() {
 			leftrightspikes[i].x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
 			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 				if (damage_ok == TRUE) {
-					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
+					--player.Hp;
 					damage_ok = FALSE;
 				}
 				else if (damage_ok == FALSE) {
@@ -577,9 +572,9 @@ void move_update() {
 
 		if (leftrightspikes[i].pos == MOVED) {
 			leftrightspikes[i].x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
-			if (AETestRectToRect(&leftright[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
+			if (AETestRectToRect(&leftrightspikes[i].center, BLOCK_WIDTH * leftrightspikes[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 				if (damage_ok == TRUE) {
-					//--player.Hp;		// CAUSING ISSUE ( FIX BEFORE PUSHING) ALWAYS COLLIDING SOMEHOW
+					--player.Hp;
 					damage_ok = FALSE;
 				}
 				else if (damage_ok == FALSE) {

@@ -1,14 +1,13 @@
-/******************************************************************************//*!
-\file		GameState_Splashscreen.hpp
-\author 	Digipen, Tay Zhun Hang
-\par    	email: zhunhang.tay@digipen.edu
-\date   	26 March, 2023
-\brief
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameState_Splashscreen.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
+*
+* Brief:
+  This header file declares the functions used for the splash screen.
+==================================================================================*/
 void GameStateSplashscreenLoad(void);
 void GameStateSplashscreenInit(void);
 void GameStateSplashscreenUpdate(void);

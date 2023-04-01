@@ -27,6 +27,7 @@
 #include "GameState_Tutorial.hpp"
 #include "GameState_Tutorial2.hpp"
 #include "GameState_Splashscreen.hpp"
+#include "GameState_Credits.hpp"
 
 u32 gGameStateInit, gGameStateCurr, gGameStatePrev, gGameStateNext;
 
@@ -115,6 +116,14 @@ void GameStateMgrUpdate()
 			GameStateDraw = GameStateSplashscreenDraw;
 			GameStateFree = GameStateSplashscreenFree;
 			GameStateUnload = GameStateSplashscreenUnload;
+			break;
+		case GS_Credits:
+			GameStateLoad = GameStateCreditsLoad;
+			GameStateInit = GameStateCreditsInit;
+			GameStateUpdate = GameStateCreditsUpdate;
+			GameStateDraw = GameStateCreditsDraw;
+			GameStateFree = GameStateCreditsFree;
+			GameStateUnload = GameStateCreditsUnload;
 			break;
 		case GS_Tutorial:
 			GameStateLoad = GameStateTutorialLoad;
