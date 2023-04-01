@@ -82,6 +82,9 @@ void boss_load() {
 
 //initializes some variables used for boss bullet, laser beam, and boss teleportation
 void boss_init () {
+
+	//intitialize max hp of boss
+	boss.maxHp = boss.Hp;
 	// ---- Attack #2  :  Bullet ----
 	bullet.x = boss.x_pos;					// Bullet x position
 	bullet.y = boss.y_pos;					// Bullet y position
@@ -200,9 +203,9 @@ void boss_movement() {
 	AEVec2Set(&boss.center, boss.x_pos, boss.y_pos);
 }
 
-//teleportation of the boss, only occurs when boss hp <=3
+//teleportation of the boss, only occurs when boss hp less than or equal to half of boss's max hp
 void boss_movement_teleport() {
-	if (boss.Hp <= 3) {
+	if (boss.Hp <= boss.maxHp/2) {
 		//increment time elapsed
 		boss_teleport.time_elapsed += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 

@@ -28,7 +28,7 @@ struct Boss{
 
 	//range of boss's bullet
 	f32 range_x{}, range_y{}; 
-	s32 Hp{};
+	s32 Hp{}, maxHp{};
 	s32 direction{ UP };
 
 	// ---- Texture ----
