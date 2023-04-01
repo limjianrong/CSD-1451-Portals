@@ -23,12 +23,17 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define LEVEL_SYSTEM_2 10
 #define LEVEL_SYSTEM_3 15
 
+#define Lives_OffsetY 50
+#define XP_BAR_HEIGHT 50
+#define XP_BAR_OFFSETX 160
+
 void player_load();
 void player_init();
 void player_draw();
 void player_update();
 void player_unload();
 
+void Render_LevelnXP();
 void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange);
 void Render_Lives(s32 currLife, f32 offsetX);
 void respawn_player();

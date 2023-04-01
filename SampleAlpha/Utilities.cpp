@@ -35,7 +35,7 @@ AEVec2 origin;					// Center of screen, no matter where the camera moves
   Pointer to AEGfxVertexList. Saving it into a similar type allows it to be called and drawn
 *******************************************************************************************************/
 AEGfxVertexList* create_Square_Mesh() {
-	AEGfxVertexList* create_mesh;
+	AEGfxVertexList* created_mesh;
 	AEGfxMeshStart();
 	// This shape has 2 triangles that makes up a square
 	// Color parameters represent colours as ARGB
@@ -59,8 +59,8 @@ AEGfxVertexList* create_Square_Mesh() {
 		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 0.0f);*/
 
 	// Saving the mesh (list of triangles) in pMesh
-	create_mesh = AEGfxMeshEnd();
-	return create_mesh;
+	created_mesh = AEGfxMeshEnd();
+	return created_mesh;
 }
 
 void mesh_load() {
@@ -156,7 +156,8 @@ void GameObjects::Render_HealthBar() {
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetTintColor(0, 0, 0, 1.f);
-		drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f + 10.f }, PI);
+		//drawMesh(AEVec2{ 80.f, 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f + 10.f }, PI);
+		drawMesh(AEVec2{ dimensions.x , 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f + 10.f }, PI);
 
 		f32 health_percentage = ((float)Hp / (float)Max_Hp) * 100.f;
 		/*if (health_percentage >= 80.f) {
@@ -177,8 +178,8 @@ void GameObjects::Render_HealthBar() {
 		else {
 			AEGfxSetTintColor(255, 0, 0, 1.f);
 		}
-		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * 80.f , 15.f }, 
-				 AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * 40.f), center.y + dimensions.y / 2.f + 10.f}, PI);
+		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * dimensions.x , 15.f },
+				 AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * dimensions.x / 2.f), center.y + dimensions.y / 2.f + 10.f}, PI);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }

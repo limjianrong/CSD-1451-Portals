@@ -1,3 +1,4 @@
+boss_status 1
 boss_width 200
 boss_height 200
 boss_x_position 8000

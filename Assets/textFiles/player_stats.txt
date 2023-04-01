@@ -10,7 +10,7 @@ XP_RESET 0
 Max_Hp 5
 Hp 5
 Max_Hp_Reset 5
-Lives_Reset 3
+Lives_Reset 5
 Speed_Reset 1
 Level_Reset 0
 XP_Reset 0

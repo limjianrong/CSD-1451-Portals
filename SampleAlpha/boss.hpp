@@ -23,20 +23,17 @@
 enum { UP, DOWN,STOP };
 
 //variables of the boss
-struct Boss{
-	f32 width{}, height{}, x_pos{}, y_pos{}, velocity{};
+struct Boss : GameObjects {
 
 	//range of boss's bullet
-	f32 range_x{}, range_y{}; 
-	s32 Hp{}, maxHp{};
+	f32 range_x, range_y; 
 	s32 direction{ UP };
+	f32 velocity;
 
 	// ---- Texture ----
-	AEMtx33 scale{}, translate{}, matrix{};
+	AEMtx33 scale, translate, matrix;
 	AEGfxTexture* standTex, * deadTex;
 
-	//center of boss
-	AEVec2 center{};
 };
 
 
@@ -45,45 +42,45 @@ struct Boss{
 struct Laser_beam{
 	
 	//laser beam attack is active or not
-	bool active{};
+	bool active;
 
 	//position, width, height, cooldown of laser beam attack
-	f32 x{}, y{};
-	f32 width{}, height{}, cooldown{};
+	f32 x, y;
+	f32 width, height, cooldown;
 
 	//duration refers to how long the laser beam attack has been active
 	//buffer duration is used to warn the player that the boss is about
 	//to commence the laser beam attack
-	f32 duration{}, buffer_duration{};
+	f32 duration, buffer_duration;
 
 	//duration of the laser beam attack
-	f32 max_duration{};
+	f32 max_duration;
 
 	//time elapsed since the previous laser beam attack
-	f32 time_elapsed{};
+	f32 time_elapsed;
 
 	//sets the flag if the player has been damaged by the laser beam attack
-	bool damaged_player{};
+	bool damaged_player;
 
 	//center of laser beam
-	AEVec2 center{};
+	AEVec2 center;
 
 	// ---- Texture ----
 	AEMtx33 scale{}, translate{}, rotate{}, final_matrix{};
-	AEGfxTexture* picture{};
+	AEGfxTexture* picture;
 
 	//variables  used to let players know that
 	//the boss is about to start the laser beam attack
-	AEGfxTexture* warning_pic{};
-	f32 warning_pic_width{}, warning_pic_height{};
-	AEMtx33 warning_pic_scale{}, warning_pic_translate{}, warning_pic_matrix{};
+	AEGfxTexture* warning_pic;
+	f32 warning_pic_width, warning_pic_height;
+	AEMtx33 warning_pic_scale, warning_pic_translate, warning_pic_matrix;
 };
 
 // ------ Attack #2 ------
 #define BOSS_TIMER 0.5f
 struct Bullet {
-	f32 x{}, y{};
-	AEVec2 center{};
+	f32 x, y;
+	AEVec2 center;
 	f32 width, height;
 	f32 speed;
 	f32 timer;
@@ -97,40 +94,40 @@ struct Bullet {
 //variables of the boss's charge attack
 struct Boss_charge {
 	//flags used to at different parts of the boss charge attack
-	bool active{}, return_to_position{}, player_damaged{};
+	bool active, return_to_position, player_damaged;
 
 	//cooldown of the attack, range of the attack, speed of the
 	//boss during its attack, as well as time elapsed since
 	//the previous charge attack
-	f32 cooldown{}, range{}, velocity{}, time_elapsed{};
+	f32 cooldown, range, velocity, time_elapsed;
 
 	//distance travelled by boss during charge attack
-	f32 distance_travelled{}, direction_magnitude{};
+	f32 distance_travelled, direction_magnitude;
 
 	//direction of the boss prior to its charge attack
 	
-	s32 previous_direction{};
+	s32 previous_direction;
 
 
 	//original position when boss first starts the charge attack
-	AEVec2 original_position{};
+	AEVec2 original_position;
 
 	//direction of boss's charge
-	AEVec2 direction{};
+	AEVec2 direction;
 
 	//normalized vector of the boss's direction to charge towards
-	AEVec2 normalized_direction{};
+	AEVec2 normalized_direction;
 
 	//endpoint of boss's charge
-	AEVec2 endpoint{};
+	AEVec2 endpoint;
 
 };
 
 //boss teleportation, cooldown, time elapsed since last teleport
 //location of where to teleport to
 struct Boss_teleport {
-	f32 cooldown{}, time_elapsed{};
-	AEVec2 location{};
+	f32 cooldown, time_elapsed;
+	AEVec2 location;
 };
 // ---- Main Functions ----
 

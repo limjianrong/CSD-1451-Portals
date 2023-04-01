@@ -13,6 +13,9 @@
 
 #include "boss.hpp"
 #include "Player.hpp"
+#include "Utilities.hpp"
+
+// ---- Game Objects / Classes ----
 extern Player_stats player;
 Boss boss; //boss object
 Bullet bullet;
@@ -20,15 +23,15 @@ Laser_beam laser_beam; //boss laser beam attack
 Boss_charge boss_charge; //boss charge attack
 Boss_teleport boss_teleport; //boss teleportation
 static bool isRunning = FALSE;
-// ----- Normalization -----
+// ---- Normalization ----
 f32 adj, opp, angle;
 f32 dist_boss2bullet, dist_boss2player;  // no longer using
 AEVec2 normalized_vector; // direction vector from player to cursor
 
-// --- Mesh ---
+// ---- Mesh ----
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
-// --- Audio ---
+// ---- Audio ----
 extern AEAudio laserAudio, damageAudio, deathAudio, bulletAudio;
 extern AEAudioGroup soundGroup;
 
@@ -62,10 +65,11 @@ void boss_load() {
 
 	//load boss stats from std::ifstream
 	std::string str{};
-	boss_ifs >> str >> boss.width;
-	boss_ifs >> str >> boss.height;
-	boss_ifs >> str >> boss.x_pos;
-	boss_ifs >> str >> boss.y_pos;
+	boss_ifs >> str >> boss.status;
+	boss_ifs >> str >> boss.dimensions.x;
+	boss_ifs >> str >> boss.dimensions.y;
+	boss_ifs >> str >> boss.center.x;
+	boss_ifs >> str >> boss.center.y;
 	boss_ifs >> str >> boss.velocity;
 	boss_ifs >> str >> boss.range_x;
 	boss_ifs >> str >> boss.range_y;
@@ -84,10 +88,10 @@ void boss_load() {
 void boss_init () {
 
 	//intitialize max hp of boss
-	boss.maxHp = boss.Hp;
+	boss.Max_Hp = boss.Hp;
 	// ---- Attack #2  :  Bullet ----
-	bullet.x = boss.x_pos;					// Bullet x position
-	bullet.y = boss.y_pos;					// Bullet y position
+	bullet.x = boss.center.x;					// Bullet x position
+	bullet.y = boss.center.y;					// Bullet y position
 	bullet.width = 20.0f;					// Bullet width
 	bullet.height = 20.0f;					// Bullet height
 	bullet.speed = 5.0f;					// Bullet speed
@@ -102,7 +106,7 @@ void boss_init () {
 
 	//initialize transformation matrix for laser beam warning picture
 	AEMtx33Scale(&laser_beam.warning_pic_scale, laser_beam.warning_pic_width, laser_beam.warning_pic_height);
-	AEMtx33Trans(&laser_beam.warning_pic_translate, boss.x_pos, boss.y_pos);
+	AEMtx33Trans(&laser_beam.warning_pic_translate, boss.center.x, boss.center.y);
 	AEMtx33Concat(&laser_beam.warning_pic_matrix, &laser_beam.warning_pic_translate, &laser_beam.warning_pic_scale);
 	
 	boss_teleport.cooldown = 8.0f;			//cooldown of boss's teleportation
@@ -143,11 +147,11 @@ void boss_update() {
 void boss_draw() {
 
 	// When player is within boss zone
-	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
+	//if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
 		// -------------  Boss   ---------------
 		if (boss.Hp > 0) {
-			AEMtx33Scale(&boss.scale, boss.width, boss.height);
-			AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
+			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
+			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
 			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
 
 
@@ -157,16 +161,19 @@ void boss_draw() {
 			// -------------  Attack 2 (Bullet)   ---------------
 			bullet_draw();
 
+			// -------- Drawing out HP bar ----------
+			boss.GameObjects::Render_HealthBar();
+
 		}
 		else {  // --- Boss dead ---
 			AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-			drawMesh(AEVec2{ boss.width, boss.height }, boss.center, PI);
+			drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, PI);
 		}
 		AEGfxSetTransform(boss.matrix.m);
 		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		//draw_laser_beam_warning();
-	}
+	//}
 }
 
 //frees any objects related to the boss
@@ -192,8 +199,8 @@ void boss_movement() {
 	//boss movement up, boss movement will be relative to the player's y position
 	if (boss.direction == UP) {
 		//if top most edge of the boss is same height as the top of the screen, change direction to move down
-		boss.y_pos += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
-		if (boss.y_pos + (boss.height) / 2 >= AEGfxGetWinMaxY()) {
+		boss.center.y += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+		if (boss.center.y + (boss.dimensions.y) / 2 >= AEGfxGetWinMaxY()) {
 			boss.direction = DOWN;
 		}
 	}
@@ -201,18 +208,16 @@ void boss_movement() {
 	//boss movement down, also relative to player's y position
 	if (boss.direction == DOWN) {
 		//if bottom most edge of boss is same height as the bottom of the screen, change direction to move up
-		boss.y_pos -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
-		if (boss.y_pos - (boss.height) / 2 <= AEGfxGetWinMinY()) {
+		boss.center.y -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * boss.velocity;
+		if (boss.center.y - (boss.dimensions.y) / 2 <= AEGfxGetWinMinY()) {
 			boss.direction = UP;
 		}
 	}
-	//set a vector to the boss center
-	AEVec2Set(&boss.center, boss.x_pos, boss.y_pos);
 }
 
 //teleportation of the boss, only occurs when boss hp less than or equal to half of boss's max hp
 void boss_movement_teleport() {
-	if (boss.Hp <= boss.maxHp/2) {
+	if (boss.Hp <= boss.Max_Hp /2) {
 		//increment time elapsed
 		boss_teleport.time_elapsed += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
@@ -223,14 +228,14 @@ void boss_movement_teleport() {
 			boss_teleport.location.y = rand() % AEGetWindowHeight() + AEGfxGetWinMinY();
 			
 			//if boss's teleport location will collide with player, generate a new location
-			while (AETestRectToRect(&boss_teleport.location, boss.width, boss.height, &player.center, player.dimensions.x, player.dimensions.y)) {
+			while (AETestRectToRect(&boss_teleport.location, boss.dimensions.x, boss.dimensions.y, &player.center, player.dimensions.x, player.dimensions.y)) {
 				boss_teleport.location.x = rand() % AEGetWindowWidth() + AEGfxGetWinMinX();
 				boss_teleport.location.y = rand() % AEGetWindowHeight() + AEGfxGetWinMinY();
 			}
 
 			//teleport the boss to its new randomized location
-			boss.x_pos = boss_teleport.location.x;
-			boss.y_pos = boss_teleport.location.y;
+			boss.center.x = boss_teleport.location.x;
+			boss.center.y = boss_teleport.location.y;
 
 			//reset the time elapsed since the boss's last teleport
 			boss_teleport.time_elapsed = 0;
@@ -258,11 +263,11 @@ void boss_laser_beam_attack() {
 		laser_beam.duration += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
 		//set the direction that the laser beam is firing at
-		if (player.center.x < boss.x_pos) {
-			AEVec2Set(&laser_beam.center, boss.x_pos - laser_beam.width / 2, boss.y_pos);
+		if (player.center.x < boss.center.x) {
+			AEVec2Set(&laser_beam.center, boss.center.x - laser_beam.width / 2, boss.center.y);
 		}
 		else {
-			AEVec2Set(&laser_beam.center, boss.x_pos + laser_beam.width / 2, boss.y_pos);
+			AEVec2Set(&laser_beam.center, boss.center.x + laser_beam.width / 2, boss.center.y);
 		}
 		//calculate the transformations of the laser beam
 		AEMtx33Scale(&laser_beam.scale, laser_beam.width, laser_beam.height);
@@ -299,18 +304,18 @@ void boss_laser_beam_attack() {
 void bullet_update() {
 
 	// ----------  Boss  ----------
-	if (player.center.y <= boss.y_pos) {			// Player below boss
-		opp = player.center.y - boss.y_pos;
+	if (player.center.y <= boss.center.y) {			// Player below boss
+		opp = player.center.y - boss.center.y;
 	}
-	else if (player.center.y >= boss.y_pos) {		// Player above boss
-		opp = boss.y_pos - player.center.y;
+	else if (player.center.y >= boss.center.y) {		// Player above boss
+		opp = boss.center.y - player.center.y;
 	}
 
-	if (player.center.x >= boss.x_pos) {			// Player right of boss
-		adj = player.center.x - boss.x_pos;
+	if (player.center.x >= boss.center.x) {			// Player right of boss
+		adj = player.center.x - boss.center.x;
 	}
-	else if (player.center.x <= boss.x_pos) {		// Player left of boss
-		adj = boss.x_pos - player.center.x;
+	else if (player.center.x <= boss.center.x) {		// Player left of boss
+		adj = boss.center.x - player.center.x;
 	}
 
 	// ---- Normalization ----
@@ -319,13 +324,13 @@ void bullet_update() {
 	AEVec2Scale(&normalized_vector, &normalized_vector, bullet.speed);
 
 	// distance between boss -> bullet, boss -> player
-	dist_boss2bullet = sqrt((bullet.x - boss.x_pos) * (bullet.x - boss.x_pos) + (bullet.y - boss.y_pos) * (bullet.y - boss.y_pos));
-	dist_boss2player = sqrt((boss.x_pos - player.center.x) * (boss.x_pos - player.center.x) + (boss.y_pos - player.center.y) * (boss.y_pos - player.center.y));
+	dist_boss2bullet = sqrt((bullet.x - boss.center.x) * (bullet.x - boss.center.x) + (bullet.y - boss.center.y) * (bullet.y - boss.center.y));
+	dist_boss2player = sqrt((boss.center.x - player.center.x) * (boss.center.x - player.center.x) + (boss.center.y - player.center.y) * (boss.center.y - player.center.y));
 
 
 	// If player is within boss range
-	if (player.center.x >= (boss.x_pos - boss.range_x) && player.center.x <= (boss.x_pos + boss.range_x) &&
-		player.center.y >= (boss.y_pos - boss.range_y) && player.center.y <= (boss.y_pos + boss.range_y)) {
+	if (player.center.x >= (boss.center.x - boss.range_x) && player.center.x <= (boss.center.x + boss.range_x) &&
+		player.center.y >= (boss.center.y - boss.range_y) && player.center.y <= (boss.center.y + boss.range_y)) {
 
 		// --- Enable shooting ---
 		isRunning = TRUE;
@@ -337,10 +342,10 @@ void bullet_update() {
 			if (dist_boss2bullet <= 400.f && isRunning == TRUE) {	// Bullet disappears after 400 units
 
 				// ----- Movement of bullet from boss to player -----
-				if (player.center.y <= boss.y_pos) bullet.y += normalized_vector.y;
-				else if (player.center.y >= boss.y_pos) bullet.y -= normalized_vector.y;
-				if (player.center.x >= boss.x_pos) bullet.x += normalized_vector.x;
-				else if (player.center.x <= boss.x_pos) bullet.x -= normalized_vector.x;
+				if (player.center.y <= boss.center.y) bullet.y += normalized_vector.y;
+				else if (player.center.y >= boss.center.y) bullet.y -= normalized_vector.y;
+				if (player.center.x >= boss.center.x) bullet.x += normalized_vector.x;
+				else if (player.center.x <= boss.center.x) bullet.x -= normalized_vector.x;
 
 				//std::cout << dist_boss2bullet << std::endl;
 				//// --- Bullet sfx everytime bullet is reset ---
@@ -350,12 +355,12 @@ void bullet_update() {
 			}
 			else {
 				// --- Resets bullet ---
-				bullet.x = boss.x_pos;
-				bullet.y = boss.y_pos;
+				bullet.x = boss.center.x;
+				bullet.y = boss.center.y;
 				bullet.isTeleported = FALSE;
 
 				// If player x within 100 units of boss
-				if (player.center.x >= (boss.x_pos - 100) && player.center.x <= boss.x_pos) {
+				if (player.center.x >= (boss.center.x - 100) && player.center.x <= boss.center.x) {
 					bullet.isTimerActive = TRUE;		// Enable bullet delay
 				}
 			}
@@ -368,17 +373,17 @@ void bullet_update() {
 		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
 			
 			// ----- Movement of bullet from boss to player -----
-			if (player.center.y <= boss.y_pos) bullet.y += normalized_vector.y;
-			else if (player.center.y >= boss.y_pos) bullet.y -= normalized_vector.y;
-			if (player.center.x >= boss.x_pos) bullet.x += normalized_vector.x;
-			else if (player.center.x <= boss.x_pos) bullet.x -= normalized_vector.x;
+			if (player.center.y <= boss.center.y) bullet.y += normalized_vector.y;
+			else if (player.center.y >= boss.center.y) bullet.y -= normalized_vector.y;
+			if (player.center.x >= boss.center.x) bullet.x += normalized_vector.x;
+			else if (player.center.x <= boss.center.x) bullet.x -= normalized_vector.x;
 		}
 		else {
 			// --- Disable shooting ---
 			isRunning = FALSE;
 			// --- Resets bullet ---
-			bullet.x = boss.x_pos;
-			bullet.y = boss.y_pos;
+			bullet.x = boss.center.x;
+			bullet.y = boss.center.y;
 			bullet.isTeleported = FALSE;
 		}
 	}
@@ -386,16 +391,16 @@ void bullet_update() {
 	// ----- Bullet collision with player -----
 	AEVec2Set(&bullet.center, bullet.x, bullet.y);
 	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &player.center, player.dimensions.x, player.dimensions.y)) {
-		bullet.x = boss.x_pos;				// Reset bullet x
-		bullet.y = boss.y_pos;				// Reset bullet y
+		bullet.x = boss.center.x;				// Reset bullet x
+		bullet.y = boss.center.y;				// Reset bullet y
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		//--player.Hp;
 	}
 
 	// ----- Bullet collision with boss -----
-	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &boss.center, boss.width, boss.height) && bullet.isTeleported) {
-		bullet.x = boss.x_pos;
-		bullet.y = boss.y_pos;
+	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &boss.center, boss.dimensions.x, boss.dimensions.y) && bullet.isTeleported) {
+		bullet.x = boss.center.x;
+		bullet.y = boss.center.y;
 		bullet.isTeleported = FALSE;
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--boss.Hp;
@@ -464,7 +469,7 @@ void boss_charge_attack() {
 		AEVec2Set(&boss_charge.endpoint, player.center.x, player.center.y);
 
 		//set vector for original position of boss to return to
-		AEVec2Set(&boss_charge.original_position, boss.x_pos, boss.y_pos);
+		AEVec2Set(&boss_charge.original_position, boss.center.x, boss.center.y);
 
 		//set direction for boss to charge towards
 		AEVec2Sub(&boss_charge.direction, &player.center, &boss.center);
@@ -479,8 +484,8 @@ void boss_charge_attack() {
 
 	//if boss is charging forward(1st phase of the attack)
 	if (boss_charge.active == true && boss_charge.return_to_position == false) {
-		boss.x_pos += boss_charge.normalized_direction.x * boss_charge.velocity;
-		boss.y_pos += boss_charge.normalized_direction.y * boss_charge.velocity;
+		boss.center.x += boss_charge.normalized_direction.x * boss_charge.velocity;
+		boss.center.y += boss_charge.normalized_direction.y * boss_charge.velocity;
 	}
 
 	//determine the distance that the boss needs to charge, based on whether it is charging to the player, or charging
@@ -508,8 +513,8 @@ void boss_charge_attack() {
 
 	//make the boss charge back to the original position when it first started the charge attack
 	if (boss_charge.active == true && boss_charge.return_to_position == true) {
-		boss.x_pos -= boss_charge.normalized_direction.x * boss_charge.velocity;
-		boss.y_pos -= boss_charge.normalized_direction.y * boss_charge.velocity;
+		boss.center.x -= boss_charge.normalized_direction.x * boss_charge.velocity;
+		boss.center.y -= boss_charge.normalized_direction.y * boss_charge.velocity;
 
 		//if boss has returned to original position, reset all flags and time elapsed
 		if (boss_charge.distance_travelled >= boss_charge.direction_magnitude) {
@@ -523,7 +528,7 @@ void boss_charge_attack() {
 		}
 
 		//check if boss collided with the player during the charge, limit charge attack to only damage the player once per attack
-		if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, boss.width, boss.height)) {
+		if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, boss.dimensions.x, boss.dimensions.y)) {
 			if (!boss_charge.player_damaged) {
 				//--player.Hp;
 				boss_charge.player_damaged = true;

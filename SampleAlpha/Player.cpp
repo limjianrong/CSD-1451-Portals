@@ -130,7 +130,8 @@ void player_init() {
 	player.Level			= player.Level_Reset;		// Player's Level
 	player.XP				= player.XP_RESET;			// Player's XP
 	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
-	player.status			= TRUE;
+	player.status			= TRUE;						// Player's status
+	player.requiredXP		= 40.f;						// Required XP to levelup
 
 	player.Lives_dimensions.x = 50.f;
 	player.Lives_dimensions.y = 50.f;
@@ -174,14 +175,29 @@ void player_draw() {
 	checkpoint_create(2650, -150, 3);//(4, 2550, -250, 10);
 	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
-	// -------- Printing out no. of lives --------
-	Render_Lives(1, 30.f);		// 1st life
-	Render_Lives(2, 90.f);		// 2nd life
-	Render_Lives(3, 150.f);		// 3rd life
+	// -------- Drawing Lives UI --------
+	AEGfxPrint(Albam_fontID, (s8*)"Lives:", -0.95f, 0.85f, 1, 1.0f, 1.0f, 1.0f);
+	Render_Lives(1, 220.f);		// 1st life
+	Render_Lives(2, 280.f);		// 2nd life
+	Render_Lives(3, 340.f);		// 3rd life
+
+	Render_Lives(4, 400.f);		// 3rd life
+	Render_Lives(5, 460.f);		// 3rd life
 
 
 	// -------- Drawing out HP bar ----------
 	player.GameObjects::Render_HealthBar();
+
+	// -------- Drawing out Level & XP bar ----------
+	Render_LevelnXP();
+
+	// --- Level text ---
+	AEGfxPrint(Albam_fontID, (s8*)"Level", 0.8f, -0.98f, 1.0f, 1.0f, 1.0f, 1.0f);
+	std::string level_counter_string = std::to_string(player.Level);
+	AEGfxPrint(Albam_fontID, &level_counter_string[0], 0.95f, -0.98f, 1.0f, 1.0f, 1.0f, 1.0f);
+
+	// --- XP text ---
+	AEGfxPrint(Albam_fontID, (s8*)"Xp", -0.99f, -0.98f, 1, 1.0f, 1.0f, 1.0f);
 
 #ifdef DEBUG 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
@@ -195,21 +211,20 @@ void player_draw() {
 	AEGfxPrint(Albam_fontID, &hp_string[0], -0.05f, 0.85f, 1, 0.0f, 0.0f, 0.0f);
 	std::string hp_counter_string = std::to_string(player.Hp);
 	AEGfxPrint(Albam_fontID, &hp_counter_string[0], 0.15f, 0.85f, 1.0f, 0.0f, 0.0f, 0.0f);
-#endif // DEBUG
 
-	// --- Printing Level ---
+	// -------- Printing out Level ----------
 	std::string level_string = "Level: ";
 	AEGfxPrint(Albam_fontID, &level_string[0], -1.0f, 0.70f, 1, 0.0f, 0.0f, 0.0f);
 	std::string level_counter_string = std::to_string(player.Level);
 	AEGfxPrint(Albam_fontID, &level_counter_string[0], -0.7f, 0.70f, 1.0f, 0.0f, 0.0f, 0.0f);
 
-	// --- Printing XP ---
+	// -------- Printing out Xp ----------
 	std::string xp_string = "Xp: ";
 	AEGfxPrint(Albam_fontID, &xp_string[0], -1.0f, 0.55f, 1, 0.0f, 0.0f, 0.0f);
 	std::string xp_counter_string = std::to_string(player.XP);
 	AEGfxPrint(Albam_fontID, &xp_counter_string[0], -0.7f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
+#endif // DEBUG
 
-	
 
 	// ---------  Firing of bullets   -----------
 	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
@@ -225,7 +240,7 @@ void player_update() {
 	// TEMP
 	if (AEInputCheckCurr(AEVK_J)) {
 		player.Max_Hp = 10;						// Player's Maximum Health
-		player.Hp = player.Max_Hp;			// Player's Health
+		player.Hp = player.Max_Hp;				// Player's Health
 		std::cout << player.Max_Hp << std::endl;
 	}
 	// ---------  Player's movement   -----------
@@ -249,29 +264,9 @@ void player_update() {
 	}
 
 	// --------  Player's level & XP   ----------
-	// 40xp to level up for lvls 0-10 (1 enemy = 20xp)
-	//if (player.XP == player.XP_TILL_10 && player.Level >= 0 && player.Level <= 10) {
-	//if (player.XP == 20 && player.Level >= LEVEL_SYSTEM_0 && player.Level <= LEVEL_SYSTEM_1) {
-	//	player.Level++;
-	//	player.XP = player.XP_RESET;
-	//	player.justLeveledUp = TRUE;
-	//}
-	//// 100xp to level up for lvls 10-20 (1 enemy = 20xp)
-	//else if (player.XP == player.XP_TILL_20 && player.Level >= LEVEL_SYSTEM_1 && player.Level <= LEVEL_SYSTEM_2) {
-	//	player.Level++;
-	//	player.XP = player.XP_RESET;
-	//	player.justLeveledUp = TRUE;
-	//}
-	//// 160xp to level up for lvls 20-30 (1 enemy = 20xp)
-	//else if (player.XP == player.XP_TILL_30 && player.Level >= LEVEL_SYSTEM_2 && player.Level <= LEVEL_SYSTEM_3) {
-	//	player.Level++;
-	//	player.XP = player.XP_RESET;
-	//	player.justLeveledUp = TRUE;
-	//}
-	level_xp_system_update(player.XP_TILL_SYSTEM1, LEVEL_SYSTEM_0, LEVEL_SYSTEM_1);
-	level_xp_system_update(player.XP_TILL_SYSTEM2, LEVEL_SYSTEM_1, LEVEL_SYSTEM_2);
-	level_xp_system_update(player.XP_TILL_SYSTEM3, LEVEL_SYSTEM_2, LEVEL_SYSTEM_3);
-
+	level_xp_system_update(player.XP_TILL_SYSTEM1, LEVEL_SYSTEM_0, LEVEL_SYSTEM_1);		// Currently 40xp for lvls 0-5
+	level_xp_system_update(player.XP_TILL_SYSTEM2, LEVEL_SYSTEM_1, LEVEL_SYSTEM_2);		// Currently 60xp for lvls 5-10
+	level_xp_system_update(player.XP_TILL_SYSTEM3, LEVEL_SYSTEM_2, LEVEL_SYSTEM_3);		// Currently 80xp for lvls 10-15
 
 	// --------    Player Hp & Lives   -----------
 	if (player.Hp <= 0) {
@@ -301,8 +296,6 @@ void player_update() {
 	enemy3_collision();
 
 
-
-
 	// -------------  Update latest checkpoint for player  -------------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
 		if (player.center.x >= checkpoint[i].x1 && player.center.x <= checkpoint[i].x2 &&
@@ -323,6 +316,7 @@ void player_update() {
 void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange) {
 
 	if (player.XP == requiredXP && player.Level >= levelSystem_LowerRange && player.Level <= levelSystem_HigherRange) {
+		player.requiredXP = requiredXP;
 		player.Level++;
 		player.XP = player.XP_RESET;
 		player.justLeveledUp = TRUE;
@@ -350,7 +344,20 @@ void Render_Lives(s32 currLife, f32 offsetX) {
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
 	else
 		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + offsetX, AEGfxGetWinMaxY() - 25.0f }, PI);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + offsetX, AEGfxGetWinMaxY() - Lives_OffsetY }, PI);
+}
+
+void Render_LevelnXP() {
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+	//drawMesh(AEVec2{ WINDOWLENGTH_X - 40.f, XP_BAR_HEIGHT }, AEVec2{ origin.x, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X - XP_BAR_OFFSETX, XP_BAR_HEIGHT }, AEVec2{ origin.x - XP_BAR_OFFSETX / 2.f, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
+
+	AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+	drawMesh(AEVec2{ (float)player.XP / (float)player.requiredXP * (WINDOWLENGTH_X - 150.f) , XP_BAR_HEIGHT },
+			 AEVec2{ (float)origin.x - XP_BAR_OFFSETX / 2.f - (((float)player.requiredXP - (float)player.XP) / (float)player.requiredXP * (WINDOWLENGTH_X - XP_BAR_OFFSETX) / 2.f), origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 }
 
 void player_collision() {
@@ -370,6 +377,9 @@ void player_collision() {
 		--player.Lives;
 		player.Hp = player.Max_Hp;
 		respawn_player();
+
+		// Player death audio
+		AEAudioPlay(playerDeathAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 }
 
