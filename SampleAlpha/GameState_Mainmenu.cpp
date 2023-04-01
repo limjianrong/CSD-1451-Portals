@@ -356,6 +356,7 @@ void GameStateMainmenuUnload(void) {
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
+	AEGfxTextureUnload(quitWindow);
 
 	// Mesh free
 	AEGfxMeshFree(square_mesh);
