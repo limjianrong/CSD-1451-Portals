@@ -19,9 +19,13 @@ extern bool isSettings;
 
 // --- Settings variables ---
 bool fullscreen = { false }; 
-AEVec2 vbutton, vbar; // vector for volume button & bar coordinates
-float buttonscalex, buttonscaley; // x and y scale of volume button
-float barscalex, barscaley; // x and y scale of volume bar
+AEVec2 vbutton, vbar;				// vector for volume button & bar coordinates
+float buttonscalex, buttonscaley;	// x and y scale of volume button
+float barscalex, barscaley;			// x and y scale of volume bar
+bool volume_adjusted{ FALSE };
+
+// --- Constants ---
+f64 vert_pos_offset{ 150.f };		// y-position of volume bar to above origin.y by 150.f
 
 void settings_load(void) {
 
@@ -33,7 +37,7 @@ void settings_load(void) {
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
 
 	// Loads fontID into memory
-	//Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
+	// Albam_fontID = AEGfxCreateFont("Assets/Albam.ttf", 50);
 	mesh_load();
 }
 
@@ -41,13 +45,13 @@ void settings_load(void) {
 void settings_init(void) {
 	// initialize volume button coordinates and scale
 	vbutton.x = origin.x;
-	vbutton.y = origin.y + 150.f;
+	vbutton.y = origin.y + vert_pos_offset;
 	buttonscalex = WINDOWLENGTH_X / 27.f;
 	buttonscaley = WINDOWLENGTH_Y / 18.f;
 
 	// initialize volume bar coordinates and scale
 	vbar.x = origin.x;
-	vbar.y = origin.y + 150.f;
+	vbar.y = origin.y + vert_pos_offset;
 	barscalex = WINDOWLENGTH_X / 2.f;
 	barscaley = WINDOWLENGTH_Y / 80.f;
 }
@@ -86,13 +90,21 @@ void settings_update(void) {
 		//GameStateSettingsUnload();
 	}
 
+	if (volume_adjusted == FALSE) {
+		vbutton.x = origin.x;
+		vbutton.y = origin.y + vert_pos_offset;
+		vbar.x = origin.x;
+		vbar.y = origin.y + vert_pos_offset;
+	}
+
 	// if cursor held down onto and released from volume bar, new volume button located at cursor x location upon release
 	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley*5) && AEInputCheckReleased(AEVK_LBUTTON) ) {
+		volume_adjusted = TRUE;
 		AEVec2Set(&vbutton, center_cursor.x, vbutton.y);
 
 		// button x coordinates to never exceed volume bar edges
-		if (vbutton.x < -WINDOWLENGTH_X / 4.f) vbutton.x = -WINDOWLENGTH_X / 4.f;
-		if (vbutton.x > WINDOWLENGTH_X / 4.f) vbutton.x = WINDOWLENGTH_X / 4.f;
+		if (vbutton.x < -WINDOWLENGTH_X / 4.f + origin.x) vbutton.x = -AEGetWindowWidth() / 4.f + origin.x;
+		if (vbutton.x > WINDOWLENGTH_X / 4.f + origin.x) vbutton.x = AEGetWindowWidth() / 4.f + origin.x;
 	}
 	
 	
