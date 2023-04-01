@@ -15,7 +15,7 @@
 #include "Utilities.hpp"
 
 #define NUM 4
-
+#define DECREMENT 0.2f
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
@@ -40,22 +40,22 @@ void GameStateCreditsUpdate(void) {
 
 	timer += AEFrameRateControllerGetFrameTime();
 	if (timer >= 5) { 
-		credits[0].trans -= 0.2f; 
+		credits[0].trans -= DECREMENT;
 		if (credits[0].trans <= 0) credits[0].flag = DISAPPEAR;
 	}
 
 	if (timer >= 10) {
-		credits[1].trans -= 0.2f;
+		credits[1].trans -= DECREMENT;
 		if (credits[1].trans <= 0) credits[1].flag = DISAPPEAR;
 	}
 
 	if (timer >= 15) {
-		credits[2].trans -= 0.2f;
+		credits[2].trans -= DECREMENT;
 		if (credits[2].trans <= 0) credits[2].flag = DISAPPEAR;
 	}
 
 	if (timer >= 20) {
-		credits[3].trans -= 0.2f;
+		credits[3].trans -= DECREMENT;
 		if (credits[3].trans <= 0) {
 			credits[3].flag = DISAPPEAR;
 			AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);

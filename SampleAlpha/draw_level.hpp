@@ -15,10 +15,12 @@
 #include "Enemy.hpp"
 #include "Utilities.hpp"
 
-//==== Platform Parameter ====
+//======= Parameter =======
 #define BLOCK_WIDTH 50.0f
 #define BLOCK_HEIGHT 50.0f
 #define GRAVITY 5.0f
+#define MOVESPEED 150.f
+
 
 //=== Max Num of Platforms ===
 #define MAX_NORMAL 18
@@ -41,7 +43,7 @@ enum Flag {	ACTIVE,	NOT_ACTIVE };
 struct Block {
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
 	s32 length;
-	f32 x, y = 0.f;
+	f32 x, y;
 	int pos = OG;
 	f32 width, height;
 	AEVec2 center{};
@@ -91,5 +93,5 @@ void left_right_spikes_draw();
 void door_draw();
 
 // ===== Logics for the different type of functions =====
-void move_update();
+void platform_logic();
 void platform_collision(s32 cnt, f32 x, f32 y);

@@ -13,6 +13,7 @@
 #pragma once
 #include "AEEngine.h"
 #include "Player.hpp"
+#include "draw_level.hpp"
 
 struct Camera {
 	//position of camera

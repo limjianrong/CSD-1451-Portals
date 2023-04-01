@@ -14,7 +14,7 @@
 #include "camera.hpp"
 
 extern float portal_max_range; //maximum range that a player can place a portal
-extern float moveSpeed; //for camera to follow player when player is on platform
+//extern float moveSpeed; //for camera to follow player when player is on platform
 extern Player_stats player;
 Camera camera;
 
@@ -57,7 +57,7 @@ void camera_update() {
 		//player is not moving but still reached the right buffer range of the camera
 		//this is because the moving platform is also moving the player
 		else if (AEGfxGetWinMaxX() - player.center.x <= camera.buffer_range) {
-			camera.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			camera.x += static_cast<f32>(AEFrameRateControllerGetFrameTime()) * MOVESPEED;
 		}
 
 		//player is moving and has reached the left buffer range of the camera
@@ -68,7 +68,7 @@ void camera_update() {
 		//player is not moving but still reached the left buffer range of the camera
 		//this is because the moving platform is also moving the player
 		else if (player.center.x - AEGfxGetWinMinX() <= camera.buffer_range && camera.x >= 0) {
-			camera.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * moveSpeed;
+			camera.x -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * MOVESPEED;
 		}
 
 		//coordinate of camera should not go below (0,0) as there is no level design implemented

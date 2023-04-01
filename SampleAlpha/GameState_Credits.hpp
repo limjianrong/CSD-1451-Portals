@@ -26,6 +26,7 @@ void GameStateCreditsDraw(void);
 void GameStateCreditsFree(void);
 void GameStateCreditsUnload(void);
 
+//draw functions for the different credit pictures
 void draw_credit_1();
 void draw_credit_2();
 void draw_credit_3();
