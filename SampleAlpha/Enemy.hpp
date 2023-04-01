@@ -37,6 +37,8 @@
 #define ENEMY2_DROPPED_XP 20.f		// Amount of XP player gained when Enemy2 is defeated
 #define MAX_ENEMIES_2 5				// Change this for total number of enemy2
 
+#define Bullet_Displacement_PerFrame 5  // Distance travel by bullet every frame
+
 //struct GameObjects {
 //
 //	s32 Hp, Max_Hp, Max_Hp_Reset;

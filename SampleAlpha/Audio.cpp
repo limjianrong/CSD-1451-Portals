@@ -28,7 +28,7 @@ AEAudio levelUpAudio, receivedUpgradeAudio;
 
 
 // Group
-AEAudioGroup soundGroup;
+AEAudioGroup soundGroup, musicGroup;
 
 //AEAudioGroup soundGroup;
 
@@ -39,8 +39,8 @@ void audio_load() {
 	bossBGM = AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
 
 	// Win/Lose				DONE (Repeated everytime you press restart)
-	defeatAudio = AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");
-	victoryAudio = AEAudioLoadSound("Assets/AUDIO/Victory.mp3");
+	defeatAudio			= AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");
+	victoryAudio		= AEAudioLoadSound("Assets/AUDIO/Victory.mp3");
 
 	// Button				DONE
 	buttonClickedAudio	= AEAudioLoadSound("Assets/AUDIO/Button_Click.mp3");
@@ -52,7 +52,7 @@ void audio_load() {
 	playerDeathAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Death.mp3");
 	playerDamageAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Dmg.mp3");
 
-	// Enemy 1 & 2			DONE (No bullets)
+	// Enemy 1 & 2			DONE
 	deathAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Death");
 	bulletAudio			= AEAudioLoadSound("Assets/AUDIO/Bullet.mp3");
 	damageAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Dmg.mp3");
@@ -80,6 +80,7 @@ void audio_load() {
 void audio_init() {
 
 	soundGroup = AEAudioCreateGroup();
+	musicGroup = AEAudioCreateGroup();
 }
 void audio_draw();
 void audio_update() {

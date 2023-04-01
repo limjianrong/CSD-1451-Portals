@@ -64,8 +64,8 @@ extern AEVec2 origin;					// Center of screen, no matter where the camera moves
 extern Camera camera;
 
 // --- Audio ---
-extern AEAudio buttonClickedAudio, buttonHoverAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
+extern AEAudioGroup soundGroup, musicGroup;
 static bool isPressed1, isPressed2, isPressed3, isPressed4;
 
 /*!**************************************************************************************************
@@ -115,6 +115,9 @@ void GameStatePlatformerInit(void) {
 	camera_init();				//camera, must be initialized after portal_init as some values from
 								//portal_init are used
 	GameStateSettingsInit();
+
+	// --- Game BGM ---
+	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
 }
 /*!**************************************************************************************************
 \brief
@@ -143,6 +146,9 @@ void GameStatePlatformerUpdate(void) {
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					// Stop all audio
+					AEAudioStopGroup(soundGroup);
+					AEAudioStopGroup(musicGroup);
 				}
 				else if (i == 13) {
 					//GameStateSettingsUpdate();	// Settings button
@@ -151,6 +157,7 @@ void GameStatePlatformerUpdate(void) {
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+
 				}
 				else if (i == 15) {
 					gGameStateNext = GS_MainMenu;	// Main menu button
@@ -158,6 +165,9 @@ void GameStatePlatformerUpdate(void) {
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					// Stop all audio
+					AEAudioStopGroup(soundGroup);
+					AEAudioStopGroup(musicGroup);
 				}
 			}
 		}

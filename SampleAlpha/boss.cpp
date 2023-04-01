@@ -112,26 +112,29 @@ void boss_init () {
 //updates the boss while the boss is alive, updates boss movement and boss attacks
 void boss_update() {
 
-	if (boss.Hp > 0) {
+	// When player is within boss zone
+	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
+		if (boss.Hp > 0) {
 
-		//boss movement
-		boss_movement();
+			//boss movement
+			boss_movement();
 
-		//boss teleportation
-		boss_movement_teleport();
+			//boss teleportation
+			boss_movement_teleport();
 
-		//boss attack #1
-		boss_laser_beam_attack();
+			//boss attack #1
+			boss_laser_beam_attack();
 
-		//boss attack #2
-		bullet_update();
+			//boss attack #2
+			bullet_update();
 
-		//boss attack #3
-		boss_charge_attack();
-	}
-	else {
-		// --- Boss' death audio ---
-		AEAudioPlay(deathAudio, soundGroup, 0.5f, 1.f, 0);
+			//boss attack #3
+			boss_charge_attack();
+		}
+		else {
+			// --- Boss' death audio ---
+			AEAudioPlay(deathAudio, soundGroup, 0.5f, 1.f, 0);
+		}
 	}
 }
 
@@ -139,28 +142,31 @@ void boss_update() {
 //draws the boss
 void boss_draw() {
 
-	// -------------  Boss   ---------------
-	if (boss.Hp > 0) {
-		AEMtx33Scale(&boss.scale, boss.width, boss.height);
-		AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
-		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
+	// When player is within boss zone
+	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
+		// -------------  Boss   ---------------
+		if (boss.Hp > 0) {
+			AEMtx33Scale(&boss.scale, boss.width, boss.height);
+			AEMtx33Trans(&boss.translate, boss.x_pos, boss.y_pos);
+			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
 
 
-		// -------------  Draw Attack 1 (Laser beam)   ---------------
-		draw_laser_beam();
+			// -------------  Draw Attack 1 (Laser beam)   ---------------
+			draw_laser_beam();
 
-		// -------------  Attack 2 (Bullet)   ---------------
-		bullet_draw();
+			// -------------  Attack 2 (Bullet)   ---------------
+			bullet_draw();
 
+		}
+		else {  // --- Boss dead ---
+			AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
+			drawMesh(AEVec2{ boss.width, boss.height }, boss.center, PI);
+		}
+		AEGfxSetTransform(boss.matrix.m);
+		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		//draw_laser_beam_warning();
 	}
-	else {  // --- Boss dead ---
-		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-		drawMesh(AEVec2{ boss.width, boss.height }, boss.center, PI);
-	}
-	AEGfxSetTransform(boss.matrix.m);
-	AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-	//draw_laser_beam_warning();
 }
 
 //frees any objects related to the boss
@@ -323,18 +329,24 @@ void bullet_update() {
 
 		// --- Enable shooting ---
 		isRunning = TRUE;
-
+		
 		// If timer is over
 		if (bullet.isTimerActive == FALSE) {
 			// ---- Loops bullet ----
 			//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
-			if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
+			if (dist_boss2bullet <= 400.f && isRunning == TRUE) {	// Bullet disappears after 400 units
 
 				// ----- Movement of bullet from boss to player -----
 				if (player.center.y <= boss.y_pos) bullet.y += normalized_vector.y;
 				else if (player.center.y >= boss.y_pos) bullet.y -= normalized_vector.y;
 				if (player.center.x >= boss.x_pos) bullet.x += normalized_vector.x;
 				else if (player.center.x <= boss.x_pos) bullet.x -= normalized_vector.x;
+
+				//std::cout << dist_boss2bullet << std::endl;
+				//// --- Bullet sfx everytime bullet is reset ---
+				//if (dist_boss2bullet <= 25.f) {
+				//	AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
+				//}
 			}
 			else {
 				// --- Resets bullet ---
@@ -346,9 +358,6 @@ void bullet_update() {
 				if (player.center.x >= (boss.x_pos - 100) && player.center.x <= boss.x_pos) {
 					bullet.isTimerActive = TRUE;		// Enable bullet delay
 				}
-
-				// --- Bullet audio ---
-				//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 			}
 		}
 	}
@@ -371,9 +380,6 @@ void bullet_update() {
 			bullet.x = boss.x_pos;
 			bullet.y = boss.y_pos;
 			bullet.isTeleported = FALSE;
-
-			// --- Bullet audio ---
-			//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 		}
 	}
 
@@ -384,9 +390,6 @@ void bullet_update() {
 		bullet.y = boss.y_pos;				// Reset bullet y
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		//--player.Hp;
-
-		// --- Bullet audio ---
-		//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 
 	// ----- Bullet collision with boss -----
@@ -396,11 +399,9 @@ void bullet_update() {
 		bullet.isTeleported = FALSE;
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
 		--boss.Hp;
+
 		// --- Boss' damage audio ---
 		AEAudioPlay(damageAudio, soundGroup, 0.5f, 1.f, 0);
-
-		// --- Bullet audio ---
-		//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 	}
 
 	// ----- Resets bullet timer (Delay inbetween bullets) -----

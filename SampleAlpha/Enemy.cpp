@@ -73,8 +73,8 @@ void enemies_load() {
 void enemies_init() {
 
 	// ------- Enemy 1 -------
-	//enemy1_create(600, 90, 0);
-	enemy1_create(-300, 90, 0);
+	enemy1_create(600, 90, 0);
+	//enemy1_create(-300, 90, 0);
 	enemy1_create(2425, 590, 1);
 	enemy1_create(6750, 1090, 2);
 
@@ -99,6 +99,7 @@ void enemies_init() {
 	enemy2_create(3700, 250, 3);
 	enemy2_create(3700, 300, 4);
 	//enemy2_create(600, 50, 4); //DO NOT REMOVE, JR NEED FOR 10SEC VIDEO
+
 
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 
@@ -323,7 +324,12 @@ void enemy2_update() {
 				if (bullet_enemy2[i].isTimerActive == FALSE) {
 					// ----- Movement of bullet from enemy2 -----
 					if (bullet_enemy2[i].center.x >= (enemy2[i].center.x - enemy2[i].range_x)) {
-						bullet_enemy2[i].center.x -= 5;
+						bullet_enemy2[i].center.x -= Bullet_Displacement_PerFrame;
+
+						// --- Bullet sfx everytime bullet is reset ---
+						if (bullet_enemy2[i].center.x == enemy2[i].center.x - Bullet_Displacement_PerFrame) {
+							AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
+						}
 					}
 					else {
 						// --- Resets bullet ---
@@ -331,8 +337,8 @@ void enemy2_update() {
 						bullet_enemy2[i].center.y = enemy2[i].center.y;
 						bullet_enemy2[i].isTeleported = FALSE;
 
-						// Bullet's audio
-						//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
+						//// Bullet's audio
+						//AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
 
 						// If player x within 100 units of enemy2
 						if (player.center.x >= (enemy2[i].center.x - 100.f) && player.center.x <= enemy2[i].center.x) {
@@ -362,9 +368,6 @@ void enemy2_update() {
 					bullet_enemy2[i].center.x = enemy2[i].center.x;
 					bullet_enemy2[i].center.y = enemy2[i].center.y;
 					bullet_enemy2[i].isTeleported = FALSE;
-
-					// Bullet's audio
-					//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 				}
 			}
 			// ----- Bullet collision with player -----
@@ -373,9 +376,6 @@ void enemy2_update() {
 				bullet_enemy2[i].center.x = enemy2[i].center.x;			// Reset bullet x
 				bullet_enemy2[i].center.y = enemy2[i].center.y;			// Reset bullet y
 				bullet_enemy2[i].isTimerActive = TRUE;					// Enable bullet delay
-
-				// Bullet's audio
-				//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 
 				// --- Disable shooting when player out of range of Enemy2 ---
 				if (!(player.center.x >= (enemy2[i].center.x - enemy2[i].range_x) && player.center.x <= enemy2[i].center.x &&
@@ -403,8 +403,6 @@ void enemy2_update() {
 
 				--enemy2[i].Hp;
 
-				// Bullet's audio
-				//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 				// Upon taking damage
 				AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
 			}
@@ -419,8 +417,6 @@ void enemy2_update() {
 
 					--enemy1[j].Hp;
 
-					// Bullet's audio
-					//AEAudioPlay(bulletAudio, soundGroup, 1.f, 1.f, 0);
 					// Upon taking damage
 					AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
 				}

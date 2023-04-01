@@ -313,7 +313,7 @@ void player_update() {
 				//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
 				
 				// Checkpoint audio
-				AEAudioPlay(checkpointAudio, soundGroup, 1.f, 1.f, 0);
+				AEAudioPlay(checkpointAudio, soundGroup, 0.75f, 1.f, 0);
 			}
 		}
 
