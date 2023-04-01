@@ -17,15 +17,15 @@
 #include "Audio.hpp"
 #include <iostream>
 
+// ---- Graphics -----
 extern s8 Albam_fontID;
-//AEGfxVertexList* button;
 extern AEMtx33 scale, rotate, translate, transform;
-static AEGfxTexture* buttonNotPressed, * buttonPressed;
+static AEGfxTexture* buttonNotPressed, * buttonPressed, *backgroundTex, * quitWindow;
+float quit_scaleX{ WINDOWLENGTH_X / 2.f };
+float quit_scaleY{ WINDOWLENGTH_Y / 1.2f };
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
-// ----- Background -----
-static AEGfxTexture* backgroundTex;
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;				// Origin at TOP LEFT corner of window
@@ -42,6 +42,9 @@ float button_Yunit{ WINDOWLENGTH_Y / 29 };			// Buttons' y-coordinates are separ
 int first_multiple{ 15 };							// First multiple of button_Yunit
 int multiple_increment{ 3 };						// Increment of multiples of button_Yunit
 int button_count{ 5 };								// 5 menu buttons
+
+// ---- Quit Confirmation ----
+bool isQuitting;					// if TRUE, player has clicked on "Quit Game" button
 
 // --- Audio ---
 extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
@@ -61,6 +64,8 @@ void GameStateMainmenuLoad(void) {
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
+	quitWindow = AEGfxTextureLoad("Assets/card.png");
+
 	
 	// Settings texture load
 	settings_load();
@@ -92,11 +97,13 @@ void GameStateMainmenuUpdate(void) {
 								// and settings functions when is_Settings enabled
 	{
 		for (int i = first_multiple; i <= first_multiple + (multiple_increment * (button_count - 1)); i += multiple_increment) {
-			if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			if ((AEInputCheckReleased(AEVK_LBUTTON) &&
 				is_Settings == FALSE &&
 				(center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 				center_cursor.y >= button_startY - button_Yunit * i - menu_button_scaleY / 2 &&
-				center_cursor.y <= button_startY - button_Yunit * i + menu_button_scaleY / 2)) {
+				center_cursor.y <= button_startY - button_Yunit * i + menu_button_scaleY / 2))
+				&& isQuitting == FALSE) {
+
 				if (i == first_multiple) {
 					gGameStateNext = GS_Platformer;
 
@@ -123,7 +130,7 @@ void GameStateMainmenuUpdate(void) {
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 				else if (i == first_multiple + multiple_increment * 4) {
-					gGameStateNext = GS_QUIT;
+					isQuitting = TRUE;
 
 					// Stop all audio
 					AEAudioStopGroup(soundGroup);
@@ -134,6 +141,32 @@ void GameStateMainmenuUpdate(void) {
 
 			}
 		}
+
+		if (isQuitting == TRUE) {
+			for (int i = first_multiple+multiple_increment*2; i <= first_multiple + (multiple_increment * (button_count - 2)); i += multiple_increment) {
+				if (AEInputCheckReleased(AEVK_LBUTTON) &&
+					is_Settings == FALSE &&
+					(center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+						center_cursor.y >= button_startY - button_Yunit * i - menu_button_scaleY / 2 &&
+						center_cursor.y <= button_startY - button_Yunit * i + menu_button_scaleY / 2)) {
+
+					
+					if (i == first_multiple + multiple_increment * 2) {
+						isQuitting = FALSE;
+
+						AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
+						// Audio once button is pressed
+						AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					}
+					else if (i == first_multiple + multiple_increment * 3) {
+						gGameStateNext = GS_QUIT;
+						// Audio once button is pressed
+						AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+					}
+				}
+			}
+		}
+	
 	}
 
 
@@ -156,7 +189,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - button_Yunit * i - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - button_Yunit * i + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& isQuitting == FALSE)
 			AEGfxTextureSet(buttonPressed, 0, 0);
 
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
@@ -169,7 +203,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - (button_Yunit * first_multiple) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * first_multiple) + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& isQuitting == FALSE)
 		{
 			if (mm_isPressed1 == FALSE) {
 				mm_isPressed1 = TRUE;
@@ -186,7 +221,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 1))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 1))) + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& isQuitting == FALSE)
 		{
 			if (mm_isPressed2 == FALSE) {
 				mm_isPressed2 = TRUE;
@@ -237,7 +273,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 4))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 4))) + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& isQuitting == FALSE)
 		{
 			if (mm_isPressed5 == FALSE) {
 				mm_isPressed5 = TRUE;
@@ -272,6 +309,38 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
 			center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
 			is_Settings = FALSE;
+		}
+	}
+
+	if (isQuitting == TRUE) {
+		// --------- Make whole screen translucent ---------
+		AEGfxSetTransparency(0.55f);
+		AEGfxTextureSet(nullptr, 0, 0);
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+
+		AEGfxSetTransparency(1.f);
+
+		AEGfxTextureSet(quitWindow, 0, 0);
+		drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, PI);
+
+		for (int i = first_multiple + multiple_increment * 2; i <= first_multiple + (multiple_increment * (button_count - 2)); i += multiple_increment) {
+
+			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
+				center_cursor.y >= button_startY - button_Yunit * i - menu_button_scaleY / 2 &&
+				center_cursor.y <= button_startY - button_Yunit * i + menu_button_scaleY / 2)
+				&& is_Settings == FALSE)
+				AEGfxTextureSet(buttonPressed, 0, 0);
+
+			else AEGfxTextureSet(buttonNotPressed, 0, 0);
+
+			drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - button_Yunit * i }, PI);
+
+			AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);
+			AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
+			AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f , 0.75f, 0, 0, 0);
+
+			AEGfxPrint(Albam_fontID, (s8*)"Back", -0.055, first_text - 0.41f, 0.75f, 1, 1, 1);
+			AEGfxPrint(Albam_fontID, (s8*)"Quit Game", -0.11, first_text - 0.62f, 0.75f, 1, 1, 1);
 		}
 	}
 }
