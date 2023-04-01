@@ -47,7 +47,7 @@ static AEGfxTexture* buttonNotPressed, * buttonPressed;									// Button textur
 AEGfxTexture* background_layer1Tex, * background_layer2Tex, * background_layer3Tex;		// Background texture
 
 // ----- Game objects -----
-extern Player_stats player;		// player stats
+extern Player_stats player;				// player stats
 
 // ----- Game states -----
 bool isPaused;
@@ -96,7 +96,7 @@ void GameStatePlatformerLoad(void) {
 	portal_load();				// Portal
 	upgrades_load();			// Upgrades
 	player_load();				// Player
-	GameStateSettingsLoad();
+	settings_load();			// Settings Menu
 }
 /*!**************************************************************************************************
 \brief
@@ -114,10 +114,10 @@ void GameStatePlatformerInit(void) {
 	upgrades_init();			// Upgrades
 	camera_init();				//camera, must be initialized after portal_init as some values from
 								//portal_init are used
-	GameStateSettingsInit();
-
+	settings_init();			// Settings Menu
 	// --- Game BGM ---
 	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
+
 }
 /*!**************************************************************************************************
 \brief
@@ -185,7 +185,8 @@ void GameStatePlatformerUpdate(void) {
 		upgrade_update();			// Upgrade
 		player_update();			// Player
 		update_portal();			// Upgrade
-		camera_update();
+		camera_update();			// Camera
+		
 	}
 }
 /*!**************************************************************************************************
@@ -320,8 +321,8 @@ void GameStatePlatformerDraw(void) {
 		AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.155f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 15 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 
 		if (isSettings == TRUE) {
-			GameStateSettingsDraw();
-			GameStateSettingsUpdate();
+			settings_draw();	// Draw menu to screen
+			settings_update();	// Update collision within menu
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
 				center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
@@ -354,7 +355,7 @@ void GameStatePlatformerUnload(void) {
 	portal_unload();			// Portal
 	upgrades_unload();			// Upgrades
 	player_unload();			// Player
-	GameStateSettingsUnload();
+	settings_unload();			// Settings Menu
 
 
 	// Texture unload
