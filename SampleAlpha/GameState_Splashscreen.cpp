@@ -9,11 +9,10 @@
   This source file implements the functions used for the splash screen.
 ==================================================================================*/
 #include "AEEngine.h"
-#include "GameState_Mainmenu.hpp"
+#include "GameState_Splashscreen.hpp"
 #include "GameStateManager.hpp"
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
-#include <iostream>
 
 AEGfxTexture* logo;
 extern AEGfxVertexList* square_mesh;
@@ -22,28 +21,30 @@ extern AEVec2 origin;
 static f32 transparancy;
 static f64 timer;
 
+// load texture and mesh
 void GameStateSplashscreenLoad(void) {
 	mesh_load();
 	logo = AEGfxTextureLoad("Assets/Digipen_flipped.png");
 
 }
+// initialise timer and transparancy variables and set background colour to black
 void GameStateSplashscreenInit(void) {
 	timer = 0;
 	transparancy = 1.0f;
 	AEGfxSetBackgroundColor(0, 0, 0);
 }
-
+// update function
 void GameStateSplashscreenUpdate(void) {
 
-	timer += AEFrameRateControllerGetFrameTime();
-
+	timer += AEFrameRateControllerGetFrameTime(); //starts timer
+	//checks if 2 seconds or more have passed
 	if (timer >= 2) {
-		transparancy -= 0.3f;
-		if (transparancy < 0.f) gGameStateNext = GS_MainMenu;
+		transparancy -= 0.3f;//start decrementing the transparacny
+		if (transparancy < 0.f) gGameStateNext = GS_MainMenu; //check if transparancy is less than 0, if so, change gamestate to main menu
 	}
 
 }
-
+// draw function to draw the splash screen
 void GameStateSplashscreenDraw(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(transparancy);
@@ -54,9 +55,11 @@ void GameStateSplashscreenDraw(void) {
 	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
 
 }
+// free function
 void GameStateSplashscreenFree(void) {
 
 }
+// unload function that unload all textures and free meshes
 void GameStateSplashscreenUnload(void) {
 	AEGfxTextureUnload(logo);
 	AEGfxMeshFree(square_mesh);
