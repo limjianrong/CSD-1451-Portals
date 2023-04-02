@@ -1,22 +1,21 @@
-#pragma once
-/******************************************************************************//*!
-\file		GameState_Credits.hpp
-\author 	Digipen, Tay Zhun Hang
-\par    	email: zhunhang.tay@digipen.edu
-\date   	26 March, 2023
-\brief
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
-
+ /*==================================================================================
+ * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+ * File:				GameState_Credits.hpp
+ * Course:				CSD1451
+ * Group Name:			Apparate
+ * Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
+ *
+ * Brief:
+	This header file contains the declaration of functions that implements
+	the credits
+ ==================================================================================*/
 enum { APPEAR, DISAPPEAR };
 
 struct credit_stat {
 	AEGfxTexture* texture;
 	f32 trans{1.f};
 	int flag = APPEAR;
+	f32 y;
 };
 
 void GameStateCreditsLoad(void);
