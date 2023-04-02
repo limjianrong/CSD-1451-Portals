@@ -36,7 +36,8 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iostream>
 
 Player_stats player;
-Checkpoint checkpoint[NUM_OF_CHECKPOINT];
+Checkpoint checkpoint[NUM_OF_CHECKPOINT] = { {0, 950, 1050, 400, 500}, {0, 3500, 3600, 900, 1000} , {0, 7050, 7150, 800, 900} , 
+												{0, 2600, 2700, -200, -100} , {0, 7050, 6950, 300, 500} };
 
 // ------  Text  ------
 extern s8 Albam_fontID;
@@ -79,6 +80,7 @@ void player_load() {
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/other/flagGreen_up.png");
 
 	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
+	//player.fullLivesTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Items/platformPack_item017.png");
 	player.emptyLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/outlineCrystal.png");
 	player_ifs.open("Assets/textFiles/player_stats.txt");
 	if (!player_ifs) {
@@ -86,8 +88,8 @@ void player_load() {
 	}
 	// -------- Player --------
 	std::string str{};
-	player_ifs >> str >> player.dimensions.x;		// Player's width
-	player_ifs >> str >> player.dimensions.y;		// Player's height
+	player_ifs >> str >> player.dimensions.x;				// Player's width
+	player_ifs >> str >> player.dimensions.y;				// Player's height
 	player_ifs >> str >> player.initial_pos_x;		// Player's initial X position
 	player_ifs >> str >> player.initial_pos_y;		// Player's initial Y position
 	player_ifs >> str >> player.highest_level;		// Level cap of 30 lvls
@@ -108,6 +110,12 @@ void player_load() {
 
 	player_ifs.close();
 
+	// ----- Audio -----
+	//checkpoint[0].checkpointAudio = AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
+
+	//player.walkAudio = AEAudioLoadSound("Assets/AUDIO/Player walk.flac");
+	
+
 }
 
 void player_init() {
@@ -115,15 +123,15 @@ void player_init() {
 
 	player.center.x			= static_cast<f32>(player.initial_pos_x);		// Player's initial X position
 	player.center.y			= static_cast<f32>(player.initial_pos_y);		// Player's initial Y position
-	player.Hp				= player.Max_Hp_Reset;							// Player's Health
-	player.Max_Hp			= player.Max_Hp_Reset;							// Player's Maximum Health
-	player.Lives			= player.Lives_Reset;							// Player's Lives
-	player.Speed			= player.Speed_Reset;							// Player's Movement Speed
-	player.Level			= player.Level_Reset;							// Player's Level
-	player.XP				= player.XP_RESET;								// Player's XP
-	//player.justLeveledUp	= FALSE;										// Indicator to show player levelling up
-	player.status			= TRUE;											// Player's status
-	player.requiredXP		= 40;											// Required XP to levelup
+	player.Hp				= player.Max_Hp_Reset;		// Player's Health
+	player.Max_Hp			= player.Max_Hp_Reset;		// Player's Maximum Health
+	player.Lives			= player.Lives_Reset;		// Player's Lives
+	player.Speed			= player.Speed_Reset;		// Player's Movement Speed
+	player.Level			= player.Level_Reset;		// Player's Level
+	player.XP				= player.XP_RESET;			// Player's XP
+	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
+	player.status			= TRUE;						// Player's status
+	player.requiredXP		= 40;						// Required XP to levelup
 
 	player.Lives_dimensions.x = 50.f;
 	player.Lives_dimensions.y = 50.f;
@@ -161,19 +169,20 @@ void player_draw() {
 	drawMesh(player.dimensions, player.center, PI);
 
 	// -------------- Checkpoint --------------
-	checkpoint_create(1000, 450, 0);
-	checkpoint_create(3550, 950, 1);
-	checkpoint_create(2650, -150, 2);
-	checkpoint_create(7100, 850, 3);
-	checkpoint_create(7000, 400, 4);
+	checkpoint_create(1000, 450, 0);// y+100
+	checkpoint_create(3550, 950, 1);//6, 3350, 200, 11
+	checkpoint_create(7100, 850, 2);//4, 7000, 750, 8
+	checkpoint_create(2650, -150, 3);//(4, 2550, -250, 10);
+	checkpoint_create(7000, 400, 4);//(7, 6900, 300, 14);
 
 	// -------- Drawing Lives UI --------
 	AEGfxPrint(Albam_fontID, (s8*)"Lives:", -0.95f, 0.85f, 1, 1.0f, 1.0f, 1.0f);
 	Render_Lives(1, 220.f);		// 1st life
 	Render_Lives(2, 280.f);		// 2nd life
 	Render_Lives(3, 340.f);		// 3rd life
-	Render_Lives(4, 400.f);		// 4th life
-	Render_Lives(5, 460.f);		// 5th life
+
+	Render_Lives(4, 400.f);		// 3rd life
+	Render_Lives(5, 460.f);		// 3rd life
 
 
 	// -------- Drawing out HP bar ----------
@@ -292,7 +301,6 @@ void player_update() {
 		if (player.center.x >= checkpoint[i].x1 && player.center.x <= checkpoint[i].x2 &&
 			player.center.y >= checkpoint[i].y1 && player.center.y <= checkpoint[i].y2) {
 
-			std::cout << i << std::endl;
 			if (checkpoint[i].check == FALSE) {
 				checkpoint[i].check = TRUE;
 				//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
@@ -343,6 +351,7 @@ void Render_LevelnXP() {
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+	//drawMesh(AEVec2{ WINDOWLENGTH_X - 40.f, XP_BAR_HEIGHT }, AEVec2{ origin.x, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
 	drawMesh(AEVec2{ WINDOWLENGTH_X - XP_BAR_OFFSETX, XP_BAR_HEIGHT }, AEVec2{ origin.x - XP_BAR_OFFSETX / 2.f, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
 
 	AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
@@ -398,12 +407,14 @@ void respawn_player() {
 }
 
 void checkpoint_create(f32 x, f32 y, s32 index) {
-
-	AEGfxTextureSet(checkpoint[0].checkpointTex, 0, 0);
-	drawMesh(AEVec2{ player.dimensions.x * 2, player.dimensions.y * 2 }, AEVec2{ x, y }, PI);
-
-	checkpoint[index].x1 = x - CHECKPOINT_WIDTH;
-	checkpoint[index].x2 = x + CHECKPOINT_WIDTH;
-	checkpoint[index].y1 = y - CHECKPOINT_HEIGHT;
-	checkpoint[index].y2 = y + CHECKPOINT_HEIGHT;
+	for (s32 i = 0; i < NUM_OF_CHECKPOINT; ++i) {
+		AEMtx33Scale(&checkpoint[i].scale, player.dimensions.x * 2, player.dimensions.y * 2);
+		AEMtx33Rot(&checkpoint[i].rotate, PI);
+		AEMtx33Trans(&checkpoint[i].translate, x, y);
+		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].rotate, &checkpoint[i].scale);
+		AEMtx33Concat(&checkpoint[i].transform, &checkpoint[i].translate, &checkpoint[i].transform);
+		AEGfxSetTransform(checkpoint[i].transform.m);
+		AEGfxTextureSet(checkpoint[0].checkpointTex, 0, 0);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	}
 }

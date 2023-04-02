@@ -27,9 +27,6 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #define XP_BAR_HEIGHT 50
 #define XP_BAR_OFFSETX 160
 
-#define CHECKPOINT_WIDTH 50
-#define CHECKPOINT_HEIGHT 50
-
 void player_load();
 void player_init();
 void player_draw();
