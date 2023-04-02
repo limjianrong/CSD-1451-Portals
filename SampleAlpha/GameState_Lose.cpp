@@ -30,8 +30,10 @@ AEVec2 Lbutton2;
 
 // --- Audio ---
 extern AEAudio defeatAudio, buttonClickedAudio, buttonHoverAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup soundGroup, musicGroup;
 static bool LisPressed1, LisPressed2;
+extern AEVec2 button_offset;
+extern float barscalex, barscaley;
 
 void GameStateLoseLoad() {
 
@@ -46,6 +48,21 @@ void GameStateLoseInit() {
 
 	Lbutton = {AEGfxGetWinMinX() + WINDOWLENGTH_X/2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y/2.f};
 	Lbutton2 = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f - 100.f};
+
+	if (button_offset.x < 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+	}
+	else if (button_offset.x > 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+
+	}
+	else if (button_offset.x == 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f);
+		AEAudioSetGroupVolume(musicGroup, 0.5f);
+
+	}
 
 	// Defeated audio
 	AEAudioPlay(defeatAudio, soundGroup, 0.25f, 1.f, 0);

@@ -56,6 +56,8 @@ bool isQuitting;					// if TRUE, player has clicked on "Quit Game" button
 extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
 extern AEAudioGroup soundGroup, musicGroup;
 static bool mm_isPressed1, mm_isPressed2, mm_isPressed3, mm_isPressed4, mm_isPressed5;
+extern AEVec2 button_offset;
+extern float barscalex, barscaley;
 
 
 // Maybe removed soon if bug fixed (WIP: Restart game & Set camera to default when BACK TO MAIN MENU)
@@ -96,6 +98,20 @@ void GameStateMainmenuInit(void) {
 	// Initialize audio
 	audio_init();
 	
+	if (button_offset.x < 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+	}
+	else if (button_offset.x > 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+
+	}
+	else if (button_offset.x == 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f);
+		AEAudioSetGroupVolume(musicGroup, 0.5f);
+
+	}
 
 	// --- Game BGM ---
 	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
