@@ -10,7 +10,7 @@ void GameStateTutorial2Free(void);
 void GameStateTutorial2Unload(void);
 
 static enum asset3 {
-	enemy3,
-	enemy3_warning,
+	//enemy3,
+	//enemy3_warning,
 	_boss
 };

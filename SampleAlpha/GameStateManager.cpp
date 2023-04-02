@@ -24,8 +24,6 @@
 
 #include "GameState_Win.hpp"
 #include "GameState_Lose.hpp"
-#include "GameState_Tutorial.hpp"
-#include "GameState_Tutorial2.hpp"
 #include "GameState_Splashscreen.hpp"
 #include "GameState_Credits.hpp"
 
@@ -124,22 +122,6 @@ void GameStateMgrUpdate()
 			GameStateDraw = GameStateCreditsDraw;
 			GameStateFree = GameStateCreditsFree;
 			GameStateUnload = GameStateCreditsUnload;
-			break;
-		case GS_Tutorial:
-			GameStateLoad = GameStateTutorialLoad;
-			GameStateInit = GameStateTutorialInit;
-			GameStateUpdate = GameStateTutorialUpdate;
-			GameStateDraw = GameStateTutorialDraw;
-			GameStateFree = GameStateTutorialFree;
-			GameStateUnload = GameStateTutorialUnload;
-			break;
-		case GS_Tutorial2:
-			GameStateLoad = GameStateTutorial2Load;
-			GameStateInit = GameStateTutorial2Init;
-			GameStateUpdate = GameStateTutorial2Update;
-			GameStateDraw = GameStateTutorial2Draw;
-			GameStateFree = GameStateTutorial2Free;
-			GameStateUnload = GameStateTutorial2Unload;
 			break;
 		default:	// Error handling
 			AE_FATAL_ERROR("invalid state!!");

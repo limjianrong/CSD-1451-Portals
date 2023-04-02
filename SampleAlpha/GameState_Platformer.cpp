@@ -35,6 +35,7 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include "draw_level.hpp"
 #include "Settings.hpp"
 #include "Audio.hpp"
+#include "Tutorial.hpp"
 
 // ---- Drawing Variables ----
 extern float menu_button_scaleX;		// Width of menu button
@@ -46,6 +47,11 @@ float p_button_Yunit{ WINDOWLENGTH_Y / 20 };			// Buttons' y-coordinates are sep
 int p_first_multiple{ 9 };							// First multiple of button_Yunit
 int p_multiple_increment{ 2 };						// Increment of multiples of button_Yunit
 extern int button_count;								// 5 menu buttons
+
+extern f32 buttonX;
+extern f32 buttonY;
+extern f32 button_scaleX;
+extern f32 button_scaleY;
 
 //#include <iostream>
 
@@ -62,6 +68,7 @@ extern Player_stats player;				// player stats
 // ----- Game states -----
 bool isPaused;
 bool isSettings{ FALSE };
+bool isTutorial{ FALSE };
 
 // ----- Cursor positions -----
 extern AEVec2 cursor;					// Origin at TOP LEFT corner of window
@@ -115,6 +122,7 @@ void GameStatePlatformerLoad(void) {
 	player_load();				// Player
 	settings_load();			// Settings Menu
 	camera_load();
+	tutorial_load();			// Tutorial Menu
 }
 /*!**************************************************************************************************
 \brief
@@ -133,6 +141,7 @@ void GameStatePlatformerInit(void) {
 	camera_init();				//camera, must be initialized after portal_init as some values from
 								//portal_init are used
 	settings_init();			// Settings Menu
+	tutorial_init();			// Tutorial Menu
 	// --- Game BGM ---
 	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
 
@@ -145,7 +154,7 @@ void GameStatePlatformerUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
 
-	if (isPaused && (isSettings == FALSE)) {
+	if (isPaused && (isSettings == FALSE) && (isTutorial == FALSE)) {
 
 		// --------- Collision ---------
 		for (s32 i = p_first_multiple; i <= p_first_multiple + p_multiple_increment*(button_count-1); i += p_multiple_increment) {
@@ -179,8 +188,8 @@ void GameStatePlatformerUpdate(void) {
 
 				}
 				else if (i == p_first_multiple + (p_multiple_increment * 3)) {
-					gGameStateNext = GS_Tutorial;	// Main menu button
-					isPaused = FALSE;				// Resume game
+					//gGameStateNext = GS_Tutorial;	// Main menu button
+					isTutorial = TRUE;
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
@@ -224,6 +233,7 @@ void GameStatePlatformerUpdate(void) {
 				}
 			}
 		}
+		
 
 	}
 
@@ -315,7 +325,8 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.y >= button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2 &&
 				center_cursor.y <= button_startY - (p_button_Yunit * p_first_multiple) + menu_button_scaleY / 2)
 				&& isSettings == FALSE
-				&& p_isQuitting == FALSE)
+				&& p_isQuitting == FALSE
+				&& isTutorial == FALSE)
 			{
 
 				if (isPressed1 == FALSE) {
@@ -333,7 +344,8 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 1))) - menu_button_scaleY / 2 &&
 				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 1))) + menu_button_scaleY / 2)
 				&& isSettings == FALSE
-				&& p_isQuitting == FALSE)
+				&& p_isQuitting == FALSE
+				&& isTutorial == FALSE)
 			{
 
 				if (isPressed2 == FALSE) {
@@ -350,7 +362,8 @@ void GameStatePlatformerDraw(void) {
 			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 2))) - menu_button_scaleY / 2 &&
 				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 2))) + menu_button_scaleY / 2)
-				&& isSettings == FALSE)
+				&& isSettings == FALSE
+				&& isTutorial == FALSE)
 			{
 
 				if (isPressed3 == FALSE) {
@@ -367,7 +380,8 @@ void GameStatePlatformerDraw(void) {
 			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 3))) - menu_button_scaleY / 2 &&
 				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 3))) + menu_button_scaleY / 2)
-				&& isSettings == FALSE)
+				&& isSettings == FALSE
+				&& isTutorial == FALSE)
 			{
 
 				if (isPressed4 == FALSE) {
@@ -385,7 +399,8 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.y >= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 4))) - menu_button_scaleY / 2 &&
 				center_cursor.y <= button_startY - (p_button_Yunit * (p_first_multiple + (p_multiple_increment * 4))) + menu_button_scaleY / 2)
 				&& isSettings == FALSE
-				&& p_isQuitting == FALSE)
+				&& p_isQuitting == FALSE
+				&& isTutorial == FALSE)
 			{
 
 				if (isPressed5 == FALSE) {
@@ -422,6 +437,19 @@ void GameStatePlatformerDraw(void) {
 			}
 		}
 
+		if (isTutorial == TRUE) {
+			tutorial_update();	// Update collision within menu
+			tutorial_draw();	// Draw menu to screen
+
+			// handle clicking of buttons 
+			if (AEInputCheckReleased(AEVK_LBUTTON) &&
+				center_cursor.x >= buttonX - button_scaleX / 2 && center_cursor.x <= buttonX + button_scaleX / 2 &&
+				center_cursor.y >= buttonY - button_scaleY / 2 &&
+				center_cursor.y <= buttonY + button_scaleY / 2) {
+				isTutorial == FALSE;
+			}
+		}
+
 		if (p_isQuitting == TRUE) {
 			// --------- Make whole screen translucent ---------
 			AEGfxSetTransparency(0.55f);
@@ -445,7 +473,7 @@ void GameStatePlatformerDraw(void) {
 
 				drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - p_button_Yunit * i }, PI);
 
-				//float first_text = (origin.y + button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2) / WINDOWLENGTH_Y;
+				// ------ Texts ------
 
 				float text_originY = ((AEGfxGetWinMaxY() - origin.y) / (WINDOWLENGTH_Y / 2)) - 1.f;
 				float text_originX = ((AEGfxGetWinMaxX() - origin.x) / (WINDOWLENGTH_X / 2)) - 1.f;
@@ -487,6 +515,7 @@ void GameStatePlatformerUnload(void) {
 	upgrades_unload();			// Upgrades
 	player_unload();			// Player
 	settings_unload();			// Settings Menu
+	tutorial_unload();			// Tutorial Menu
 
 
 	// Texture unload

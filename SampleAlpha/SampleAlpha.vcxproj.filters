@@ -66,7 +66,7 @@
     <ClCompile Include="GameState_Lose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameState_Tutorial.cpp">
+    <ClCompile Include="Tutorial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameState_Tutorial2.cpp">
@@ -131,7 +131,7 @@
     <ClInclude Include="GameState_Lose.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameState_Tutorial.hpp">
+    <ClInclude Include="Tutorial.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameState_Tutorial2.hpp">

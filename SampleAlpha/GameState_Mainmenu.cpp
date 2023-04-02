@@ -114,7 +114,7 @@ void GameStateMainmenuUpdate(void) {
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 				}
 				else if (i == first_multiple + multiple_increment) {
-					gGameStateNext = GS_Tutorial;
+					//gGameStateNext = GS_Tutorial;
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
