@@ -21,7 +21,6 @@ extern Player_stats player;
 // --- Audio ---
 extern AEAudio defeatAudio;
 extern AEAudioGroup soundGroup;
-static bool isPlaying;
 
 void GameStateLoseLoad() {
 
@@ -32,18 +31,12 @@ void GameStateLoseLoad() {
 }
 
 void GameStateLoseInit() {
-	isPlaying = TRUE;
 }
 
 void GameStateLoseUpdate() {
 	// get cursor position
 	variables_update();
 
-	if (isPlaying) {
-		// Defeated audio
-		AEAudioPlay(defeatAudio, soundGroup, 0.25f, 1.f, 0);
-		isPlaying = FALSE;
-	}
 
 	// if respective buttons clicked, go to their game states
 	for (s32 i = 15; i <= 19; i += 4) {

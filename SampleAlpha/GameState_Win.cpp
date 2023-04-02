@@ -19,7 +19,6 @@ extern AEVec2 center_cursor; // cursor coordinates
 // --- Audio ---
 extern AEAudio victoryAudio;
 extern AEAudioGroup soundGroup;
-static bool isPlaying;
 
 void GameStateWinLoad() {
 
@@ -31,18 +30,14 @@ void GameStateWinLoad() {
 }
 
 void GameStateWinInit() {
-	isPlaying = TRUE;
+
 }
 
 void GameStateWinUpdate() {
 	// get cursor position
 	variables_update();
 
-	if (isPlaying) {
-		// Victory audio
-		AEAudioPlay(victoryAudio, soundGroup, 0.25f, 1.f, 0);
-		isPlaying = FALSE;
-	}
+	
 
 	// if respective buttons clicked, go to their game states
 	for (s32 i = 15; i <= 19; i += 4) {
