@@ -6,7 +6,7 @@
 * Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
 *
 * Brief:
-  This source file implements the functions used for the splash screen.
+  This source file implements the functions used for the credits.
 ==================================================================================*/
 #include "AEEngine.h"
 #include "GameState_Credits.hpp"
@@ -34,42 +34,69 @@ void GameStateCreditsLoad(void) {
 void GameStateCreditsInit(void) {
 	AEGfxSetBackgroundColor(0, 0, 0);
 	timer = 0;
+	for (int i = 0; i < NUM; i++) {
+		credits[i].y = origin.y - i * WINDOWLENGTH_Y;
+	}
 }
 
 void GameStateCreditsUpdate(void) {
 
 	timer += AEFrameRateControllerGetFrameTime();
-	if (timer >= 5) { 
-		credits[0].trans -= DECREMENT;
-		if (credits[0].trans <= 0) credits[0].flag = DISAPPEAR;
-	}
+	//if (timer >= 5) { 
+	//	credits[0].trans -= DECREMENT;
+	//	if (credits[0].trans <= 0) credits[0].flag = DISAPPEAR;
+	//}
 
-	if (timer >= 10) {
-		credits[1].trans -= DECREMENT;
-		if (credits[1].trans <= 0) credits[1].flag = DISAPPEAR;
-	}
+	//if (timer >= 10) {
+	//	credits[1].trans -= DECREMENT;
+	//	if (credits[1].trans <= 0) credits[1].flag = DISAPPEAR;
+	//}
 
-	if (timer >= 15) {
-		credits[2].trans -= DECREMENT;
-		if (credits[2].trans <= 0) credits[2].flag = DISAPPEAR;
-	}
+	//if (timer >= 15) {
+	//	credits[2].trans -= DECREMENT;
+	//	if (credits[2].trans <= 0) credits[2].flag = DISAPPEAR;
+	//}
 
-	if (timer >= 20) {
-		credits[3].trans -= DECREMENT;
-		if (credits[3].trans <= 0) {
-			credits[3].flag = DISAPPEAR;
-			AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) gGameStateNext = GS_MainMenu;
+	//if (timer >= 20) {
+	//	credits[3].trans -= DECREMENT;
+	//	if (credits[3].trans <= 0) {
+	//		credits[3].flag = DISAPPEAR;
+	//		AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
+	//		if (AEInputCheckTriggered(AEVK_LBUTTON)) gGameStateNext = GS_MainMenu;
+	//	}
+	//}
+	if (timer > 1) {
+		for (int i = 0; i < NUM; i++) {
+			credits[i].y += 1.f;
+			if (credits[3].y >= (origin.y + WINDOWLENGTH_Y)) {
+				AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
+				if (AEInputCheckTriggered(AEVK_LBUTTON)) gGameStateNext = GS_MainMenu;
+			}
 		}
 	}
 
 }
 
 void GameStateCreditsDraw(void) {
-	draw_credit_4();
-	draw_credit_3();
-	draw_credit_2();
-	draw_credit_1();
+	//draw_credit_4();
+	//draw_credit_3();
+	//draw_credit_2();
+	//draw_credit_1();
+	
+	for (int i = 0; i < NUM; i++) {
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransparency(1.0f);
+		AEGfxSetTintColor(1, 1, 1, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
+		AEMtx33Trans(&translate, origin.x, credits[i].y);
+		AEMtx33Rot(&rotate, PI);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &translate, &transform);
+		AEGfxSetTransform(transform.m);
+		AEGfxTextureSet(credits[i].texture, 0, 0);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	}
 }
 
 void GameStateCreditsFree(void) {
