@@ -598,6 +598,14 @@ void platform_logic() {
 		// checks if player is standing on the platform
 		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime()); // starts the timer to despawn the platform
+			// checks if 3 seconds or more after player stepped on platform
+			if (onetimeuse[i].timer >= 3) {
+				if (onetimeuse[i].flag == ACTIVE) {
+					// set flag for platform to not active
+					onetimeuse[i].flag = NOT_ACTIVE;
+					onetimeuse[i].timer = 0; // resets timer
+				}
+			}
 		}
 		else if (onetimeuse[i].timer > 0) { // checks if timer has started
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime()); //continue the timer
