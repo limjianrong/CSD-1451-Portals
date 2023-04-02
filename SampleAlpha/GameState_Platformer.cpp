@@ -84,6 +84,8 @@ extern Camera camera;
 extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
 extern AEAudioGroup soundGroup, musicGroup;
 static bool isPressed1, isPressed2, isPressed3, isPressed4, isPressed5;
+extern AEVec2 button_offset;
+extern float barscalex, barscaley;
 //static bool TisPressed;
 //static bool SisPressed1, SisPressed2;
 
@@ -144,6 +146,22 @@ void GameStatePlatformerInit(void) {
 								//portal_init are used
 	settings_init();			// Settings Menu
 	tutorial_init();			// Tutorial Menu
+
+	if (button_offset.x < 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+	}
+	else if (button_offset.x > 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+
+	}
+	else if (button_offset.x == 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f);
+		AEAudioSetGroupVolume(musicGroup, 0.5f);
+
+	}
+
 	// --- Game BGM ---
 	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
 

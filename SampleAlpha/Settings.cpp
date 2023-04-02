@@ -21,7 +21,7 @@ extern AEVec2 world_center_cursor;	// for calculating button offset
 
 // --- Audio ---
 extern AEAudio buttonClickedAudio, buttonHoverAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup soundGroup, musicGroup;
 static bool SisPressed1, SisPressed2;
 
 // --- Settings variables ---
@@ -137,9 +137,24 @@ void settings_draw(void) {
 	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley * 5) && AEInputCheckReleased(AEVK_LBUTTON)) {
 		volume_adjusted = TRUE;
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
-
 		// calculate offset distance
 		AEVec2Sub(&button_offset, &world_center_cursor, &origin);
+		if (button_offset.x < 0.f) {
+			AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+			AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+		}
+		else if (button_offset.x > 0.f) {
+			AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+			AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+
+		}
+		else if (button_offset.x == 0.f) {
+			AEAudioSetGroupVolume(soundGroup, 0.5f);
+			AEAudioSetGroupVolume(musicGroup, 0.5f);
+
+		}
+		
+
 	}
   
 

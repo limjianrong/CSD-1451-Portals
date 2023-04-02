@@ -26,8 +26,10 @@ AEVec2 Wbutton2;
 
 // --- Audio ---
 extern AEAudio victoryAudio, buttonClickedAudio, buttonHoverAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup soundGroup, musicGroup;
 static bool WisPressed1, WisPressed2;
+extern AEVec2 button_offset;
+extern float barscalex, barscaley;
 
 void GameStateWinLoad() {
 
@@ -43,6 +45,21 @@ void GameStateWinInit() {
 
 	Wbutton = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f };
 	Wbutton2 = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f - 100.f };
+
+	if (button_offset.x < 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
+	}
+	else if (button_offset.x > 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+		AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
+
+	}
+	else if (button_offset.x == 0.f) {
+		AEAudioSetGroupVolume(soundGroup, 0.5f);
+		AEAudioSetGroupVolume(musicGroup, 0.5f);
+
+	}
 
 	// Victory audio
 	AEAudioPlay(victoryAudio, soundGroup, 0.25f, 1.f, 0);
