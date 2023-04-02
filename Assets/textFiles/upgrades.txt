@@ -1,7 +1,10 @@
-card_width 200
-card_height 300
+CARD_WIDTH 200
+CARD_HEIGHT 300
+SHIELD_WIDTH 20
+SHIELD_HEIGHT 20
 shieldRegenFrameDelay 500
-max_hp_increment 1
-speed_increment 0.5
-portal_range_increment 50
+MAX_HP_INCREMENT 1
+SPEED_INCREMENT 0.5
+PORTAL_RANGE_INCREMENT 50
 SHIELD_COOLDOWN 100
+SHIELD_COOLDOWN_CAP 50

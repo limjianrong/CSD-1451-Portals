@@ -292,7 +292,6 @@ void player_update() {
 		if (player.center.x >= checkpoint[i].x1 && player.center.x <= checkpoint[i].x2 &&
 			player.center.y >= checkpoint[i].y1 && player.center.y <= checkpoint[i].y2) {
 
-			std::cout << i << std::endl;
 			if (checkpoint[i].check == FALSE) {
 				checkpoint[i].check = TRUE;
 				//checkpoint[i-1].check = 0;    //-----> If player position updates according to most recent checkpoint & NOT furthest checkpoint
