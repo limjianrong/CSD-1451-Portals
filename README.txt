@@ -1,15 +1,15 @@
 ===---===---===---===---===---===---===---===---===---===---===---===---===---===---===
-|		      		  CSD1451s23					      | 
+|		      		  CSD1451s23					      	  | 
 |  All content © 2023 DigiPen Institute of Technology Singapore. All rights reserved. |
 |                                                                                     |
-|			    	Game name: Portals                                    |
-| 		      	    	Team name: Apparate                                   |
-| 			  						  	      |
-| 			       	  Team members:				  	      |
-| 	  	      Lin ZhaoZhi	- z.lin@digipen.edu		  	      |
-| 	  	      Lim Jian Rong	- jianrong.lim@digipen.edu	 	      |
-| 	  	      Lee Zhi Yee	- zhiyee.l@digipen.edu		  	      |
-| 	  	      Tay Zhun Hang  	- zhunhang.tay@digipen.edu	  	      |
+|			    	Game name: Portals                                    	  |
+| 		      	    	Team name: Apparate                                     |
+| 			  						  	      			  |
+| 			       	  Team members:				  	      	  |
+| 	  	      Lin ZhaoZhi	- z.lin@digipen.edu		  	      	  	  |
+| 	  	      Lim Jian Rong	- jianrong.lim@digipen.edu	 	     	 	  |
+| 	  	      Lee Zhi Yee	- zhiyee.l@digipen.edu		  	      		  |
+| 	  	      Tay Zhun Hang  	- zhunhang.tay@digipen.edu	  	      	  |
 ===---===---===---===---===---===---===---===---===---===---===---===---===---===---===
 
 Background / Lore:
@@ -34,8 +34,7 @@ Controls:
 =========
 A key 			- Moves left
 D key 			- Moves right
-G key 			- Recenter camera
-F key 			- Remove/Reset all portals
+F key 			- Remove/Reset all created portals
 P key 			- Pauses game
 
 Left  mouse click 	- For interaction with UI buttons (e.g Pause, Main Menu, Settings)
@@ -50,6 +49,8 @@ I key 			- Moves camera up 	(only works after toggling free moving camera)
 K key 			- Moves camera down 	(only works after toggling free moving camera)
 J key 			- Moves camera left 	(only works after toggling free moving camera)
 L key 			- Moves camera right 	(only works after toggling free moving camera)
+C key				- Teleports anywhere the mouse cursor is pointing to
+V key				- Instantly kills the boss
 
 Q key 			- Open upgrade card	(does not level up the player)
 LCtrl + ESC key 	- Quick exits the game
