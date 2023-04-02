@@ -125,7 +125,7 @@ void update_portal() {
 	if (AEInputCheckTriggered(AEVK_C)) {
 		portal cheat_portal;
 		create_portal(cheat_portal);
-		teleport_object(player, cheat_portal);
+		teleport_player(cheat_portal.center);
 	}
 
 	//portal cooldown
