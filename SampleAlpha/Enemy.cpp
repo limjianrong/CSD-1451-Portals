@@ -38,7 +38,7 @@ extern Player_stats player;
 Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
 Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
-extern bool isShieldActive;
+//extern bool isShieldActive;
 
 // ----- Pause Menu -----
 extern bool isPaused;
@@ -108,8 +108,8 @@ void enemies_init() {
 		enemy2[i].dimensions.y = ENEMY2_HEIGHT;		// Enemy2's Height
 		enemy2[i].range_x = ENEMY2_WIDTH + 350;		// Enemy2's Horizontal range
 		enemy2[i].range_y = ENEMY2_HEIGHT + 500;	// Enemy2's Vertical range
-		enemy2[i].Hp = 5;							// Enemy2's Health
-		enemy2[i].Max_Hp = 5;						// Enemy2's Max Health
+		enemy2[i].Hp = 3;							// Enemy2's Health
+		enemy2[i].Max_Hp = 3;						// Enemy2's Max Health
 		enemy2[i].status = TRUE;					// TRUE for alive, FALSE for dead
 		// ---- Bullet ----
 		bullet_enemy2[i].center.x = enemy2[i].center.x;	// Bullet x position
@@ -183,8 +183,8 @@ void enemy1_collision() {
 			// decreases 1 player hp whenever player and enemy1 collide
 			if (AETestRectToRect(&enemy1[i].center, ENEMY1_WIDTH, ENEMY1_HEIGHT, &player_vec, player.dimensions.x, player.dimensions.y)) {
 				//if (CollisionIntersection_RectRect(enemy1[i], player)) {
-				if (isShieldActive) {
-					isShieldActive = FALSE;
+				if (player.isShieldActive) {
+					player.isShieldActive = FALSE;
 				}
 				else {
 					--player.Hp;
@@ -380,8 +380,8 @@ void enemy2_update() {
 					bullet_enemy2[i].isShooting = FALSE;
 				}
 
-				if (isShieldActive) {
-					isShieldActive = FALSE;
+				if (player.isShieldActive) {
+					player.isShieldActive = FALSE;
 				}
 				else {
 					--player.Hp;

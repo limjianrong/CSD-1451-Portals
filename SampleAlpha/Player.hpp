@@ -54,7 +54,7 @@ struct Player_stats : GameObjects {
 	s32 Level, Level_Reset, XP, requiredXP;
 
 	AEVec2 Lives_dimensions, Lives_pos;
-	bool justLeveledUp;
+	bool justLeveledUp, isShieldActive;
 
 	AEVec2 bottom_hotspot;
 	// ----- Transformation & Texture -----

@@ -9,11 +9,12 @@ static f32 CARD_HEIGHT;					// Card height
 #define MAX_UPGRADES 4					// Change this to max amount of upgrades
 
 // ---- Upgrades ----
-#define SHIELD_ROTATION PI				// Shield rotation
+static f32 shieldRegenFrameDelay;		// Shield regenerate based on frame elapsed
 static s32 MAX_HP_INCREMENT;			// Increment for max hp upgrade
 static f32 SPEED_INCREMENT;				// Increment for speed upgrade
 static f32 PORTAL_RANGE_INCREMENT;		// Increment for portal range upgrade
-
+static f32 SHIELD_COOLDOWN;				// Decrement for shield cooldown timer
+#define SHIELD_COOLDOWN_CAP 50			// Lowest cooldown for shield upgrade
 
 
 static enum card_type {

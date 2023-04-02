@@ -22,8 +22,10 @@ static s32 left_card, middle_card, right_card;
 // ----- Pause Screen -----
 extern bool isPaused;
 
-// ----- Portal Upgrades -----
+// ----- Portal & Shield Upgrades -----
 extern float portal_max_range;
+static bool attainShieldUpgrade;
+static s32 shieldDelay;
 
 // ----- Game Objects -----
 extern Player_stats player;
@@ -38,9 +40,7 @@ static AEMtx33 scale, rotate, translate, transform; // temp
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern AEVec2 origin;
 
-// --- Shield ---
-bool isShieldActive;
-
+// ---- FileIO ----
 std::ifstream upgrades_ifs{};
 
 // ----- Cursor positions -----
@@ -73,9 +73,11 @@ void upgrades_init() {
 	std::string str{};
 	upgrades_ifs >> str >> CARD_WIDTH;
 	upgrades_ifs >> str >> CARD_HEIGHT;
+	upgrades_ifs >> str >> shieldRegenFrameDelay;
 	upgrades_ifs >> str >> MAX_HP_INCREMENT;
 	upgrades_ifs >> str >> SPEED_INCREMENT;
 	upgrades_ifs >> str >> PORTAL_RANGE_INCREMENT;
+	upgrades_ifs >> str >> SHIELD_COOLDOWN;
 	upgrades_ifs.close();
 
 	// ---- Card type ----
@@ -90,13 +92,17 @@ void upgrades_init() {
 	shield.center.y = player.center.y;					// Shield bubble y position
 	shield.dimensions.x = player.dimensions.x + 20;		// Shield bubble width
 	shield.dimensions.y = player.dimensions.y + 20;		// Shield bubble height
-	isShieldActive = FALSE;								// Disable shield
+	player.isShieldActive = FALSE;								// Disable shield
 
 	//soundGroup = AEAudioCreateGroup();
 	
 }
 
 void upgrade_draw() {
+
+	if (player.isShieldActive) {
+		render_shield();
+	}
 
 	if (isUpgradeTime) {
 		// --------- Make whole screen translucent ---------
@@ -110,9 +116,6 @@ void upgrade_draw() {
 		render_card(left_card,	AEGfxGetWinMinX() + AEGetWindowWidth() / 4.0f, 2.f);
 		render_card(middle_card,AEGfxGetWinMinX() + AEGetWindowWidth() / 2.0f, 2.f);
 		render_card(right_card, AEGfxGetWinMaxX() - AEGetWindowWidth() / 4.0f, 2.f);
-	}
-	if (isShieldActive) {
-		render_shield();
 	}
 }
 
@@ -176,9 +179,11 @@ void upgrade_update() {
 			case PORTAL_RANGE_card: portal_max_range += PORTAL_RANGE_INCREMENT;
 				break;
 			case SHIELD_card:
-				// Enable shield
-				if (!isShieldActive) {
-					isShieldActive = TRUE;
+				attainShieldUpgrade = TRUE;		// Attained shield upgrade
+				player.isShieldActive = TRUE;	// Activate shield
+				shieldRegenFrameDelay -= SHIELD_COOLDOWN;
+				if (shieldRegenFrameDelay <= SHIELD_COOLDOWN_CAP) {
+					shieldRegenFrameDelay = SHIELD_COOLDOWN_CAP;
 				}
 				break;
 			}
@@ -213,26 +218,37 @@ void upgrade_update() {
 void shield_update() {
 
 	// Shield follows player x & y
-	if (isShieldActive) {
-		shield.center.x = player.center.x;
-		shield.center.y = player.center.y;
+	shield.center.x = player.center.x;
+	shield.center.y = player.center.y;
+	
+	// Regenerate shield
+	if (attainShieldUpgrade) {
+		if (!player.isShieldActive) {
+			shieldDelay++;
+			if (shieldDelay == shieldRegenFrameDelay) {
+				player.isShieldActive = TRUE;	// Reactivate shield
+				shieldDelay = NULL;				// Reset shield delay
+			}
+		}
 	}
 
 	// ----- Disable shield when shot by Enemy2 -----
 	for (s32 i = 0; i < MAX_ENEMIES_2; ++i) {
 		// ----- Bullet collision with enemy2 -----
 		if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &player.center, player.dimensions.x, player.dimensions.y)) {
-			isShieldActive = FALSE;
+			player.isShieldActive = FALSE;
 		}
 	}
 }
 
 void render_shield() {
 
-	// Creates a shield
-	AEGfxSetTransparency(0.6f);
-	AEGfxTextureSet(shield.Texture, 0, 0);
-	drawMesh(shield.dimensions, shield.center, SHIELD_ROTATION);
+	// Draw shield when active
+	if (player.isShieldActive) {
+		AEGfxSetTransparency(0.6f);
+		AEGfxTextureSet(shield.Texture, 0, 0);
+		drawMesh(shield.dimensions, shield.center, PI);
+	}
 }
 
 void render_card(s32 card, f32 transX, f32 offsetY)

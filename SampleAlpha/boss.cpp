@@ -90,8 +90,8 @@ void boss_init () {
 	//intitialize max hp of boss
 	boss.Max_Hp = boss.Hp;
 	// ---- Attack #2  :  Bullet ----
-	bullet.x = boss.center.x;					// Bullet x position
-	bullet.y = boss.center.y;					// Bullet y position
+	bullet.x = boss.center.x;				// Bullet x position
+	bullet.y = boss.center.y;				// Bullet y position
 	bullet.width = 20.0f;					// Bullet width
 	bullet.height = 20.0f;					// Bullet height
 	bullet.speed = 5.0f;					// Bullet speed
@@ -292,7 +292,12 @@ void boss_laser_beam_attack() {
 			//if player has been damaged by the laser beam within this attack, player will
 			//not be damaged again
 			if (laser_beam.damaged_player == false) {
-				//--player.Hp;
+				if (player.isShieldActive) {
+					player.isShieldActive = FALSE;
+				}
+				else {
+					//--player.Hp;
+				}
 				laser_beam.damaged_player = true;
 			}
 		}
@@ -394,7 +399,13 @@ void bullet_update() {
 		bullet.x = boss.center.x;				// Reset bullet x
 		bullet.y = boss.center.y;				// Reset bullet y
 		bullet.isTimerActive = TRUE;		// Enable bullet delay
-		//--player.Hp;
+
+		if (player.isShieldActive) {
+			player.isShieldActive = FALSE;
+		}
+		else {
+			//--player.Hp;
+		}
 	}
 
 	// ----- Bullet collision with boss -----
@@ -530,8 +541,13 @@ void boss_charge_attack() {
 		//check if boss collided with the player during the charge, limit charge attack to only damage the player once per attack
 		if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, boss.dimensions.x, boss.dimensions.y)) {
 			if (!boss_charge.player_damaged) {
-				//--player.Hp;
 				boss_charge.player_damaged = true;
+				if (player.isShieldActive) {
+					player.isShieldActive = FALSE;
+				}
+				else {
+					//--player.Hp;
+				}
 			}
 		}
 	}
