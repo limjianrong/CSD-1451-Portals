@@ -445,17 +445,20 @@ void GameStatePlatformerDraw(void) {
 
 				drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - p_button_Yunit * i }, PI);
 
-				float first_text = (origin.y + button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2) / WINDOWLENGTH_Y;
+				//float first_text = (origin.y + button_startY - (p_button_Yunit * p_first_multiple) - menu_button_scaleY / 2) / WINDOWLENGTH_Y;
 
-				AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);
-				AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
-				AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f, 0.75f, 0, 0, 0);
-				AEGfxPrint(Albam_fontID, (s8*)"All progress", -0.11, first_text + 0.15f, 0.75f, 0, 0, 0);
-				AEGfxPrint(Albam_fontID, (s8*)"will be lost.", -0.115, first_text, 0.75f, 0, 0, 0);
+				float text_originY = ((AEGfxGetWinMaxY() - origin.y) / (WINDOWLENGTH_Y / 2)) - 1.f;
+				float text_originX = ((AEGfxGetWinMaxX() - origin.x) / (WINDOWLENGTH_X / 2)) - 1.f;
+
+				AEGfxPrint(Albam_fontID, (s8*)"Are you sure", text_originX - 0.15f, text_originY + 0.6f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"you want to quit", text_originX - 0.19f, text_originY + 0.45f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"the game?", text_originX - 0.13f, text_originY + 0.3f , 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"All progress", text_originX - 0.141f , text_originY + 0.15f, 0.75f, 0, 0, 0);
+				AEGfxPrint(Albam_fontID, (s8*)"will be lost.", text_originX - 0.139f, text_originY, 0.75f, 0, 0, 0);
 
 
-				AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.059, first_text - 0.32f, 0.75f, 1, 1, 1);
-				AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.53f, 0.75f, 1, 1, 1);
+				AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.059, text_originY - 0.32f, 0.75f, 1, 1, 1);
+				AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, text_originY - 0.53f, 0.75f, 1, 1, 1);
 			}
 		}
 	}
