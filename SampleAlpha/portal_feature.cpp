@@ -111,10 +111,7 @@ void portal_load() {
 	initialize active flags of portal objects to be false
 *******************************************************************************************************/
 void portal_init() {
-
-	portal_1.active = false;
-	portal_2.active = false;
-	portal_1.draw_outline = false;
+	reset_portals();
 } //end of portal_init
 
 /*!**************************************************************************************************
