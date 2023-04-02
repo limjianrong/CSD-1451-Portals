@@ -89,9 +89,9 @@ void GameStateWinDraw() {
 	}
 
 	// ------ Texts ------
-	AEGfxPrint(Albam_fontID, (s8*)"YOU WIN!", -0.55, 0.4, 3.0F, 1, 1, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"Restart", -0.25, -0.05, 0.95F, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"MainMenu", -0.19, -0.3, 0.95F, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"YOU WIN!", -0.3f, 0.4f, 3.0f, 1, 1, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"Restart", -0.12f, -0.04f, 0.95f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Main Menu", -0.15f, -0.3f, 0.95f, 1, 1, 1);
 }
 
 void GameStateWinFree() {
