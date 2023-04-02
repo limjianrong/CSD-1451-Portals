@@ -15,6 +15,7 @@
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
 #include "Audio.hpp"
+#include "Tutorial.hpp"
 #include <iostream>
 
 // ---- Graphics -----
@@ -43,6 +44,11 @@ int first_multiple{ 15 };							// First multiple of button_Yunit
 int multiple_increment{ 3 };						// Increment of multiples of button_Yunit
 int button_count{ 5 };								// 5 menu buttons
 
+extern f32 buttonX;
+extern f32 buttonY;
+extern f32 button_scaleX;
+extern f32 button_scaleY;
+
 // ---- Quit Confirmation ----
 bool isQuitting;					// if TRUE, player has clicked on "Quit Game" button
 
@@ -58,6 +64,9 @@ extern AEVec2 origin; // origin (0,0) is in middle of screen, no matter where th
 // ---- Settings Menu ---- 
 bool is_Settings{ FALSE }; // if TRUE, screen is currently showing settings menu
 
+// ---- Tutorial Menu ----
+bool is_Tutorial{ FALSE };
+
 void GameStateMainmenuLoad(void) {
 
 	// Texture load
@@ -69,6 +78,8 @@ void GameStateMainmenuLoad(void) {
 	
 	// Settings texture load
 	settings_load();
+	// Tutorial texture load
+	tutorial_load();
 	// Audio load
 	audio_load();
 
@@ -80,8 +91,11 @@ void GameStateMainmenuInit(void) {
 
 	// Initialize settings menu variables
 	settings_init();
+	// Initialize tutorial menu variables
+	tutorial_init();
 	// Initialize audio
 	audio_init();
+	
 
 	// --- Game BGM ---
 	AEAudioPlay(gameBGM, musicGroup, 0.25f, 1.f, -1);
@@ -92,9 +106,10 @@ void GameStateMainmenuUpdate(void) {
 
 	variables_update();			// Updating all global variables commonly used is utmost priority
 
-	if (is_Settings == FALSE)	// Settings menu buttons & Main Menu buttons located
-								// in same locations, so collision should carry out main menu functions when is_Settings disabled
-								// and settings functions when is_Settings enabled
+	if (is_Settings == FALSE && is_Tutorial == FALSE)	// Settings/Tutorial menu buttons & Main Menu buttons located
+														// in same locations, so collision should carry out main menu functions 
+														// only when is_Settings & is_Tutorial disabled
+														
 	{
 		for (int i = first_multiple; i <= first_multiple + (multiple_increment * (button_count - 1)); i += multiple_increment) {
 			if ((AEInputCheckReleased(AEVK_LBUTTON) &&
@@ -115,6 +130,7 @@ void GameStateMainmenuUpdate(void) {
 				}
 				else if (i == first_multiple + multiple_increment) {
 					//gGameStateNext = GS_Tutorial;
+					is_Tutorial = TRUE;
 
 					// Audio once button is pressed
 					AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
@@ -204,7 +220,8 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y >= button_startY - (button_Yunit * first_multiple) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * first_multiple) + menu_button_scaleY / 2)
 			&& is_Settings == FALSE
-			&& isQuitting == FALSE)
+			&& isQuitting == FALSE
+			&& is_Tutorial == FALSE)
 		{
 			if (mm_isPressed1 == FALSE) {
 				mm_isPressed1 = TRUE;
@@ -222,7 +239,8 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 1))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 1))) + menu_button_scaleY / 2)
 			&& is_Settings == FALSE
-			&& isQuitting == FALSE)
+			&& isQuitting == FALSE
+			&& is_Tutorial == FALSE)
 		{
 			if (mm_isPressed2 == FALSE) {
 				mm_isPressed2 = TRUE;
@@ -239,7 +257,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 2))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 2))) + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& is_Tutorial == FALSE)
 		{
 			if (mm_isPressed3 == FALSE) {
 				mm_isPressed3 = TRUE;
@@ -256,7 +275,8 @@ void GameStateMainmenuDraw(void) {
 		if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 3))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 3))) + menu_button_scaleY / 2)
-			&& is_Settings == FALSE)
+			&& is_Settings == FALSE
+			&& is_Tutorial == FALSE)
 		{
 			if (mm_isPressed4 == FALSE) {
 				mm_isPressed4 = TRUE;
@@ -274,7 +294,8 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y >= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 4))) - menu_button_scaleY / 2 &&
 			center_cursor.y <= button_startY - (button_Yunit * (first_multiple + (multiple_increment * 4))) + menu_button_scaleY / 2)
 			&& is_Settings == FALSE
-			&& isQuitting == FALSE)
+			&& isQuitting == FALSE
+			&& is_Tutorial == FALSE)
 		{
 			if (mm_isPressed5 == FALSE) {
 				mm_isPressed5 = TRUE;
@@ -311,6 +332,23 @@ void GameStateMainmenuDraw(void) {
 			is_Settings = FALSE;
 			AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 
+		}
+	}
+
+	if (is_Tutorial == TRUE) {
+		tutorial_draw();	// Draw menu to screen
+		tutorial_update();	// Update collision within menu
+
+
+		// handle clicking of buttons 
+		//std::cout << buttonX - button_scaleX / 2 << std::endl;
+
+		if (AEInputCheckReleased(AEVK_LBUTTON) &&
+			world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
+			world_center_cursor.y >= buttonY - button_scaleY / 2 &&
+			world_center_cursor.y <= buttonY + button_scaleY / 2) {
+			AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+			is_Tutorial = FALSE;
 		}
 	}
 
@@ -354,6 +392,8 @@ void GameStateMainmenuFree() {
 void GameStateMainmenuUnload(void) {
 	// Settings Texture unload
 	settings_unload(); 
+	// Tutorial Texture unload
+	tutorial_unload();
 	
 	// Texture unload
 	AEGfxTextureUnload(buttonNotPressed);
