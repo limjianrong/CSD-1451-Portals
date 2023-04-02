@@ -291,7 +291,6 @@ void GameStateMainmenuDraw(void) {
 	
 
 	// ------ Texts ------
-	// redoooooooooooooooooooooooooooooooooooo
 	float first_text = -0.0583f;
 	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.4, 0.15, 3.0F, 1, 1, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"START GAME", -0.125, first_text , 0.75f, 1, 1, 1);
@@ -336,6 +335,7 @@ void GameStateMainmenuDraw(void) {
 
 			drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - button_Yunit * i }, PI);
 
+			// ------ Texts ------
 			AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);
 			AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
 			AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f , 0.75f, 0, 0, 0);
