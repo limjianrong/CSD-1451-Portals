@@ -55,8 +55,6 @@ std::ifstream portal_ifs{};
 AEGfxTexture* portal_range_picture;
 AEGfxTexture* portal_range_on_cooldown_picture;
 
-//texture for cards that are drawn when choosing upgrade
-AEGfxTexture* card_pic; // card picture for player upgrades
 /***********************************************************************/
 
 
@@ -83,12 +81,6 @@ void portal_load() {
 	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
 	if (!portal_range_on_cooldown_picture) {
 		std::cout << "portal_range_on_cooldown.png not loaded";
-	}
-
-	//load picture for cards used for player upgrades
-	card_pic = AEGfxTextureLoad("Assets/card.png");
-	if (!card_pic) {
-		std::cout << "\nFailed to load card.png";
 	}
 
 	//read values from text file
@@ -220,7 +212,6 @@ void portal_unload() {
 	// Texture unload
 	AEGfxTextureUnload(portal_range_picture);
 	AEGfxTextureUnload(portal_range_on_cooldown_picture);
-	AEGfxTextureUnload(card_pic);
 	AEGfxTextureUnload(portal_1.picture);
 } //end of portal_unload
 
