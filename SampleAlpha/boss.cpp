@@ -42,7 +42,7 @@ extern Door door;
 
 std::ifstream boss_ifs{}; //file stream to load boss stats from
 
-//load the assets used by the boss
+//load the assets used by the boss 
 void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 
@@ -170,6 +170,8 @@ void boss_draw() {
 	//if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
 		// -------------  Boss   ---------------
 		if (boss.Hp > 0) {
+			// -------------  Draw Attack 1 (Laser beam)   ---------------
+			draw_laser_beam();
 			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
 			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
 			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
@@ -177,8 +179,8 @@ void boss_draw() {
 			AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
-			// -------------  Draw Attack 1 (Laser beam)   ---------------
-			draw_laser_beam();
+
+			// -------------  Draw warning sign for Attack 1 (Laser beam)   ---------------
 			draw_laser_beam_warning();
 
 			// -------------  Attack 2 (Bullet)   ---------------
