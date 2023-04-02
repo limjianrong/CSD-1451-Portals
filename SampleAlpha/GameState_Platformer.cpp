@@ -1,10 +1,10 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					GameState_Platformer.cpp
-* Course:				CSD1451
-* Group Name:			Apparate
-* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
-* Secondary Authors:	-
+* File:							GameState_Platformer.cpp
+* Course:						CSD1451
+* Group Name:					Apparate
+* Primary Author (30%):			Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors (70%):		Lee Zhi Yee, zhiyee.l@digipen.edu
 *
 * Brief:
   Source file for the platformer game state
@@ -19,7 +19,6 @@
 
 // ----- Player related -----
 #include "Player.hpp"
-#include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Upgrades.hpp"
 
@@ -39,22 +38,21 @@
 #include "Tutorial.hpp"
 
 // ---- Drawing Variables ----
-extern float menu_button_scaleX;		// Width of menu button
-extern float menu_button_scaleY;	// Height of menu button
-extern float button_leftEdge;		// X coordinate of left edge of menu button
-extern float button_rightEdge;		// X coordinate of right edge of menu button
-extern float button_startY;			// Buttons drawn top down from this value above origin.y
-float p_button_Yunit{ WINDOWLENGTH_Y / 20 };			// Buttons' y-coordinates are separated by multiples of this unit
-int p_first_multiple{ 9 };							// First multiple of button_Yunit
-int p_multiple_increment{ 2 };						// Increment of multiples of button_Yunit
-extern int button_count;								// 5 menu buttons
+extern float menu_button_scaleX;				// Width of menu button
+extern float menu_button_scaleY;				// Height of menu button
+extern float button_leftEdge;					// X coordinate of left edge of menu button
+extern float button_rightEdge;					// X coordinate of right edge of menu button
+extern float button_startY;						// Buttons drawn top down from this value above origin.y
+float p_button_Yunit{ WINDOWLENGTH_Y / 20 };	// Buttons' y-coordinates are separated by multiples of this unit
+int p_first_multiple{ 9 };						// First multiple of button_Yunit
+int p_multiple_increment{ 2 };					// Increment of multiples of button_Yunit
+extern int button_count;						// 5 menu buttons
 
 extern f32 buttonX;
 extern f32 buttonY;
 extern f32 button_scaleX;
 extern f32 button_scaleY;
 
-//#include <iostream>
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;													// Created square mesh
