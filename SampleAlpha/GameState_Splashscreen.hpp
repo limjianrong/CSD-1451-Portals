@@ -8,6 +8,8 @@
 * Brief:
   This header file declares the functions used for the splash screen.
 ==================================================================================*/
+
+// main function for this game state
 void GameStateSplashscreenLoad(void);
 void GameStateSplashscreenInit(void);
 void GameStateSplashscreenUpdate(void);

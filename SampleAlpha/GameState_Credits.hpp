@@ -9,12 +9,13 @@
 	This header file contains the declaration of functions that implements
 	the credits
  ==================================================================================*/
-
+// struct for credit
 struct credit_stat {
 	AEGfxTexture* texture;
 	f32 y;
 };
 
+// main functions for this game state
 void GameStateCreditsLoad(void);
 void GameStateCreditsInit(void);
 void GameStateCreditsUpdate(void);
