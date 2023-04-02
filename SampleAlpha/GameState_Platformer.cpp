@@ -84,6 +84,8 @@ extern Camera camera;
 extern AEAudio buttonClickedAudio, buttonHoverAudio, gameBGM;
 extern AEAudioGroup soundGroup, musicGroup;
 static bool isPressed1, isPressed2, isPressed3, isPressed4, isPressed5;
+//static bool TisPressed;
+//static bool SisPressed1, SisPressed2;
 
 // --- Quit Confirmation ---
 bool p_isQuitting;
@@ -416,6 +418,21 @@ void GameStatePlatformerDraw(void) {
 		
 		}
 
+		/*if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
+			world_center_cursor.y >= buttonY - button_scaleY / 2 &&
+			world_center_cursor.y <= buttonY + button_scaleY / 2
+			&& isTutorial == TRUE) {
+
+			if (TisPressed == FALSE) {
+				TisPressed = TRUE;
+				AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+
+			}
+		}
+		else {
+			TisPressed = FALSE;
+		}*/
+
 		// --------- Texts ---------
 		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.27f, 0.55f, 2.0f, 1, 1, 0);
 		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.09f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
@@ -433,20 +450,26 @@ void GameStatePlatformerDraw(void) {
 				center_cursor.x >= -WINDOWLENGTH_X / 6.f && center_cursor.x <= WINDOWLENGTH_X / 6.f &&
 				center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
 				center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
+				AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+
 				isSettings = FALSE;
 			}
 		}
 
 		if (isTutorial == TRUE) {
-			tutorial_update();	// Update collision within menu
 			tutorial_draw();	// Draw menu to screen
+			tutorial_update();	// Update collision within menu
+			
 
 			// handle clicking of buttons 
+			//std::cout << buttonX - button_scaleX / 2 << std::endl;
+
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
-				center_cursor.x >= buttonX - button_scaleX / 2 && center_cursor.x <= buttonX + button_scaleX / 2 &&
-				center_cursor.y >= buttonY - button_scaleY / 2 &&
-				center_cursor.y <= buttonY + button_scaleY / 2) {
-				isTutorial == FALSE;
+				world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
+				world_center_cursor.y >= buttonY - button_scaleY / 2 &&
+				world_center_cursor.y <= buttonY + button_scaleY / 2) {
+				AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+				isTutorial = FALSE;
 			}
 		}
 

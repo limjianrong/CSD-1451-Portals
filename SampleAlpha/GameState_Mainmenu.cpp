@@ -309,6 +309,8 @@ void GameStateMainmenuDraw(void) {
 			center_cursor.y >= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 - WINDOWLENGTH_Y / 16.f &&
 			center_cursor.y <= WINDOWLENGTH_Y / 2.f - WINDOWLENGTH_Y / 30.f * 27 + WINDOWLENGTH_Y / 16.f) {
 			is_Settings = FALSE;
+			AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+
 		}
 	}
 

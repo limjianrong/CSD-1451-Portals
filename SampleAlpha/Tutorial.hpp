@@ -21,7 +21,7 @@ static enum asset2 {
 	enemy2,
 	enemy3,
 	enemy3_warning,
-	boss
+	_boss
 };
 
 

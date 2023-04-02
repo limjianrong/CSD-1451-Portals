@@ -2,8 +2,10 @@
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "Enemy.hpp"
+#include "boss.hpp"
 #include "Utilities.hpp"
 #include "Tutorial.hpp"
+#include <iostream>
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
@@ -17,6 +19,13 @@ extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID; // text font
 extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
+extern AEVec2 world_center_cursor;
+extern Boss boss;
+
+// --- Audio ---
+extern AEAudio buttonClickedAudio, buttonHoverAudio;
+extern AEAudioGroup soundGroup;
+static bool TisPressed;
 
 // --- Buttons ---
 f32 button_scaleX{ WINDOWLENGTH_X / 5 };		// width of button
@@ -27,8 +36,10 @@ f32 buttonX, buttonY;							// button positions
 f32 assetX, assetY;
 // bottom row asset positions
 f32 asset2X, asset2Y;
+f32 asset_width{ 70.f };
+f32 asset_height{ 70.f };
 
-AEVec2 asset2_scale[asset2_count];
+//AEVec2 asset2_scale[asset2_count];
 
 void tutorial_load(void) {
 	// buttons
@@ -51,13 +62,11 @@ void tutorial_load(void) {
 	// enemy3 warning
 	assets2[enemy3_warning] = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 	//boss
-	assets2[boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 
 	mesh_load();
 }
 void tutorial_init(void) {
-	//buttonX = origin.x - WINDOWLENGTH_X / 4; //length 1/3 of x screen
-	//buttonY = origin.y - WINDOWLENGTH_Y / 2.5; //height 1/8 of y screen
 	buttonX = origin.x;
 	buttonY = origin.y - WINDOWLENGTH_Y / 2.5f;
 
@@ -71,12 +80,6 @@ void tutorial_init(void) {
 	// second row assets y-position
 	asset2Y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2 + WINDOWLENGTH_Y / 10;
 
-
-	//asset_scale[_player] = { player.width, player.height };
-	//asset_scale[portals] = { 40.f, 40.f };
-	//asset_scale[range] = { 40.f, 40.f };
-	//asset2_scale[enemy1] = { ENEMY1_WIDTH, ENEMY1_HEIGHT };
-	//asset2_scale[enemy2] = { ENEMY2_WIDTH, ENEMY2_HEIGHT };
 }
 
 void tutorial_update(void) {
@@ -96,23 +99,7 @@ void tutorial_update(void) {
 	asset2X = assetX;
 	// second row assets y-position
 	asset2Y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2 + WINDOWLENGTH_Y / 10;
-
-	//// handle clicking of buttons 
-	//for (s32 i = 0; i <= WINDOWLENGTH_X/2; i += WINDOWLENGTH_X/2) {
-	//	if (AEInputCheckReleased(AEVK_LBUTTON) &&
-	//		(center_cursor.x >= buttonX - WINDOWLENGTH_X / 6 + i && center_cursor.x <= buttonX + WINDOWLENGTH_X / 6 + i &&
-	//		center_cursor.y >= buttonY - WINDOWLENGTH_Y / 16 &&
-	//		center_cursor.y <= buttonY + WINDOWLENGTH_Y / 16)) {
-	//		if (i == 0) gGameStateNext = GS_MainMenu;
-	//		else if (i == WINDOWLENGTH_X/2) gGameStateNext = GS_Tutorial2;
-	//	}
-	//}
-	if (center_cursor.x >= buttonX - button_scaleX / 2 && center_cursor.x <= buttonX + button_scaleX / 2 &&
-		center_cursor.y >= buttonY - button_scaleY / 2 &&
-		center_cursor.y <= buttonY + button_scaleY / 2)
-		AEGfxTextureSet(buttonPressed, 0, 0);
-	else AEGfxTextureSet(buttonNotPressed, 0, 0);
-	drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, PI);
+	
 }
 void tutorial_draw(void) {
 	variables_update();
@@ -141,46 +128,63 @@ void tutorial_draw(void) {
 	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
 
 	// ------- Drawing of button mesh + Setting texture -------
-	//for (int i = 0; i <= WINDOWLENGTH_X/2; i += WINDOWLENGTH_X/2) {
-		if (center_cursor.x >= buttonX - button_scaleX/2 && center_cursor.x <= buttonX + button_scaleX/2 &&
-			center_cursor.y >= buttonY - button_scaleY/2 &&
-			center_cursor.y <= buttonY + button_scaleY/2)
-			AEGfxTextureSet(buttonPressed, 0, 0);
-		else AEGfxTextureSet(buttonNotPressed, 0, 0);
-		drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, PI);
+	if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
+		world_center_cursor.y >= buttonY - button_scaleY / 2 &&
+		world_center_cursor.y <= buttonY + button_scaleY / 2) 
+
+		AEGfxTextureSet(buttonPressed, 0, 0);
+
+	else AEGfxTextureSet(buttonNotPressed, 0, 0);
+			
+	drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, PI);
+
+	if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
+		world_center_cursor.y >= buttonY - button_scaleY / 2 &&
+		world_center_cursor.y <= buttonY + button_scaleY / 2) {
+
+		if (TisPressed == FALSE) {
+			TisPressed = TRUE;
+			AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
+
+		}
+	}
+	else {
+		TisPressed = FALSE;
+	}
 	
 
 	// ------- Drawing of top row asset mesh + Setting texture -------
 	for (int j = 0; j < asset_count; j++) {
-		AEMtx33Scale(&scale, 70.f , 70.f); // button scale
-		AEMtx33Trans(&translate, assetX + j*(WINDOWLENGTH_X/4), assetY); // x = center, start counting y from bottom of screen
-		AEMtx33Rot(&rotate, PI); // rotation
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
 		AEGfxTextureSet(assets[j], 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ assetX + j * (WINDOWLENGTH_X / 4), assetY }, PI);
 	}
 
 	// ------- Drawing of bottom row asset mesh + Setting texture -------
 	for (int k = 0; k < asset2_count; k++) {
-		AEMtx33Scale(&scale, 70.f, 70.f); // button scale
-		AEMtx33Trans(&translate, asset2X + k * (WINDOWLENGTH_X / 4), asset2Y); // x = center, start counting y from bottom of screen
-		AEMtx33Rot(&rotate, PI); // rotation
-		AEMtx33Concat(&transform, &rotate, &scale);
-		AEMtx33Concat(&transform, &translate, &transform);
-		AEGfxSetTransform(transform.m);
 		AEGfxTextureSet(assets2[k], 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
+		if (k == asset_count) {
+			//drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ asset2X + k * (WINDOWLENGTH_X / 4), asset2Y }, 0);
+			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
+			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
+			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
+			AEGfxSetTransform(boss.matrix.m);
+			//AEGfxTextureSet(assets2[k], 0.0f, 0.0f);
+			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		}
+		else {
+			drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ asset2X + k * (WINDOWLENGTH_X / 4), asset2Y }, PI);
+
+		}
 	}
+
 
 	// ------ Texts ------
 
 	f32 firstText = 0.7f;	// texts for 1st row assets start from this y-position
 
-	// ----- Buttons -----
-	AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.56f, -0.83f, 0.75F, 1.0f, 1.0f, 1.0f);
-	AEGfxPrint(Albam_fontID, (s8*)"NEXT", 0.435f, -0.83f, 0.75F, 1.0f, 1.0f, 1.0f);
+	// ----- Button -----
+	AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.05f, -0.83f, 0.75F, 1.0f, 1.0f, 1.0f);
 	
 	// ----- Player -----
 	AEGfxPrint(Albam_fontID, (s8*)"A for left.", -0.84f, firstText, 0.55f, 0.0f, 0.0f, 0.0f);
@@ -227,18 +231,22 @@ void tutorial_draw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"collide with the", 0.64f, secondText - 0.5f, 0.55F, 0, 0, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"door to win!", 0.66f, secondText - 0.6f, 0.55F, 0, 0, 0);
 	
+	AEGfxPrint(Albam_fontID, (s8*)"Press 'P' to pause game", -0.26f, secondText - 0.7f, 0.75F, 0.54f, 0, 1);
+
 
 }
 
 void tutorial_free(void) {
 
 }
+
 void tutorial_unload(void) {
 	// Button texture unload
 	AEGfxTextureUnload(buttonNotPressed);
 	AEGfxTextureUnload(buttonPressed);
 	AEGfxTextureUnload(backgroundTex);
 
+	// Assets unload 
 	AEGfxTextureUnload(assets[_player]);
 	AEGfxTextureUnload(assets[portals]);
 	AEGfxTextureUnload(assets[range]);
@@ -246,13 +254,5 @@ void tutorial_unload(void) {
 	AEGfxTextureUnload(assets2[enemy2]);
 	AEGfxTextureUnload(assets2[enemy3]);
 	AEGfxTextureUnload(assets2[enemy3_warning]);
-	AEGfxTextureUnload(assets2[boss]);
-
-	//unload all assets
-
-	// Mesh free
-	//AEGfxMeshFree(square_mesh);
-
-	// Informing the system about the loop's end
-	//AESysFrameEnd();
+	AEGfxTextureUnload(assets2[_boss]);
 }
