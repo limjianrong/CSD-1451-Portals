@@ -14,7 +14,6 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Utilities.hpp"
-#include <fstream>
 
 //======= Parameter =======
 #define BLOCK_WIDTH 50.0f
@@ -58,7 +57,7 @@ struct Block {
 };
 
 struct Door {
-	AEVec2 center;
+	f32 x{}, y{};
 	f32 width{}, height{};
 	AEGfxTexture* picture;
 	AEMtx33 scale{}, translate{}, final{};

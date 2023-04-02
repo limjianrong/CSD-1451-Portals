@@ -16,10 +16,9 @@
 #include <cmath>
 #include <cstdlib>
 #include "GameState_Platformer.hpp"
-#include "GameStateManager.hpp"
 #include "Utilities.hpp"
 #include "AEEngine.h"
-#include "draw_level.hpp"
+
 //direction of boss movement, boss moving up, boss moving down, or neither
 enum { UP, DOWN,STOP };
 
@@ -32,7 +31,7 @@ struct Boss : GameObjects {
 	f32 velocity;
 
 	// ---- Texture ----
-	AEMtx33 scale, translate, matrix{};
+	AEMtx33 scale, translate, matrix;
 	AEGfxTexture* standTex, * deadTex;
 
 };
@@ -67,7 +66,7 @@ struct Laser_beam{
 	AEVec2 center;
 
 	// ---- Texture ----
-	AEMtx33 scale, translate, rotate, final_matrix;
+	AEMtx33 scale{}, translate{}, rotate{}, final_matrix{};
 	AEGfxTexture* picture;
 
 	//variables  used to let players know that
@@ -95,7 +94,7 @@ struct Bullet {
 //variables of the boss's charge attack
 struct Boss_charge {
 	//flags used to at different parts of the boss charge attack
-	bool active, return_to_position, damaged_player;
+	bool active, return_to_position, player_damaged;
 
 	//cooldown of the attack, range of the attack, speed of the
 	//boss during its attack, as well as time elapsed since

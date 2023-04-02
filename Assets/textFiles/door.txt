@@ -1,4 +1,0 @@
-x_position 8550
-y_position 550
-door_width 50
-door_height 100

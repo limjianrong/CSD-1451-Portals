@@ -15,7 +15,6 @@
 #include "Player.hpp"
 #include "Utilities.hpp"
 
-
 // ---- Game Objects / Classes ----
 extern Player_stats player;
 Boss boss; //boss object
@@ -35,9 +34,6 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 // ---- Audio ----
 extern AEAudio laserAudio, damageAudio, deathAudio, bulletAudio;
 extern AEAudioGroup soundGroup;
-
-// ----Door to go next level -----
-extern Door door;
 
 std::ifstream boss_ifs{}; //file stream to load boss stats from
 
@@ -109,22 +105,11 @@ void boss_init () {
 	bullet.isTeleported = FALSE;			// Indicator for teleporation
 	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
 
-	//set time elapsed since boss attack, active flag of boss attack, and damaged player flag
-	//to be 0
-	laser_beam.active = false;
-	laser_beam.time_elapsed = 0;
-	laser_beam.damaged_player = false;
-
-	boss_charge.active = false;
-	boss_charge.time_elapsed = 0;
-	boss_charge.damaged_player = false;
 }
 
 //updates the boss while the boss is alive, updates boss movement and boss attacks
 void boss_update() {
-	if (AEInputCheckCurr(AEVK_V)) {
-		--boss.Hp;
-	}
+
 	// When player is within boss zone
 	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
 		if (boss.Hp > 0) {
@@ -147,9 +132,6 @@ void boss_update() {
 		else {
 			// --- Boss' death audio ---
 			AEAudioPlay(deathAudio, soundGroup, 0.5f, 1.f, 0);
-			if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y,&door.center, door.width, door.height)) {
-				gGameStateNext = GS_Win;
-			}
 		}
 	}
 }
@@ -165,13 +147,10 @@ void boss_draw() {
 			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
 			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
 			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-			AEGfxSetTransform(boss.matrix.m);
-			AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+
 
 			// -------------  Draw Attack 1 (Laser beam)   ---------------
 			draw_laser_beam();
-			draw_laser_beam_warning();
 
 			// -------------  Attack 2 (Bullet)   ---------------
 			bullet_draw();
@@ -184,8 +163,10 @@ void boss_draw() {
 			AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
 			drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, PI);
 		}
-
-
+		AEGfxSetTransform(boss.matrix.m);
+		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		draw_laser_beam_warning();
 	//}
 }
 
@@ -548,14 +529,19 @@ void boss_charge_attack() {
 			boss.direction = boss_charge.previous_direction;
 			boss_charge.direction_magnitude = 0;
 			boss_charge.distance_travelled = 0;
-			boss_charge.damaged_player = false;
+			boss_charge.player_damaged = false;
 		}
 
 		//check if boss collided with the player during the charge, limit charge attack to only damage the player once per attack
 		if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, boss.dimensions.x, boss.dimensions.y)) {
-			if (!boss_charge.damaged_player) {
-				//--player.Hp;
-				boss_charge.damaged_player = true;
+			if (!boss_charge.player_damaged) {
+				boss_charge.player_damaged = true;
+				if (player.isShieldActive) {
+					player.isShieldActive = FALSE;
+				}
+				else {
+					//--player.Hp;
+				}
 			}
 		}
 	}
