@@ -23,11 +23,12 @@ Bullet bullet;
 Laser_beam laser_beam; //boss laser beam attack
 Boss_charge boss_charge; //boss charge attack
 Boss_teleport boss_teleport; //boss teleportation
-static bool isRunning = false;
+
 // ---- Normalization ----
-f32 adj, opp, angle;
-f32 dist_boss2bullet, dist_boss2player;  // no longer using
-AEVec2 normalized_vector; // direction vector from player to cursor
+static f32 adj, opp, angle;
+static f32 dist_boss2bullet, dist_boss2player;  // no longer using
+static AEVec2 normalized_vector; // direction vector from player to cursor
+static f32 selfDamageWindow;
 
 // ---- Mesh ----
 extern AEGfxVertexList* square_mesh;	// Created square mesh
@@ -103,11 +104,12 @@ void boss_init () {
 	bullet.y = boss.center.y;				// Bullet y position
 	bullet.width = 20.0f;					// Bullet width
 	bullet.height = 20.0f;					// Bullet height
-	bullet.speed = 5.0f;					// Bullet speed
+	bullet.speed = 8.0f;					// Bullet speed
 	bullet.timer = BOSS_TIMER;				// Bullet timer between each bullet
 	bullet.isTimerActive = FALSE;			// Indicator for timer activeness
 	bullet.isTeleported = FALSE;			// Indicator for teleporation
 	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
+	bullet.isReset = FALSE;					// Indicator to check if bullet had resetted
 
 	//set time elapsed since boss attack, active flag of boss attack, and damaged player flag
 	//to be 0
@@ -321,25 +323,36 @@ void boss_laser_beam_attack() {
 //boss shoots bullets at the player
 void bullet_update() {
 
-	// ----------  Boss  ----------
-	if (player.center.y <= boss.center.y) {			// Player below boss
-		opp = player.center.y - boss.center.y;
-	}
-	else if (player.center.y >= boss.center.y) {		// Player above boss
-		opp = boss.center.y - player.center.y;
-	}
+	// Normalization & Calculations only done ONCE before each bullet is shot
+	if (bullet.isReset) {
+		// ----------  Boss  ----------
+		if (player.center.y <= boss.center.y) {			// Player below boss
+			opp = player.center.y - boss.center.y;
+		}
+		else if (player.center.y >= boss.center.y) {	// Player above boss
+			opp = boss.center.y - player.center.y;
+		}
 
-	if (player.center.x >= boss.center.x) {			// Player right of boss
-		adj = player.center.x - boss.center.x;
-	}
-	else if (player.center.x <= boss.center.x) {		// Player left of boss
-		adj = boss.center.x - player.center.x;
-	}
+		if (player.center.x >= boss.center.x) {			// Player right of boss
+			adj = player.center.x - boss.center.x;
+		}
+		else if (player.center.x <= boss.center.x) {	// Player left of boss
+			adj = boss.center.x - player.center.x;
+		}
 
-	// ---- Normalization ----
-	angle = AEATan(opp / adj); // get angle between player & boss (in rad)
-	AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
-	AEVec2Scale(&normalized_vector, &normalized_vector, bullet.speed);
+		// ---- Normalization ----
+		angle = AEATan(opp / adj); // get angle between player & boss (in rad)
+		AEVec2Set(&normalized_vector, AECos(angle), AESin(angle));
+		AEVec2Scale(&normalized_vector, &normalized_vector, bullet.speed);
+
+		// ---- Direction of bullet ----
+		if (player.center.x >= boss.center.x) bullet.direction.x		= RIGHT;
+		else if (player.center.x <= boss.center.x) bullet.direction.x	= LEFT;
+		if (player.center.y <= boss.center.y) bullet.direction.y		= DOWN;
+		else if (player.center.y >= boss.center.y) bullet.direction.y	= UP;
+
+		bullet.isReset = FALSE;		// Toggle flag for bullet reset
+	}
 
 	// distance between boss -> bullet, boss -> player
 	dist_boss2bullet = sqrt((bullet.x - boss.center.x) * (bullet.x - boss.center.x) + (bullet.y - boss.center.y) * (bullet.y - boss.center.y));
@@ -351,19 +364,19 @@ void bullet_update() {
 		player.center.y >= (boss.center.y - boss.range_y) && player.center.y <= (boss.center.y + boss.range_y)) {
 
 		// --- Enable shooting ---
-		isRunning = TRUE;
+		bullet.isShooting = TRUE;
 		
 		// If timer is over
 		if (bullet.isTimerActive == FALSE) {
 			// ---- Loops bullet ----
 			//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
-			if (dist_boss2bullet <= 400.f && isRunning == TRUE) {	// Bullet disappears after 400 units
+			if (dist_boss2bullet <= DISTANCE_BEFORE_BULLET_DISAPPEAR && bullet.isShooting == TRUE) {	// Bullet disappears after 400 units
 
 				// ----- Movement of bullet from boss to player -----
-				if (player.center.y <= boss.center.y) bullet.y += normalized_vector.y;
-				else if (player.center.y >= boss.center.y) bullet.y -= normalized_vector.y;
-				if (player.center.x >= boss.center.x) bullet.x += normalized_vector.x;
-				else if (player.center.x <= boss.center.x) bullet.x -= normalized_vector.x;
+				if (bullet.direction.x == RIGHT) bullet.x += normalized_vector.x;
+				else if (bullet.direction.x == LEFT) bullet.x -= normalized_vector.x;
+				if (bullet.direction.y == DOWN) bullet.y += normalized_vector.y;
+				else if (bullet.direction.y == UP) bullet.y -= normalized_vector.y;
 
 				//std::cout << dist_boss2bullet << std::endl;
 				//// --- Bullet sfx everytime bullet is reset ---
@@ -375,11 +388,12 @@ void bullet_update() {
 				// --- Resets bullet ---
 				bullet.x = boss.center.x;
 				bullet.y = boss.center.y;
-				bullet.isTeleported = FALSE;
+				bullet.isTeleported = FALSE;		// Toggle flag to indicate bullet is not teleported
+				bullet.isReset = TRUE;				// Toggle flag to indicate bullet resetted
 
 				// If player x within 100 units of boss
 				if (player.center.x >= (boss.center.x - 100) && player.center.x <= boss.center.x) {
-					bullet.isTimerActive = TRUE;		// Enable bullet delay
+					bullet.isTimerActive = TRUE;	// Enable bullet delay
 				}
 			}
 		}
@@ -388,7 +402,7 @@ void bullet_update() {
 
 		// ---- Loops bullet ----
 		//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
-		if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
+		if (dist_boss2bullet <= DISTANCE_BEFORE_BULLET_DISAPPEAR && bullet.isShooting == TRUE) {	// Bullet disappears after 600 units
 			
 			// ----- Movement of bullet from boss to player -----
 			if (player.center.y <= boss.center.y) bullet.y += normalized_vector.y;
@@ -398,11 +412,12 @@ void bullet_update() {
 		}
 		else {
 			// --- Disable shooting ---
-			isRunning = FALSE;
+			bullet.isShooting = FALSE;		// Toggle flag to indicate bullet should not shoot anymore
 			// --- Resets bullet ---
 			bullet.x = boss.center.x;
 			bullet.y = boss.center.y;
-			bullet.isTeleported = FALSE;
+			bullet.isTeleported = FALSE;	// Toggle flag to indicate bullet is not teleported
+			bullet.isReset = TRUE;			// Toggle flag to indicate bullet resetted
 		}
 	}
 
@@ -411,7 +426,7 @@ void bullet_update() {
 	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &player.center, player.dimensions.x, player.dimensions.y)) {
 		bullet.x = boss.center.x;				// Reset bullet x
 		bullet.y = boss.center.y;				// Reset bullet y
-		bullet.isTimerActive = TRUE;		// Enable bullet delay
+		bullet.isTimerActive = TRUE;			// Enable bullet delay
 
 		if (player.isShieldActive) {
 			player.isShieldActive = FALSE;
@@ -421,16 +436,25 @@ void bullet_update() {
 		}
 	}
 
-	// ----- Bullet collision with boss -----
-	if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &boss.center, boss.dimensions.x, boss.dimensions.y) && bullet.isTeleported) {
-		bullet.x = boss.center.x;
-		bullet.y = boss.center.y;
-		bullet.isTeleported = FALSE;
-		bullet.isTimerActive = TRUE;		// Enable bullet delay
-		--boss.Hp;
+	// ----- Boss able to deal damage to itself for only a short period -----
+	if (bullet.isTeleported) {
+		selfDamageWindow++;
+		if (selfDamageWindow >= 30.f) {
+			// ----- Bullet collision with boss -----
+			if (AETestRectToRect(&bullet.center, bullet.width, bullet.height, &boss.center, boss.dimensions.x, boss.dimensions.y) && bullet.isTeleported) {
+				bullet.x = boss.center.x;
+				bullet.y = boss.center.y;
+				bullet.isTeleported = FALSE;
+				bullet.isTimerActive = TRUE;		// Enable bullet delay
+				--boss.Hp;
 
-		// --- Boss' damage audio ---
-		AEAudioPlay(damageAudio, soundGroup, 0.5f, 1.f, 0);
+				// --- Boss' damage audio ---
+				AEAudioPlay(damageAudio, soundGroup, 0.5f, 1.f, 0);
+
+				selfDamageWindow = NULL;			// Reset damage window opportunity
+			}
+		}
+		
 	}
 
 	// ----- Resets bullet timer (Delay inbetween bullets) -----
@@ -442,22 +466,7 @@ void bullet_update() {
 		bullet.isTimerActive = FALSE;
 	}
 
-	//// If bullet is within range of boss
-	//if (bullet.x >= (boss.x_pos - boss.width) && bullet.x <= (boss.x_pos + boss.width) &&
-	//	bullet.y >= (boss.y_pos) - boss.height && bullet.y <= (boss.y_pos) + boss.height) {
 
-
-	// ----- Bullet collision with enemy1 -----
-	/*if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_a.x, enemy1_a.y) == TRUE) {
-		bullet_x = boss.x_pos;
-		bullet_y = boss.y_pos;
-		--enemy1_a.Hp;
-	}
-	if (isbullet_enemy_colliding(bullet_x, bullet_y, enemy1_b.x, enemy1_b.y) == TRUE) {
-		bullet_x = boss.x_pos;
-		bullet_y = boss.y_pos;
-		--enemy1_b.Hp;
-	}*/
 }
 
 //function for boss attack #3, the boss charges towards the position of the player, which is determined by the
@@ -591,20 +600,10 @@ void bullet_draw() {
 
 	// ---- Loops bullet ----
 	//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
-	if (dist_boss2bullet <= 400 && isRunning == TRUE) {	// Bullet disappears after 400 units
-
-		AEMtx33 weapon_scale = { 0 };
-		AEMtx33Scale(&weapon_scale, bullet.width, bullet.height); // scaling it up
-		AEMtx33 weapon_translate = { 0 };
-		AEMtx33Trans(&weapon_translate, bullet.x, bullet.y); // shifts along x & y axis
-		AEMtx33 weapon_rotate = { 0 };
-		AEMtx33Rot(&weapon_rotate, angle); // rotation
-		AEMtx33 weapon_transform = { 0 };
-		AEMtx33Concat(&weapon_transform, &weapon_rotate, &weapon_scale);
-		AEMtx33Concat(&weapon_transform, &weapon_translate, &weapon_transform);
-		AEGfxSetTransform(weapon_transform.m);
+	if (dist_boss2bullet <= DISTANCE_BEFORE_BULLET_DISAPPEAR && bullet.isShooting == TRUE) {	// Bullet disappears after 400 units
 		AEGfxTextureSet(bullet.bulletTex, 0, 0);
-		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+		drawMesh(AEVec2{ bullet.width, bullet.height }, AEVec2{ bullet.x, bullet.y }, angle);
+
 	}
 }
 

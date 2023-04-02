@@ -20,8 +20,9 @@
 #include "Utilities.hpp"
 #include "AEEngine.h"
 #include "draw_level.hpp"
-//direction of boss movement, boss moving up, boss moving down, or neither
-enum { UP, DOWN,STOP };
+
+// COMMAND ENUMS
+enum { UP, DOWN, LEFT, RIGHT, STOP };
 
 //variables of the boss
 struct Boss : GameObjects {
@@ -79,13 +80,13 @@ struct Laser_beam{
 
 // ------ Attack #2 ------
 #define BOSS_TIMER 0.5f
+#define DISTANCE_BEFORE_BULLET_DISAPPEAR 600.f
 struct Bullet {
 	f32 x, y;
-	AEVec2 center;
+	AEVec2 center, direction;
 	f32 width, height;
-	f32 speed;
-	f32 timer;
-	bool isTimerActive, isTeleported, isShooting;
+	f32 speed, timer;
+	bool isTimerActive, isTeleported, isShooting, isReset;
 
 	// ----- Mesh & Texture -----
 	AEGfxTexture* bulletTex;
