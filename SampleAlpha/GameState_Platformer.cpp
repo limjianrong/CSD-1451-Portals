@@ -114,6 +114,7 @@ void GameStatePlatformerLoad(void) {
 	upgrades_load();			// Upgrades
 	player_load();				// Player
 	settings_load();			// Settings Menu
+	camera_load();
 }
 /*!**************************************************************************************************
 \brief

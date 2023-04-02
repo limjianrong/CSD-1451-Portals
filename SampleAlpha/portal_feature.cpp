@@ -108,7 +108,7 @@ void portal_load() {
 
 /*!**************************************************************************************************
 \brief
-	reset the active flags of portal objects to be false
+	sets the active flags of portal objects to be false
 *******************************************************************************************************/
 void portal_init() {
 	reset_portals();

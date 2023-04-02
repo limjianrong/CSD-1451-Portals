@@ -17,21 +17,42 @@ extern float portal_max_range; //maximum range that a player can place a portal
 //extern float moveSpeed; //for camera to follow player when player is on platform
 extern Player_stats player;
 Camera camera;
+std::ifstream camera_ifs{};
 
-//initializes the position of the camera and its mode, as well as its buffer range
+void camera_load() {
+	camera_ifs.open("Assets/textFiles/camera.txt");
+	if (!camera_ifs) {
+		std::cout << "\nFailed to open camera.txt";
+	}
+	std::string str{};
+	camera_ifs >> str >> camera.buffer_range_multiplier;
+	camera_ifs.close();
+	
+	//camera position will be set to player's initial starting
+	//position, but camera position cannot be below (0,0) as there are no longer any platforms
+	//below the screen when the camera is at (0,0)
+	camera.x = static_cast<f32>(player.initial_pos_x);
+	camera.y = static_cast<f32>(player.initial_pos_y);
+	camera.x = AEClamp(camera.x, 0, INT_MAX);
+	camera.y = AEClamp(camera.y, 0, INT_MAX);
+
+}
+//sets the position of the camera and its mode, as well as its buffer range
 void camera_init() {
 	// -------- Camera --------
-	camera.x = 0;
-	camera.y = 0; // Reset camera
+
 	camera.free_moving = false;
-	camera.buffer_range = portal_max_range;
+	//set buffer range multiplier value so that camera buffer range will be slightly larger than
+	//the maximum range of the portal, so that player can always see slightly ahead
+	//of the portal's maximum range
+	camera.buffer_range = camera.buffer_range_multiplier * portal_max_range;
 }
 
 //updates position of the camera and whether or not it is free moving
 void camera_update() {
 	
 	//check if player has upgraded the maximum portal range, if upgraded, then camera buffer range must be updated as well
-	camera.buffer_range = portal_max_range;
+	camera.buffer_range = camera.buffer_range_multiplier * portal_max_range;
 
 	//check for player input to toggle free moving camera
 	if (AEInputCheckTriggered(AEVK_B)) {

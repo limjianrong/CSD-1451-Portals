@@ -131,7 +131,7 @@ void player_init() {
 	player.XP				= player.XP_RESET;			// Player's XP
 	//player.justLeveledUp	= FALSE;					// Indicator to show player levelling up
 	player.status			= TRUE;						// Player's status
-	player.requiredXP		= 40.f;						// Required XP to levelup
+	player.requiredXP		= 40;						// Required XP to levelup
 
 	player.Lives_dimensions.x = 50.f;
 	player.Lives_dimensions.y = 50.f;

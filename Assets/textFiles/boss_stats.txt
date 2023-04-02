@@ -14,3 +14,7 @@ boss_laser_width 250
 boss_laser_height 50
 boss_laser_cooldown 5
 boss_laser_max_duration 5
+boss_laser_buffer_duration 2
+boss_laser_warningpic_width 50
+boss_laser_warningpic_height 50
+boss_teleport_cooldown 8
