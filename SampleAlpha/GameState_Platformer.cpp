@@ -239,7 +239,7 @@ void GameStatePlatformerUpdate(void) {
 		boss_update();				// Boss
 		upgrade_update();			// Upgrade
 		player_update();			// Player
-		update_portal();			// Upgrade
+		update_portal();			// Portal
 		camera_update();			// Camera
 		
 	}

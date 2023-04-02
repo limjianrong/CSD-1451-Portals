@@ -20,10 +20,14 @@ Camera camera;
 std::ifstream camera_ifs{};
 
 void camera_load() {
+
 	camera_ifs.open("Assets/textFiles/camera.txt");
+
+#ifdef debug
 	if (!camera_ifs) {
 		std::cout << "\nFailed to open camera.txt";
 	}
+#endif
 	std::string str{};
 	camera_ifs >> str >> camera.buffer_range_multiplier;
 	camera_ifs.close();
@@ -33,8 +37,7 @@ void camera_load() {
 	//below the screen when the camera is at (0,0)
 	camera.x = static_cast<f32>(player.initial_pos_x);
 	camera.y = static_cast<f32>(player.initial_pos_y);
-	camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
-	camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
+
 
 }
 //sets the position of the camera and its mode, as well as its buffer range
@@ -94,9 +97,7 @@ void camera_update() {
 
 		//coordinate of camera should not go below (0,0) as there is no level design implemented
 		//below AEGfxGetWinMinX and AEGfxGetWinMinY when camera.x and camera.y = 0.
-		camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
 		camera.y = player.center.y;
-		camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 	}
 	//if free moving camera is true, can freely pan left/right to see the level design
 	//mainly used for level designing/debugging purposes
@@ -118,4 +119,6 @@ void camera_update() {
 		if (AEInputCheckCurr(AEVK_L))
 			camera.x += camera.free_moving_speed;
 	}
+	camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
+	camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 }

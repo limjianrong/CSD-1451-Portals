@@ -13,7 +13,6 @@
 ==================================================================================*/
 
 #include "portal_feature.hpp"
-
 //portal dimensions
 float PORTAL_WIDTH{};
 float PORTAL_HEIGHT{};
@@ -67,28 +66,31 @@ AEGfxTexture* portal_range_on_cooldown_picture;
 void portal_load() {
 	//load picture for portal
 	portal_1.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
+	//load picture for portal max range
+	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
+	//load picture to be shown when portal is on cooldown
+	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
+	//read values from text file
+	portal_ifs.open("Assets/textFiles/portal_stats.txt");
+
+#ifdef debug
 	if (!portal_1.picture) {
 		std::cout << "\nFailed to load platformPack_tile023.png.txt";
 	}
 
-	//load picture for portal max range
-	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
 	if (!portal_range_picture) {
 		std::cout << "portal_range.png not loaded";
 	}
 
-	//load picture to be shown when portal is on cooldown
-	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
 	if (!portal_range_on_cooldown_picture) {
 		std::cout << "portal_range_on_cooldown.png not loaded";
 	}
 
-	//read values from text file
-	portal_ifs.open("Assets/textFiles/portal_stats.txt");
+
 	if (!portal_ifs) {
 		std::cout << "\nFailed to load portal_stats.txt";
 	}
-
+#endif
 	std::string str{};
 	portal_ifs >> str >> PORTAL_WIDTH;
 	portal_ifs >> str >> PORTAL_HEIGHT;
@@ -117,6 +119,13 @@ void update_portal() {
 	//check for player input, key 'F' resets portal creation, player must create 2 portals again
 	if (AEInputCheckTriggered(AEVK_F)) {
 		reset_portals();
+	}
+
+	//cheat code, player can teleport anywhere the cursor points to
+	if (AEInputCheckTriggered(AEVK_C)) {
+		portal cheat_portal;
+		create_portal(cheat_portal);
+		teleport_object(player, cheat_portal);
 	}
 
 	//portal cooldown
@@ -280,10 +289,6 @@ void teleport_player(const AEVec2& portal) {
 
 	camera.x = player.center.x;
 	camera.y = player.center.y;
-	
-	//lowest value of camera x and y is 0
-	camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
-	camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 }
 
 //function to check if enemy/boss bullets are colliding with the portal

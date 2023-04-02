@@ -45,29 +45,35 @@ std::ifstream boss_ifs{}; //file stream to load boss stats from
 //load the assets used by the boss
 void boss_load() {
 	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+
+	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
+	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
+	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
+	// Bullet texture
+	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	boss_ifs.open("Assets/textFiles/boss_stats.txt");
+
+#ifdef debug
 	if (!boss.standTex) {
 		std::cout << "\nFailed to load flyMan_fly.png";
 	}
-	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
+
 	if (!boss.deadTex) {
 		std::cout << "\nFailed to load spikeBall_2.png";
 	}
-	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
+
 	if (!laser_beam.picture) {
 		std::cout << "\nFailed to load laser_beam_picture.png";
 	}
 
-	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
 	if (!laser_beam.warning_pic) {
 		std::cout << "\nFailed to load laser_warning.png";
 	}
 
-	// Bullet texture
-	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
-	boss_ifs.open("Assets/textFiles/boss_stats.txt");
 	if (!boss_ifs) {
 		std::cout << "\nFailed to open boss_stats.txt";
 	}
+#endif
 
 	//load boss stats from std::ifstream
 	std::string str{};
@@ -124,8 +130,8 @@ void boss_init () {
 
 //updates the boss while the boss is alive, updates boss movement and boss attacks
 void boss_update() {
-	if (AEInputCheckCurr(AEVK_V)) {
-		--boss.Hp;
+	if (AEInputCheckTriggered(AEVK_V)) {
+		boss.Hp = 0;
 	}
 	// When player is within boss zone
 	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
