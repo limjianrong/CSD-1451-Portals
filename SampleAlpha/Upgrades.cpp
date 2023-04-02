@@ -53,10 +53,10 @@ extern AEAudioGroup soundGroup;
 
 
 void upgrades_load() {
-	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card.png");
-	upgrades[MOVEMENT_SPEED_card].Texture = AEGfxTextureLoad("Assets/Speed_card.png");
-	upgrades[PORTAL_RANGE_card].Texture = AEGfxTextureLoad("Assets/Portal_Range_card.png");
-	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card.png");
+	upgrades[MAX_HP_card].Texture = AEGfxTextureLoad("Assets/Max_HP_card_new.png");
+	upgrades[MOVEMENT_SPEED_card].Texture = AEGfxTextureLoad("Assets/Speed_card_new.png");
+	upgrades[PORTAL_RANGE_card].Texture = AEGfxTextureLoad("Assets/Portal_Range_card_new.png");
+	upgrades[SHIELD_card].Texture = AEGfxTextureLoad("Assets/Shield_UP_card_new.png");
 
 	shield.Texture = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
 
