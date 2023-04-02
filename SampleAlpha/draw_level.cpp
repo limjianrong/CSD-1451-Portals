@@ -26,6 +26,8 @@ extern AEAudioGroup soundGroup;
 
 bool damage_ok{ TRUE };
 
+// file IO
+std::ifstream door_ifs{};
 
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
@@ -36,7 +38,12 @@ void draw_level_load() {
 	onetime_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile013.png");
 	spike_text = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Other/spikesHigh.png");
 	door.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile049.png");
-
+	door_ifs.open("Assets/textFiles/door.txt");
+	std::string str{};
+	door_ifs >> str >> door.center.x;
+	door_ifs >> str >> door.center.y;
+	door_ifs >> str >> door.width;
+	door_ifs >> str >> door.height;
 }
 
 // initialise values for the platforms
@@ -112,10 +119,6 @@ void draw_level_init() {
 	for (s32 i = 0; i < MAX_ONE_TIME_USE; i++) {
 		onetimeuse[i].flag = ACTIVE;
 	}
-	door.x = 8550;
-	door.y = 550;
-	door.width = 50;
-	door.height = 100;
 }
 
 // draw function for draw various platforms and objects
@@ -446,7 +449,7 @@ void left_right_spikes_draw() {
 // Door Draw Function
 void door_draw() {
 	AEMtx33Scale(&door.scale, door.width, door.height);
-	AEMtx33Trans(&door.translate, door.x, door.y);
+	AEMtx33Trans(&door.translate, door.center.x, door.center.y);
 	AEMtx33Concat(&door.final, &door.translate, &door.scale);
 	AEGfxSetTransform(door.final.m);
 	AEGfxTextureSet(door.picture, 0.0f, 0.0f);
