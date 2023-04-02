@@ -3,11 +3,11 @@
 #include "AEEngine.h"
 #include "Player.hpp"
 
-#define ENEMY3_HEIGHT 60.f
-#define ENEMY3_WIDTH 100.f
+const float ENEMY3_HEIGHT{ 80.f };
+const float ENEMY3_WIDTH{ 80.f };
 
-#define WARNING_HEIGHT 80.f
-#define WARNING_WIDTH 80.f
+const float WARNING_HEIGHT{ 80.f };
+const float WARNING_WIDTH{ 80.f };
 
 struct Enemy3_stats {
 	f32 x{}, y{}, rotation{ 0.0f };
