@@ -1,12 +1,12 @@
-/*!**************************************************************************************************
-\file     GameStateManager.cpp
-\author   Lin ZhaoZhi
-\par      DP email: z.lin@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
-
-\brief
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameStateManager.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
   This source file contains functions that initialize the gameState and updates the gameState
 
   The function includes:
@@ -15,7 +15,7 @@
 
   - GameStateMgrUpdate
 	Updates the gameState based on current input
-*****************************************************************************************************/
+==================================================================================*/
 
 #include "GameStateManager.hpp"
 #include "GameState_Platformer.hpp"

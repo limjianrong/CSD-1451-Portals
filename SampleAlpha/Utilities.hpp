@@ -1,18 +1,17 @@
-/*!**************************************************************************************************
-\file     Utilities.hpp
-\author   Lin ZhaoZhi
-\par      DP email: z.lin@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Utilities.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  This header file contains definitions of functions for global use in every source file.
+  Contains only variable and functions that are commonly used in most source file.
+  Defined base struct class. player, enemy1, enemy2, boss uses this base struct to derive 
+==================================================================================*/
 
-\brief
-  This source file implements the functions used to initialize and bullet mechanics.
-
-  The function includes:
-  - create_Square_Mesh
-	Creates a square mesh of width 1 and height 1
-*****************************************************************************************************/
 #pragma once
 #include "AEEngine.h"
 
@@ -41,5 +40,3 @@ void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot);
 void mesh_load();
 void variables_update();
 
-// Collision between enemy1 & player
-//bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2);

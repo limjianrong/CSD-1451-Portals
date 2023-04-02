@@ -1,16 +1,14 @@
-/******************************************************************************/
-/*!
-\file		GameStateList.hpp
-\author 	Digipen, Lin ZhaoZhi
-\par    	email: z.lin@digipen.edu
-\date   	30 January, 2023
-\brief		Header file containing the enums of the different states
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameStateList.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  Header file containing the enums of the different states
+==================================================================================*/
 
 
 // ---------------------------------------------------------------------------

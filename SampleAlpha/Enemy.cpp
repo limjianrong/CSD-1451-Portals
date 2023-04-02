@@ -1,24 +1,16 @@
-/*!**************************************************************************************************
-\file     Enemy.cpp
-\author   Lin ZhaoZhi
-\par      DP email: zhiyee.l@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Enemy.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  This source file contains all the declaraction for functions and derived struct class used for enemy1 and enemy2
+  This includes drawing of their mesh with respective texture, movement, collision and related logic
+==================================================================================*/
 
-\brief
-  This source file implements the functions used to initialize and update enemy.
-
-  The functions include:
-  - enemy_init
-	Load texture, initialise mesh
-
-  - draw_enemy
-	Draws enemy if its HP is more than 0
-
-  - update_enemy
-	Returns the updated position of enemy
-*****************************************************************************************************/
 #include "AEEngine.h"
 #include <AEGraphics.h>
 #include <ctime>

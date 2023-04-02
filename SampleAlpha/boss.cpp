@@ -1,10 +1,10 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					boss.cpp
-* Course:				CSD1451
-* Group Name:			Apparate
-* Primary Author:		Lim Jian Rong (jianrong.lim@digipen.edu)
-* Secondary Authors:	Lin ZhaoZhi (z.lin@digipen.edu)
+* File:							boss.cpp
+* Course:						CSD1451
+* Group Name:					Apparate
+* Primary Author (90%):			Lim Jian Rong (jianrong.lim@digipen.edu)
+* Secondary Authors (10%):		Lin ZhaoZhi (z.lin@digipen.edu)
 *
 * Brief:
   This source file implements the functions used for the boss attacks 1,2 and 3. As well

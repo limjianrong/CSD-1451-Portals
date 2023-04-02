@@ -1,18 +1,17 @@
-/*!**************************************************************************************************
-\file     Utilities.cpp
-\author   Lin ZhaoZhi
-\par      DP email: z.lin@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
-
-\brief
-  This source file implements the functions used to initialize and bullet mechanics.
-
-  The function includes:
-  - create_Square_Mesh
-	Creates a square mesh of width 1 and height 1
-*****************************************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Utilities.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  This source file contains declaration of functions for global use in every source file.
+  Contains only variable and functions that are commonly used in most source file, such
+  as cursor position with origin being the center of window, cursor position with origin
+  being top left corner of window, origin of window no matter the location in game .etc
+==================================================================================*/
 #include "AEEngine.h"
 #include "Utilities.hpp"
 
@@ -108,7 +107,6 @@ void variables_update() {
 	origin.x = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
 	origin.y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
 
-	//soundGroup = AEAudioCreateGroup();
 }
 
 void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
@@ -123,26 +121,6 @@ void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot)
 	AEGfxSetTransform(transform.m);
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 }
-
-//bool CollisionIntersection_RectRect(Enemy1_stats& obj1, Player_stats& obj2) {
-//
-//	// ----- AABB min max check -----
-//	// Check if first object's max point is smaller than second object's min point on the x axis
-//	if ((obj2.center.x + obj2.width / 2.f) < (obj1.center.x - obj1.dimensions.x / 2.f))
-//		return false;
-//	// Check if first object's min point is larger than second object's max point on the x axis
-//	if ((obj2.center.x - obj2.width / 2.f) > (obj1.center.x + obj1.dimensions.x / 2.f))
-//		return false;
-//	// Check if first object's max point is smaller than second object's min point on the y axis
-//	if ((obj2.center.y + obj2.height / 2.f) < (obj1.center.y - obj1.dimensions.y / 2.f))
-//		return false;
-//	// Check if first object's min point is larger than second object's max point on the y axis
-//	if ((obj2.center.y - obj2.height / 2.f) > (obj1.center.y + obj1.dimensions.y / 2.f))
-//		return false;
-//
-//	return true;
-//
-//}
 
 void GameObjects::RenderObject() {
 

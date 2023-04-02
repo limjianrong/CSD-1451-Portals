@@ -19,7 +19,6 @@
 #include "AEEngine.h"
 #include "Player.hpp"
 #include "Utilities.hpp"
-#include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "draw_level.hpp"
 #include "Enemy.hpp"

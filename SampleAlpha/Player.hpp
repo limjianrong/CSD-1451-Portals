@@ -9,6 +9,22 @@ Copyright (C) 2023 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  *//******************************************************************************/
+
+ /*==================================================================================
+ * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+ * File:				Player.hpp
+ * Course:				CSD1451
+ * Group Name:			Apparate
+ * Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+ * Secondary Authors:	-
+ *
+ * Brief:
+   This header file contains definition of functions for player related logic
+   Contains definition of derived class struct with player's specific attribute and
+   struct class for checkpoints. Define functions that updates player's level based
+   on XP, player's movement, player's collision and checkpoints within the game
+ ==================================================================================*/
+
 #pragma once
 #include "Utilities.hpp"
 

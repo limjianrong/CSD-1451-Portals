@@ -1,14 +1,15 @@
-/******************************************************************************//*!
-\file		GameState_Platformer.cpp
-\author 	Digipen, Lin ZhaoZhi
-\par    	email: z.lin@digipen.edu
-\date   	30 January, 2023
-\brief		Source file for the platformer game state
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameState_Platformer.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  Source file for the platformer game state
+==================================================================================*/
 
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
 #include "AEEngine.h"
 
 // ----- Game States -----

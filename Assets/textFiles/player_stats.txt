@@ -1,7 +1,7 @@
 player_width 50.0
 player_height 50.0
-player_initial_x 7500
-player_initial_y 800
+player_initial_x -450
+player_initial_y -100
 highest_level 30
 XP_TILL_SYSTEM1 40
 XP_TILL_SYSTEM2 60

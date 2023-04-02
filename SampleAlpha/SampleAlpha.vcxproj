@@ -121,7 +121,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="portal_feature.cpp" />
     <ClCompile Include="Upgrades.cpp" />
     <ClCompile Include="Utilities.cpp" />
-    <ClCompile Include="weapon_fire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.hpp" />
@@ -144,7 +143,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="portal_feature.hpp" />
     <ClInclude Include="Upgrades.hpp" />
     <ClInclude Include="Utilities.hpp" />
-    <ClInclude Include="weapon_fire.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

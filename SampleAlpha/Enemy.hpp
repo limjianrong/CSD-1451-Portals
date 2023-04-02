@@ -1,24 +1,15 @@
-/*!**************************************************************************************************
-\file     Enemy.hpp
-\author   Lin ZhaoZhi
-\par      DP email: zhiyee.l@digipen.edu
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
-
-\brief
-  This source file declares the functions used to initialize and update enemy.
-
-  The functions include:
-  - enemy_init
-	Load texture, initialise mesh
-
-  - draw_enemy
-	Draws enemy if its HP is more than 0
-
-  - update_enemy
-	Returns the updated position of enemy
-*****************************************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Enemy.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  This header file contains all the definitions for functions and derived struct class used for enemy1 and enemy2
+  This includes drawing of their mesh with respective texture, movement, collision and related logic
+==================================================================================*/
 #pragma once
 
 #include "AEEngine.h"
@@ -39,16 +30,6 @@
 
 #define Bullet_Displacement_PerFrame 5  // Distance travel by bullet every frame
 
-//struct GameObjects {
-//
-//	s32 Hp, Max_Hp, Max_Hp_Reset;
-//	bool status;		// TRUE for alive, FALSE for dead
-//	AEVec2 center;		// x & y
-//	AEVec2 dimensions;	// width & height
-//
-//	//void RenderObject(GameObjects& obj);
-//	//void Render_HealthBar(GameObjects& obj1);
-//};
 
 // ------- Enemy specific attributes -------
 struct Enemy1_stats : GameObjects {
@@ -82,10 +63,6 @@ void enemy2_create(f32 x, f32 y, s32 index);
 void enemy2_draw();
 void enemy2_update();
 
-
-// --- Rendering ---
-//void RenderObject(GameObjects& obj);
-//void Render_HealthBar(GameObjects& obj1);
 
 // ------- Main functions -------
 void enemies_load();

@@ -21,6 +21,7 @@ extern AEVec2 origin;
 extern s8 Albam_fontID;
 credit_stat credits[NUM];
 static f64 timer;
+extern AEAudioGroup soundGroup;
 
 // Load all textures and meshes
 void GameStateCreditsLoad(void) {
@@ -49,7 +50,10 @@ void GameStateCreditsUpdate(void) {
 			credits[i].y += 1.f; // moves up the credits
 			if (credits[3].y >= (origin.y + WINDOWLENGTH_Y)) { // checks if the last credits picture is gone
 				AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
-				if (AEInputCheckTriggered(AEVK_LBUTTON)) gGameStateNext = GS_MainMenu; // return to main menu if leftclick is pressed
+				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+					gGameStateNext = GS_MainMenu; // return to main menu if leftclick is pressed
+					AEAudioStopGroup(soundGroup);
+				}
 			}
 		}
 	}

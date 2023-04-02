@@ -1,3 +1,15 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Audio.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  Source file for all the audio functions
+==================================================================================*/
+
 #pragma once
 #include "AEEngine.h"
 #include "Audio.hpp"
@@ -30,46 +42,41 @@ AEAudio levelUpAudio, receivedUpgradeAudio;
 // Group
 AEAudioGroup soundGroup, musicGroup;
 
-//AEAudioGroup soundGroup;
-
 void audio_load() {
 	
 	// BGM 
 	gameBGM = AEAudioLoadSound("Assets/AUDIO/Game BGM.mp3");
 	bossBGM = AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
 
-	// Win/Lose				DONE (Repeated everytime you press restart)
+	// Win/Lose
 	defeatAudio			= AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");
 	victoryAudio		= AEAudioLoadSound("Assets/AUDIO/Victory.mp3");
 
-	// Button				DONE
+	// Button
 	buttonClickedAudio	= AEAudioLoadSound("Assets/AUDIO/Button_Click.mp3");
 	buttonHoverAudio	= AEAudioLoadSound("Assets/AUDIO/Button_Hover.mp3");
 
-	// Player				DONE
+	// Player
 	checkpointAudio		= AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
 	walkAudio			= AEAudioLoadSound("Assets/AUDIO/Player_Movement.mp3");
 	playerDeathAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Death.mp3");
 	playerDamageAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Dmg.mp3");
 
-	// Enemy 1 & 2			DONE
+	// Enemy 1 & 2
 	deathAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Death");
 	bulletAudio			= AEAudioLoadSound("Assets/AUDIO/Bullet.mp3");
 	damageAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Dmg.mp3");
 
-	// Enemy 3 (WTF IS THAT CODE)
+	// Enemy 3
 	zoomAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy3_Zoom.mp3");
 
-	// Boss					DONE (No bullets)
-	//damageAudio		= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Dmg.mp3");
-	//deathAudio		= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Death");
-	//bulletAudio		= AEAudioLoadSound("Assets/AUDIO/Bullet.mp3");
+	// Boss
 	laserAudio			= AEAudioLoadSound("Assets/AUDIO/Boss_Laser.mp3");
 
-	// Portal				DONE
+	// Portal
 	portalAudio			= AEAudioLoadSound("Assets/AUDIO/Portals.mp3");
 
-	// Upgrades				DONE
+	// Upgrades
 	levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player_LevelUp.mp3");
 	receivedUpgradeAudio = AEAudioLoadSound("Assets/AUDIO/UpgradeTimeOver.mp3");
 

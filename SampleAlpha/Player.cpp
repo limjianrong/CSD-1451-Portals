@@ -1,19 +1,20 @@
-/******************************************************************************//*!
-\file		Player.cpp
-\author 	Digipen, Lin ZhaoZhi
-\par    	email: z.lin@digipen.edu
-\date   	1 February, 2023
-\brief		Source file for the platformer game state
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Player.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors:	-
+*
+* Brief:
+  This source file contains declaration of functions for player related logic
+  Contains declaration of functions that updates player's level based
+  on XP, player's movement, player's collision and checkpoints within the game
+==================================================================================*/
 
 #include "AEEngine.h"
 
 #include "Player.hpp"
-#include "weapon_fire.hpp"
 #include "portal_feature.hpp"
 #include "Utilities.hpp"
 #include "draw_level.hpp"
