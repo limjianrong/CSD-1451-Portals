@@ -33,8 +33,8 @@ void camera_load() {
 	//below the screen when the camera is at (0,0)
 	camera.x = static_cast<f32>(player.initial_pos_x);
 	camera.y = static_cast<f32>(player.initial_pos_y);
-	camera.x = AEClamp(camera.x, 0, INT_MAX);
-	camera.y = AEClamp(camera.y, 0, INT_MAX);
+	camera.x = AEClamp(camera.x, 0, static_cast<f32>(INT_MAX));
+	camera.y = AEClamp(camera.y, 0, static_cast<f32>(INT_MAX));
 
 }
 //sets the position of the camera and its mode, as well as its buffer range
