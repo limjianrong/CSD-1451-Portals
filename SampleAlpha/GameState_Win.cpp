@@ -1,3 +1,13 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					GameState_Win.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lee Zhi Yee (zhiyee.l@digipen.edu)
+*
+* Brief:
+  This source file defines the game state functions for the Win screen.
+==================================================================================*/
 #include "AEEngine.h"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
@@ -13,17 +23,17 @@ static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID; //text font
-extern AEVec2 origin;		 // screen center coordinates
-extern AEVec2 center_cursor; // cursor coordinates
-extern AEVec2 world_center_cursor;
-
+extern s8 Albam_fontID;					//text font
+extern AEVec2 origin;					// screen center coordinates
+extern AEVec2 center_cursor;			// cursor coordinates
+extern AEVec2 world_center_cursor;		// global cursor coordinates
+	
 // --- Buttons ---
-extern f32 button_scaleX;		// width of button
-extern f32 button_scaleY;		// height of button
-AEVec2 Wbutton;
-AEVec2 Wbutton2;
-
+extern f32 button_scaleX;				// width of button
+extern f32 button_scaleY;				// height of button
+AEVec2 Wbutton;							// top buttton position
+AEVec2 Wbutton2;						// bottom button position
+	
 // --- Audio ---
 extern AEAudio victoryAudio, buttonClickedAudio, buttonHoverAudio;
 extern AEAudioGroup soundGroup, musicGroup;
@@ -33,6 +43,7 @@ extern float barscalex, barscaley;
 
 void GameStateWinLoad() {
 
+	// load textures 
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
 	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
@@ -41,11 +52,13 @@ void GameStateWinLoad() {
 }
 
 void GameStateWinInit() {
+	// get cursor position
 	variables_update();
 
 	Wbutton = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f };
 	Wbutton2 = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f - 100.f };
 
+	// volume controlled by settings
 	if (button_offset.x < 0.f) {
 		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
 		AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
@@ -69,6 +82,7 @@ void GameStateWinUpdate() {
 	// get cursor position
 	variables_update();
 
+	// button collision, game state switching
 	if (AETestPointToRect(&world_center_cursor, &Wbutton, button_scaleX, button_scaleY) && AEInputCheckReleased(AEVK_LBUTTON)) {
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 		gGameStateNext = GS_Platformer;
@@ -92,6 +106,8 @@ void GameStateWinDraw() {
 	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
 
 	// ------- Drawing of mesh + Setting texture -------
+
+	// ------ top button ------
 	if (AETestPointToRect(&world_center_cursor, &Wbutton, button_scaleX, button_scaleY)) {
 		AEGfxTextureSet(buttonPressed, 0, 0);
 
@@ -106,6 +122,7 @@ void GameStateWinDraw() {
 	}
 	drawMesh(AEVec2{ button_scaleX, button_scaleY },Wbutton, PI);
 
+	// ------ bottom button ------
 	if (AETestPointToRect(&world_center_cursor, &Wbutton2, button_scaleX, button_scaleY)) {
 		AEGfxTextureSet(buttonPressed, 0, 0);
 

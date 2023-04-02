@@ -1,3 +1,14 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Tutorial.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lee Zhi Yee (zhiyee.l@digipen.edu)
+*
+* Brief:
+  This source file declares functions for implementing the Tutorial Menu, defines 
+  enumerations for top and bottom row assetss, and defines their respective count.
+==================================================================================*/
 #pragma once
 
 const int asset_count{ 4 };

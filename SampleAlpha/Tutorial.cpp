@@ -1,3 +1,13 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Tutorial.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lee Zhi Yee (zhiyee.l@digipen.edu)
+*
+* Brief:
+  This source file defines functions for implementing the Tutorial Menu.
+==================================================================================*/
 #include "AEEngine.h"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
@@ -5,18 +15,14 @@
 #include "boss.hpp"
 #include "Utilities.hpp"
 #include "Tutorial.hpp"
-#include <iostream>
 
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
-static AEGfxTexture* assets[asset_count];
-static AEGfxTexture* assets2[asset2_count];
-
 // --- External variables ---
 extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID; // text font
+extern s8 Albam_fontID;		 // text font
 extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
 extern AEVec2 world_center_cursor;
@@ -32,10 +38,11 @@ f32 button_scaleX{ WINDOWLENGTH_X / 5 };		// width of button
 f32 button_scaleY{ WINDOWLENGTH_Y / 12 };		// height of button
 f32 buttonX, buttonY;							// button positions
 
-// top row asset positions
-f32 assetX, assetY;
-// bottom row asset positions
-f32 asset2X, asset2Y;
+// --- Assets ----
+static AEGfxTexture* assets[asset_count];		// array for top row assets
+static AEGfxTexture* assets2[asset2_count];		// array for bottom row assets
+f32 assetX, assetY;								// top row asset positions
+f32 asset2X, asset2Y;							// bottom row asset positions
 f32 asset_width{ 70.f };
 f32 asset_height{ 70.f };
 
@@ -61,7 +68,7 @@ void tutorial_load(void) {
 	assets2[enemy3] = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0053.png");
 	// enemy3 warning
 	assets2[enemy3_warning] = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
-	//boss
+	// boss
 	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
 
 	mesh_load();
@@ -138,6 +145,7 @@ void tutorial_draw(void) {
 			
 	drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, PI);
 
+	// ------- Button Hover Audio ------
 	if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
 		world_center_cursor.y >= buttonY - button_scaleY / 2 &&
 		world_center_cursor.y <= buttonY + button_scaleY / 2) {
@@ -164,12 +172,10 @@ void tutorial_draw(void) {
 		AEGfxTextureSet(assets2[k], 0, 0);
 
 		if (k == asset_count) {
-			//drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ asset2X + k * (WINDOWLENGTH_X / 4), asset2Y }, 0);
 			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
 			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
 			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
 			AEGfxSetTransform(boss.matrix.m);
-			//AEGfxTextureSet(assets2[k], 0.0f, 0.0f);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
 		else {

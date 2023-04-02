@@ -1,3 +1,14 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Enemy3.hpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lee Zhi Yee (zhiyee.l@digipen.edu)
+*
+* Brief:
+  This source file declares the functions for Enemy3, struct Enemy3_stats, and 
+  defines enemy3 & warning label scale.
+==================================================================================*/
 #pragma once
 
 #include "AEEngine.h"

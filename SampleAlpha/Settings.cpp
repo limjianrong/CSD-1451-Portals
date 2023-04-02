@@ -1,3 +1,13 @@
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:					Setings.cpp
+* Course:				CSD1451
+* Group Name:			Apparate
+* Primary Author:		Lee Zhi Yee (zhiyee.l@digipen.edu)
+*
+* Brief:
+  This source file defines functions for implementing the Settings Menu.
+==================================================================================*/
 #include "AEEngine.h"
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
@@ -41,6 +51,7 @@ f32 Sbutton_scaleY{ WINDOWLENGTH_Y / 12 };		// height of menu button
 f64 vert_pos_offset{ 150.f };		// y-position of volume bar to above origin.y by 150.f
 
 void settings_load(void) {
+	// texture loading 
 
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
@@ -137,8 +148,11 @@ void settings_draw(void) {
 	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley * 5) && AEInputCheckReleased(AEVK_LBUTTON)) {
 		volume_adjusted = TRUE;
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
+
 		// calculate offset distance
 		AEVec2Sub(&button_offset, &world_center_cursor, &origin);
+
+		// set volume according to button offset distance from volume bar center
 		if (button_offset.x < 0.f) {
 			AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
 			AEAudioSetGroupVolume(musicGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
