@@ -533,7 +533,7 @@ void boss_charge_attack() {
 
 //function to draw the boss's laser beam
 void draw_laser_beam() {
-	if (laser_beam.active == TRUE) {
+	if (laser_beam.active) {
 		AEGfxTextureSet(laser_beam.picture, 0.0f, 0.0f);
 		AEGfxSetTransform(laser_beam.final_matrix.m);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
