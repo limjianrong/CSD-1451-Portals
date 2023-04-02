@@ -71,10 +71,10 @@ extern Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
 std::ifstream player_ifs{};
 
 void player_load() {
-	player.player_standTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
-	player.player_left1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
-	player.player_left2Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
-	player.player_right1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
+	player.player_standTex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_idle.png");
+	player.player_left1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk3.png");
+	player.player_left2Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk4.png");
+	player.player_right1Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk1.png");
 	player.player_right2Tex = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
 	checkpoint[0].checkpointTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/other/flagGreen_up.png");
 

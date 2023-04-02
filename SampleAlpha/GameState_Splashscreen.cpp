@@ -38,9 +38,8 @@ void GameStateSplashscreenUpdate(void) {
 	timer += AEFrameRateControllerGetFrameTime();
 
 	if (timer >= 2) {
-		transparancy -= 0.1f;
+		transparancy -= 0.3f;
 		if (transparancy < 0.f) gGameStateNext = GS_MainMenu;
-		//if (transparancy < 0.f) gGameStateNext = GS_Credits;
 	}
 
 }

@@ -28,8 +28,6 @@ bool damage_ok{ TRUE };
 
 // file IO
 std::ifstream door_ifs{};
-std::ifstream normal_plat_ifs{};
-
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
 
@@ -45,12 +43,6 @@ void draw_level_load() {
 	door_ifs >> str >> door.center.y;
 	door_ifs >> str >> door.width;
 	door_ifs >> str >> door.height;
-
-	//normal_plat_ifs.open("Assets/textFiles/normal_platform.txt");
-	//int i = 0;
-	//while (!normal_plat_ifs.eof()) {
-	//	normal_plat_ifs >> str >> normal[i].length >> normal[i].x >> normal[i].y;
-	//}
 }
 
 // initialise values for the platforms
