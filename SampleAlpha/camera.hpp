@@ -14,10 +14,12 @@
 #include "AEEngine.h"
 #include "Player.hpp"
 #include "draw_level.hpp"
-
+#include <fstream> //file IO
+#include <iostream>
+#include <string>
 struct Camera {
 	//position of camera
-	f32 x{}, y{};
+	f32 x{}, y{}, buffer_range_multiplier{};
 
 	//flag to toggle between free moving camera and camera that follows the player
 	bool free_moving{};
@@ -29,6 +31,9 @@ struct Camera {
 	//speed of offsetting the camera in free moving mode is const
 	const float free_moving_speed{30.0f};
 };
+
+//loads in values from a text file that are needed for the camera
+void camera_load();
 
 //initializes the position of the camera and its mode, as well as its buffer range
 void camera_init();

@@ -51,7 +51,7 @@ struct portal {
 void portal_load();
 
 
-//initialize active flags of portal objects to be false
+//sets active flags of portal objects to be false
 void portal_init();
 
 

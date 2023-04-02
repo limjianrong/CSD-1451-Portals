@@ -22,7 +22,7 @@ Bullet bullet;
 Laser_beam laser_beam; //boss laser beam attack
 Boss_charge boss_charge; //boss charge attack
 Boss_teleport boss_teleport; //boss teleportation
-static bool isRunning = FALSE;
+static bool isRunning = false;
 // ---- Normalization ----
 f32 adj, opp, angle;
 f32 dist_boss2bullet, dist_boss2player;  // no longer using
@@ -51,8 +51,9 @@ void boss_load() {
 	if (!laser_beam.picture) {
 		std::cout << "\nFailed to load laser_beam_picture.png";
 	}
+
 	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
-	if (laser_beam.warning_pic) {
+	if (!laser_beam.warning_pic) {
 		std::cout << "\nFailed to load laser_warning.png";
 	}
 
@@ -81,6 +82,10 @@ void boss_load() {
 	boss_ifs >> str >> laser_beam.height;
 	boss_ifs >> str >> laser_beam.cooldown;
 	boss_ifs >> str >> laser_beam.max_duration;
+	boss_ifs >> str >> laser_beam.buffer_duration;		//let player know 2 seconds in advance of boss laser beam attack
+	boss_ifs >> str >> laser_beam.warning_pic_width;	//width of the warning sign
+	boss_ifs >> str >> laser_beam.warning_pic_height;	//height of the warning sign
+	boss_ifs >> str >> boss_teleport.cooldown;			//cooldown of boss's teleportation
 	boss_ifs.close();
 }
 
@@ -100,17 +105,6 @@ void boss_init () {
 	bullet.isTeleported = FALSE;			// Indicator for teleporation
 	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
 
-	laser_beam.buffer_duration = 2.0f;		//let player know 2 seconds in advance of boss laser beam attack
-	laser_beam.warning_pic_width = 50.0f;	//width of the warning sign
-	laser_beam.warning_pic_height = 50.0f;	//height of the warning sign
-
-	//initialize transformation matrix for laser beam warning picture
-	AEMtx33Scale(&laser_beam.warning_pic_scale, laser_beam.warning_pic_width, laser_beam.warning_pic_height);
-	AEMtx33Trans(&laser_beam.warning_pic_translate, boss.center.x, boss.center.y);
-	AEMtx33Concat(&laser_beam.warning_pic_matrix, &laser_beam.warning_pic_translate, &laser_beam.warning_pic_scale);
-	
-	boss_teleport.cooldown = 8.0f;			//cooldown of boss's teleportation
-	
 }
 
 //updates the boss while the boss is alive, updates boss movement and boss attacks
@@ -172,7 +166,7 @@ void boss_draw() {
 		AEGfxSetTransform(boss.matrix.m);
 		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
 		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-		//draw_laser_beam_warning();
+		draw_laser_beam_warning();
 	//}
 }
 
@@ -548,6 +542,11 @@ void draw_laser_beam() {
 
 //function to draw the boss's laser beam warning, before the actual laser beam attack
 void draw_laser_beam_warning() {
+
+	//update transformation matrix for laser beam warning picture
+	AEMtx33Scale(&laser_beam.warning_pic_scale, laser_beam.warning_pic_width, laser_beam.warning_pic_height);
+	AEMtx33Trans(&laser_beam.warning_pic_translate, boss.center.x, boss.center.y);
+	AEMtx33Concat(&laser_beam.warning_pic_matrix, &laser_beam.warning_pic_translate, &laser_beam.warning_pic_scale);
 	//if time elapsed since previous laser beam attack is more than the buffer duration and
 	//laser beam attack is not active, draw the warning sign
 	if (laser_beam.time_elapsed >= laser_beam.buffer_duration && laser_beam.active == false) {
