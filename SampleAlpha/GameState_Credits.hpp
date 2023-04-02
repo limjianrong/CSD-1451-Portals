@@ -9,12 +9,9 @@
 	This header file contains the declaration of functions that implements
 	the credits
  ==================================================================================*/
-enum { APPEAR, DISAPPEAR };
 
 struct credit_stat {
 	AEGfxTexture* texture;
-	f32 trans{1.f};
-	int flag = APPEAR;
 	f32 y;
 };
 
@@ -24,9 +21,3 @@ void GameStateCreditsUpdate(void);
 void GameStateCreditsDraw(void);
 void GameStateCreditsFree(void);
 void GameStateCreditsUnload(void);
-
-//draw functions for the different credit pictures
-void draw_credit_1();
-void draw_credit_2();
-void draw_credit_3();
-void draw_credit_4();

@@ -28,6 +28,7 @@ bool damage_ok{ TRUE };
 
 // file IO
 std::ifstream door_ifs{};
+std::ifstream normal_plat_ifs{};
 
 
 // NOTE: GRAVITY, BLOCK_WIDTH, BLOCK_HEIGHT defined in .hpp
@@ -44,6 +45,12 @@ void draw_level_load() {
 	door_ifs >> str >> door.center.y;
 	door_ifs >> str >> door.width;
 	door_ifs >> str >> door.height;
+
+	//normal_plat_ifs.open("Assets/textFiles/normal_platform.txt");
+	//int i = 0;
+	//while (!normal_plat_ifs.eof()) {
+	//	normal_plat_ifs >> str >> normal[i].length >> normal[i].x >> normal[i].y;
+	//}
 }
 
 // initialise values for the platforms
@@ -591,8 +598,11 @@ void platform_logic() {
 		// checks if player is standing on the platform
 		if (AETestRectToRect(&onetimeuse[i].center, BLOCK_WIDTH * onetimeuse[i].length, BLOCK_HEIGHT * 2, &player.center, player.dimensions.x, player.dimensions.y)) {
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime()); // starts the timer to despawn the platform
-			// checks if player stand on platform for 3 seconds or more
-			if (onetimeuse[i].timer >= 3) { 
+		}
+		else if (onetimeuse[i].timer > 0) { // checks if timer has started
+			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime()); //continue the timer
+			// checks if 3 seconds or more after player stepped on platform
+			if (onetimeuse[i].timer >= 3) {
 				if (onetimeuse[i].flag == ACTIVE) {
 					// set flag for platform to not active
 					onetimeuse[i].flag = NOT_ACTIVE;
@@ -601,7 +611,7 @@ void platform_logic() {
 			}
 		}
 		// checks if platform flag is no longer active
-		else if (onetimeuse[i].flag == NOT_ACTIVE) {
+		if (onetimeuse[i].flag == NOT_ACTIVE) {
 			// starts the timer to respawn the platform
 			onetimeuse[i].timer += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 			if (onetimeuse[i].timer >= 3) { 
