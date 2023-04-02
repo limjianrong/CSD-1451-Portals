@@ -168,8 +168,6 @@ void GameStateMainmenuUpdate(void) {
 		}
 	
 	}
-
-
 }
 
 void GameStateMainmenuDraw(void) {
