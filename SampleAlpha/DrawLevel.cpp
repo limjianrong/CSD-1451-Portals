@@ -596,7 +596,8 @@ void spikes_draw() {
 
 		}
 		// Set the center
-		AEVec2Set(&floor_spikes[i].center, (BLOCK_WIDTH * floor_spikes[i].length) / 2 + floor_spikes[i].x, floor_spikes[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&floor_spikes[i].center, (BLOCK_WIDTH * floor_spikes[i].length) / 2 + floor_spikes[i].x, 
+			floor_spikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
 }
 
@@ -625,7 +626,8 @@ void left_right_blocks_draw() {
 			platform_collision(left_right[i].length, left_right[i].x, left_right[i].y);
 		}
 		// Set the center
-		AEVec2Set(&left_right[i].center, (BLOCK_WIDTH * left_right[i].length) / 2 + left_right[i].x, left_right[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&left_right[i].center, (BLOCK_WIDTH * left_right[i].length) / 2 + left_right[i].x, 
+			left_right[i].y + BLOCK_HEIGHT / 4 * 3);
 
 	}
 }
@@ -683,7 +685,8 @@ void diagonal_up_blocks_draw() {
 			platform_collision(diagonal_up[i].length, diagonal_up[i].x, diagonal_up[i].y);
 		}
 		// Set the center
-		AEVec2Set(&diagonal_up[i].center, (BLOCK_WIDTH * diagonal_up[i].length) / 2 + diagonal_up[i].x, diagonal_up[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&diagonal_up[i].center, (BLOCK_WIDTH * diagonal_up[i].length) / 2 + diagonal_up[i].x, 
+			diagonal_up[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
 }
 
@@ -711,7 +714,8 @@ void diagonal_down_blocks_draw() {
 			platform_collision(diagonal_down[i].length, diagonal_down[i].x, diagonal_down[i].y);
 		}
 		// Set the center
-		AEVec2Set(&diagonal_down[i].center, (BLOCK_WIDTH * diagonal_down[i].length) / 2 + diagonal_down[i].x, diagonal_down[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&diagonal_down[i].center, (BLOCK_WIDTH * diagonal_down[i].length) / 2 + diagonal_down[i].x, 
+			diagonal_down[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
 }
 
@@ -740,7 +744,8 @@ void one_time_use_blocks_draw() {
 			}
 		}
 		// Set the center
-		AEVec2Set(&one_time_use[i].center, (BLOCK_WIDTH * one_time_use[i].length) / 2 + one_time_use[i].x, one_time_use[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&one_time_use[i].center, (BLOCK_WIDTH * one_time_use[i].length) / 2 + one_time_use[i].x, 
+			one_time_use[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
 }
 
@@ -764,7 +769,8 @@ void left_right_spikes_draw() {
 			AEGfxTextureSet(spike_text, 0, 0);
 			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 		}
-		AEVec2Set(&left_right_spikes[i].center, (BLOCK_WIDTH * left_right_spikes[i].length) / 2 + left_right_spikes[i].x, left_right_spikes[i].y + BLOCK_HEIGHT / 4 * 3);
+		AEVec2Set(&left_right_spikes[i].center, (BLOCK_WIDTH * left_right_spikes[i].length) / 2 + left_right_spikes[i].x, 
+			left_right_spikes[i].y + BLOCK_HEIGHT / 4 * 3);
 	}
 }
 
