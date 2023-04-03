@@ -93,6 +93,9 @@ struct Bullet {
 	// ----- Mesh & Texture -----
 	AEGfxTexture* bulletTex;
 };
+static f32 bullet_width;			// width of bullet
+static f32 bullet_height;			// height of bullet
+static f32 bullet_speed;			// speed of bullet
 
 // ------ Attack #3  -------
 //variables of the boss's charge attack

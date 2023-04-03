@@ -44,13 +44,13 @@ std::ifstream boss_ifs{}; //file stream to load boss stats from
 
 //load the assets used by the boss 
 void boss_load() {
-	boss.standTex = AEGfxTextureLoad("Assets/boss_assets/flyMan_fly.png");
+	boss.standTex			= AEGfxTextureLoad("Assets/boss_assets/flyMan_fly.png");
 
-	boss.deadTex = AEGfxTextureLoad("Assets/boss_assets/spikeBall_2.png");
-	laser_beam.picture = AEGfxTextureLoad("Assets/boss_assets/laser_beam_picture.png");
-	laser_beam.warning_pic = AEGfxTextureLoad("Assets/boss_assets/laser_warning.png");
+	boss.deadTex			= AEGfxTextureLoad("Assets/boss_assets/spikeBall_2.png");
+	laser_beam.picture		= AEGfxTextureLoad("Assets/boss_assets/laser_beam_picture.png");
+	laser_beam.warning_pic	= AEGfxTextureLoad("Assets/boss_assets/laser_warning.png");
 	// Bullet texture
-	bullet.bulletTex = AEGfxTextureLoad("Assets/boss_assets/gold_1.png");
+	bullet.bulletTex		= AEGfxTextureLoad("Assets/boss_assets/gold_1.png");
 	boss_ifs.open("Assets/textFiles/boss_stats.txt");
 
 #ifdef debug
@@ -93,10 +93,13 @@ void boss_load() {
 	boss_ifs >> str >> laser_beam.height;
 	boss_ifs >> str >> laser_beam.cooldown;
 	boss_ifs >> str >> laser_beam.max_duration;
-	boss_ifs >> str >> laser_beam.buffer_duration;		//let player know 2 seconds in advance of boss laser beam attack
-	boss_ifs >> str >> laser_beam.warning_pic_width;	//width of the warning sign
-	boss_ifs >> str >> laser_beam.warning_pic_height;	//height of the warning sign
-	boss_ifs >> str >> boss_teleport.cooldown;			//cooldown of boss's teleportation
+	boss_ifs >> str >> laser_beam.buffer_duration;		// let player know 2 seconds in advance of boss laser beam attack
+	boss_ifs >> str >> laser_beam.warning_pic_width;	// width of the warning sign
+	boss_ifs >> str >> laser_beam.warning_pic_height;	// height of the warning sign
+	boss_ifs >> str >> boss_teleport.cooldown;			// cooldown of boss's teleportation
+	boss_ifs >> str >> bullet_width;					// width of bullet
+	boss_ifs >> str >> bullet_height;					// height of bullet
+	boss_ifs >> str >> bullet_speed;					// speed of bullet
 	boss_ifs.close();
 }
 
@@ -106,16 +109,16 @@ void boss_init () {
 	//intitialize max hp of boss
 	boss.Max_Hp = boss.Hp;
 	// ---- Attack #2  :  Bullet ----
-	bullet.x = boss.center.x;				// Bullet x position
-	bullet.y = boss.center.y;				// Bullet y position
-	bullet.width = 20.0f;					// Bullet width
-	bullet.height = 20.0f;					// Bullet height
-	bullet.speed = 8.0f;					// Bullet speed
-	bullet.timer = BOSS_TIMER;				// Bullet timer between each bullet
-	bullet.isTimerActive = FALSE;			// Indicator for timer activeness
-	bullet.isTeleported = FALSE;			// Indicator for teleporation
-	bullet.isShooting = FALSE;				// Indicator to check whether bullet is still shooting
-	bullet.isReset = FALSE;					// Indicator to check if bullet had resetted
+	bullet.x				= boss.center.x;			// Bullet x position
+	bullet.y				= boss.center.y;			// Bullet y position
+	bullet.width			= bullet_width;				// Bullet width
+	bullet.height			= bullet_height;			// Bullet height
+	bullet.speed			= bullet_speed;				// Bullet speed
+	bullet.timer			= BOSS_TIMER;				// Bullet timer between each bullet
+	bullet.isTimerActive	= FALSE;					// Indicator for timer activeness
+	bullet.isTeleported		= FALSE;					// Indicator for teleporation
+	bullet.isShooting		= FALSE;					// Indicator to check whether bullet is still shooting
+	bullet.isReset			= FALSE;					// Indicator to check if bullet had resetted
 
 	//set time elapsed since boss attack, active flag of boss attack, and damaged player flag
 	//to be 0
