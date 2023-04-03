@@ -279,7 +279,7 @@ void enemy2_draw() {
 			// If player is within range & left of enemy2
 			if (bullet_enemy2[i].center.x >= (enemy2[i].center.x - enemy2[i].range_x) && bullet_enemy2[i].center.x < enemy2[i].center.x) {
 				AEGfxTextureSet(enemy2[0].bullet, 0, 0);
-				drawMesh(AEVec2{ bullet_enemy2[i].width, bullet_enemy2[i].height }, bullet_enemy2[i].center, PI);
+				drawMesh(AEVec2{ bullet_enemy2[i].width, bullet_enemy2[i].height }, bullet_enemy2[i].center, NULL);
 			}
 
 			// ----- Draw enemy HP bar -----

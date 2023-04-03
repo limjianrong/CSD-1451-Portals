@@ -36,7 +36,7 @@ void draw_level_load() {
 	platform_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile001.png");
 	onetime_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile013.png");
 	spike_text = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Other/spikesHigh.png");
-	door.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile049.png");
+	door.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile052.png");
 	door_ifs.open("Assets/textFiles/door.txt");
 	std::string str{};
 	door_ifs >> str >> door.center.x;
@@ -233,7 +233,7 @@ void blocks_draw() {
 	for (s32 i = 0; i < MAX_NORMAL; i++) {
 		for (s32 j = 0; j < normal[i].length; j++) {
 			AEMtx33Scale(&scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&rotate, PI);
+			AEMtx33Rot(&rotate, NULL);
 			AEMtx33Trans(&translate, BLOCK_WIDTH / 2 + BLOCK_WIDTH * j + normal[i].x
 				, BLOCK_HEIGHT / 2 + normal[i].y);
 			// Concat the matrices
@@ -260,7 +260,7 @@ void spikes_draw() {
 			floorspikes[i].height = BLOCK_HEIGHT / 2 + floorspikes[i].y;
 
 			AEMtx33Scale(&floorspikes[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&floorspikes[i].rotate, PI);
+			AEMtx33Rot(&floorspikes[i].rotate, NULL);
 			AEMtx33Trans(&floorspikes[i].translate, floorspikes[i].width, floorspikes[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&floorspikes[i].transform, &floorspikes[i].rotate, &floorspikes[i].scale);
@@ -285,7 +285,7 @@ void leftright_blocks_draw() {
 			leftright[i].height = BLOCK_HEIGHT / 2 + leftright[i].y;
 
 			AEMtx33Scale(&leftright[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&leftright[i].rotate, PI);
+			AEMtx33Rot(&leftright[i].rotate, NULL);
 			AEMtx33Trans(&leftright[i].translate, leftright[i].width, leftright[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&leftright[i].transform, &leftright[i].rotate, &leftright[i].scale);
@@ -316,7 +316,7 @@ void updown_blocks_draw() {
 			updown[i].height = BLOCK_HEIGHT / 2 + updown[i].y;
 
 			AEMtx33Scale(&updown[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&updown[i].rotate, PI);
+			AEMtx33Rot(&updown[i].rotate, NULL);
 			AEMtx33Trans(&updown[i].translate, updown[i].width, updown[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&updown[i].transform, &updown[i].rotate, &updown[i].scale);
@@ -345,7 +345,7 @@ void diag_up_blocks_draw() {
 			diagonalup[i].height = BLOCK_HEIGHT / 2 + diagonalup[i].y;
 
 			AEMtx33Scale(&diagonalup[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&diagonalup[i].rotate, PI);
+			AEMtx33Rot(&diagonalup[i].rotate, NULL);
 			AEMtx33Trans(&diagonalup[i].translate, diagonalup[i].width, diagonalup[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&diagonalup[i].transform, &diagonalup[i].rotate, &diagonalup[i].scale);
@@ -372,7 +372,7 @@ void diag_down_blocks_draw() {
 			diagonaldown[i].height = BLOCK_HEIGHT / 2 + diagonaldown[i].y;
 
 			AEMtx33Scale(&diagonaldown[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&diagonaldown[i].rotate, PI);
+			AEMtx33Rot(&diagonaldown[i].rotate, NULL);
 			AEMtx33Trans(&diagonaldown[i].translate, diagonaldown[i].width, diagonaldown[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&diagonaldown[i].transform, &diagonaldown[i].rotate, &diagonaldown[i].scale);
@@ -401,7 +401,7 @@ void one_time_use_blocks_draw() {
 			onetimeuse[i].height = BLOCK_HEIGHT / 2 + onetimeuse[i].y;
 
 			AEMtx33Scale(&onetimeuse[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&onetimeuse[i].rotate, PI);
+			AEMtx33Rot(&onetimeuse[i].rotate, NULL);
 			AEMtx33Trans(&onetimeuse[i].translate, onetimeuse[i].width, onetimeuse[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&onetimeuse[i].transform, &onetimeuse[i].rotate, &onetimeuse[i].scale);
@@ -430,7 +430,7 @@ void left_right_spikes_draw() {
 			leftrightspikes[i].height = BLOCK_HEIGHT / 2 + leftrightspikes[i].y;
 
 			AEMtx33Scale(&leftrightspikes[i].scale, BLOCK_WIDTH, BLOCK_HEIGHT);
-			AEMtx33Rot(&leftrightspikes[i].rotate, PI);
+			AEMtx33Rot(&leftrightspikes[i].rotate, NULL);
 			AEMtx33Trans(&leftrightspikes[i].translate, leftrightspikes[i].width, leftrightspikes[i].height);
 			// Concat the matrices
 			AEMtx33Concat(&leftrightspikes[i].transform, &leftrightspikes[i].rotate, &leftrightspikes[i].scale);

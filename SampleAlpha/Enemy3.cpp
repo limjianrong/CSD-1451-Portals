@@ -65,7 +65,7 @@ void draw_enemy3() {
 	if (enemy3_a.Hp > 0 && enemy3_a_Dead == FALSE) {
 
 		AEGfxTextureSet(enemy3, 0, 0);
-		drawMesh(AEVec2{ ENEMY3_WIDTH, ENEMY3_HEIGHT }, enemy3_a.center, PI);
+		drawMesh(AEVec2{ ENEMY3_WIDTH, ENEMY3_HEIGHT }, enemy3_a.center, NULL);
 
 		// set center vector
 		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
@@ -74,13 +74,13 @@ void draw_enemy3() {
 		if (enemy3_a.x > AEGfxGetWinMaxX() && enemy3_a.x < AEGfxGetWinMaxX() + offscreen_offset
 			&& going_left) {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMaxX() - WARNING_WIDTH/2.f, enemy3_a.y }, PI);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMaxX() - WARNING_WIDTH/2.f, enemy3_a.y }, NULL);
 		}
 		// left edge of screen - offscreen_offset < enemy 3 x position < left edge of screen & enemy going right
 		else if (enemy3_a.x < AEGfxGetWinMinX() && enemy3_a.x > AEGfxGetWinMinX() - offscreen_offset
 			&& !going_left) {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMinX() + WARNING_WIDTH/2.f, enemy3_a.y }, PI);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMinX() + WARNING_WIDTH/2.f, enemy3_a.y }, NULL);
 		}
 
 		

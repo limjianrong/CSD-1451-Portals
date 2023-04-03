@@ -67,10 +67,10 @@ extern AEAudioGroup soundGroup;
   Load all textures for card upgrade system
 *****************************************************************************************************/
 void upgrades_load() {
-	upgrades[MAX_HP_card].Texture			= AEGfxTextureLoad("Assets/Max_HP_card_new.png");
-	upgrades[MOVEMENT_SPEED_card].Texture	= AEGfxTextureLoad("Assets/Speed_card_new.png");
-	upgrades[PORTAL_RANGE_card].Texture		= AEGfxTextureLoad("Assets/Portal_Range_card_new.png");
-	upgrades[SHIELD_card].Texture			= AEGfxTextureLoad("Assets/Shield_UP_card_new.png");
+	upgrades[MAX_HP_card].Texture			= AEGfxTextureLoad("Assets/Max_HP_card.png");
+	upgrades[MOVEMENT_SPEED_card].Texture	= AEGfxTextureLoad("Assets/Speed_card.png");
+	upgrades[PORTAL_RANGE_card].Texture		= AEGfxTextureLoad("Assets/Portal_Range_card.png");
+	upgrades[SHIELD_card].Texture			= AEGfxTextureLoad("Assets/Shield_UP_card.png");
 	shield.Texture							= AEGfxTextureLoad("Assets/jumperpack/PNG/Items/bubble.png");
 
 }
@@ -128,7 +128,7 @@ void upgrade_draw() {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
 		AEGfxTextureSet(nullptr, 0, 0);
-		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 		// --------- Drawing cards ---------
 		AEGfxSetTransparency(1.0f);
@@ -288,7 +288,7 @@ void render_shield() {
 	if (player.isShieldActive) {
 		AEGfxSetTransparency(0.6f);
 		AEGfxTextureSet(shield.Texture, 0, 0);
-		drawMesh(shield.dimensions, shield.center, PI);
+		drawMesh(shield.dimensions, shield.center, NULL);
 	}
 }
 
@@ -313,6 +313,6 @@ void render_card(s32 card, f32 transX, f32 offsetY)
 		AEGfxTextureSet(upgrades[SHIELD_card].Texture, 0, 0);
 		break;
 	}
-	drawMesh(AEVec2{ CARD_WIDTH, CARD_HEIGHT }, AEVec2{ transX, AEGfxGetWinMinY() + AEGetWindowHeight() / offsetY }, PI);
+	drawMesh(AEVec2{ CARD_WIDTH, CARD_HEIGHT }, AEVec2{ transX, AEGfxGetWinMinY() + AEGetWindowHeight() / offsetY }, NULL);
 
 }

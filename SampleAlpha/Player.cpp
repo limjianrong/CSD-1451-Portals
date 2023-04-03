@@ -147,17 +147,15 @@ void player_draw() {
 	
 	// ---------------- Player ----------------
 	if (AEInputCheckCurr(AEVK_D)) {
-		if ((num_of_Dpressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_left1Tex, 0, 0);
-		else AEGfxTextureSet(player.player_left2Tex, 0, 0);
-		//else if ((num_of_Dpressed % 9) >= 5) AEGfxTextureSet(player.player_left2Tex, 0, 0);
+		if ((num_of_Dpressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_right1Tex, 0, 0);
+		else AEGfxTextureSet(player.player_right2Tex, 0, 0);
 	}
 	else if (AEInputCheckCurr(AEVK_A)) {
-		if ((num_of_Apressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_right1Tex, 0, 0);
-		else AEGfxTextureSet(player.player_right2Tex, 0, 0);
-		//else if ((num_of_Apressed % 9) >= 5) AEGfxTextureSet(player.player_right2Tex, 0, 0);
-	} 
+		if ((num_of_Apressed % max_Dpresses) <= range_Dpresses) AEGfxTextureSet(player.player_left1Tex, 0, 0);
+		else AEGfxTextureSet(player.player_left2Tex, 0, 0);
+	}
 	else AEGfxTextureSet(player.player_standTex, 0, 0);
-	drawMesh(player.dimensions, player.center, PI);
+	drawMesh(player.dimensions, player.center, NULL);
 
 	// -------------- Checkpoint --------------
 	checkpoint_create(1000, 450, 0);
@@ -335,18 +333,18 @@ void Render_Lives(s32 currLife, f32 offsetX) {
 		AEGfxTextureSet(player.fullLivesTex, 0, 0);
 	else
 		AEGfxTextureSet(player.emptyLivesTex, 0, 0);
-	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + offsetX, AEGfxGetWinMaxY() - Lives_OffsetY }, PI);
+	drawMesh(player.Lives_dimensions, AEVec2{ AEGfxGetWinMinX() + offsetX, AEGfxGetWinMaxY() - Lives_OffsetY }, NULL);
 }
 
 void Render_LevelnXP() {
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
-	drawMesh(AEVec2{ WINDOWLENGTH_X - XP_BAR_OFFSETX, XP_BAR_HEIGHT }, AEVec2{ origin.x - XP_BAR_OFFSETX / 2.f, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X - XP_BAR_OFFSETX, XP_BAR_HEIGHT }, AEVec2{ origin.x - XP_BAR_OFFSETX / 2.f, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, NULL);
 
 	AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
 	drawMesh(AEVec2{ (float)player.XP / (float)player.requiredXP * (WINDOWLENGTH_X - 150.f) , XP_BAR_HEIGHT },
-			 AEVec2{ (float)origin.x - XP_BAR_OFFSETX / 2.f - (((float)player.requiredXP - (float)player.XP) / (float)player.requiredXP * (WINDOWLENGTH_X - XP_BAR_OFFSETX) / 2.f), origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, PI);
+			 AEVec2{ (float)origin.x - XP_BAR_OFFSETX / 2.f - (((float)player.requiredXP - (float)player.XP) / (float)player.requiredXP * (WINDOWLENGTH_X - XP_BAR_OFFSETX) / 2.f), origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, NULL);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 }
 
@@ -399,7 +397,7 @@ void respawn_player() {
 void checkpoint_create(f32 x, f32 y, s32 index) {
 
 	AEGfxTextureSet(checkpoint[0].checkpointTex, 0, 0);
-	drawMesh(AEVec2{ player.dimensions.x * 2, player.dimensions.y * 2 }, AEVec2{ x, y }, PI);
+	drawMesh(AEVec2{ player.dimensions.x * 2, player.dimensions.y * 2 }, AEVec2{ x, y }, NULL);
 
 	checkpoint[index].x1 = x - CHECKPOINT_WIDTH;
 	checkpoint[index].x2 = x + CHECKPOINT_WIDTH;

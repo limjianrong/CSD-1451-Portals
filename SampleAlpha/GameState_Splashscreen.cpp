@@ -24,7 +24,7 @@ static f64 timer;
 // load texture and mesh
 void GameStateSplashscreenLoad(void) {
 	mesh_load();
-	logo = AEGfxTextureLoad("Assets/Digipen_flipped.png");
+	logo = AEGfxTextureLoad("Assets/Digipen.png");
 
 }
 // initialise timer and transparancy variables and set background colour to black
@@ -52,7 +52,7 @@ void GameStateSplashscreenDraw(void) {
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	AEGfxTextureSet(logo, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 }
 // free function

@@ -213,7 +213,7 @@ void GameStateMainmenuDraw(void) {
 
 	// ------- Background -------
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 	// ------- Drawing of mesh + Setting texture -------
 	for (int i = first_multiple; i <= first_multiple + (multiple_increment*(button_count-1)) ; i+=multiple_increment) {
@@ -227,7 +227,7 @@ void GameStateMainmenuDraw(void) {
 
 		else AEGfxTextureSet(buttonNotPressed, 0, 0);
 	
-		drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{origin.x, origin.y + button_startY - button_Yunit * i}, PI);
+		drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{origin.x, origin.y + button_startY - button_Yunit * i}, NULL);
 
 		// ----- Audio -----
 
@@ -372,12 +372,12 @@ void GameStateMainmenuDraw(void) {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
 		AEGfxTextureSet(nullptr, 0, 0);
-		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 		AEGfxSetTransparency(1.f);
 
 		AEGfxTextureSet(quitWindow, 0, 0);
-		drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, PI);
+		drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, NULL);
 
 		for (int i = first_multiple + multiple_increment * 2; i <= first_multiple + (multiple_increment * (button_count - 2)); i += multiple_increment) {
 
@@ -389,7 +389,7 @@ void GameStateMainmenuDraw(void) {
 
 			else AEGfxTextureSet(buttonNotPressed, 0, 0);
 
-			drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - button_Yunit * i }, PI);
+			drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - button_Yunit * i }, NULL);
 
 			// ------ Texts ------
 			AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);

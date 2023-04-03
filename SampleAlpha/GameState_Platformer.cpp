@@ -287,7 +287,7 @@ void GameStatePlatformerDraw(void) {
 
 	// ------- Background -------
 	AEGfxTextureSet(background_layer1Tex, 0, 0);						// Layer 1
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 	AEGfxTextureSet(background_layer2Tex, 0, 0);						// Layer 2
 	AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 	AEGfxTextureSet(background_layer3Tex, 0, 0);						// Layer 3
@@ -312,7 +312,7 @@ void GameStatePlatformerDraw(void) {
 		// --------- Make whole screen translucent ---------
 		AEGfxSetTransparency(0.55f);
 		AEGfxTextureSet(nullptr, 0, 0);
-		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+		drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 		// --------- Buttons ---------
 		AEGfxSetTransparency(1.0f);
@@ -330,7 +330,7 @@ void GameStatePlatformerDraw(void) {
 				//isPressed = FALSE;
 				AEGfxTextureSet(buttonNotPressed, 0, 0);
 			}
-			drawMesh(AEVec2{ WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12 }, AEVec2 { origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i }, PI);
+			drawMesh(AEVec2{ WINDOWLENGTH_X / 5, WINDOWLENGTH_Y / 12 }, AEVec2 { origin.x, origin.y + WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * i }, NULL);
 
 			// 1st button from top
 			if ((center_cursor.x >= button_leftEdge && center_cursor.x <= button_rightEdge &&
@@ -469,12 +469,12 @@ void GameStatePlatformerDraw(void) {
 			// --------- Make whole screen translucent ---------
 			AEGfxSetTransparency(0.55f);
 			AEGfxTextureSet(nullptr, 0, 0);
-			drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+			drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 			AEGfxSetTransparency(1.f);
 
 			AEGfxTextureSet(p_quitWindow, 0, 0);
-			drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, PI);
+			drawMesh(AEVec2{ quit_scaleX, quit_scaleY }, origin, NULL);
 
 			for (int i = p_first_multiple + p_multiple_increment * 2; i <= p_first_multiple + (p_multiple_increment * (button_count - 2)); i += p_multiple_increment) {
 
@@ -486,7 +486,7 @@ void GameStatePlatformerDraw(void) {
 
 				else AEGfxTextureSet(buttonNotPressed, 0, 0);
 
-				drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - p_button_Yunit * i }, PI);
+				drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - p_button_Yunit * i }, NULL);
 
 				// ------ Texts ------
 
