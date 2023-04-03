@@ -40,10 +40,10 @@ std::ifstream door_ifs{};
 /******************************************************************************/
 void draw_level_load() {
 	// Load Textures
-	platform_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile001.png");
-	onetime_text = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile013.png");
-	spike_text = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Other/spikesHigh.png");
-	door.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile052.png");
+	platform_text	= AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile001.png");
+	onetime_text	= AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile013.png");
+	spike_text		= AEGfxTextureLoad("Assets/abstract-platformer/PNG/Other/spikesHigh.png");
+	door.picture	= AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile052.png");
 	
 	// Load door variables from std::ifstream
 	door_ifs.open("Assets/textFiles/door.txt");
@@ -156,72 +156,72 @@ void draw_level_draw() {
 
 // -------- Normal Blocks Create Function --------
 void normal_create(s32 len, f32 x, f32 y, s32 index) {
-	normal[index].length = len;
-	normal[index].x = x;
-	normal[index].y = y;
+	normal[index].length				= len;
+	normal[index].x						= x;
+	normal[index].y						= y;
 }
 
 // -------- Moving Left And Right Blocks Create Function --------
 void left_right_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
-	left_right[index].length = len;
-	left_right[index].x = x;
-	left_right[index].y = y;
-	left_right[index].start_x = start_x;
-	left_right[index].end_x = end_x;
+	left_right[index].length			= len;
+	left_right[index].x					= x;
+	left_right[index].y					= y;
+	left_right[index].start_x			= start_x;
+	left_right[index].end_x				= end_x;
 }
 
 // -------- Moving Up And Down Blocks Create Function --------
 void up_down_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index) {
-	up_down[index].length = len;
-	up_down[index].x = x;
-	up_down[index].y = y;
-	up_down[index].start_y = start_y;
-	up_down[index].end_y = end_y;
+	up_down[index].length				= len;
+	up_down[index].x					= x;
+	up_down[index].y					= y;
+	up_down[index].start_y				= start_y;
+	up_down[index].end_y				= end_y;
 }
 
 // -------- Moving Diagonally Upward Blocks Create Function --------
 void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
-	diagonal_up[index].length = len;
-	diagonal_up[index].x = x;
-	diagonal_up[index].y = y;
-	diagonal_up[index].start_x = start_x;
-	diagonal_up[index].end_x = end_x;
-	diagonal_up[index].start_y = start_y;
-	diagonal_up[index].end_y = end_y;
+	diagonal_up[index].length			= len;
+	diagonal_up[index].x				= x;
+	diagonal_up[index].y				= y;
+	diagonal_up[index].start_x			= start_x;
+	diagonal_up[index].end_x			= end_x;
+	diagonal_up[index].start_y			= start_y;
+	diagonal_up[index].end_y			= end_y;
 }
 
 // -------- Moving Diagonally Downward Blocks Create Function --------
 void diagonal_down_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index) {
-	diagonal_down[index].length = len;
-	diagonal_down[index].x = x;
-	diagonal_down[index].y = y;
-	diagonal_down[index].start_x = start_x;
-	diagonal_down[index].end_x = end_x;
-	diagonal_down[index].start_y = start_y;
-	diagonal_down[index].end_y = end_y;
+	diagonal_down[index].length			= len;
+	diagonal_down[index].x				= x;
+	diagonal_down[index].y				= y;
+	diagonal_down[index].start_x		= start_x;
+	diagonal_down[index].end_x			= end_x;
+	diagonal_down[index].start_y		= start_y;
+	diagonal_down[index].end_y			= end_y;
 }
 
 // -------- Disappearing Blocks Create Function --------
 void one_time_use_create(s32 len, f32 x, f32 y, s32 index) {
-	one_time_use[index].length = len;
-	one_time_use[index].x = x;
-	one_time_use[index].y = y;
+	one_time_use[index].length			= len;
+	one_time_use[index].x				= x;
+	one_time_use[index].y				= y;
 }
 
 // -------- Spikes Create Function --------
 void spikes_create(s32 len, f32 x, f32 y, s32 index) {
-	floor_spikes[index].length = len;
-	floor_spikes[index].x = x;
-	floor_spikes[index].y = y;
+	floor_spikes[index].length			= len;
+	floor_spikes[index].x				= x;
+	floor_spikes[index].y				= y;
 }
 
 // -------- Moving Left And Right Spikes Create Function --------
 void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index) {
-	left_right_spikes[index].length = len;
-	left_right_spikes[index].x = x;
-	left_right_spikes[index].y = y;
-	left_right_spikes[index].start_x = start_x;
-	left_right_spikes[index].end_x = end_x;
+	left_right_spikes[index].length		= len;
+	left_right_spikes[index].x			= x;
+	left_right_spikes[index].y			= y;
+	left_right_spikes[index].start_x	= start_x;
+	left_right_spikes[index].end_x		= end_x;
 }
 
 /******************************************************************************/
