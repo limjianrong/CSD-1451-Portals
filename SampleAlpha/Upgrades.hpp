@@ -29,7 +29,7 @@ static f32 SHIELD_WIDTH;				// Shield width
 static f32 SHIELD_HEIGHT;				// Shield width
 
 // ----- Enum for type of cards shown in upgrade card popup -----
-static enum card_type {
+enum card_type {
 	MAX_HP_card,
 	MOVEMENT_SPEED_card,
 	PORTAL_RANGE_card,

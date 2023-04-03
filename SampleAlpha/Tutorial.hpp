@@ -18,14 +18,14 @@ void tutorial_load(void);
 void tutorial_draw(void);
 void tutorial_unload(void);
 
-static enum asset {
+enum asset {
 	_player,
 	portals,
 	range,
 	enemy1
 };
 
-static enum asset2 {
+enum asset2 {
 	enemy2,
 	enemy3,
 	enemy3_warning,
