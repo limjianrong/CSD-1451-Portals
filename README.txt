@@ -58,12 +58,16 @@ LCtrl + ESC key 	- Quick exits the game
 
 Credits:
 ========
-Audio:	opengameart.org
-	mixkit.co/free-sound-effects
-	zapsplat.com
+Audio:	Background Music from opengameart (opengameart.org)
+	Mixkit Sound Effects from Mixkit (mixkit.co)
+	Sound effects from Zapsplat (zapsplat.com)
 
 
-Assets:	kenney.nl
+Assets:	Jumper Pack by Kenney Vleugels (www.kenney.nl)
+	Abstract Platformer by Kenney Vleugels (www.kenney.nl)
+	Pixel Line Platformer (1.0) by Kenney Vleugels (www.kenney.nl)
+	Simplified Platformer Pack by Kenney Vleugels (www.kenney.nl)
+	UI pack by Kenney Vleugels (www.kenney.nl)
 
 Advisors:
 
