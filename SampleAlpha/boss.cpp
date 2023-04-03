@@ -44,13 +44,13 @@ std::ifstream boss_ifs{}; //file stream to load boss stats from
 
 //load the assets used by the boss 
 void boss_load() {
-	boss.standTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+	boss.standTex = AEGfxTextureLoad("Assets/boss_assets/flyMan_fly.png");
 
-	boss.deadTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/spikeBall_2.png");
-	laser_beam.picture = AEGfxTextureLoad("Assets/laser_beam_picture.png");
-	laser_beam.warning_pic = AEGfxTextureLoad("Assets/laser_warning.png");
+	boss.deadTex = AEGfxTextureLoad("Assets/boss_assets/spikeBall_2.png");
+	laser_beam.picture = AEGfxTextureLoad("Assets/boss_assets/laser_beam_picture.png");
+	laser_beam.warning_pic = AEGfxTextureLoad("Assets/boss_assets/laser_warning.png");
 	// Bullet texture
-	bullet.bulletTex = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/gold_1.png");
+	bullet.bulletTex = AEGfxTextureLoad("Assets/boss_assets/gold_1.png");
 	boss_ifs.open("Assets/textFiles/boss_stats.txt");
 
 #ifdef debug
@@ -190,7 +190,7 @@ void boss_draw() {
 	}
 	else {  // --- Boss dead ---
 		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-		drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, PI);
+		drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, 0.0f);
 	}
 
 }

@@ -57,9 +57,9 @@ void tutorial_load(void) {
 	// player
 	assets[_player] = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Characters/platformChar_walk2.png");
 	// portals
-	assets[portals] = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
+	assets[portals] = AEGfxTextureLoad("Assets/portal_assets/platformPack_tile023.png");
 	// range
-	assets[range] = AEGfxTextureLoad("Assets/tutorial_portal_range.png");
+	assets[range] = AEGfxTextureLoad("Assets/portal_assets/tutorial_portal_range.png");
 	// enemy1
 	assets[enemy1] = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
 	// enemy2

@@ -66,13 +66,13 @@ void settings_load(void) {
 void settings_init(void) {
 	// initialize volume button coordinates and scale
 	vbutton.x = origin.x;
-	vbutton.y = origin.y + vert_pos_offset;
+	vbutton.y = origin.y + static_cast<f32>(vert_pos_offset);
 	buttonscalex = WINDOWLENGTH_X / 27.f;
 	buttonscaley = WINDOWLENGTH_Y / 18.f;
 
 	// initialize volume bar coordinates and scale
 	vbar.x = origin.x;
-	vbar.y = origin.y + vert_pos_offset;
+	vbar.y = origin.y + static_cast<f32>(vert_pos_offset);
 	barscalex = WINDOWLENGTH_X / 2.f;
 	barscaley = WINDOWLENGTH_Y / 80.f;
 }
@@ -93,7 +93,7 @@ void settings_update(void) {
 	
 	// update volume bar position according to center origin
 	vbar.x = origin.x;
-	vbar.y = origin.y + vert_pos_offset;
+	vbar.y = origin.y + static_cast<f32>(vert_pos_offset);
 }
 
 void settings_draw(void) {

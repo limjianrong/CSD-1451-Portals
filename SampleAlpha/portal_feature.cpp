@@ -65,11 +65,11 @@ AEGfxTexture* portal_range_on_cooldown_picture;
 *******************************************************************************************************/
 void portal_load() {
 	//load picture for portal
-	portal_1.picture = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
+	portal_1.picture = AEGfxTextureLoad("Assets/portal_assets/platformPack_tile023.png");
 	//load picture for portal max range
-	portal_range_picture = AEGfxTextureLoad("Assets/portal_range.png");
+	portal_range_picture = AEGfxTextureLoad("Assets/portal_assets/portal_range.png");
 	//load picture to be shown when portal is on cooldown
-	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_range_on_cooldown.png");
+	portal_range_on_cooldown_picture = AEGfxTextureLoad("Assets/portal_assets/portal_range_on_cooldown.png");
 	//read values from text file
 	portal_ifs.open("Assets/textFiles/portal_stats.txt");
 
