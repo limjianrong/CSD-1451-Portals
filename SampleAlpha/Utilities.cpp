@@ -173,3 +173,14 @@ void GameObjects::Render_HealthBar() {
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }
+
+bool check_window_out_of_focus() {
+	HWND hWnd = GetForegroundWindow(); // get handle to the foreground window
+	HWND myWnd = FindWindow(NULL, "CSD 1451 Portals");
+
+	if (hWnd != myWnd) // compare the foreground window to your program's window
+	{
+		return true;
+	}
+	return false;
+}

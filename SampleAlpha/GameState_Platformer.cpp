@@ -173,8 +173,12 @@ void GameStatePlatformerUpdate(void) {
 
 	variables_update();  // Updating all global variables commonly used is utmost priority
 
-	if (isPaused && (isSettings == FALSE) && (isTutorial == FALSE)) {
+	// Pause game if window is out of focus
+	if (check_window_out_of_focus()) {
+		isPaused = TRUE;
+	}
 
+	if (isPaused && !isSettings && !isTutorial) {
 		// --------- Collision ---------
 		for (s32 i = p_first_multiple; i <= p_first_multiple + p_multiple_increment*(button_count-1); i += p_multiple_increment) {
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&

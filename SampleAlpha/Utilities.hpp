@@ -39,4 +39,5 @@ AEGfxVertexList* create_Square_Mesh();
 void drawMesh(AEVec2 scale, AEVec2 trans, f32 rot);
 void mesh_load();
 void variables_update();
+bool check_window_out_of_focus();
 

@@ -120,6 +120,13 @@ void GameStateMainmenuInit(void) {
 
 void GameStateMainmenuUpdate(void) {
 
+	// Stop all game audio if window is out of focus
+	if (check_window_out_of_focus()) {
+		// Stop all audio
+		AEAudioStopGroup(soundGroup);
+		AEAudioStopGroup(musicGroup);
+	}
+
 	variables_update();			// Updating all global variables commonly used is utmost priority
 
 	if (is_Settings == FALSE && is_Tutorial == FALSE)	// Settings/Tutorial menu buttons & Main Menu buttons located
