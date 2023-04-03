@@ -157,7 +157,7 @@ void GameObjects::Render_HealthBar() {
 			AEGfxSetTintColor(255, 0, 0, 1.f);
 		}
 		drawMesh(AEVec2{ (float)Hp / (float)Max_Hp * dimensions.x , 15.f },
-				 AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * dimensions.x / 2.f), center.y + dimensions.y / 2.f + 10.f}, PI);
+			AEVec2{ (float)center.x - (((float)Max_Hp - (float)Hp) / (float)Max_Hp * dimensions.x / 2.f), center.y + dimensions.y / 2.f + 10.f }, PI);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	}
 }

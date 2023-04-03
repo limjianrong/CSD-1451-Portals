@@ -60,7 +60,6 @@ void settings_load(void) {
 	volume_bar = AEGfxTextureLoad("Assets/volume_bar.png");
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
 
-	mesh_load();
 }
 
 

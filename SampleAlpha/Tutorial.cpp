@@ -71,7 +71,6 @@ void tutorial_load(void) {
 	// boss
 	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_stand.png");
 
-	mesh_load();
 }
 void tutorial_init(void) {
 	buttonX = origin.x;

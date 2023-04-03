@@ -113,7 +113,7 @@ void GameStatePlatformerLoad(void) {
 
 	// --- Loads mesh ---
 	mesh_load();
-	audio_load();
+	//audio_load();
 
 	// --- Loads different functions ---
 	draw_level_load();			// Level
@@ -539,6 +539,7 @@ void GameStatePlatformerUnload(void) {
 	AEGfxTextureUnload(background_layer1Tex);
 	AEGfxTextureUnload(background_layer2Tex);
 	AEGfxTextureUnload(background_layer3Tex);
+	AEGfxTextureUnload(p_quitWindow);
 
 	// Mesh free
 	AEGfxMeshFree(square_mesh);
