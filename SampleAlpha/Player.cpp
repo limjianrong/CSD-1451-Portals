@@ -39,7 +39,6 @@ Checkpoint checkpoint[NUM_OF_CHECKPOINT];
 
 // ------  Text  ------
 extern s8 Albam_fontID;
-s8* lives_counter; // temp counter (Replacing with hearts?)
 s8* level, * XP, * Hp;
 // --- Mesh ---
 extern AEGfxVertexList* square_mesh;	// Created square mesh
@@ -129,10 +128,6 @@ void player_init() {
 	player.Lives_dimensions.x = 50.f;
 	player.Lives_dimensions.y = 50.f;
 
-	//player.Lives_pos.x = 0;
-	//player.Lives_y = 0;
-
-
 
 	// -------- Checkpoint --------
 	for (s32 i = 0; i < NUM_OF_CHECKPOINT; i++) {
@@ -215,14 +210,6 @@ void player_draw() {
 	AEGfxPrint(Albam_fontID, &xp_counter_string[0], -0.7f, 0.55f, 1.0f, 0.0f, 0.0f, 0.0f);
 #endif // DEBUG
 
-
-	// ---------  Firing of bullets   -----------
-	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
-		weapon_fire(player.x, player.y, 1);
-	}
-	else {
-		weapon_fire(player.x, player.y, 0);
-	}*/
 }
 
 void player_update() {
@@ -273,15 +260,6 @@ void player_update() {
 
 		gGameStateNext = GS_Lose;
 	}
-
-	// ---------  Firing of bullets   -----------
-	/*if (AEInputCheckCurr(AEVK_LBUTTON)) {
-		weapon_fire(player.x, player.y, 1);
-	}
-	else {
-		weapon_fire(player.x, player.y, 0);
-	}*/
-
 
 
 	// ------------  Collision   --------------

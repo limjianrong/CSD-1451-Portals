@@ -1,6 +1,6 @@
 /*!**************************************************************************************************
 \file     Main.cpp
-\author   ZhaoZhi, ZhiYee, JianRong, ZhunHan
+\author   ZhaoZhi (25%), ZhiYee (25%), JianRong (25%), ZhunHan (25%)
 \par      
 \par      Course: CSD 1451
 \par      Software Engineering Project 2

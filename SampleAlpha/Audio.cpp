@@ -45,40 +45,40 @@ AEAudioGroup soundGroup, musicGroup;
 void audio_load() {
 	
 	// BGM 
-	gameBGM				= AEAudioLoadSound("Assets/AUDIO/Game BGM.mp3");
-	bossBGM				= AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
+	gameBGM					= AEAudioLoadSound("Assets/AUDIO/Game BGM.mp3");
+	bossBGM					= AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
 
 	// Win/Lose
-	defeatAudio			= AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");
-	victoryAudio		= AEAudioLoadSound("Assets/AUDIO/Victory.mp3");
+	defeatAudio				= AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");
+	victoryAudio			= AEAudioLoadSound("Assets/AUDIO/Victory.mp3");
 
 	// Button
-	buttonClickedAudio	= AEAudioLoadSound("Assets/AUDIO/Button_Click.mp3");
-	buttonHoverAudio	= AEAudioLoadSound("Assets/AUDIO/Button_Hover.mp3");
+	buttonClickedAudio		= AEAudioLoadSound("Assets/AUDIO/Button_Click.mp3");
+	buttonHoverAudio		= AEAudioLoadSound("Assets/AUDIO/Button_Hover.mp3");
 
 	// Player
-	checkpointAudio		= AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
-	walkAudio			= AEAudioLoadSound("Assets/AUDIO/Player_Movement.mp3");
-	playerDeathAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Death.mp3");
-	playerDamageAudio	= AEAudioLoadSound("Assets/AUDIO/Player_Dmg.mp3");
+	checkpointAudio			= AEAudioLoadSound("Assets/AUDIO/Checkpoint.mp3");
+	walkAudio				= AEAudioLoadSound("Assets/AUDIO/Player_Movement.mp3");
+	playerDeathAudio		= AEAudioLoadSound("Assets/AUDIO/Player_Death.mp3");
+	playerDamageAudio		= AEAudioLoadSound("Assets/AUDIO/Player_Dmg.mp3");
 
 	// Enemy 1 & 2
-	deathAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Death");
-	bulletAudio			= AEAudioLoadSound("Assets/AUDIO/Bullet.mp3");
-	damageAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Dmg.mp3");
+	deathAudio				= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Death");
+	bulletAudio				= AEAudioLoadSound("Assets/AUDIO/Bullet.mp3");
+	damageAudio				= AEAudioLoadSound("Assets/AUDIO/Enemy&Boss_Dmg.mp3");
 
 	// Enemy 3
-	zoomAudio			= AEAudioLoadSound("Assets/AUDIO/Enemy3_Zoom.mp3");
+	zoomAudio				= AEAudioLoadSound("Assets/AUDIO/Enemy3_Zoom.mp3");
 
 	// Boss
-	laserAudio			= AEAudioLoadSound("Assets/AUDIO/Boss_Laser.mp3");
+	laserAudio				= AEAudioLoadSound("Assets/AUDIO/Boss_Laser.mp3");
 
 	// Portal
-	portalAudio			= AEAudioLoadSound("Assets/AUDIO/Portals.mp3");
+	portalAudio				= AEAudioLoadSound("Assets/AUDIO/Portals.mp3");
 
 	// Upgrades
-	levelUpAudio = AEAudioLoadSound("Assets/AUDIO/Player_LevelUp.mp3");
-	receivedUpgradeAudio = AEAudioLoadSound("Assets/AUDIO/UpgradeTimeOver.mp3");
+	levelUpAudio			= AEAudioLoadSound("Assets/AUDIO/Player_LevelUp.mp3");
+	receivedUpgradeAudio	= AEAudioLoadSound("Assets/AUDIO/UpgradeTimeOver.mp3");
 
 
 
