@@ -106,7 +106,7 @@ void draw_enemy3() {
 \param player
 	Pointer to player data
 *******************************************************************************************************/
-void enemy3_update(Player_stats* player) {
+void enemy3_update(Player_stats* _player) {
 	Enemy3_stats* Enemy3_a = &enemy3_a;
 	if (!isPaused) {
 		s32 value = AEFrameRateControllerGetFrameCount() % 7500;
@@ -116,7 +116,7 @@ void enemy3_update(Player_stats* player) {
 			//enemy3 y position is determined (matches player y pos) when it is 1800.f(offscreen_offset)+ away from left/right edge of screen
 
 			if (enemy3_a.center.x < AEGfxGetWinMinX() - offscreen_offset)
-				Enemy3_a->center.y = player->center.y;
+				Enemy3_a->center.y = _player->center.y;
 			
 			Enemy3_a->center.x += 4.f;
 			going_left = false;
@@ -127,7 +127,7 @@ void enemy3_update(Player_stats* player) {
 			//enemy3 y position is determined (matches player y pos) when it is 1800.f(offscreen_offset)+ away from left/right edge of screen
 
 			if (enemy3_a.center.x > AEGfxGetWinMaxX() + offscreen_offset)
-				Enemy3_a->center.y = player->center.y;
+				Enemy3_a->center.y = _player->center.y;
 
 			Enemy3_a->center.x -= 4.f;
 			going_left = true;
@@ -136,7 +136,7 @@ void enemy3_update(Player_stats* player) {
 
 		// ------- XP for player -------
 		if (enemy3_a.Hp <= 0 && enemy3_a.status == TRUE) {
-			player->XP += static_cast<s32>(ENEMY3_DROPPED_XP);
+			_player->XP += static_cast<s32>(ENEMY3_DROPPED_XP);
 			enemy3_a.status = FALSE;
 
 			// Audio upon death
