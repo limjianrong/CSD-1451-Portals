@@ -3,8 +3,8 @@
 * File:							GameState_Platformer.cpp
 * Course:						CSD1451
 * Group Name:					Apparate
-* Primary Author (30%):			Lin ZhaoZhi, z.lin@digipen.edu
-* Secondary Authors (70%):		Lee Zhi Yee, zhiyee.l@digipen.edu
+* Primary Author (40%):			Lin ZhaoZhi, z.lin@digipen.edu
+* Secondary Authors (60%):		Lee Zhi Yee, zhiyee.l@digipen.edu
 *
 * Brief:
   Source file for the platformer game state

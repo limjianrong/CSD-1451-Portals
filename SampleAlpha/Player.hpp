@@ -1,15 +1,3 @@
-/******************************************************************************//*!
-\file		Player.hpp
-\author 	Digipen, Lin ZhaoZhi
-\par    	email: z.lin@digipen.edu
-\date   	1 February, 2023
-\brief		Source file for the platformer game state
-
-Copyright (C) 2023 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- *//******************************************************************************/
-
  /*==================================================================================
  * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
  * File:				Player.hpp

@@ -7,13 +7,9 @@
 * Secondary Authors:	-
 *
 * Brief:
-  Header file for the audio functions
+  Header file for the audio functions, only init and load
 ==================================================================================*/
 
 // ------- Main functions -------
 void audio_load();
 void audio_init();
-void audio_draw();
-void audio_update();
-void audio_unload();
-void audio_free();

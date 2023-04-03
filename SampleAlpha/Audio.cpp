@@ -7,7 +7,7 @@
 * Secondary Authors:	-
 *
 * Brief:
-  Source file for all the audio functions
+  Source file for all the audio functions, only init and load
 ==================================================================================*/
 
 #pragma once
@@ -89,11 +89,3 @@ void audio_init() {
 	soundGroup = AEAudioCreateGroup();
 	musicGroup = AEAudioCreateGroup();
 }
-void audio_draw();
-void audio_update() {
-
-	//AEAudioPlay(levelUpAudio, soundGroup, 1.f, 1.f, 0);
-	//AEAudioUpdate();
-}
-void audio_unload();
-void audio_free();

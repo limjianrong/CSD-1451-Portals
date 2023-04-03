@@ -377,7 +377,6 @@ void bullet_update() {
 		// If timer is over
 		if (bullet.isTimerActive == FALSE) {
 			// ---- Loops bullet ----
-			//if (dist_boss2bullet < dist_boss2player && isRunning == TRUE) {
 			if (dist_boss2bullet <= DISTANCE_BEFORE_BULLET_DISAPPEAR && bullet.isShooting == TRUE) {	// Bullet disappears after 400 units
 
 				// ----- Movement of bullet from boss to player -----
@@ -386,11 +385,6 @@ void bullet_update() {
 				if (bullet.direction.y == DOWN) bullet.y += normalized_vector.y;
 				else if (bullet.direction.y == UP) bullet.y -= normalized_vector.y;
 
-				//std::cout << dist_boss2bullet << std::endl;
-				//// --- Bullet sfx everytime bullet is reset ---
-				//if (dist_boss2bullet <= 25.f) {
-				//	AEAudioPlay(bulletAudio, soundGroup, 0.5f, 1.f, 0);
-				//}
 			}
 			else {
 				// --- Resets bullet ---

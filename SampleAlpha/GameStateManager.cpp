@@ -75,52 +75,52 @@ void GameStateMgrUpdate()
 	switch (gGameStateCurr)
 	{
 		case GS_MainMenu: // Main Menu
-			GameStateLoad = GameStateMainmenuLoad;
-			GameStateInit = GameStateMainmenuInit;
+			GameStateLoad	= GameStateMainmenuLoad;
+			GameStateInit	= GameStateMainmenuInit;
 			GameStateUpdate = GameStateMainmenuUpdate;
-			GameStateDraw = GameStateMainmenuDraw;
-			GameStateFree = GameStateMainmenuFree;
+			GameStateDraw	= GameStateMainmenuDraw;
+			GameStateFree	= GameStateMainmenuFree;
 			GameStateUnload = GameStateMainmenuUnload;
 			break;
 		case GS_Platformer:	// Game itself
 			// Assign the respective function pointers
-			GameStateLoad = GameStatePlatformerLoad;
-			GameStateInit = GameStatePlatformerInit;
+			GameStateLoad	= GameStatePlatformerLoad;
+			GameStateInit	= GameStatePlatformerInit;
 			GameStateUpdate = GameStatePlatformerUpdate;
-			GameStateDraw = GameStatePlatformerDraw;
-			GameStateFree = GameStatePlatformerFree;
+			GameStateDraw	= GameStatePlatformerDraw;
+			GameStateFree	= GameStatePlatformerFree;
 			GameStateUnload = GameStatePlatformerUnload;
 			break;
 		case GS_Win:
-			GameStateLoad = GameStateWinLoad;
-			GameStateInit = GameStateWinInit;
+			GameStateLoad	= GameStateWinLoad;
+			GameStateInit	= GameStateWinInit;
 			GameStateUpdate = GameStateWinUpdate;
-			GameStateDraw = GameStateWinDraw;
-			GameStateFree = GameStateWinFree;
+			GameStateDraw	= GameStateWinDraw;
+			GameStateFree	= GameStateWinFree;
 			GameStateUnload = GameStateWinUnload;
 			break;
 		case GS_Lose:
-			GameStateLoad = GameStateLoseLoad;
-			GameStateInit = GameStateLoseInit;
+			GameStateLoad	= GameStateLoseLoad;
+			GameStateInit	= GameStateLoseInit;
 			GameStateUpdate = GameStateLoseUpdate;
-			GameStateDraw = GameStateLoseDraw;
-			GameStateFree = GameStateLoseFree;
+			GameStateDraw	= GameStateLoseDraw;
+			GameStateFree	= GameStateLoseFree;
 			GameStateUnload = GameStateLoseUnload;
 			break;
 		case GS_SplashScreen:
-			GameStateLoad = GameStateSplashscreenLoad;
-			GameStateInit = GameStateSplashscreenInit;
+			GameStateLoad	= GameStateSplashscreenLoad;
+			GameStateInit	= GameStateSplashscreenInit;
 			GameStateUpdate = GameStateSplashscreenUpdate;
-			GameStateDraw = GameStateSplashscreenDraw;
-			GameStateFree = GameStateSplashscreenFree;
+			GameStateDraw	= GameStateSplashscreenDraw;
+			GameStateFree	= GameStateSplashscreenFree;
 			GameStateUnload = GameStateSplashscreenUnload;
 			break;
 		case GS_Credits:
-			GameStateLoad = GameStateCreditsLoad;
-			GameStateInit = GameStateCreditsInit;
+			GameStateLoad	= GameStateCreditsLoad;
+			GameStateInit	= GameStateCreditsInit;
 			GameStateUpdate = GameStateCreditsUpdate;
-			GameStateDraw = GameStateCreditsDraw;
-			GameStateFree = GameStateCreditsFree;
+			GameStateDraw	= GameStateCreditsDraw;
+			GameStateFree	= GameStateCreditsFree;
 			GameStateUnload = GameStateCreditsUnload;
 			break;
 		default:	// Error handling
