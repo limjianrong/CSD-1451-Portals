@@ -1,14 +1,16 @@
-/*!**************************************************************************************************
-\file     Main.cpp
-\author   ZhaoZhi (25%), ZhiYee (25%), JianRong (25%), ZhunHan (25%)
-\par      
-\par      Course: CSD 1451
-\par      Software Engineering Project 2
-\date     29-01-2023
-
-\brief
-  Main function of the game
-*****************************************************************************************************/
+/*==================================================================================
+* All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+* File:				Main.cpp
+* Course:			CSD1451
+* Group Name:		Apparate
+* Authors:			Lim Jian Rong (jianrong.lim@digipen.edu)
+					Lee Zhi Yee (zhiyee.l@digipen.edu)
+					Lin ZhaoZhi (z.lin@digipen.edu)
+					Tay Zhun Hang (zhunghuang.tay@digipen.edu)
+*
+* Brief:
+  Start of program. 
+==================================================================================*/
 // ---------------------------------------------------------------------------
 // includes
 
