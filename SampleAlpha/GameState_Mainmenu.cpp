@@ -329,7 +329,7 @@ void GameStateMainmenuDraw(void) {
 
 	// ------ Texts ------
 	float first_text = -0.0583f;
-	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.4, 0.15, 3.0F, 1, 1, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.35, 0.45, 3.0F, 1, 1, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"START GAME", -0.125, first_text , 0.75f, 1, 1, 1);
 	AEGfxPrint(Albam_fontID, (s8*)"TUTORIAL", -0.097, first_text - 0.21f, 0.75f, 1, 1, 1);
 	AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.097, first_text - 0.41f, 0.75f, 1, 1, 1);

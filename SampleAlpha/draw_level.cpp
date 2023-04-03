@@ -10,6 +10,7 @@
   also includes the source code for the logic of different platforms types.
 ==================================================================================*/
 #include "draw_level.hpp"
+#include "Player.hpp"
 
 AEGfxTexture* platform_text, * spike_text, *onetime_text;
 AEMtx33 scale, rotate, translate, transform; // TRS

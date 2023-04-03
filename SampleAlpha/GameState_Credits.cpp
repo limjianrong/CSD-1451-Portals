@@ -21,14 +21,14 @@ extern AEVec2 origin;
 extern s8 Albam_fontID;
 credit_stat credits[NUM];
 static f64 timer;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup musicGroup;
 
 // Load all textures and meshes
 void GameStateCreditsLoad(void) {
-	credits[0].texture = AEGfxTextureLoad("Assets/Digipen_flipped.png");
-	credits[1].texture = AEGfxTextureLoad("Assets/Credits_1.png");
-	credits[2].texture = AEGfxTextureLoad("Assets/Credits_2.png");
-	credits[3].texture = AEGfxTextureLoad("Assets/Credits_3.png");
+	credits[0].texture = AEGfxTextureLoad("Assets/Digipen.png");
+	credits[1].texture = AEGfxTextureLoad("Assets/credit_assets/Credits_1.png");
+	credits[2].texture = AEGfxTextureLoad("Assets/credit_assets/Credits_2.png");
+	credits[3].texture = AEGfxTextureLoad("Assets/credit_assets/Credits_3.png");
 	mesh_load();
 }
 
@@ -49,10 +49,11 @@ void GameStateCreditsUpdate(void) {
 		for (int i = 0; i < NUM; i++) {
 			credits[i].y += 1.f; // moves up the credits
 			if (credits[3].y >= (origin.y + WINDOWLENGTH_Y)) { // checks if the last credits picture is gone
-				AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.3f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
+				AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.25f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 					gGameStateNext = GS_MainMenu; // return to main menu if leftclick is pressed
-					AEAudioStopGroup(soundGroup);
+					AEAudioStopGroup(musicGroup);
+
 				}
 			}
 		}
@@ -69,7 +70,7 @@ void GameStateCreditsDraw(void) {
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEMtx33Scale(&scale, WINDOWLENGTH_X, WINDOWLENGTH_Y);
 		AEMtx33Trans(&translate, origin.x, credits[i].y);
-		AEMtx33Rot(&rotate, PI);
+		AEMtx33Rot(&rotate, NULL);
 		AEMtx33Concat(&transform, &rotate, &scale);
 		AEMtx33Concat(&transform, &translate, &transform);
 		AEGfxSetTransform(transform.m);
