@@ -15,26 +15,46 @@
 #include "AEEngine.h"
 #include "Utilities.hpp"
 
+
 // ----- Enemy 1 -----
-#define ENEMY1_WIDTH 60.f			// Enemy1 width
-#define ENEMY1_HEIGHT 80.f			// Enemy1 height
-#define ENEMY1_DROPPED_XP 20.f		// Amount of XP player gained when Enemy1 is defeated
-#define MAX_ENEMIES_1 3				// Change this for total number of enemy1
+static f32 ENEMY1_WIDTH;				// Enemy1 width
+static f32 ENEMY1_HEIGHT;				// Enemy1 height
+static f32 ENEMY1_DROPPED_XP;			// Amount of XP player gained when Enemy1 is defeated
+static f32 MAX_FRAME_MOVEMENT;			// Max movement value before resetting
+static f32 CHANGE_FRAME_MOVEMENT;		// Change direction upon reaching this value
+static f32 ENEMY1_MOVEMENTX;			// Amount of X unit movement
+static s32 HP_RESET_1;					// HP to reset to when game restarts
+static s32 MAX_HP_RESET_1;				// Max HP to reset to when game restarts
+static f64 MOVEMENTCOUNTER_RESET;		// Movement counter to reset to when game restarts
+static f32 Range_x;						// X Range of bullet delay
+static f32 Range_y;						// Y Range of bullet delay
+#define MAX_ENEMIES_1 2					// Change this for total number of enemy1
 
 // ----- Enemy 2 (Shoots bullet) -----
-#define ENEMY2_WIDTH 80.f			// Enemy2 width
-#define ENEMY2_HEIGHT 60.f			// Enemy2 height
-#define ENEMY2_TIMER 0.75f			// Timer between bullets
-#define ENEMY2_DROPPED_XP 40.f		// Amount of XP player gained when Enemy2 is defeated
-#define MAX_ENEMIES_2 5				// Change this for total number of enemy2
+static f32 ENEMY2_WIDTH;					// Enemy2 width
+static f32 ENEMY2_HEIGHT;					// Enemy2 height
+static f32 ENEMY2_TIMER;					// Timer between bullets
+static f32 ENEMY2_DROPPED_XP;				// Amount of XP player gained when Enemy2 is defeated
+static s32 HP_RESET_2;						// HP to reset to when game restarts
+static s32 MAX_HP_RESET_2;					// Max HP to reset to when game restarts
+static f64 MAX_MOVEMENT;					// Max movement value before resetting
+static f64 CHANGE_MOVEMENT;					// Change direction upon reaching this value
+static f32 ENEMY2_MOVEMENTY;				// Amount of Y unit movement
+static f32 RangeToEnableBulletDelay;		// Range from enemy2 to player to enable bullet delay 
+static f32 Bullet_Displacement_PerFrame;	// Distance travel by bullet every frame
+#define MAX_ENEMIES_2 5						// Change this for total number of enemy2
 
-#define Bullet_Displacement_PerFrame 5  // Distance travel by bullet every frame
+// ----- Bulletss -----
+static f32 BULLET_WIDTH;
+static f32 BULLET_HEIGHT;
+static f32 BULLET_SPEED;
 
 
 // ------- Enemy specific attributes -------
 struct Enemy1_stats : GameObjects {
 
 	f64 movementCounter;
+	bool isDamageAllowed;
 
 	// ---- Draw ----
 	AEGfxTexture* texture;
@@ -54,7 +74,6 @@ struct Enemy2_stats : GameObjects {
 // ------- Enemy1 -------
 void enemy1_create(f32 x, f32 y, s32 index);
 void enemy1_draw();
-//void enemy1_collision(Enemy1_stats enemy1);
 void enemy1_update();
 
 
