@@ -69,9 +69,10 @@ Assets:	Jumper Pack by Kenney Vleugels (www.kenney.nl)
 	Simplified Platformer Pack by Kenney Vleugels (www.kenney.nl)
 	UI pack by Kenney Vleugels (www.kenney.nl)
 
-Advisors:
+Advisors: Cheng Ding Xiang
+	  Gerald Wong Han Feng
 
-???: 
+
 
 
 
