@@ -318,7 +318,7 @@ void boss_laser_beam_attack() {
 					player.isShieldActive = FALSE;
 				}
 				else {
-					//--player.Hp;
+					--player.Hp;
 				}
 				laser_beam.damaged_player = true;
 			}
@@ -433,7 +433,7 @@ void bullet_update() {
 			player.isShieldActive = FALSE;
 		}
 		else {
-			//--player.Hp;
+			--player.Hp;
 		}
 	}
 
@@ -564,7 +564,7 @@ void boss_charge_attack() {
 		//check if boss collided with the player during the charge, limit charge attack to only damage the player once per attack
 		if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, boss.dimensions.x, boss.dimensions.y)) {
 			if (!boss_charge.damaged_player) {
-				//--player.Hp;
+				--player.Hp;
 				boss_charge.damaged_player = true;
 			}
 		}

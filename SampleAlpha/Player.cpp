@@ -80,9 +80,11 @@ void player_load() {
 	player.fullLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/redCrystal.png");
 	player.emptyLivesTex = AEGfxTextureLoad("Assets/abstract-platformer/PNG/Items/outlineCrystal.png");
 	player_ifs.open("Assets/textFiles/player_stats.txt");
+#ifdef debug
 	if (!player_ifs) {
 		std::cout << "\nFailed to open player_stats.txt";
 	}
+#endif
 	// -------- Player --------
 	std::string str{};
 	player_ifs >> str >> player.dimensions.x;		// Player's width
@@ -229,7 +231,6 @@ void player_update() {
 	if (AEInputCheckCurr(AEVK_J)) {
 		player.Max_Hp = 10;						// Player's Maximum Health
 		player.Hp = player.Max_Hp;				// Player's Health
-		std::cout << player.Max_Hp << std::endl;
 	}
 	// ---------  Player's movement   -----------
 	// D key pressed

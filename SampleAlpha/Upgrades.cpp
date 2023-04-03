@@ -82,9 +82,12 @@ void upgrades_load() {
 void upgrades_init() {
 
 	upgrades_ifs.open("Assets/textFiles/upgrades.txt");
+
+#ifdef debug
 	if (!upgrades_ifs) {
 		std::cout << "\nFailed to open upgrades.txt";
 	}
+#endif
 	std::string str{};
 	upgrades_ifs >> str >> CARD_WIDTH;
 	upgrades_ifs >> str >> CARD_HEIGHT;
