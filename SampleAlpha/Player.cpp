@@ -284,16 +284,6 @@ void player_update() {
 	}
 }
 
-void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange) {
-
-	if (player.XP == requiredXP && player.Level >= levelSystem_LowerRange && player.Level <= levelSystem_HigherRange) {
-		player.requiredXP = requiredXP;
-		player.Level++;
-		player.XP = player.XP_RESET;
-		player.justLeveledUp = TRUE;
-	}
-}
-
 void player_unload() {
 	// Unload player sprites textures
 	AEGfxTextureUnload(player.player_standTex);
@@ -307,6 +297,16 @@ void player_unload() {
 	AEGfxTextureUnload(player.fullLivesTex);
 	AEGfxTextureUnload(player.emptyLivesTex);
 
+}
+
+void level_xp_system_update(s32 requiredXP, s32 levelSystem_LowerRange, s32 levelSystem_HigherRange) {
+
+	if (player.XP >= requiredXP && player.Level >= levelSystem_LowerRange && player.Level <= levelSystem_HigherRange) {
+		player.requiredXP = requiredXP;	// Set requiredXP
+		player.Level++;					// Levels up player
+		player.XP -= requiredXP;		// Deduct requiredXP to levelup from player
+		player.justLeveledUp = TRUE;	// Enable flag
+	}
 }
 
 void Render_Lives(s32 currLife, f32 offsetX) {
