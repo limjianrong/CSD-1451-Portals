@@ -237,7 +237,7 @@ void boss_movement() {
 //teleportation of the boss, only occurs when boss hp less than or equal to half of boss's max hp
 void boss_movement_teleport() {
 	if (boss.Hp <= boss.Max_Hp /2) {
-		//increment time elapsed
+		//increment time elapsed since the pervious boss teleport
 		boss_teleport.time_elapsed += static_cast<f32>(AEFrameRateControllerGetFrameTime());
 
 		//if time elapsed >= teleport cooldown and boss is not charging towards player

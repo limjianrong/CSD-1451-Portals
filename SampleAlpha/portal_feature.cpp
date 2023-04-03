@@ -146,7 +146,7 @@ void update_portal() {
 				//update transformation matrix of the portal 1
 				update_portal_matrices(portal_1);
 				// player's right click input is valid, draw an outline to show the player where portal 1 will appear
-				portal_1.draw_outline = TRUE;
+				portal_1.draw_outline = true;
 			}
 		}
 
@@ -294,7 +294,7 @@ void teleport_player(const AEVec2& portal) {
 //function to check if enemy/boss bullets are colliding with the portal
 void check_portal_bullet_collision() {
 	//if boss bullet collided with portal 1, teleport the bullet, portal will be resetted after teleporting a bullet
-	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)) {
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height) && bullet.isShooting == true) {
 		bullet.isTeleported = true;
 		teleport_object(bullet, portal_2);
 
@@ -302,7 +302,7 @@ void check_portal_bullet_collision() {
 		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 	//if boss bullet collide with portal 2
-	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)) {
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &bullet.center, bullet.width, bullet.height)&&bullet.isShooting == true) {
 		bullet.isTeleported = true;
 		teleport_object(bullet, portal_1);
 
