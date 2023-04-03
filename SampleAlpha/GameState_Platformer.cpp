@@ -501,8 +501,8 @@ void GameStatePlatformerDraw(void) {
 				AEGfxPrint(Albam_fontID, (s8*)"will be lost.", text_originX - 0.139f, text_originY, 0.75f, 0, 0, 0);
 
 
-				AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.059, text_originY - 0.32f, 0.75f, 1, 1, 1);
-				AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, text_originY - 0.53f, 0.75f, 1, 1, 1);
+				AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.059f, text_originY - 0.32f, 0.75f, 1, 1, 1);
+				AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11f, text_originY - 0.53f, 0.75f, 1, 1, 1);
 			}
 		}
 	}
