@@ -9,22 +9,16 @@
   This source file defines functions for implementing the Settings Menu.
 ==================================================================================*/
 #include "AEEngine.h"
-#include "GameStateList.hpp"
-#include "GameStateManager.hpp"
 #include "Utilities.hpp"
 #include "Settings.hpp"
 #include "Audio.hpp"
-#include <iostream>
 
 
 // --- Mesh ---
-extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 AEGfxTexture* volume_bar, * volume_button;
 
-// --- External variables ---
-extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;				// text font
+// --- Utilities ---
 extern AEVec2 origin;				// center coordinates of screen
 extern AEVec2 center_cursor;		// cursor coordinates 
 extern AEVec2 world_center_cursor;	// for calculating button offset
@@ -35,21 +29,23 @@ extern AEAudioGroup soundGroup, musicGroup;
 static bool SisPressed1, SisPressed2;
 
 // --- Settings variables ---
-bool fullscreen = { false };		// game launches in non-fullscreen mode
+bool fullscreen = { false };					// game launches in non-fullscreen mode
+f32 Sbutton_scaleX{ WINDOWLENGTH_X / 5 };		// width of menu button
+f32 Sbutton_scaleY{ WINDOWLENGTH_Y / 12 };		// height of menu button
+extern s8 Albam_fontID;							// text font
+
+// --- Audio slider ----
 AEVec2 vbutton, vbar;				// vector for volume button & bar coordinates
 float buttonscalex, buttonscaley;	// x and y scale of volume button
 float barscalex, barscaley;			// x and y scale of volume bar
 bool volume_adjusted;				// if TRUE, volume has been adjusted by player
 AEVec2 button_offset;				// distance offset of button from bar center
-
-
-f32 Sbutton_scaleX{ WINDOWLENGTH_X / 5 };		// width of menu button
-f32 Sbutton_scaleY{ WINDOWLENGTH_Y / 12 };		// height of menu button
-
-
-// --- Constants ---
 f64 vert_pos_offset{ 150.f };		// y-position of volume bar to above origin.y by 150.f
 
+/*!****************************************************************************************************
+\brief
+	Loads all settings related texture
+*******************************************************************************************************/
 void settings_load(void) {
 	// texture loading 
 
@@ -59,10 +55,12 @@ void settings_load(void) {
 
 	volume_bar = AEGfxTextureLoad("Assets/volume_bar.png");
 	volume_button = AEGfxTextureLoad("Assets/slider_button.png");
-
 }
 
-
+/*!****************************************************************************************************
+\brief
+	Initializes all settings related values
+*******************************************************************************************************/
 void settings_init(void) {
 	// initialize volume button coordinates and scale
 	vbutton.x = origin.x;
@@ -77,6 +75,10 @@ void settings_init(void) {
 	barscaley = WINDOWLENGTH_Y / 80.f;
 }
 
+/*!****************************************************************************************************
+\brief
+	Updates collision detection and drawing variables
+*******************************************************************************************************/
 void settings_update(void) {
 
 	// get cursor coordinates
@@ -91,11 +93,16 @@ void settings_update(void) {
 		
 	}
 	
-	// update volume bar position according to center origin
+
+	// update volume bar position according to origin coordinates
 	vbar.x = origin.x;
 	vbar.y = origin.y + static_cast<f32>(vert_pos_offset);
 }
 
+/*!****************************************************************************************************
+\brief
+	Draws settings menu based on updated variables 
+*******************************************************************************************************/
 void settings_draw(void) {
 	// get cursor and center origin coordinates
 	variables_update();
@@ -108,7 +115,7 @@ void settings_draw(void) {
 	AEGfxTextureSet(backgroundTex, 0, 0);
 	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
-	// ------- Drawing of mesh + Setting texture -------
+	// ------------------------- Drawing of mesh + Setting texture -------------------------
 
 	// ---- Full screen button ----
 	if (AETestPointToRect(&world_center_cursor, &origin, Sbutton_scaleX, Sbutton_scaleY)) {
@@ -116,7 +123,6 @@ void settings_draw(void) {
 		if (SisPressed1 == FALSE) {
 			SisPressed1 = TRUE;
 			AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
-
 		}
 	}
 	else {
@@ -133,7 +139,6 @@ void settings_draw(void) {
 		if (SisPressed2 == FALSE) {
 			SisPressed2 = TRUE;
 			AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
-
 		}
 	}
 	else {
@@ -144,7 +149,9 @@ void settings_draw(void) {
 
 	// ------ Volume slider -------
 
+	// updates volume button position and corresponding volume level
 	if (AETestPointToRect(&center_cursor, &vbutton, barscalex, barscaley * 5) && AEInputCheckReleased(AEVK_LBUTTON)) {
+
 		volume_adjusted = TRUE;
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 
@@ -159,43 +166,36 @@ void settings_draw(void) {
 		else if (button_offset.x > 0.f) {
 			AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
 			AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
-
 		}
 		else if (button_offset.x == 0.f) {
 			AEAudioSetGroupVolume(soundGroup, 0.5f);
 			AEAudioSetGroupVolume(musicGroup, 0.5f);
-
 		}
-		
-
 	}
-  
 
-	//draw volume bar
+	// draw volume bar
 	AEGfxTextureSet(volume_bar, 0, 0);
 	drawMesh(AEVec2{ barscalex, barscaley }, AEVec2{ vbar.x, vbar.y }, 0);
 
-	// default button position
+	// draw default button position
 	if (volume_adjusted == FALSE) {
 		AEGfxTextureSet(volume_button, 0, 0);
 		drawMesh(AEVec2{ buttonscalex, buttonscaley }, AEVec2{ origin.x, origin.y + (f32)vert_pos_offset }, 0);
-
 	}
 
-	
-	//draw updated volume button position 
+	// draw updated volume button position if volume_adjusted == TRUE
 	AEGfxTextureSet(volume_button, 0, 0);
 	drawMesh(AEVec2{ buttonscalex, buttonscaley }, AEVec2{ origin.x + button_offset.x, origin.y + (f32)vert_pos_offset }, 0);
 
 	// text on buttons
 	AEGfxPrint(Albam_fontID, (s8*)"FULL SCREEN", (f32) - 0.12,(f32) -0.03, (f32)0.75F, (f32)1,(f32) 1, (f32)1);
 	AEGfxPrint(Albam_fontID, (s8*)"BACK", (f32) - 0.07, (f32) - 0.91, (f32)0.75F, (f32)1, (f32)1, (f32)1);
-
-}
-void settings_free() {
-
 }
 
+/*!****************************************************************************************************
+\brief
+	Unloads all settings related texture
+*******************************************************************************************************/
 void settings_unload(void) {
 
 	// Button texture unload

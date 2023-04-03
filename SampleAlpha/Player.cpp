@@ -46,7 +46,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 // --- Audio ---
 extern AEAudio checkpointAudio, walkAudio, playerDeathAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup soundGroup, musicGroup;
 static bool isPlayingAudio = FALSE;
 
 int num_of_Apressed{ 0 }, num_of_Dpressed{ 0 };
@@ -267,6 +267,9 @@ void player_update() {
 		AEAudioPlay(playerDeathAudio, soundGroup, 0.75f, 1.f, 0);
 	}
 	if (player.Lives <= 0) {
+		// Stop all BGM
+		AEAudioStopGroup(musicGroup);
+
 		gGameStateNext = GS_Lose;
 	}
 

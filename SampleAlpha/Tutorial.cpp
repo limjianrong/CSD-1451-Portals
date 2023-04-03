@@ -9,27 +9,21 @@
   This source file defines functions for implementing the Tutorial Menu.
 ==================================================================================*/
 #include "AEEngine.h"
-#include "GameStateList.hpp"
-#include "GameStateManager.hpp"
-#include "Enemy.hpp"
 #include "Utilities.hpp"
 #include "Tutorial.hpp"
 
 // --- Mesh ---
-extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
-// --- External variables ---
-extern AEMtx33 scale, rotate, translate, transform;
-extern s8 Albam_fontID;		 // text font
-extern AEVec2 origin;		 // center coordinates of screen
-extern AEVec2 center_cursor; // cursor coordinates 
-extern AEVec2 world_center_cursor;
+// --- Utilities ---
+extern AEVec2 origin;				// center coordinates of screen
+extern AEVec2 center_cursor;		// cursor coordinates 
+extern AEVec2 world_center_cursor;	// global cursor cooridnates 
 
 // --- Audio ---
 extern AEAudio buttonClickedAudio, buttonHoverAudio;
 extern AEAudioGroup soundGroup;
-static bool TisPressed;
+static bool TisPressed;				
 
 // --- Buttons ---
 f32 button_scaleX{ WINDOWLENGTH_X / 5 };		// width of button
@@ -41,11 +35,14 @@ static AEGfxTexture* assets[asset_count];		// array for top row assets
 static AEGfxTexture* assets2[asset2_count];		// array for bottom row assets
 f32 assetX, assetY;								// top row asset positions
 f32 asset2X, asset2Y;							// bottom row asset positions
-f32 asset_width{ 70.f };
-f32 asset_height{ 70.f };
+f32 asset_width{ 70.f };						// width of asset
+f32 asset_height{ 70.f };						// height of asset
+extern s8 Albam_fontID;							// text font
 
-//AEVec2 asset2_scale[asset2_count];
-
+/*!****************************************************************************************************
+\brief
+	Loads textures
+*******************************************************************************************************/
 void tutorial_load(void) {
 	// buttons
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
@@ -68,43 +65,13 @@ void tutorial_load(void) {
 	assets2[enemy3_warning] = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 	// boss
 	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_stand.png");
-
-}
-void tutorial_init(void) {
-	buttonX = origin.x;
-	buttonY = origin.y - WINDOWLENGTH_Y / 2.5f;
-
-	// first row assets to be drawn from assetX
-	assetX = AEGfxGetWinMinX() + 200.f;
-	// first row assets y-position
-	assetY = AEGfxGetWinMinY() + WINDOWLENGTH_Y/2 + WINDOWLENGTH_Y / 2.3f;
-
-	// second row assets to be drawn from asset2X
-	asset2X = assetX;
-	// second row assets y-position
-	asset2Y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2 + WINDOWLENGTH_Y / 10;
-
 }
 
-void tutorial_update(void) {
-	// get cursor coordinates
-	variables_update();
 
-	// buttons located relative to origin
-	buttonX = origin.x;
-	buttonY = origin.y - WINDOWLENGTH_Y / 2.5f;
-
-	// first row assets to be drawn from assetX
-	assetX = AEGfxGetWinMinX() + 200.f;
-	// first row assets y-position
-	assetY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2 + WINDOWLENGTH_Y / 2.3f;
-
-	// second row assets to be drawn from asset2X
-	asset2X = assetX;
-	// second row assets y-position
-	asset2Y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2 + WINDOWLENGTH_Y / 10;
-	
-}
+/*!****************************************************************************************************
+\brief
+	Drawing of tutorial menu and updates sound effects
+*******************************************************************************************************/
 void tutorial_draw(void) {
 	variables_update();
 
@@ -150,7 +117,6 @@ void tutorial_draw(void) {
 		if (TisPressed == FALSE) {
 			TisPressed = TRUE;
 			AEAudioPlay(buttonHoverAudio, soundGroup, 0.25f, 1.f, 0);
-
 		}
 	}
 	else {
@@ -171,7 +137,7 @@ void tutorial_draw(void) {
 	}
 
 
-	// ------ Texts ------
+	// ------------------------- Texts -------------------------
 
 	f32 firstText = 0.7f;	// texts for 1st row assets start from this y-position
 
@@ -200,6 +166,7 @@ void tutorial_draw(void) {
 
 
 	
+
 	f32 secondText = 0.05f;	// texts for row 2 assets start from this y-position
 
 	// ----- Enemy 2 -----
@@ -223,14 +190,13 @@ void tutorial_draw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"reach the door to win!", 0.6f, secondText - 0.5f, 0.55F, 0, 0, 0);
 
 	AEGfxPrint(Albam_fontID, (s8*)"Press 'P' to pause game", -0.26f, secondText - 0.7f, 0.75F, 0.54f, 0, 1);
-
-
 }
 
-void tutorial_free(void) {
 
-}
-
+/*!****************************************************************************************************
+\brief
+	Unloads all textures 
+*******************************************************************************************************/
 void tutorial_unload(void) {
 	// Button texture unload
 	AEGfxTextureUnload(buttonNotPressed);

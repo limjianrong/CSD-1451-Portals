@@ -22,7 +22,6 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex;
 
 // --- External variables ---
-extern AEMtx33 scale, rotate, translate, transform;
 extern s8 Albam_fontID;					//text font
 extern AEVec2 origin;					// screen center coordinates
 extern AEVec2 center_cursor;			// cursor coordinates
@@ -41,6 +40,10 @@ static bool WisPressed1, WisPressed2;
 extern AEVec2 button_offset;
 extern float barscalex, barscaley;
 
+/*!****************************************************************************************************
+\brief
+	Loads textures
+*******************************************************************************************************/
 void GameStateWinLoad() {
 
 	// load textures 
@@ -51,10 +54,15 @@ void GameStateWinLoad() {
 	mesh_load();
 }
 
+/*!****************************************************************************************************
+\brief
+	Initializes variables and plays victory audio 
+*******************************************************************************************************/
 void GameStateWinInit() {
 	// get cursor position
 	variables_update();
 
+	// intialize button positions
 	Wbutton = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f };
 	Wbutton2 = { AEGfxGetWinMinX() + WINDOWLENGTH_X / 2.f, AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2.f - 100.f };
 
@@ -66,18 +74,20 @@ void GameStateWinInit() {
 	else if (button_offset.x > 0.f) {
 		AEAudioSetGroupVolume(soundGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
 		AEAudioSetGroupVolume(musicGroup, 0.5f + (AEVec2Length(&button_offset) / barscalex));
-
 	}
 	else if (button_offset.x == 0.f) {
 		AEAudioSetGroupVolume(soundGroup, 0.5f);
 		AEAudioSetGroupVolume(musicGroup, 0.5f);
-
 	}
 
 	// Victory audio
 	AEAudioPlay(victoryAudio, soundGroup, 0.25f, 1.f, 0);
 }
 
+/*!****************************************************************************************************
+\brief
+	Collision detection
+*******************************************************************************************************/
 void GameStateWinUpdate() {
 	// get cursor position
 	variables_update();
@@ -86,15 +96,17 @@ void GameStateWinUpdate() {
 	if (AETestPointToRect(&world_center_cursor, &Wbutton, button_scaleX, button_scaleY) && AEInputCheckReleased(AEVK_LBUTTON)) {
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 		gGameStateNext = GS_Platformer;
-
 	}
 	if (AETestPointToRect(&world_center_cursor, &Wbutton2, button_scaleX, button_scaleY) && AEInputCheckReleased(AEVK_LBUTTON)) {
 		AEAudioPlay(buttonClickedAudio, soundGroup, 0.75f, 1.f, 0);
 		gGameStateNext = GS_MainMenu;
-
 	}
 }
 
+/*!****************************************************************************************************
+\brief
+	Draws game state
+*******************************************************************************************************/
 void GameStateWinDraw() {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
@@ -103,7 +115,7 @@ void GameStateWinDraw() {
 
 	// ------- Background -------
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 	// ------- Drawing of mesh + Setting texture -------
 
@@ -120,7 +132,7 @@ void GameStateWinDraw() {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		WisPressed1 = FALSE;
 	}
-	drawMesh(AEVec2{ button_scaleX, button_scaleY },Wbutton, PI);
+	drawMesh(AEVec2{ button_scaleX, button_scaleY },Wbutton, NULL);
 
 	// ------ bottom button ------
 	if (AETestPointToRect(&world_center_cursor, &Wbutton2, button_scaleX, button_scaleY)) {
@@ -135,7 +147,7 @@ void GameStateWinDraw() {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		WisPressed2 = FALSE;
 	}
-	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Wbutton2, PI);
+	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Wbutton2, NULL);
 
 
 	// ------ Texts ------
@@ -144,9 +156,18 @@ void GameStateWinDraw() {
 	AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.13f, -0.25f, 0.95F, 1.0f, 1.0f, 1.0f);
 }
 
+/*!****************************************************************************************************
+\brief
+	Frees any data if required
+*******************************************************************************************************/
 void GameStateWinFree() {
 
 }
+
+/*!****************************************************************************************************
+\brief
+	Unloads textures
+*******************************************************************************************************/
 void GameStateWinUnload() {
 
 	// Texture unload

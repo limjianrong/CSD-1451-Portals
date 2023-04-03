@@ -93,8 +93,6 @@ void GameStateMainmenuInit(void) {
 
 	// Initialize settings menu variables
 	settings_init();
-	// Initialize tutorial menu variables
-	tutorial_init();
 	// Initialize audio
 	audio_init();
 	
@@ -359,12 +357,7 @@ void GameStateMainmenuDraw(void) {
 	}
 
 	if (is_Tutorial == TRUE) {
-		tutorial_draw();	// Draw menu to screen
-		tutorial_update();	// Update collision within menu
-
-
-		// handle clicking of buttons 
-		//std::cout << buttonX - button_scaleX / 2 << std::endl;
+		tutorial_draw();	// Updates menu variables and draws it to screen
 
 		if (AEInputCheckReleased(AEVK_LBUTTON) &&
 			world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&

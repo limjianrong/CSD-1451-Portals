@@ -12,11 +12,7 @@
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "Utilities.hpp"
-#include "Settings.hpp"
 #include "GameState_Lose.hpp"
-#include "GameState_Mainmenu.hpp"
-#include "Player.hpp"
-#include "Tutorial.hpp"
 #include "Audio.hpp"
 #include <iostream>
 
@@ -25,12 +21,11 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 static AEGfxTexture* buttonNotPressed, * buttonPressed, * backgroundTex; 
 
 // ---External Variables ---
-extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;					// screen center coordinates
 extern AEVec2 center_cursor;			// cursor coordinates
 extern AEVec2 world_center_cursor;		// global cursor coordinates
 extern s8 Albam_fontID;					// text font
-extern Player_stats player;
+//extern Player_stats player;
 
 // --- Buttons ---
 extern f32 button_scaleX;				// width of button
@@ -45,6 +40,10 @@ static bool LisPressed1, LisPressed2;
 extern AEVec2 button_offset;
 extern float barscalex, barscaley;
 
+/*!****************************************************************************************************
+\brief
+	Loads textures
+*******************************************************************************************************/
 void GameStateLoseLoad() {
 
 	// load textures
@@ -54,6 +53,10 @@ void GameStateLoseLoad() {
 	mesh_load();
 }
 
+/*!****************************************************************************************************
+\brief
+	Initializes variables and plays victory audio
+*******************************************************************************************************/
 void GameStateLoseInit() {
 	// get cursor position
 	variables_update();
@@ -82,6 +85,10 @@ void GameStateLoseInit() {
 
 }
 
+/*!****************************************************************************************************
+\brief
+	Collision detection
+*******************************************************************************************************/
 void GameStateLoseUpdate() {
 	// get cursor position
 	variables_update();
@@ -99,6 +106,10 @@ void GameStateLoseUpdate() {
 	}
 }
 
+/*!****************************************************************************************************
+\brief
+	Draws game state
+*******************************************************************************************************/
 void GameStateLoseDraw() {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
@@ -107,7 +118,7 @@ void GameStateLoseDraw() {
 
 	// ------- Background -------
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 	// ------- Drawing of mesh + Setting texture -------
 
@@ -124,7 +135,7 @@ void GameStateLoseDraw() {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		LisPressed1 = FALSE;
 	}
-	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Lbutton, PI);
+	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Lbutton, NULL);
 
 	// ----- bottom button ------
 	if (AETestPointToRect(&world_center_cursor, &Lbutton2, button_scaleX, button_scaleY)) {
@@ -139,7 +150,7 @@ void GameStateLoseDraw() {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		LisPressed2 = FALSE;
 	}
-	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Lbutton2, PI);
+	drawMesh(AEVec2{ button_scaleX, button_scaleY }, Lbutton2, NULL);
 
 
 	// ------ Texts ------
@@ -148,9 +159,18 @@ void GameStateLoseDraw() {
 	AEGfxPrint(Albam_fontID, (s8*)"MAIN MENU", -0.13f, -0.25f, 0.95F, 1.0f, 1.0f, 1.0f);
 }
 
+/*!****************************************************************************************************
+\brief
+	Frees any data if required
+*******************************************************************************************************/
 void GameStateLoseFree() {
 
 }
+
+/*!****************************************************************************************************
+\brief
+	Unloads textures
+*******************************************************************************************************/
 void GameStateLoseUnload() {
 
 	// Texture unload

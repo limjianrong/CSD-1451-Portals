@@ -144,7 +144,6 @@ void GameStatePlatformerInit(void) {
 	camera_init();				//camera, must be initialized after portal_init as some values from
 								//portal_init are used
 	settings_init();			// Settings Menu
-	tutorial_init();			// Tutorial Menu
 
 	if (button_offset.x < 0.f) {
 		AEAudioSetGroupVolume(soundGroup, 0.5f - (AEVec2Length(&button_offset) / barscalex));
@@ -456,10 +455,8 @@ void GameStatePlatformerDraw(void) {
 		}
 
 		if (isTutorial == TRUE) {
-			tutorial_draw();	// Draw menu to screen
-			tutorial_update();	// Update collision within menu
+			tutorial_draw();	// Updates menu variables and draws it to screen
 			
-
 			if (AEInputCheckReleased(AEVK_LBUTTON) &&
 				world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
 				world_center_cursor.y >= buttonY - button_scaleY / 2 &&

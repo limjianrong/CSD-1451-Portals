@@ -35,7 +35,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 
 // ---- Audio ----
 extern AEAudio laserAudio, damageAudio, deathAudio, bulletAudio;
-extern AEAudioGroup soundGroup;
+extern AEAudioGroup soundGroup, musicGroup;
 
 // ----Door to go next level -----
 extern Door door;
@@ -156,6 +156,9 @@ void boss_update() {
 			// --- Boss' death audio ---
 			AEAudioPlay(deathAudio, soundGroup, 0.5f, 1.f, 0);
 			if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y,&door.center, door.width, door.height)) {
+				// Stop all BGM
+				AEAudioStopGroup(musicGroup);
+
 				gGameStateNext = GS_Win;
 			}
 		}

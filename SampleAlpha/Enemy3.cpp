@@ -18,9 +18,6 @@
 // ----- Mesh & Texture -----
 AEGfxTexture* enemy3;
 AEGfxTexture* enemy3_warning;
-extern AEGfxVertexList* square_mesh;	// Created square mesh
-
-extern AEMtx33 scale, rotate, translate, transform; // TRS
 
 // ----- Enemy -----
 Enemy3_stats enemy3_a; 
@@ -29,15 +26,20 @@ const float offscreen_offset{ 1800.f };	// value offscreen where enemy3 matches 
 const float offscreen_spawn{ 3000.f };  // value offscreen where enemy3 spawns at start of game
 
 // ----- Player -----
-extern Player_stats player; // for player position, HP, XP
+extern Player_stats player;		// for player position, HP, XP
+const int XP_increase{ 30 };	// player gains XP for killing enemy3
 
 // ----- Pause Menu -----
-extern bool isPaused;		// movement while game is !isPaused
+extern bool isPaused;			// movement while game is !isPaused
 
 // ----- Audio -----
 extern AEAudio zoomAudio, playerDamageAudio;
 extern AEAudioGroup soundGroup;
 
+/*!****************************************************************************************************
+\brief
+	Loads texture for enemy
+*******************************************************************************************************/
 void enemy3_load() {
 	// enemy3
 	enemy3 = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0053.png");
@@ -46,11 +48,10 @@ void enemy3_load() {
 	enemy3_warning = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 }
 
-/*!**************************************************************************************************
+/*!****************************************************************************************************
 \brief
-	Loads texture and initializes mesh for enemy
+	Initializes spawn position for enemy
 *******************************************************************************************************/
-
 void enemy3_init() {
 
 	// spawn 3000.f outside left edge of screen
@@ -60,6 +61,10 @@ void enemy3_init() {
 	
 }
 
+/*!****************************************************************************************************
+\brief
+	Draws all enemy3 related texture
+*******************************************************************************************************/
 void draw_enemy3() {
 	//draws enemy3 if alive
 	if (enemy3_a.Hp > 0 && enemy3_a_Dead == FALSE) {
@@ -87,11 +92,18 @@ void draw_enemy3() {
 	}
 	// ------- XP for player -------
 	else if (enemy3_a.Hp <= 0 && enemy3_a_Dead == FALSE) {
-		player.XP += 30;
+		player.XP += XP_increase;
 		enemy3_a_Dead = TRUE;
 	}
 }
 
+/*!****************************************************************************************************
+\brief
+	Update enemy3 data
+
+\param player
+	Pointer to player data
+*******************************************************************************************************/
 void enemy3_update(Player_stats* player) {
 	Enemy3_stats* Enemy3_a = &enemy3_a;
 	if (!isPaused) {
@@ -122,10 +134,11 @@ void enemy3_update(Player_stats* player) {
 	}
 
 }
-void enemy3_free() {
 
-}
-
+/*!****************************************************************************************************
+\brief
+	Unloads all enemy3 related textures
+*******************************************************************************************************/
 void enemy3_unload() {
 	// Enemy3 texture unload
 	AEGfxTextureUnload(enemy3);
@@ -133,6 +146,10 @@ void enemy3_unload() {
 	AEGfxTextureUnload(enemy3_warning);
 }
 
+/*!****************************************************************************************************
+\brief
+	Collision detection between player and enemy3
+*******************************************************************************************************/
 void enemy3_collision() {
 	AEVec2 player_vec{ player.center.x , player.center.y };
 
