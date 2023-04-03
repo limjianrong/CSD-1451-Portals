@@ -17,18 +17,18 @@
 
 
 // ----- Enemy 1 -----
-static f32 ENEMY1_WIDTH;				// Enemy1 width
-static f32 ENEMY1_HEIGHT;				// Enemy1 height
-static f32 ENEMY1_DROPPED_XP;			// Amount of XP player gained when Enemy1 is defeated
-static f32 MAX_FRAME_MOVEMENT;			// Max movement value before resetting
-static f32 CHANGE_FRAME_MOVEMENT;		// Change direction upon reaching this value
-static f32 ENEMY1_MOVEMENTX;			// Amount of X unit movement
-static s32 HP_RESET_1;					// HP to reset to when game restarts
-static s32 MAX_HP_RESET_1;				// Max HP to reset to when game restarts
-static f64 MOVEMENTCOUNTER_RESET;		// Movement counter to reset to when game restarts
-static f32 Range_x;						// X Range of bullet delay
-static f32 Range_y;						// Y Range of bullet delay
-#define MAX_ENEMIES_1 2					// Change this for total number of enemy1
+static f32 ENEMY1_WIDTH;					// Enemy1 width
+static f32 ENEMY1_HEIGHT;					// Enemy1 height
+static f32 ENEMY1_DROPPED_XP;				// Amount of XP player gained when Enemy1 is defeated
+static f32 MAX_FRAME_MOVEMENT;				// Max movement value before resetting
+static f32 CHANGE_FRAME_MOVEMENT;			// Change direction upon reaching this value
+static f32 ENEMY1_MOVEMENTX;				// Amount of X unit movement
+static s32 HP_RESET_1;						// HP to reset to when game restarts
+static s32 MAX_HP_RESET_1;					// Max HP to reset to when game restarts
+static f64 MOVEMENTCOUNTER_RESET;			// Movement counter to reset to when game restarts
+static f32 Range_x;							// X Range of bullet delay
+static f32 Range_y;							// Y Range of bullet delay
+#define MAX_ENEMIES_1 2						// Change this for total number of enemy1
 
 // ----- Enemy 2 (Shoots bullet) -----
 static f32 ENEMY2_WIDTH;					// Enemy2 width

@@ -85,8 +85,6 @@ extern AEAudioGroup soundGroup, musicGroup;
 static bool isPressed1, isPressed2, isPressed3, isPressed4, isPressed5;
 extern AEVec2 button_offset;
 extern float barscalex, barscaley;
-//static bool TisPressed;
-//static bool SisPressed1, SisPressed2;
 
 // --- Quit Confirmation ---
 bool p_isQuitting;

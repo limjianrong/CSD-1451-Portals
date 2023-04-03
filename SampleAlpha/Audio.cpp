@@ -45,8 +45,8 @@ AEAudioGroup soundGroup, musicGroup;
 void audio_load() {
 	
 	// BGM 
-	gameBGM = AEAudioLoadSound("Assets/AUDIO/Game BGM.mp3");
-	bossBGM = AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
+	gameBGM				= AEAudioLoadSound("Assets/AUDIO/Game BGM.mp3");
+	bossBGM				= AEAudioLoadSound("Assets/AUDIO/Boss battle BGM.mp3");
 
 	// Win/Lose
 	defeatAudio			= AEAudioLoadSound("Assets/AUDIO/Defeat.mp3");

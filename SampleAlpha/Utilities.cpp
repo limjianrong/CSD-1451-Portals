@@ -23,62 +23,12 @@ AEVec2 center_cursor;			// Origin is CENTER of window
 AEVec2 world_center_cursor;		// Origin is CENTER of window
 // --- Window ---
 AEVec2 origin;					// Center of screen, no matter where the camera moves
-//f32 originX, originY;			// Center of screen, no matter where the camera moves
-
-
-/*!**************************************************************************************************
-\brief
-	Creates a mesh for usage to all function, able to draw after saving it to a variable with similar type (AEGfxVertexList)
-
-\return
-  Pointer to AEGfxVertexList. Saving it into a similar type allows it to be called and drawn
-*******************************************************************************************************/
-AEGfxVertexList* create_Square_Mesh() {
-	AEGfxVertexList* created_mesh;
-	AEGfxMeshStart();
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures 0.0 - 1.0
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-
-	/*AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFC3209E, 0.0f, 1.0f,
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 0.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFC3209E, 1.0f, 1.0f,
-		0.5f, 0.5f, 0xFFC3209E, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 0.0f);*/
-
-	// Saving the mesh (list of triangles) in pMesh
-	created_mesh = AEGfxMeshEnd();
-	return created_mesh;
-}
 
 void mesh_load() {
 	AEGfxMeshStart();
 	// This shape has 2 triangles that makes up a square
 	// Color parameters represent colours as ARGB
 	// UV coordinates to read from loaded textures 0.0 - 1.0
-	//AEGfxTriAdd(
-	//	-0.5f, -0.5f, 0xFFC3209E, 0.0f, 0.0f,
-	//	0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-	//	-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-	//AEGfxTriAdd(
-	//	0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
-	//	0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
-	//	-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
-
-
-	// ----------- NEW MESH TO BE USED LATER -------------
-	//												RMB TO REMOVE THE ABOVE AEGFXTRIADD BEFORE SUBMISSION
 	// Saving the mesh (list of triangles) in pMesh
 		AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
@@ -147,15 +97,6 @@ void GameObjects::Render_HealthBar() {
 		drawMesh(AEVec2{ dimensions.x , 15.f }, AEVec2{ center.x, center.y + dimensions.y / 2.f + 10.f }, NULL);
 
 		f32 health_percentage = ((float)Hp / (float)Max_Hp) * 100.f;
-		/*if (health_percentage >= 80.f) {
-			AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
-		}
-		else if (health_percentage >= 40.f) {
-			AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
-		}
-		else {
-			AEGfxSetTintColor(1.f, 0.f, 0.f, 1.f);
-		}*/
 		if (health_percentage >= 80.f) {
 			AEGfxSetTintColor(0, 255, 0, 1.f);
 		}
