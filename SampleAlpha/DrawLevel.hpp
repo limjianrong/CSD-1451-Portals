@@ -36,7 +36,7 @@ enum Pos { OG, MOVED };
 enum Flag {	ACTIVE,	NOT_ACTIVE };
 
 //--------------------------------------
-// Struct for drawing blocks
+// Struct Definitions
 //--------------------------------------
 struct Block {
 	AEMtx33 scale{}, rotate{}, translate{}, transform{};
@@ -70,9 +70,9 @@ void draw_level_free();
 void draw_level_unload();
 
 // ===== Create different platform types =====
-void normal_blocks_create(s32 len, f32 x, f32 y, s32 index);
-void leftright_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index);
-void updown_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index);
+void normal_create(s32 len, f32 x, f32 y, s32 index);
+void left_right_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32 index);
+void up_down_create(s32 len, f32 x, f32 y, f32 start_y, f32 end_y, s32 index);
 void diagonal_down_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index);
 void diagonal_up_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, f32 start_y, f32 end_y, s32 index);
 void one_time_use_create(s32 len, f32 x, f32 y, s32 index);
@@ -82,14 +82,13 @@ void left_right_spikes_create(s32 len, f32 x, f32 y, f32 start_x, f32 end_x, s32
 // ===== Draw functions for the different platforms =====
 void blocks_draw();
 void spikes_draw();
-void leftright_blocks_draw();
-void updown_blocks_draw();
-void diag_up_blocks_draw();
-void diag_down_blocks_draw();
+void left_right_blocks_draw();
+void up_down_blocks_draw();
+void diagonal_up_blocks_draw();
+void diagonal_down_blocks_draw();
 void one_time_use_blocks_draw();
 void left_right_spikes_draw();
 void door_draw();
 
-// ===== Logics for the different type of functions =====
-void platform_logic();
+// ===== Collision code for the platforms =====
 void platform_collision(s32 cnt, f32 x, f32 y);
