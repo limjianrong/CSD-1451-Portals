@@ -58,8 +58,8 @@ LCtrl + ESC key 	- Quick exits the game
 
 Credits:
 ========
-Audio:	Background Music from opengameart (opengameart.org)
-	Mixkit Sound Effects from Mixkit (mixkit.co)
+Audio:	Background Music from opengameart (opengameart.org)
+	Mixkit Sound Effects from Mixkit (mixkit.co)
 	Sound effects from Zapsplat (zapsplat.com)
 
 
