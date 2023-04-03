@@ -13,8 +13,8 @@
 #include "AEEngine.h"
 #include "Player.hpp"				// For player_stats
 #include "Enemy.hpp"				// For Enemy2 stats
-#include "boss.hpp"					// For Enemy2_bullet
-#include "portal_feature.hpp"		// For portal range
+#include "Boss.hpp"					// For Enemy2_bullet
+#include "PortalFeature.hpp"		// For portal range
 #include "Utilities.hpp"			// For cursor coords, 
 #include "Upgrades.hpp"
 #include "GameState_Platformer.hpp"	// For isPaused

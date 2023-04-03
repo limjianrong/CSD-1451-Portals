@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					draw_level.cpp
+* File:					DrawLevel.cpp
 * Course:				CSD1451
 * Group Name:			Apparate
 * Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)
@@ -9,7 +9,7 @@
   This source file implements the functions used for the level design of the game. It
   also includes the source code for the logic of different platforms types.
 ==================================================================================*/
-#include "draw_level.hpp"
+#include "DrawLevel.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
 

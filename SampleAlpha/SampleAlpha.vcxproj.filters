@@ -21,10 +21,10 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="portal_feature.cpp">
+    <ClCompile Include="PortalFeature.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="draw_level.cpp">
+    <ClCompile Include="DrawLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
@@ -48,7 +48,7 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="boss.cpp">
+    <ClCompile Include="Boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Enemy3.cpp">
@@ -72,7 +72,7 @@
     <ClCompile Include="GameState_Credits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Audio.cpp">
@@ -83,10 +83,10 @@
     <ClInclude Include="Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="portal_feature.hpp">
+    <ClInclude Include="PortalFeature.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="draw_level.hpp">
+    <ClInclude Include="DrawLevel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.hpp">
@@ -107,7 +107,7 @@
     <ClInclude Include="Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="boss.hpp">
+    <ClInclude Include="Boss.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Enemy3.hpp">
@@ -131,7 +131,7 @@
     <ClInclude Include="GameState_Credits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera.hpp">
+    <ClInclude Include="Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Audio.hpp">

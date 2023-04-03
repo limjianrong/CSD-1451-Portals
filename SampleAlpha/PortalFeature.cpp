@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:				portal_feature.cpp
+* File:				PortalFeature.cpp
 * Course:			CSD1451
 * Group Name:		Apparate
 * Primary Author:	Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -12,7 +12,7 @@
   drawing the portals.
 ==================================================================================*/
 
-#include "portal_feature.hpp"
+#include "PortalFeature.hpp"
 //portal dimensions
 float PORTAL_WIDTH{};
 float PORTAL_HEIGHT{};

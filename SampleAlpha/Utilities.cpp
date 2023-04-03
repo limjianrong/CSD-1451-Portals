@@ -113,9 +113,6 @@ void variables_update() {
 
 
 	// --------- Gets CENTER origin of constantly moving screen ---------
-	/*originX = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
-	originY = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;*/
-
 	origin.x = AEGfxGetWinMinX() + WINDOWLENGTH_X / 2;
 	origin.y = AEGfxGetWinMinY() + WINDOWLENGTH_Y / 2;
 

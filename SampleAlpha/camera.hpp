@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					camera.hpp
+* File:					Camera.hpp
 * Course:				CSD1451
 * Group Name:			Apparate
 * Primary Author:		Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -13,7 +13,7 @@
 #pragma once
 #include "AEEngine.h"
 #include "Player.hpp"
-#include "draw_level.hpp"
+#include "DrawLevel.hpp"
 #include <fstream> //file IO
 #include <iostream>
 #include <string>
