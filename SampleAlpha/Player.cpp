@@ -15,12 +15,12 @@
 #include "AEEngine.h"
 
 #include "Player.hpp"
-#include "portal_feature.hpp"
+#include "PortalFeature.hpp"
 #include "Utilities.hpp"
-#include "draw_level.hpp"
+#include "DrawLevel.hpp"
 #include "Enemy.hpp"
 #include "Enemy3.hpp"
-#include "camera.hpp"
+#include "Camera.hpp"
 #include "GameState_Mainmenu.hpp"
 
 // for gameStates
@@ -165,7 +165,7 @@ void player_draw() {
 	checkpoint_create(7000, 400, 4);
 
 	// -------- Drawing Lives UI --------
-	AEGfxPrint(Albam_fontID, (s8*)"Lives:", -0.95f, 0.85f, 1, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Lives:", -0.95f, 0.85f, 1, 0.f, 0.f, 0.f);
 	Render_Lives(1, 220.f);		// 1st life
 	Render_Lives(2, 280.f);		// 2nd life
 	Render_Lives(3, 340.f);		// 3rd life
@@ -180,12 +180,12 @@ void player_draw() {
 	Render_LevelnXP();
 
 	// --- Level text ---
-	AEGfxPrint(Albam_fontID, (s8*)"Level", 0.8f, -0.98f, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Level", 0.8f, -0.98f, 1.0f, 0.f, 0.f, 0.f);
 	std::string level_counter_string = std::to_string(player.Level);
-	AEGfxPrint(Albam_fontID, &level_counter_string[0], 0.95f, -0.98f, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, &level_counter_string[0], 0.95f, -0.98f, 1.0f, 0.f, 0.f, 0.f);
 
 	// --- XP text ---
-	AEGfxPrint(Albam_fontID, (s8*)"Xp", -0.99f, -0.98f, 1, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"Xp", -0.99f, -0.98f, 1, 0.f, 0.f, 0.f);
 
 #ifdef DEBUG 
 	for (s32 i = 0; i < MAX_ENEMIES_1; ++i) {
@@ -342,10 +342,10 @@ void Render_Lives(s32 currLife, f32 offsetX) {
 void Render_LevelnXP() {
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetTintColor(0.f, 1.f, 0.f, 1.f);
+	AEGfxSetTintColor(255, 255, 0, 1.f);
 	drawMesh(AEVec2{ WINDOWLENGTH_X - XP_BAR_OFFSETX, XP_BAR_HEIGHT }, AEVec2{ origin.x - XP_BAR_OFFSETX / 2.f, origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, NULL);
 
-	AEGfxSetTintColor(1.f, 1.f, 0.f, 1.f);
+	AEGfxSetTintColor(0, 255, 255, 1.f);
 	drawMesh(AEVec2{ (float)player.XP / (float)player.requiredXP * (WINDOWLENGTH_X - 150.f) , XP_BAR_HEIGHT },
 			 AEVec2{ (float)origin.x - XP_BAR_OFFSETX / 2.f - (((float)player.requiredXP - (float)player.XP) / (float)player.requiredXP * (WINDOWLENGTH_X - XP_BAR_OFFSETX) / 2.f), origin.y - WINDOWLENGTH_Y / 2.f + XP_BAR_HEIGHT / 2.f }, NULL);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);

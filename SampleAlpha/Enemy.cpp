@@ -17,7 +17,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Utilities.hpp"
-#include "boss.hpp"
+#include "Boss.hpp"
 #include "GameState_Platformer.hpp"
 
 #include <iostream>

@@ -19,20 +19,20 @@
 
 // ----- Player related -----
 #include "Player.hpp"
-#include "portal_feature.hpp"
+#include "PortalFeature.hpp"
 #include "Upgrades.hpp"
 
 // ----- Enemies related -----
 #include "Enemy.hpp"
 #include "Enemy3.hpp"
-#include "boss.hpp"
+#include "Boss.hpp"
 
 // ----- Camera ------
-#include "camera.hpp"
+#include "Camera.hpp"
 
 // ----- Others -----
 #include "Utilities.hpp"
-#include "draw_level.hpp"
+#include "DrawLevel.hpp"
 #include "Settings.hpp"
 #include "Audio.hpp"
 #include "Tutorial.hpp"

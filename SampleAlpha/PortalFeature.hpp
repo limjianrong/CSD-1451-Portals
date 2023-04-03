@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:				portal_feature.hpp
+* File:				PortalFeature.hpp
 * Course:			CSD1451
 * Group Name:		Apparate
 * Primary Author:	Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -15,10 +15,10 @@
 #include <string>
 #include <fstream> //file IO
 #include "AEEngine.h"
-#include "boss.hpp"
+#include "Boss.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
-#include "camera.hpp"
+#include "Camera.hpp"
 #include <iostream> //for std::cout if files are not opened
 #include "limits.h" //for INT_MAX
 struct portal {

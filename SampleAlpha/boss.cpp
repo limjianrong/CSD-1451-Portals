@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:							boss.cpp
+* File:							Boss.cpp
 * Course:						CSD1451
 * Group Name:					Apparate
 * Primary Author (90%):			Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -11,7 +11,7 @@
   as functions used for boss movement and teleportation.
 ==================================================================================*/
 
-#include "boss.hpp"
+#include "Boss.hpp"
 #include "Player.hpp"
 #include "Utilities.hpp"
 

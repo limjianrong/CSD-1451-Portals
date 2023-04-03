@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					camera.cpp
+* File:					Camera.cpp
 * Course:				CSD1451
 * Group Name:			Apparate
 * Primary Author:		Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -11,7 +11,7 @@
   that is used to follow the player, as well as for the free moving camera mode.
 ==================================================================================*/
 
-#include "camera.hpp"
+#include "Camera.hpp"
 
 extern float portal_max_range; //maximum range that a player can place a portal
 //extern float moveSpeed; //for camera to follow player when player is on platform

@@ -100,9 +100,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
-    <ClCompile Include="boss.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="draw_level.cpp" />
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DrawLevel.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy3.cpp" />
     <ClCompile Include="GameStateList.hpp" />
@@ -117,15 +117,15 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="portal_feature.cpp" />
+    <ClCompile Include="PortalFeature.cpp" />
     <ClCompile Include="Upgrades.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.hpp" />
-    <ClInclude Include="boss.hpp" />
-    <ClInclude Include="camera.hpp" />
-    <ClInclude Include="draw_level.hpp" />
+    <ClInclude Include="Boss.hpp" />
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="DrawLevel.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="Enemy3.hpp" />
     <ClInclude Include="GameStateManager.hpp" />
@@ -138,7 +138,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Tutorial.hpp" />
     <ClInclude Include="GameState_Win.hpp" />
     <ClInclude Include="Player.hpp" />
-    <ClInclude Include="portal_feature.hpp" />
+    <ClInclude Include="PortalFeature.hpp" />
     <ClInclude Include="Upgrades.hpp" />
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>

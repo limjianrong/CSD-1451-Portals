@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:					draw_level.hpp
+* File:					DrawLevel.hpp
 * Course:				CSD1451
 * Group Name:			Apparate
 * Primary Author:		Tay Zhun Hang (zhunhang.tay@digipen.edu)

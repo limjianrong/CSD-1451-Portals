@@ -1,6 +1,6 @@
 /*==================================================================================
 * All content © 2023 DigiPen Institute of Technology Singapore, all rights reserved.
-* File:							boss.hpp
+* File:							Boss.hpp
 * Course:						CSD1451
 * Group Name:					Apparate
 * Primary Author (90%):			Lim Jian Rong (jianrong.lim@digipen.edu)
@@ -19,7 +19,7 @@
 #include "GameStateManager.hpp"
 #include "Utilities.hpp"
 #include "AEEngine.h"
-#include "draw_level.hpp"
+#include "DrawLevel.hpp"
 
 #define BOSS_ZONE_RANGE 1500.f
 
