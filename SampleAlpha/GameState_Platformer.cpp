@@ -433,7 +433,7 @@ void GameStatePlatformerDraw(void) {
 		}
 
 		// --------- Texts ---------
-		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.27f, 0.55f, 2.0f, 1, 1, 0);
+		AEGfxPrint(Albam_fontID, (s8*)"PAUSED", -0.2f, 0.55f, 2.0f, 1, 1, 0);
 		AEGfxPrint(Albam_fontID, (s8*)"RESUME", -0.09f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 9 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"RESTART", -0.1f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 11 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);
 		AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.11f, (WINDOWLENGTH_Y / 2 - WINDOWLENGTH_Y / 20 * 13 - WINDOWLENGTH_Y / 44) / (WINDOWLENGTH_Y / 2.0f), 0.85f, 1, 1, 1);

@@ -12,7 +12,6 @@
 #include "GameStateList.hpp"
 #include "GameStateManager.hpp"
 #include "Enemy.hpp"
-#include "boss.hpp"
 #include "Utilities.hpp"
 #include "Tutorial.hpp"
 
@@ -26,7 +25,6 @@ extern s8 Albam_fontID;		 // text font
 extern AEVec2 origin;		 // center coordinates of screen
 extern AEVec2 center_cursor; // cursor coordinates 
 extern AEVec2 world_center_cursor;
-extern Boss boss;
 
 // --- Audio ---
 extern AEAudio buttonClickedAudio, buttonHoverAudio;
@@ -131,7 +129,7 @@ void tutorial_draw(void) {
 
 	// ------- Background -------
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 	// ------- Drawing of button mesh + Setting texture -------
 	if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
@@ -142,7 +140,7 @@ void tutorial_draw(void) {
 
 	else AEGfxTextureSet(buttonNotPressed, 0, 0);
 			
-	drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, PI);
+	drawMesh(AEVec2{ button_scaleX, button_scaleY }, AEVec2{ buttonX, buttonY }, NULL);
 
 	// ------- Button Hover Audio ------
 	if (world_center_cursor.x >= buttonX - button_scaleX / 2 && world_center_cursor.x <= buttonX + button_scaleX / 2 &&
@@ -163,24 +161,13 @@ void tutorial_draw(void) {
 	// ------- Drawing of top row asset mesh + Setting texture -------
 	for (int j = 0; j < asset_count; j++) {
 		AEGfxTextureSet(assets[j], 0, 0);
-		drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ assetX + j * (WINDOWLENGTH_X / 4), assetY }, PI);
+		drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ assetX + j * (WINDOWLENGTH_X / 4), assetY }, NULL);
 	}
 
 	// ------- Drawing of bottom row asset mesh + Setting texture -------
 	for (int k = 0; k < asset2_count; k++) {
 		AEGfxTextureSet(assets2[k], 0, 0);
-
-		if (k == asset_count) {
-			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
-			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
-			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-			AEGfxSetTransform(boss.matrix.m);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
-		}
-		else {
-			drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ asset2X + k * (WINDOWLENGTH_X / 4), asset2Y }, PI);
-
-		}
+		drawMesh(AEVec2{ asset_width, asset_height }, AEVec2{ asset2X + k * (WINDOWLENGTH_X / 4), asset2Y }, NULL);
 	}
 
 
