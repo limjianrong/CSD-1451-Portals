@@ -12,7 +12,6 @@
 #pragma once
 
 #include "AEEngine.h"
-#include "Player.hpp"
 
 const float ENEMY3_HEIGHT{ 80.f };
 const float ENEMY3_WIDTH{ 80.f };
