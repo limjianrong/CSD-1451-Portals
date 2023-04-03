@@ -32,11 +32,7 @@ void camera_load() {
 	camera_ifs >> str >> camera.buffer_range_multiplier;
 	camera_ifs.close();
 	
-	//camera position will be set to player's initial starting
-	//position, but camera position cannot be below (0,0) as there are no longer any platforms
-	//below the screen when the camera is at (0,0)
-	camera.x = static_cast<f32>(player.initial_pos_x);
-	camera.y = static_cast<f32>(player.initial_pos_y);
+
 
 
 }
@@ -49,6 +45,12 @@ void camera_init() {
 	//the maximum range of the portal, so that player can always see slightly ahead
 	//of the portal's maximum range
 	camera.buffer_range = camera.buffer_range_multiplier * portal_max_range;
+
+	//camera position will be set to player's initial starting
+	//position, but camera position cannot be below (0,0) as there are no longer any platforms
+	//below the screen when the camera is at (0,0)
+	camera.x = static_cast<f32>(player.initial_pos_x);
+	camera.y = static_cast<f32>(player.initial_pos_y);
 }
 
 //updates position of the camera and whether or not it is free moving
@@ -61,12 +63,10 @@ void camera_update() {
 	if (AEInputCheckTriggered(AEVK_B)) {
 		camera.free_moving = !camera.free_moving;
 
-		//if previous camera state was free_moving(for level-design), and B was pressed  
-		//switch back to camera state that is used for playing, now the camera goes back
-		//to following the player
+		//camera will be set to player's position once whenever switching between camera modes
 
-			camera.x = player.center.x;
-			camera.y = player.center.y;
+		camera.x = player.center.x;
+		camera.y = player.center.y;
 		
 	}
 
