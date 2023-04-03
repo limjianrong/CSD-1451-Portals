@@ -30,7 +30,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern Player_stats player;
 Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
 Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
-extern Enemy3_stats enemy3_a;					// Enemy3
+extern Enemy3_stats enemy3_a;			// Enemy3
 Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
 
 // ----- Pause Menu -----
