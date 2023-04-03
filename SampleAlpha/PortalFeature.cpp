@@ -20,9 +20,10 @@ float PORTAL_HEIGHT{};
 //portal objects for teleporting player from one location to another
 portal portal_1, portal_2;
 
-//used to check portal collision with enemy1 and enemy2
+//used to check portal collision with enemy1, enemy2 and enemy3
 extern Enemy1_stats enemy1[MAX_ENEMIES_1];
 extern Enemy2_stats enemy2[MAX_ENEMIES_2];
+extern Enemy3_stats enemy3_a;
 
 //used to check portal collision with bullet
 extern Bullet bullet;
@@ -353,6 +354,19 @@ void check_portal_enemy_collision() {
 			// Portal teleportation sound
 			AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 		}
+	}
+
+	if (AETestRectToRect(&portal_1.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy3_a.center, ENEMY3_WIDTH, ENEMY3_HEIGHT)) {
+		teleport_object(enemy3_a, portal_2);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
+	}
+	else if (AETestRectToRect(&portal_2.center, PORTAL_WIDTH, PORTAL_HEIGHT, &enemy3_a.center, ENEMY3_WIDTH, ENEMY3_HEIGHT)) {
+		teleport_object(enemy3_a, portal_1);
+
+		// Portal teleportation sound
+		AEAudioPlay(portalAudio, soundGroup, 1.f, 1.f, 0);
 	}
 }
 

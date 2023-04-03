@@ -16,6 +16,7 @@
 #include <ctime>
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "Enemy3.hpp" 
 #include "Utilities.hpp"
 #include "Boss.hpp"
 #include "GameState_Platformer.hpp"
@@ -29,6 +30,7 @@ extern AEGfxVertexList* square_mesh;	// Created square mesh
 extern Player_stats player;
 Enemy1_stats enemy1[MAX_ENEMIES_1];		// Array of struct enemy1
 Enemy2_stats enemy2[MAX_ENEMIES_2];		// Array of struct enemy2
+extern Enemy3_stats enemy3_a;					// Enemy3
 Bullet bullet_enemy2[MAX_ENEMIES_2];	// Array of struct enemy2's bullet
 
 // ----- Pause Menu -----
@@ -448,6 +450,19 @@ void enemy2_update() {
 				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
 
 				--enemy2[i].Hp;
+
+				// Upon taking damage
+				AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);
+			}
+
+			// ----- Bullet collision with enemy3 -----
+			if (AETestRectToRect(&bullet_enemy2[i].center, bullet_enemy2[i].width, bullet_enemy2[i].height, &enemy3_a.center, enemy3_a.dimensions.x, enemy3_a.dimensions.y) && bullet_enemy2[i].isTeleported) {
+				bullet_enemy2[i].center.x = enemy3_a.center.x;
+				bullet_enemy2[i].center.y = enemy3_a.center.y;
+				bullet_enemy2[i].isTeleported = FALSE;
+				bullet_enemy2[i].isTimerActive = TRUE;		// Enable bullet delay
+
+				enemy3_a.Hp -= 2;
 
 				// Upon taking damage
 				AEAudioPlay(damageAudio, soundGroup, 1.f, 1.f, 0);

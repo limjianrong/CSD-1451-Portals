@@ -21,7 +21,7 @@ AEGfxTexture* enemy3_warning;
 
 // ----- Enemy -----
 Enemy3_stats enemy3_a; 
-bool enemy3_a_Dead, damage_allowed3{ TRUE }, going_left{ FALSE }; 
+bool damage_allowed3{ TRUE }, going_left{ FALSE }; 
 const float offscreen_offset{ 1800.f };	// value offscreen where enemy3 matches player's y-value
 const float offscreen_spawn{ 3000.f };  // value offscreen where enemy3 spawns at start of game
 
@@ -33,7 +33,7 @@ const int XP_increase{ 30 };	// player gains XP for killing enemy3
 extern bool isPaused;			// movement while game is !isPaused
 
 // ----- Audio -----
-extern AEAudio zoomAudio, playerDamageAudio;
+extern AEAudio zoomAudio, playerDamageAudio, deathAudio;
 extern AEAudioGroup soundGroup;
 
 /*!****************************************************************************************************
@@ -54,10 +54,14 @@ void enemy3_load() {
 *******************************************************************************************************/
 void enemy3_init() {
 
-	// spawn 3000.f outside left edge of screen
-	enemy3_a.x = -WINDOWLENGTH_X/2.f - offscreen_spawn;
-	// initialize y to 0
-	enemy3_a.y = 0;
+	enemy3_a.dimensions.x = ENEMY3_WIDTH;		// Enemy3's Width
+	enemy3_a.dimensions.y = ENEMY3_HEIGHT;		// Enemy3's Height
+	enemy3_a.Hp = 5;							// Enemy3's Health
+	enemy3_a.Max_Hp = 5;						// Enemy3's Max Health
+	enemy3_a.status = TRUE;						// TRUE for alive, FALSE for dead
+	enemy3_a.center.x = -WINDOWLENGTH_X / 2.f - offscreen_spawn; // spawn 3000.f outside left edge of screen
+	enemy3_a.center.y = 0;										// initialize y to 0
+	
 	
 }
 
@@ -67,33 +71,31 @@ void enemy3_init() {
 *******************************************************************************************************/
 void draw_enemy3() {
 	//draws enemy3 if alive
-	if (enemy3_a.Hp > 0 && enemy3_a_Dead == FALSE) {
+	if (enemy3_a.Hp > 0 && enemy3_a.status == TRUE) {
 
 		AEGfxTextureSet(enemy3, 0, 0);
 		drawMesh(AEVec2{ ENEMY3_WIDTH, ENEMY3_HEIGHT }, enemy3_a.center, NULL);
 
+		// ----- Draw enemy HP bar -----
+		enemy3_a.GameObjects::Render_HealthBar();
+
 		// set center vector
-		AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
+		//AEVec2Set(&enemy3_a.center, enemy3_a.x, enemy3_a.y);
 
 		// right edge of screen < enemy3 x position < right edge of screen + offscreen_offset & enemy going left
-		if (enemy3_a.x > AEGfxGetWinMaxX() && enemy3_a.x < AEGfxGetWinMaxX() + offscreen_offset
+		if (enemy3_a.center.x > AEGfxGetWinMaxX() && enemy3_a.center.x < AEGfxGetWinMaxX() + offscreen_offset
 			&& going_left) {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMaxX() - WARNING_WIDTH/2.f, enemy3_a.y }, NULL);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMaxX() - WARNING_WIDTH/2.f, enemy3_a.center.y }, NULL);
 		}
 		// left edge of screen - offscreen_offset < enemy 3 x position < left edge of screen & enemy going right
-		else if (enemy3_a.x < AEGfxGetWinMinX() && enemy3_a.x > AEGfxGetWinMinX() - offscreen_offset
+		else if (enemy3_a.center.x < AEGfxGetWinMinX() && enemy3_a.center.x > AEGfxGetWinMinX() - offscreen_offset
 			&& !going_left) {
 			AEGfxTextureSet(enemy3_warning, 0, 0);
-			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMinX() + WARNING_WIDTH/2.f, enemy3_a.y }, NULL);
+			drawMesh(AEVec2{ WARNING_WIDTH, WARNING_HEIGHT }, AEVec2{ AEGfxGetWinMinX() + WARNING_WIDTH/2.f, enemy3_a.center.y }, NULL);
 		}
 
 		
-	}
-	// ------- XP for player -------
-	else if (enemy3_a.Hp <= 0 && enemy3_a_Dead == FALSE) {
-		player.XP += XP_increase;
-		enemy3_a_Dead = TRUE;
 	}
 }
 
@@ -113,10 +115,10 @@ void enemy3_update(Player_stats* player) {
 		if (value <= 3750) {
 			//enemy3 y position is determined (matches player y pos) when it is 1800.f(offscreen_offset)+ away from left/right edge of screen
 
-			if (enemy3_a.x < AEGfxGetWinMinX() - offscreen_offset)
-				Enemy3_a->y = player->center.y;
+			if (enemy3_a.center.x < AEGfxGetWinMinX() - offscreen_offset)
+				Enemy3_a->center.y = player->center.y;
 			
-			Enemy3_a->x += 4.f;
+			Enemy3_a->center.x += 4.f;
 			going_left = false;
 		}
 
@@ -124,13 +126,22 @@ void enemy3_update(Player_stats* player) {
 		else {
 			//enemy3 y position is determined (matches player y pos) when it is 1800.f(offscreen_offset)+ away from left/right edge of screen
 
-			if (enemy3_a.x > AEGfxGetWinMaxX() + offscreen_offset)
-				Enemy3_a->y = player->center.y;
+			if (enemy3_a.center.x > AEGfxGetWinMaxX() + offscreen_offset)
+				Enemy3_a->center.y = player->center.y;
 
-			Enemy3_a->x -= 4.f;
+			Enemy3_a->center.x -= 4.f;
 			going_left = true;
 		}
 
+
+		// ------- XP for player -------
+		if (enemy3_a.Hp <= 0 && enemy3_a.status == TRUE) {
+			player->XP += static_cast<s32>(ENEMY3_DROPPED_XP);
+			enemy3_a.status = FALSE;
+
+			// Audio upon death
+			AEAudioPlay(deathAudio, soundGroup, 1.f, 1.f, 0);
+		}
 	}
 
 }

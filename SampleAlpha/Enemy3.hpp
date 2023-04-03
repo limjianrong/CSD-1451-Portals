@@ -17,13 +17,13 @@
 const float ENEMY3_HEIGHT{ 80.f };
 const float ENEMY3_WIDTH{ 80.f };
 
+const float ENEMY3_DROPPED_XP{ 30.f };
+
 const float WARNING_HEIGHT{ 80.f };
 const float WARNING_WIDTH{ 80.f };
 
-struct Enemy3_stats {
-	f32 x{}, y{}, rotation{ 0.0f };
-	s32 Hp{ 15 };
-	AEVec2 center{ 0,0 };
+struct Enemy3_stats : GameObjects {
+
 };
 
 void enemy3_load();

@@ -18,6 +18,7 @@
 #include "Boss.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "Enemy3.hpp" 
 #include "Camera.hpp"
 #include <iostream> //for std::cout if files are not opened
 #include "limits.h" //for INT_MAX
