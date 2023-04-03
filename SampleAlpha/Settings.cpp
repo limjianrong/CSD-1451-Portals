@@ -106,7 +106,7 @@ void settings_draw(void) {
 
 	// ------- Background -------
 	AEGfxTextureSet(backgroundTex, 0, 0);
-	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, PI);
+	drawMesh(AEVec2{ WINDOWLENGTH_X, WINDOWLENGTH_Y }, origin, NULL);
 
 	// ------- Drawing of mesh + Setting texture -------
 
@@ -123,7 +123,7 @@ void settings_draw(void) {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		SisPressed1 = FALSE;
 	}
-	drawMesh(AEVec2{ Sbutton_scaleX, Sbutton_scaleY }, AEVec2{ origin.x, origin.y}, PI);
+	drawMesh(AEVec2{ Sbutton_scaleX, Sbutton_scaleY }, AEVec2{ origin.x, origin.y}, NULL);
 
 	// ---- Back button ----
 	AEVec2 backButton{ origin.x, origin.y - 400.f };
@@ -140,7 +140,7 @@ void settings_draw(void) {
 		AEGfxTextureSet(buttonNotPressed, 0, 0);
 		SisPressed2 = FALSE;
 	}
-	drawMesh(AEVec2{ Sbutton_scaleX, Sbutton_scaleY }, AEVec2{ backButton.x, backButton.y }, PI);
+	drawMesh(AEVec2{ Sbutton_scaleX, Sbutton_scaleY }, AEVec2{ backButton.x, backButton.y }, NULL);
 
 	// ------ Volume slider -------
 
