@@ -21,6 +21,8 @@
 #include "AEEngine.h"
 #include "draw_level.hpp"
 
+#define BOSS_ZONE_RANGE 1500.f
+
 // COMMAND ENUMS
 enum { UP, DOWN, LEFT, RIGHT, STOP };
 

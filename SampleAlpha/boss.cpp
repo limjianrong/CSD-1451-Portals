@@ -134,7 +134,7 @@ void boss_update() {
 		boss.Hp = 0;
 	}
 	// When player is within boss zone
-	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
+	if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, BOSS_ZONE_RANGE, BOSS_ZONE_RANGE)) {
 		if (boss.Hp > 0) {
 
 			//boss movement
@@ -166,37 +166,33 @@ void boss_update() {
 //draws the boss
 void boss_draw() {
 
-	// When player is within boss zone
-	//if (AETestRectToRect(&player.center, player.dimensions.x, player.dimensions.y, &boss.center, 2000.f, 2000.f)) {
-		// -------------  Boss   ---------------
-		if (boss.Hp > 0) {
-			// -------------  Draw Attack 1 (Laser beam)   ---------------
-			draw_laser_beam();
-			AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
-			AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
-			AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
-			AEGfxSetTransform(boss.matrix.m);
-			AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
-			AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
+	// -------------  Boss   ---------------
+	if (boss.Hp > 0) {
+		// -------------  Draw Attack 1 (Laser beam)   ---------------
+		draw_laser_beam();
+		AEMtx33Scale(&boss.scale, boss.dimensions.x, boss.dimensions.y);
+		AEMtx33Trans(&boss.translate, boss.center.x, boss.center.y);
+		AEMtx33Concat(&boss.matrix, &boss.translate, &boss.scale);
+		AEGfxSetTransform(boss.matrix.m);
+		AEGfxTextureSet(boss.standTex, 0.0f, 0.0f);
+		AEGfxMeshDraw(square_mesh, AE_GFX_MDM_TRIANGLES);
 
 
-			// -------------  Draw warning sign for Attack 1 (Laser beam)   ---------------
-			draw_laser_beam_warning();
+		// -------------  Draw warning sign for Attack 1 (Laser beam)   ---------------
+		draw_laser_beam_warning();
 
-			// -------------  Attack 2 (Bullet)   ---------------
-			bullet_draw();
+		// -------------  Attack 2 (Bullet)   ---------------
+		bullet_draw();
 
-			// -------- Drawing out HP bar ----------
-			boss.GameObjects::Render_HealthBar();
+		// -------- Drawing out HP bar ----------
+		boss.GameObjects::Render_HealthBar();
 
-		}
-		else {  // --- Boss dead ---
-			AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
-			drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, PI);
-		}
+	}
+	else {  // --- Boss dead ---
+		AEGfxTextureSet(boss.deadTex, 0.0f, 0.0f);
+		drawMesh(AEVec2{ boss.dimensions.x, boss.dimensions.y }, boss.center, PI);
+	}
 
-
-	//}
 }
 
 //frees any objects related to the boss
