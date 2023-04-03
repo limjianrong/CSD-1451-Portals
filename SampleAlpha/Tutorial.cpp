@@ -59,7 +59,7 @@ void tutorial_load(void) {
 	// portals
 	assets[portals] = AEGfxTextureLoad("Assets/simplified-platformer-pack/PNG/Tiles/platformPack_tile023.png");
 	// range
-	assets[range] = AEGfxTextureLoad("Assets/greencircle.png");
+	assets[range] = AEGfxTextureLoad("Assets/tutorial_portal_range.png");
 	// enemy1
 	assets[enemy1] = AEGfxTextureLoad("Assets/pixel-line-platformer/Tiles/tile_0055.png");
 	// enemy2
@@ -69,7 +69,7 @@ void tutorial_load(void) {
 	// enemy3 warning
 	assets2[enemy3_warning] = AEGfxTextureLoad("Assets/jumperpack/PNG/Items/powerup_wings.png");
 	// boss
-	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_fly.png");
+	assets2[_boss] = AEGfxTextureLoad("Assets/jumperpack/PNG/Enemies/flyMan_stand.png");
 
 	mesh_load();
 }
@@ -206,7 +206,7 @@ void tutorial_draw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Portal creation", 0.14f, firstText, 0.55F, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, (s8*)"range.", 0.21f, firstText - 0.1f, 0.55F, 0.0f, 0.0f, 0.0f);
 	AEGfxPrint(Albam_fontID, (s8*)"Appears red when", 0.13f, firstText - 0.2f, 0.55F, 0.0f, 0.0f, 0.0f);
-	AEGfxPrint(Albam_fontID, (s8*)"portal creation disabled.", 0.1f, firstText - 0.3f, 0.55F, 0.0f, 0.0f, 0.0f);
+	AEGfxPrint(Albam_fontID, (s8*)"portal creation is on cooldown.", 0.05f, firstText - 0.3f, 0.55F, 0.0f, 0.0f, 0.0f);
 
 	// ----- Enemy 1 -----
 	AEGfxPrint(Albam_fontID, (s8*)"Avoid contact with", 0.62f, firstText, 0.55F, 0, 0, 0);
@@ -234,9 +234,8 @@ void tutorial_draw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Charges towards player", 0.57f, secondText - 0.2f, 0.55F, 0, 0, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"occassionally.", 0.67f, secondText - 0.3f, 0.55F, 0, 0, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"Defeat the boss and", 0.6f, secondText - 0.4f, 0.55F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"collide with the", 0.64f, secondText - 0.5f, 0.55F, 0, 0, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"door to win!", 0.66f, secondText - 0.6f, 0.55F, 0, 0, 0);
-	
+	AEGfxPrint(Albam_fontID, (s8*)"reach the door to win!", 0.6f, secondText - 0.5f, 0.55F, 0, 0, 0);
+
 	AEGfxPrint(Albam_fontID, (s8*)"Press 'P' to pause game", -0.26f, secondText - 0.7f, 0.75F, 0.54f, 0, 1);
 
 
