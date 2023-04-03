@@ -12,13 +12,13 @@
 #define NUM 4
 #define INCREMENT 1.f
 
-// struct for credit
+// Struct Defines
 struct credit_stat {
 	AEGfxTexture* texture;
 	f32 y;
 };
 
-// main functions for this game state
+// Main Functions For This Game State
 void GameStateCreditsLoad(void);
 void GameStateCreditsInit(void);
 void GameStateCreditsUpdate(void);

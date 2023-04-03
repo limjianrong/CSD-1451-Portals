@@ -10,7 +10,7 @@
 ==================================================================================*/
 #define TRANSPARENCY_DECREMENT 0.3f
 
-// main function for this game state
+// Main Functions For This Game State
 void GameStateSplashscreenLoad(void);
 void GameStateSplashscreenInit(void);
 void GameStateSplashscreenUpdate(void);

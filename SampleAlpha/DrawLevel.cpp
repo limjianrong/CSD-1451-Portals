@@ -20,15 +20,14 @@ extern AEAudio playerDamageAudio;
 extern AEAudioGroup soundGroup;
 extern AEGfxVertexList* square_mesh;	// Created square mesh
 
-// --- Variables ---
-AEGfxTexture* platform_text, * spike_text, * onetime_text;
-AEMtx33 scale, rotate, translate, transform; // TRS
-
+// --- Structs ---
 Block normal[MAX_NORMAL], left_right[MAX_LEFT_RIGHT], up_down[MAX_UP_DOWN], diagonal_up[MAX_DIAGONAL_UP],
 diagonal_down[MAX_DIAGONAL_DOWN], one_time_use[MAX_ONE_TIME_USE], floor_spikes[MAX_SPIKES], left_right_spikes[MAX_LEFT_RIGHT_SPIKES];
 Door door;
 
-	
+// --- Variables ---
+AEGfxTexture* platform_text, * spike_text, * onetime_text;
+AEMtx33 scale, rotate, translate, transform; // TRS
 bool damage_ok{ TRUE };
 
 // --- File IO ---

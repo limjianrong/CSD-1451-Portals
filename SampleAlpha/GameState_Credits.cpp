@@ -14,14 +14,18 @@
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
 
-
+// --- Externs ---
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
 extern s8 Albam_fontID;
-credit_stat credits[NUM];
-static f64 timer;
 extern AEAudioGroup musicGroup;
+
+// --- Structs ---
+credit_stat credits[NUM];
+
+// --- Variables ---
+static f64 timer;
 
 // Load all textures and meshes
 void GameStateCreditsLoad(void) {

@@ -14,10 +14,13 @@
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
 
-AEGfxTexture* logo;
+// --- Externs ---
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
+
+// --- Variables ---
+AEGfxTexture* logo;
 static f32 transparency;
 static f64 timer;
 
