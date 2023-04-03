@@ -74,7 +74,7 @@ void GameStateMainmenuLoad(void) {
 	// Texture load
 	buttonNotPressed = AEGfxTextureLoad("Assets/blue_button04.png");
 	buttonPressed = AEGfxTextureLoad("Assets/blue_button05.png");
-	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest_resized.png");
+	backgroundTex = AEGfxTextureLoad("Assets/backgroundForest.png");
 	quitWindow = AEGfxTextureLoad("Assets/card.png");
 
 	
