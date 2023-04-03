@@ -18,7 +18,7 @@ AEGfxTexture* logo;
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
-static f32 transparancy;
+static f32 transparency;
 static f64 timer;
 
 // load texture and mesh
@@ -30,7 +30,7 @@ void GameStateSplashscreenLoad(void) {
 // initialise timer and transparancy variables and set background colour to black
 void GameStateSplashscreenInit(void) {
 	timer = 0;
-	transparancy = 1.0f;
+	transparency = 1.0f;
 	AEGfxSetBackgroundColor(0, 0, 0);
 }
 // update function
@@ -39,15 +39,15 @@ void GameStateSplashscreenUpdate(void) {
 	timer += AEFrameRateControllerGetFrameTime(); //starts timer
 	//checks if 2 seconds or more have passed
 	if (timer >= 2) {
-		transparancy -= DECREMENT;//start decrementing the transparacny
-		if (transparancy < 0.f) gGameStateNext = GS_MainMenu; //check if transparancy is less than 0, if so, change gamestate to main menu
+		transparency -= TRANSPARENCY_DECREMENT;//start decrementing the transparency
+		if (transparency < 0.f) gGameStateNext = GS_MainMenu; //check if transparancy is less than 0, if so, change gamestate to main menu
 	}
 
 }
 // draw function to draw the splash screen
 void GameStateSplashscreenDraw(void) {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTransparency(transparancy);
+	AEGfxSetTransparency(transparency);
 	AEGfxSetTintColor(1, 1, 1, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 

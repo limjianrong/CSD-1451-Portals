@@ -8,7 +8,7 @@
 * Brief:
   This header file declares the functions used for the splash screen.
 ==================================================================================*/
-#define DECREMENT 0.3f
+#define TRANSPARENCY_DECREMENT 0.3f
 
 // main function for this game state
 void GameStateSplashscreenLoad(void);
