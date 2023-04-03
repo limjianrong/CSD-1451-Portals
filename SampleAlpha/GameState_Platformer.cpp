@@ -307,7 +307,7 @@ void GameStatePlatformerDraw(void) {
 
 
 	// -------------- Pause menu --------------
-	if (AEInputCheckReleased(AEVK_P)) {
+	if (AEInputCheckReleased(AEVK_ESCAPE)) {
 		if (isPaused == FALSE) isPaused = TRUE;
 		else if (isPaused == TRUE) isPaused = FALSE;
 	}

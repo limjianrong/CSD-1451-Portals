@@ -189,7 +189,7 @@ void tutorial_draw(void) {
 	AEGfxPrint(Albam_fontID, (s8*)"Defeat the boss and", 0.6f, secondText - 0.4f, 0.55F, 0, 0, 0);
 	AEGfxPrint(Albam_fontID, (s8*)"reach the door to win!", 0.6f, secondText - 0.5f, 0.55F, 0, 0, 0);
 
-	AEGfxPrint(Albam_fontID, (s8*)"Press 'P' to pause game", -0.26f, secondText - 0.7f, 0.75F, 0.54f, 0, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"Press 'ESC' to unpause game", -0.26f, secondText - 0.7f, 0.75F, 0.54f, 0, 1);
 }
 
 
