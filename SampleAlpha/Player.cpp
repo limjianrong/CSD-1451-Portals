@@ -265,6 +265,7 @@ void player_update() {
 		player.Lives--;
 		player.Hp = player.Max_Hp;
 		respawn_player();
+		reset_portals();
 
 		// Player's death sfx
 		AEAudioPlay(playerDeathAudio, soundGroup, 0.75f, 1.f, 0);

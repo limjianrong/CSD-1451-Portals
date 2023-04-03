@@ -75,7 +75,18 @@ void mesh_load() {
 		0.5f, -0.5f, 0xFFC3209E, 1.0f, 0.0f,
 		0.5f, 0.5f, 0xFFC3209E, 1.0f, 1.0f,
 		-0.5f, 0.5f, 0xFFC3209E, 0.0f, 1.0f);
+
+
+	// ----------- NEW MESH TO BE USED LATER -------------
 	// Saving the mesh (list of triangles) in pMesh
+	//	AEGfxTriAdd(
+	//	-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
+	//	0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
+	//	-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 0.0f);
+	//AEGfxTriAdd(
+	//	0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
+	//	0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
+	//	-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 	square_mesh = AEGfxMeshEnd();
 }
 
