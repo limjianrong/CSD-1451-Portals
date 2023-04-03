@@ -334,12 +334,12 @@ void GameStateMainmenuDraw(void) {
 
 	// ------ Texts ------
 	float first_text = -0.0583f;
-	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.35, 0.45, 3.0F, 1, 1, 0);
-	AEGfxPrint(Albam_fontID, (s8*)"START GAME", -0.125, first_text , 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"TUTORIAL", -0.097, first_text - 0.21f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.097, first_text - 0.41f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"CREDITS", -0.085, first_text - 0.62f, 0.75f, 1, 1, 1);
-	AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.82f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"PORTALS", -0.35f, 0.45f, 3.0F, 1, 1, 0);
+	AEGfxPrint(Albam_fontID, (s8*)"START GAME", -0.125f, first_text , 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"TUTORIAL", -0.097f, first_text - 0.21f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"SETTINGS", -0.097f, first_text - 0.41f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"CREDITS", -0.085f, first_text - 0.62f, 0.75f, 1, 1, 1);
+	AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11f, first_text - 0.82f, 0.75f, 1, 1, 1);
 
 	if (is_Settings == TRUE) {
 		settings_draw();	// Draws menu to screen
@@ -392,12 +392,12 @@ void GameStateMainmenuDraw(void) {
 			drawMesh(AEVec2{ menu_button_scaleX, menu_button_scaleY }, AEVec2{ origin.x, origin.y + button_startY - button_Yunit * i }, NULL);
 
 			// ------ Texts ------
-			AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12, first_text + 0.65f, 0.75f, 0, 0, 0);
-			AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18, first_text + 0.5f, 0.75f, 0, 0, 0);
-			AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1, first_text + 0.35f , 0.75f, 0, 0, 0);
+			AEGfxPrint(Albam_fontID, (s8*)"Are you sure", -0.12f, first_text + 0.65f, 0.75f, 0, 0, 0);
+			AEGfxPrint(Albam_fontID, (s8*)"you want to quit", -0.18f, first_text + 0.5f, 0.75f, 0, 0, 0);
+			AEGfxPrint(Albam_fontID, (s8*)"the game?", -0.1f, first_text + 0.35f , 0.75f, 0, 0, 0);
 
-			AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.055, first_text - 0.41f, 0.75f, 1, 1, 1);
-			AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11, first_text - 0.62f, 0.75f, 1, 1, 1);
+			AEGfxPrint(Albam_fontID, (s8*)"BACK", -0.055f, first_text - 0.41f, 0.75f, 1, 1, 1);
+			AEGfxPrint(Albam_fontID, (s8*)"QUIT GAME", -0.11f, first_text - 0.62f, 0.75f, 1, 1, 1);
 		}
 	}
 }
