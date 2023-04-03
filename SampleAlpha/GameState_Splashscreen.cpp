@@ -39,7 +39,7 @@ void GameStateSplashscreenUpdate(void) {
 	timer += AEFrameRateControllerGetFrameTime(); //starts timer
 	//checks if 2 seconds or more have passed
 	if (timer >= 2) {
-		transparancy -= 0.3f;//start decrementing the transparacny
+		transparancy -= DECREMENT;//start decrementing the transparacny
 		if (transparancy < 0.f) gGameStateNext = GS_MainMenu; //check if transparancy is less than 0, if so, change gamestate to main menu
 	}
 

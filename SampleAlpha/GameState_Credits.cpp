@@ -14,7 +14,7 @@
 #include "GameStateList.hpp"
 #include "Utilities.hpp"
 
-#define NUM 4
+
 extern AEGfxVertexList* square_mesh;
 extern AEMtx33 scale, rotate, translate, transform;
 extern AEVec2 origin;
@@ -47,7 +47,7 @@ void GameStateCreditsUpdate(void) {
 	// check if more than 1 sec has passed
 	if (timer > 1) {
 		for (int i = 0; i < NUM; i++) {
-			credits[i].y += 1.f; // moves up the credits
+			credits[i].y += INCREMENT; // moves up the credits
 			if (credits[3].y >= (origin.y + WINDOWLENGTH_Y)) { // checks if the last credits picture is gone
 				AEGfxPrint(Albam_fontID, (s8*)"Click anywhere to return to main menu", -0.25f, -0.9f, 0.5f, 1.f, 1.f, 1.f);
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {

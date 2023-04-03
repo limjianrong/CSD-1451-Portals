@@ -11,9 +11,6 @@
 ==================================================================================*/
 #pragma once
 #include "AEEngine.h"
-#include "Player.hpp"
-#include "Enemy.hpp"
-#include "Utilities.hpp"
 #include <fstream>
 
 //======= Parameter =======

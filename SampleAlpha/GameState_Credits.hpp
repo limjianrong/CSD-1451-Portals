@@ -9,6 +9,9 @@
 	This header file contains the declaration of functions that implements
 	the credits
  ==================================================================================*/
+#define NUM 4
+#define INCREMENT 1.f
+
 // struct for credit
 struct credit_stat {
 	AEGfxTexture* texture;

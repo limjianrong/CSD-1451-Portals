@@ -11,6 +11,7 @@
 ==================================================================================*/
 #include "draw_level.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 AEGfxTexture* platform_text, * spike_text, *onetime_text;
 AEMtx33 scale, rotate, translate, transform; // TRS
