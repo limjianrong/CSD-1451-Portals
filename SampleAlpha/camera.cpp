@@ -61,13 +61,13 @@ void camera_update() {
 	if (AEInputCheckTriggered(AEVK_B)) {
 		camera.free_moving = !camera.free_moving;
 
-		//if previous camera state was free_moving(for level-design), and B was pressed
+		//if previous camera state was free_moving(for level-design), and B was pressed  
 		//switch back to camera state that is used for playing, now the camera goes back
 		//to following the player
-		if (camera.free_moving) {
+
 			camera.x = player.center.x;
 			camera.y = player.center.y;
-		}
+		
 	}
 
 	//if free moving camera is false, camera will follow the player's movement
